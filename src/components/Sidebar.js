@@ -62,7 +62,13 @@ const NavHeader = () => (
         <button type="button">
             <Icon icon="menu" />
         </button>
-        <span>Admin</span>
+        <div class="user">
+            <img src="https://i.postimg.cc/HLH1VGmw/user.png" alt="Foto de perfil"></img>
+            <div class="name">
+                <h5>GAES 3</h5>
+                <span>Admin</span>
+            </div>
+        </div>
     </header>
 );
 
