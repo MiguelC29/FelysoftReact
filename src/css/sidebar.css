@@ -53,22 +53,26 @@ button {
     align-items: center;
 	text-align: center;
 }
+
 .user img {
     width: 50px;
 	height: 50px;
 	border-radius: 50%;
     margin-right: 20px;
 }
+
 .user .name {
     display: flex;
     flex-direction: column;
 }
+
 .user .name h5 {
 	color: #fff;
 	font-size: 12px;
     margin-bottom: 0.5rem;
     margin-top: 0;
 }
+
 .user .name span {
 	color: #fff;
 	font-size: 11px;
@@ -97,6 +101,10 @@ button {
 
 .sidebar button span:nth-child(2) {
     flex: 1 1 auto;
+}
+/* --- */
+.sidebar button>span:nth-child(3) {
+    margin-left: auto;
 }
 
 .sidebar button:is(.active, :hover) {

@@ -3,53 +3,81 @@ https://github.com/frontend-joe/react-components/tree/main/src/components/sideba
 
 import { useRef, useState } from "react";
 import "../css/sidebar.css";
+import { Link } from "react-router-dom";
 
 const menuItems = [
     {
         name: "Inicio",
         icon: "home",
+        link: "/"
     },
     {
         name: "Almacen",
         icon: "inventory_2",
-        items: ["Servicios", "Productos", "Categorías", "Libros", "Autores", "Géneros", "Clientes"],
+        items: [
+            {name: "Servicios", link: "/services"},
+            {name: "Productos", link: "/products"},
+            {name: "Categorías", link: "/categories"},
+            {name: "Libros", link: "/books"},
+            {name: "Autores", link: "/authors"},
+            {name: "Géneros", link: "/genres"},
+            {name: "Clientes", link: "/clients"},
+        ]
     },
     {
         name: "Venta",
         icon: "shopping_cart",
-        items: ["Carrito de Compras", "Gastos", "Ingresos", "Pagos"],
+        items: [
+            {name: "Carrito de Compras", link: "/sales"},
+            {name: "Gastos", link: "/expenses"},
+            {name: "Ingresos", link: "/categories"},
+            {name: "Pagos", link: "/payments"},
+        ]
     },
     {
         name: "Compras",
         icon: "local_shipping",
-        items: ["Consultar Compras", "Proveedores"],
+        items: [
+            {name: "Consultar Compras", link: "/purchases"},
+            {name: "Proveedores", link: "/providers"},
+        ]
     },
     {
         name: "Reservas",
         icon: "event_available",
-        items: ["Reservas Libros", "Reserva Servicios"],
+        items: [
+            {name: "Reservas Libros", link: ""},
+            {name: "Reserva Servicios", link: ""},
+        ]
     },
     {
         name: "Inventario",
         icon: "deployed_code",
-        items: ["Productos", "Libros Digitales"],
+        items: [
+            {name: "Productos", link: ""},
+            {name: "Libros Digitales", link: ""},
+        ]
     },
     {
         name: "Dashboard",
         icon: "monitoring",
+        link: "",
     },
     {
         name: "Usuarios",
         icon: "group",
+        link: "/users",
     },
     {
         name: "Configuración",
         icon: "settings",
+        link: "",
         // items: ["Display", "Editor", "Theme", "Interface"],
     },
     {
         name: "Cerrar sesión",
         icon: "logout",
+        link: "",
     },
 ];
 
@@ -72,14 +100,17 @@ const NavHeader = () => (
     </header>
 );
 
-const NavButton = ({ onClick, name, icon, isActive, hasSubNav }) => (
+const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link }) => (
     <button
         type="button"
         onClick={() => onClick(name)}
         className={isActive ? "active" : ""}
     >
+        {/* ----- */}
         {icon && <Icon icon={icon} />}
-        <span>{name}</span>
+        <Link to={link} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span>{name}</span>
+        </Link>
         {hasSubNav && <Icon icon="expand_more" />}
     </button>
 );
@@ -103,8 +134,9 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
                 {item?.items.map((subItem) => (
                     <NavButton
                         onClick={handleClick}
-                        name={subItem}
-                        isActive={activeItem === subItem}
+                        name={subItem.name}
+                        isActive={activeItem === subItem.name}
+                        link={subItem.link}
                     />
                 ))}
             </div>
@@ -132,6 +164,7 @@ export const Sidebar = () => {
                             icon={item.icon}
                             isActive={activeItem === item.name}
                             hasSubNav={!!item.items}
+                            link={item.link}
                         />
                     )}
                     {item.items && (
@@ -142,6 +175,7 @@ export const Sidebar = () => {
                                 icon={item.icon}
                                 isActive={activeItem === item.name}
                                 hasSubNav={!!item.items}
+                                link={item.link}
                             />
                             <SubMenu
                                 activeItem={activeItem}
