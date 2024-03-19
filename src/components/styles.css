@@ -2,20 +2,24 @@
   box-sizing: border-box;
 }
 
-.page {
-  display: grid;
-  place-items: center;
+body {
   margin: 0;
   background: #000000;
   font-family: "Euclid Circular A", "Poppins";
   color: #fdfdfd;
 }
 
+.page {
+  display: grid;
+  place-items: center;
+  height: 100vh; /* Centra la página verticalmente */
+}
+
 .login-card {
   width: 400px;
   padding: 60px 30px 30px;
   border-radius: 16px;
-  background: #0e0d0d;
+  background: #1f1d1d;
   text-align: center;
 }
 
@@ -26,8 +30,13 @@
 }
 
 .login-card img {
-  width: 260px;
+  width: 150px; /* Ajusta el tamaño de la imagen */
   margin-bottom: 20px;
+  color: #fdfdfd;
+}
+
+.login-card img.logo {
+  filter: invert(100%); /* Cambia el color del logo a blanco */
 }
 
 .login-form {
@@ -52,21 +61,20 @@
   margin: 8px 0;
   font-family: inherit;
   font-size: 18px;
-  transition: 0.4s;
+  transition: background 0.4s; /* Transición al pasar el ratón */
+}
+
+.control:hover {
+  background: #272727; /* Cambia el color de fondo al pasar el ratón */
 }
 
 button.control {
   cursor: pointer;
-  width: 100%;
-  height: 56px;
-  padding: 0 16px;
   background: #0079ea;
-  text-align: center;
 }
 
 .bars {
   margin: 8px 0;
-  flex: 1 1 auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -79,7 +87,6 @@ button.control {
   height: 6px;
   border-radius: 3px;
   transition: 0.4s;
-  width: 0%;
 }
 
 .bars.weak div {
