@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap';
+import DataTable from '../components/DataTable';
 
 export default function Categories() {
 
   const [categories, setCategories] = useState([]);
+  const headers = ["ID_CATEGORY", "CATEGORY"];
 
   useEffect(() => {
     loadCategories();
@@ -23,7 +24,7 @@ export default function Categories() {
   return (
     <div>
       <h1>Categories</h1>
-      <div className="container">
+      {/* <div className="container">
         <Table>
           <thead>
             <tr>
@@ -42,7 +43,8 @@ export default function Categories() {
             ))}
           </tbody>
         </Table>
-      </div>
+      </div> */}
+      <DataTable headers={headers} data={categories}/>
     </div>
   )
 }
