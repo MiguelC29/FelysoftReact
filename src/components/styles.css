@@ -16,7 +16,7 @@ body {
 }
 
 .login-card {
-  width: 400px;
+  width: 1000px;
   padding: 60px 30px 30px;
   border-radius: 16px;
   background: #1f1d1d;
@@ -30,19 +30,20 @@ body {
 }
 
 .login-card img {
-  width: 150px; /* Ajusta el tamaño de la imagen */
+  width: 150px;
   margin-bottom: 20px;
   color: #fdfdfd;
 }
 
 .login-card img.logo {
-  filter: invert(100%); /* Cambia el color del logo a blanco */
+  filter: invert(100%);
 }
 
 .login-form {
   width: 100%;
   margin: 0;
   display: grid;
+  row-gap: 15px;
 }
 
 .login-form input.control::placeholder {
@@ -58,23 +59,33 @@ body {
   background: #181919;
   border: 0;
   border-radius: 6px;
-  margin: 8px 0;
   font-family: inherit;
   font-size: 18px;
-  transition: background 0.4s; /* Transición al pasar el ratón */
+  transition: background 0.4s;
 }
 
 .control:hover {
-  background: #272727; /* Cambia el color de fondo al pasar el ratón */
+  background: #272727;
 }
 
 button.control {
   cursor: pointer;
+  width: 100%;
+  height: 56px;
   background: #0079ea;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 18px;
+  transition: background 0.4s;
+}
+
+button.control:hover {
+  background: #005ea1;
 }
 
 .bars {
-  margin: 8px 0;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -110,3 +121,10 @@ button.control {
   text-transform: capitalize;
   color: #868b94;
 }
+
+.username {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
