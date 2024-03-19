@@ -18,116 +18,116 @@ const getStrength = (password) => {
 };
 
 export const RegistrationForm = () => {
-  const [pkIdIdentificacion, setPkIdIdentificacion] = useState("");
-  const [tipoDocu, setTipoDocu] = useState("");
-  const [nombres, setNombres] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [email, setEmail] = useState("");
-  const [genero, setGenero] = useState("");
-  const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
-  const [confirmarContrasena, setConfirmarContrasena] = useState("");
-  const [fkIdRol, setFkIdRol] = useState("");
-  const [strength, setStrength] = useState("");
-  const [confirmStrength, setConfirmStrength] = useState("");
+  const [Id, setId] = useState("");
+  const [DocumentType, setDocumentType] = useState("");
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Address, setAddress] = useState("");
+  const [Phone, setPhone] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Gender, setGender] = useState("");
+  const [Username, setUsername] = useState("");
+  const [Password, setPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
+  const [RoleId, setRoleId] = useState("");
+  const [Strength, setStrength] = useState("");
+  const [ConfirmStrength, setConfirmStrength] = useState("");
 
   const handleChange = (event) => {
     const newPassword = event.target.value;
-    setContrasena(newPassword);
+    setPassword(newPassword);
     setStrength(getStrength(newPassword));
   };
 
   const handleConfirmPasswordChange = (event) => {
     const newPassword = event.target.value;
-    setConfirmarContrasena(newPassword);
+    setConfirmPassword(newPassword);
     setConfirmStrength(getStrength(newPassword));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("pkIdIdentificacion:", pkIdIdentificacion);
-    console.log("tipoDocu:", tipoDocu);
-    console.log("nombres:", nombres);
-    console.log("apellidos:", apellidos);
-    console.log("direccion:", direccion);
-    console.log("telefono:", telefono);
-    console.log("email:", email);
-    console.log("genero:", genero);
-    console.log("usuario:", usuario);
-    console.log("contrasena:", contrasena);
-    console.log("confirmarContrasena:", confirmarContrasena);
-    console.log("fkIdRol:", fkIdRol);
+    console.log("Id:", Id);
+    console.log("DocumentType:", DocumentType);
+    console.log("FirstName:", FirstName);
+    console.log("LastName:", LastName);
+    console.log("Address:", Address);
+    console.log("Phone:", Phone);
+    console.log("Email:", Email);
+    console.log("Gender:", Gender);
+    console.log("Username:", Username);
+    console.log("Password:", Password);
+    console.log("ConfirmPassword:", ConfirmPassword);
+    console.log("RoleId:", RoleId);
   };
 
   return (
     <div className="page">
       <div className="login-card">
         <img src={logo} alt="Logo" />
-        <h2>Registro de Usuario</h2>
+        <h2>Registration Form</h2>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="pkIdIdentificacion"
-            value={pkIdIdentificacion}
-            onChange={(e) => setPkIdIdentificacion(e.target.value)}
+            placeholder="ID"
+            value={Id}
+            onChange={(e) => setId(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="tipoDocu"
-            value={tipoDocu}
-            onChange={(e) => setTipoDocu(e.target.value)}
+            placeholder="Document Type"
+            value={DocumentType}
+            onChange={(e) => setDocumentType(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="nombres"
-            value={nombres}
-            onChange={(e) => setNombres(e.target.value)}
+            placeholder="First Name"
+            value={FirstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="apellidos"
-            value={apellidos}
-            onChange={(e) => setApellidos(e.target.value)}
+            placeholder="Last Name"
+            value={LastName}
+            onChange={(e) => setLastName(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="direccion"
-            value={direccion}
-            onChange={(e) => setDireccion(e.target.value)}
+            placeholder="Address"
+            value={Address}
+            onChange={(e) => setAddress(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="telefono"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
+            placeholder="Phone"
+            value={Phone}
+            onChange={(e) => setPhone(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="email"
-            value={email}
+            placeholder="Email"
+            value={Email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
@@ -135,57 +135,57 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="genero"
-            value={genero}
-            onChange={(e) => setGenero(e.target.value)}
+            placeholder="Gender"
+            value={Gender}
+            onChange={(e) => setGender(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="usuario"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
+            placeholder="Username"
+            value={Username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="fkIdRol"
-            value={fkIdRol}
-            onChange={(e) => setFkIdRol(e.target.value)}
+            placeholder="Role ID"
+            value={RoleId}
+            onChange={(e) => setRoleId(e.target.value)}
           />
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="password"
-            placeholder="contrasena"
-            value={contrasena}
+            placeholder="Password"
+            value={Password}
             onChange={handleChange}
           />
-          <div className={`bars ${strength}`}>
+          <div className={`bars ${Strength}`}>
             <div></div>
           </div>
-          <div className="strength">{strength && `${strength} Password`}</div>
+          <div className="strength">{Strength && `${Strength} Password`}</div>
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="password"
-            placeholder="confirmarContrasena"
-            value={confirmarContrasena}
+            placeholder="Confirm Password"
+            value={ConfirmPassword}
             onChange={handleConfirmPasswordChange}
           />
-          <div className={`bars ${confirmStrength}`}>
+          <div className={`bars ${ConfirmStrength}`}>
             <div></div>
           </div>
-          <div className="strength">{confirmStrength && `${confirmStrength} Confirmar Password`}</div>
+          <div className="strength">{ConfirmStrength && `${ConfirmStrength} Confirm Password`}</div>
           
           <button className="control" type="submit">
-            Regístrate
+            Register
           </button>
         </form>
       </div>
