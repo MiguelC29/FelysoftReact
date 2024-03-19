@@ -6,6 +6,8 @@ export const RegistrationForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmarPassword, setConfirmarPassword] = useState("");
+
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -19,11 +21,17 @@ export const RegistrationForm = () => {
     setPassword(value);
   };
 
+  const handleConfirmarPasswordChange = (value) => {
+    setPassword(value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Name:", name);
     console.log("Email:", email);
     console.log("Password:", password);
+    console.log("ConfirmarPassword:", password);
+
    
   };
 
@@ -63,6 +71,15 @@ export const RegistrationForm = () => {
             className="control"
             type="password"
             placeholder="Password"
+            onChange={(event) => handlePasswordChange(event.target.value)}
+          />
+
+          <input
+            name="ConfirmarPassword"
+            spellCheck="false"
+            className="control"
+            type="password"
+            placeholder="Confirm Password"
             onChange={(event) => handlePasswordChange(event.target.value)}
           />
           <button className="control" type="submit">
