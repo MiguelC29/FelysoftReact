@@ -1,8 +1,8 @@
 import { useState } from "react";
-import logo from "./logo.svg";
-import "./styles.css";
+import "../css/inicioSesion.css";
+import logo from "../img/logo.svg";
 
-const strengthLabels = ["weak", "medium", "medium", "strong"];
+const etiquetasFuerza = ["Debil", "Media", "Media", "Fuerte"];
 
 export const PasswordStrength = ({ placeholder, onChange }) => {
   const [strength, setStrength] = useState("");
@@ -15,9 +15,9 @@ export const PasswordStrength = ({ placeholder, onChange }) => {
     if (/\d/.test(password)) strengthIndicator++;
     if (/[^a-zA-Z0-9]/.test(password)) strengthIndicator++;
 
-    if (password.length >= 16) strengthIndicator++;
+    if (password.length >= 8) strengthIndicator++;
 
-    return strengthLabels[strengthIndicator];
+    return etiquetasFuerza[strengthIndicator];
   };
 
   const handleChange = (event) => {
@@ -25,21 +25,29 @@ export const PasswordStrength = ({ placeholder, onChange }) => {
     onChange(event.target.value);
   };
 
+  
   return (
     <>
+    <div className="input__wrapper">
       <input
-        name="password"
-        spellCheck="false"
-        className="control"
+        id="password"
         type="password"
+        name="password"
         placeholder={placeholder}
         onChange={handleChange}
+        required
+        className="input__field"
       />
-      <div className={`bars ${strength}`}>
-        <div></div>
+      <label htmlFor="password" className="input__label">
+        Password
+      </label>
       </div>
-      <div className="strength">{strength && `${strength} password`}</div>
-    </>
+
+      <div className={`bars ${strength}`}>
+        <div className="strength-bar-inner"></div>
+      </div>
+      <div className="strength">{strength && `Contraseña ${strength}`}</div>
+      </>
   );
 };
 
@@ -48,29 +56,33 @@ export const PasswordStrengthExample = () => {
 
   return (
     <div className="page">
-      <div className="login-card">
-         <img src={logo} />
-        <h2>Iniciar Sesión</h2>
-        <form className="login-form">
-          <div className="username">
-          <input
-            autoComplete="off"
-            spellCheck="false"
-            className="control"
-            type="email"
-            placeholder="Email" 
-            />
+      <div className="login-card"> 
+      <img src={logo} alt="Logo"/>
+        <div className="content">
+      <h2>Iniciar Sesión</h2>
+          <form className="login-form">
+            <div className="input__wrapper">
+              <input
+                autoComplete="off"
+                spellCheck="false"
+                type="email"
+                placeholder="Email"
+                required
+                className="input__field"
+              />
+              <label htmlFor="email" className="input__label">
+                Email
+              </label>
+              <div id="spinner" className="spinner"></div>
+            </div>
 
-            <div id="spinner" className="spinner"></div>
-          </div>
-          <PasswordStrength placeholder="Password" onChange={handleChange} />
-          <button className="control" type="button">
-            Iniciar Sesión
-          </button>
-        </form>
+            <PasswordStrength placeholder="Password" onChange={handleChange} />
+            <button className="control" type="button">
+              Iniciar Sesión
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
-
-
