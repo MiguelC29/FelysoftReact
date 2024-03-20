@@ -5,13 +5,16 @@ import DataTable from '../components/DataTable';
 export default function Categories() {
 
   const [categories, setCategories] = useState([]);
-  const headers = ["ID_CATEGORY", "CATEGORY"];
+  const headers = [
+    "ID_CATEGORIA",
+    "CATEGORIA"
+  ];
 
   useEffect(() => {
-    loadCategories();
+    loadData();
   }, []);
 
-  const loadCategories = () => {
+  const loadData = () => {
     axios.get("http://localhost:8086/api/category/all")
       .then((response) => {
         setCategories(response.data.data)
