@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/inicioSesion.css'; 
 import reportWebVitals from './reportWebVitals';
-import { PasswordStrengthExample } from './componets/IniciarSesion'; 
+import { InicioSesion } from './componets/IniciarSesion';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <PasswordStrengthExample/>
+    <InicioSesion/>
   </React.StrictMode>
 );
 reportWebVitals();
