@@ -1,20 +1,14 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Categories from './pages/Categories';
-// import { Sidebar } from './components/Sidebar';
+import Roles from './pages/Roles';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <Sidebar /> */}
-      </header>
-
+    <BrowserRouter>
       <Routes>
-        <Route path='/categories' element = {<Categories />}/>
+        <Route path='/categories' element={<Categories />} />
+        <Route path='/roles' element={<Roles />} />
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 }
-
-export default App;
