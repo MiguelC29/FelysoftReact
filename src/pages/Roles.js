@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { modalDelte, show_alert } from '../functions'
+import { getData, modalDelte, sendRequest, show_alert } from '../functions'
 
 export default function Roles() {
-
+    // TODO: nos falta hacer una logica, para si el registro ya marca como eliminado, y yo quiero agregar de nuevo esa categoria, la quite de eliminada - esto aplica para los campos unicos como rol
     const URL = 'http://localhost:8086/api/role/';
     const [roles, setRoles] = useState([]);
     const [id, setId] = useState('');
@@ -12,15 +12,8 @@ export default function Roles() {
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        getRoles();
+        getData(URL, setRoles);
     }, []);
-
-    const getRoles = async () => {
-        await axios.get(URL + 'all')
-            .then((response) => {
-                setRoles(response.data.data);
-            })
-    }
 
     const openModal = (op, id, name) => {
         setId('');
@@ -41,6 +34,10 @@ export default function Roles() {
         window.setTimeout(() => { document.getElementById('nombre').focus(); }, 500);
     }
 
+    // const openModal = (op, id, name) => {
+    //     openModals(op, id, name, setId, setName, setOperation, setTitle, 'Rol','nombre');
+    // }
+
     const validate = () => {
         let parameters;
         let method;
@@ -58,28 +55,12 @@ export default function Roles() {
                 url = URL + 'update/' + id;
                 method = 'PUT';
             }
-            sendRequest(method, parameters, url);
+            sendRequest(method, parameters, url, setRoles, URL);
         }
     }
 
-    const sendRequest = (method, parameters, url) => {
-        axios({ method: method, url: url, data: parameters }).then((response) => {
-            let type = response.data['status'];
-            let msg = response.data['data'];
-            show_alert(msg, type);
-            if (type === 'success') {
-                document.getElementById('btnCerrar').click();
-                getRoles();
-            }
-        })
-            .catch((error) => {
-                show_alert('Error en la solicitud', 'error');
-                console.log(error);
-            });
-    }
-
     const deleteRole = (id, name) => {
-        modalDelte('el rol', name, setId, id, sendRequest, URL);
+        modalDelte('el rol', name, setId, id, setRoles, URL);
     }
 
     return (
