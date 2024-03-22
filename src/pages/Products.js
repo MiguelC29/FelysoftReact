@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getData, getOneData, modalDelte, sendRequest, show_alert } from '../functions'
+import { confirmAction, getData, getOneData, modalDelte, sendRequest, show_alert } from '../functions'
 
 export default function Products() {
 
@@ -99,22 +99,24 @@ export default function Products() {
         } else if (idProvider === '') {
             show_alert('Seleccione un proveedor para el producto', 'warning');
         } else {
-            if (operation === 1) {
-                parameters = {
-                    name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
-                    IdCategory: idCategory, IdProvider: idProvider, stockInicial: stock.trim()
-                };
-                url = URL + 'create';
-                method = 'POST';
-            } else {
-                parameters = {
-                    idRole: id, name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
-                    IdCategory: idCategory, IdProvider: idProvider
-                };
-                url = URL + 'update/' + id;
-                method = 'PUT';
-            }
-            sendRequest(method, parameters, url, setProducts, URL);
+            confirmAction(operation, () => {
+                if (operation === 1) {
+                    parameters = {
+                        name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
+                        IdCategory: idCategory, IdProvider: idProvider, stockInicial: stock.trim()
+                    };
+                    url = URL + 'create';
+                    method = 'POST';
+                } else {
+                    parameters = {
+                        idRole: id, name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
+                        IdCategory: idCategory, IdProvider: idProvider
+                    };
+                    url = URL + 'update/' + id;
+                    method = 'PUT';
+                }
+                sendRequest(method, parameters, url, setProducts, URL);
+            })
         }
     }
 
@@ -141,6 +143,7 @@ export default function Products() {
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>IMAGEN</th>
                                         <th>PRODUCTO</th>
                                         <th>MARCA</th>
                                         <th>PRECIO DE VENTA</th>
@@ -154,6 +157,7 @@ export default function Products() {
                                     {products.map((product, i) => (
                                         <tr key={product.idProduct}>
                                             <td>{(i + 1)}</td>
+                                            {/* <td><img width = "100px" height = "100px" src="data:<?php echo $producto->tipoImg?>;base64,<?php echo base64_encode($producto->imagen)?>"></td> */}
                                             <td>{product.name}</td>
                                             <td>{product.brand}</td>
                                             <td>{product.salePrice}</td>
@@ -227,8 +231,15 @@ export default function Products() {
                                     ))}
                                 </select>
                             </div>
+                            <div className="input-group mb-3">
+                                {/* <label for="imagenP">Imagen: <sup>*</sup></label> */}
+                                <span className="input-group-text"><i className="fa-solid fa-gift"></i></span>
+                                <input className='form-control' type="file" name="imagenP" id="formFile" required />
+                                {/* <img width="200px" height="200px" src="data:<?php echo $datos['tipoImgP'] ?>;base64,<?php echo base64_encode($datos['imagenP']) ?>"> */}
+                            </div>
                             <div onClick={() => validate()} className="d-grid col-6 mx-auto">
                                 <button className='btn btn-success'>
+                                {/* <button className='btn btn-success' onClick={confirmAction()}> */}
                                     <i className='fa-solid fa-floppy-disk'></i> Guardar
                                 </button>
                             </div>

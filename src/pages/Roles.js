@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { getData, modalDelte, sendRequest, show_alert } from '../functions'
 
 export default function Roles() {

@@ -67,6 +67,23 @@ export const sendRequest = (method, parameters, url, setData, mainUrl) => {
         });
 }
 
+export const confirmAction = (op, actions) => {
+    MySwal.fire({
+        title: '¿Estás seguro?',
+        icon: 'question',
+        text: 'Se ' + ((op === 1) ? 'guardarán' : 'actualizarán') + ' los datos ingresados.',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            actions();
+        }
+    });
+  }
+
 /* export const openModals = (op, id, name, setId, setName, setOperation, setTitle, tableName, cOnFocus) => {
     setId('');
     setName('');
