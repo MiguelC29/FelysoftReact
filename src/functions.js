@@ -70,7 +70,7 @@ export const sendRequest = (method, parameters, url, setData, mainUrl) => {
 export const confirmAction = (op, actions) => {
     MySwal.fire({
         title: '¿Estás seguro?',
-        icon: 'question',
+        icon: 'warning',
         text: 'Se ' + ((op === 1) ? 'guardarán' : 'actualizarán') + ' los datos ingresados.',
         showCancelButton: true,
         confirmButtonText: 'Aceptar',
@@ -82,7 +82,7 @@ export const confirmAction = (op, actions) => {
             actions();
         }
     });
-  }
+}
 
 /* export const openModals = (op, id, name, setId, setName, setOperation, setTitle, tableName, cOnFocus) => {
     setId('');

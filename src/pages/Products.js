@@ -13,8 +13,6 @@ export default function Products() {
     const [brand, setBrand] = useState('');
     const [salePrice, setSalePrice] = useState(0.0);
     const [expiryDate, setExpiryDate] = useState('');
-    const [idCategory, setIdCategory] = useState();
-    const [idProvider, setIdProvider] = useState();
     const [stock, setStock] = useState(0);
     const [operation, setOperation] = useState(1);
     const [title, setTitle] = useState('');
@@ -29,7 +27,6 @@ export default function Products() {
 
     const handleCategoryChange = (categoryId) => {
         setSelectedCategory(categoryId);
-        setIdCategory(categoryId);
         if (categoryId) {
             getOneData(`${'http://localhost:8086/api/provider/providersByCategory/'}${categoryId}`, setProviders);
         }
@@ -37,7 +34,6 @@ export default function Products() {
 
     const handleProviderChange = (providerId) => {
         setSelectedProvider(providerId);
-        setIdProvider(providerId);
         if (providerId) {
             getOneData(`${'http://localhost:8086/api/category/categoriesByProvider/'}${providerId}`, setCategories);
         }
@@ -50,8 +46,6 @@ export default function Products() {
         setSalePrice('');
         setExpiryDate('');
         setStock('');
-        setIdCategory('');
-        setIdProvider('');
         setSelectedCategory('');
         setSelectedProvider('');
         getData('http://localhost:8086/api/category/', setCategories);
@@ -68,8 +62,6 @@ export default function Products() {
                 setBrand(brand);
                 setSalePrice(salePrice);
                 setExpiryDate(expiryDate);
-                setIdCategory(IdCategory);
-                setIdProvider(IdProvider);
                 setSelectedCategory(IdCategory);
                 setSelectedProvider(IdProvider);
                 break;
@@ -83,7 +75,10 @@ export default function Products() {
         let parameters;
         let method;
         let url;
-
+    
+        const categoryId = document.getElementById('selectCategory').value;
+        const providerId = document.getElementById('selectProvider').value;
+    
         if (name.trim() === '') {
             show_alert('Escribe el nombre del producto', 'warning');
         } else if (brand.trim() === '') {
@@ -91,34 +86,35 @@ export default function Products() {
         } else if (salePrice === '') {
             show_alert('Escribe el precio de venta del producto', 'warning');
         } else if (expiryDate.trim() === '') {
-            show_alert('Escribe el la fecha de vencimiento del producto', 'warning'); // analizar si es obligatorio el campo para todos los productos
+            show_alert('Escribe el la fecha de vencimiento del producto', 'warning');
         } else if (stock.trim() === '' && operation === 1) {
             show_alert('Escribe el stock inicial del producto', 'warning');
-        } else if (idCategory === '') {
-            show_alert('Seleccione una categoria para el producto', 'warning');
-        } else if (idProvider === '') {
+        } else if (categoryId === '') {
+            show_alert('Seleccione una categoría para el producto', 'warning');
+        } else if (providerId === '') {
             show_alert('Seleccione un proveedor para el producto', 'warning');
         } else {
             confirmAction(operation, () => {
                 if (operation === 1) {
                     parameters = {
                         name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
-                        IdCategory: idCategory, IdProvider: idProvider, stockInicial: stock.trim()
+                        IdCategory: categoryId, IdProvider: providerId, stockInicial: stock.trim()
                     };
                     url = URL + 'create';
                     method = 'POST';
                 } else {
                     parameters = {
                         idRole: id, name: name.trim(), brand: brand.trim(), salePrice: salePrice, expiryDate: expiryDate.trim(),
-                        IdCategory: idCategory, IdProvider: idProvider
+                        IdCategory: categoryId, IdProvider: providerId
                     };
                     url = URL + 'update/' + id;
                     method = 'PUT';
                 }
+    
                 sendRequest(method, parameters, url, setProducts, URL);
-            })
+            });
         }
-    }
+    };
 
     const deleteProduct = (id, name) => {
         modalDelte('el producto', name, setId, id, setProducts, URL);
@@ -143,7 +139,7 @@ export default function Products() {
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>IMAGEN</th>
+                                        {/* <th>IMAGEN</th> */}
                                         <th>PRODUCTO</th>
                                         <th>MARCA</th>
                                         <th>PRECIO DE VENTA</th>
@@ -213,23 +209,22 @@ export default function Products() {
                                 </div>}
                             <div className="input-group mb-3">
                                 <span className="input-group-text"><i className="fa-solid fa-gift"></i></span>
-                                <select className='form-select' aria-label='Seleccionar la categoría' name="idCategoria" onChange={(e) => handleCategoryChange(e.target.value)} required>
-                                    {(selectedCategory) || <option value="" selected disabled>Seleccione la categoria</option>}
+                                <select className='form-select' aria-label='Seleccionar la categoría' id='selectCategory' name="idCategoria" value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)} required>
+                                    <option value="" disabled>Seleccione la categoria</option>
                                     {categories.map((category) => (
-                                        <option key={category.idCategory} value={category.idCategory} onChange={(e) => {
-                                            setIdCategory(e.target.value)
-                                        }}>{category.name}</option>
+                                        <option key={category.idCategory} value={category.idCategory}>{category.name}</option>
                                     ))}
                                 </select>
                             </div>
                             <div className="input-group mb-3">
                                 <span className="input-group-text"><i className="fa-solid fa-gift"></i></span>
-                                <select className='form-select' aria-label='Seleccionar el proveedor' name="idProveedor" onChange={(e) => handleProviderChange(e.target.value)} required>
-                                    {(selectedProvider) || <option value="" selected disabled>Seleccione el proveedor</option>}
+                                <select className='form-select' aria-label='Seleccionar el proveedor' id='selectProvider' name="idProveedor" value={selectedProvider} onChange={(e) => handleProviderChange(e.target.value)} required>
+                                    <option value="" disabled>Seleccione el proveedor</option>
                                     {providers.map((provider) => (
-                                        <option key={provider.idProvider} value={provider.idProvider} onChange={(e) => setIdProvider(e.target.value)}>{provider.name}</option>
+                                        <option key={provider.idProvider} value={provider.idProvider}>{provider.name}</option>
                                     ))}
                                 </select>
+
                             </div>
                             <div className="input-group mb-3">
                                 {/* <label for="imagenP">Imagen: <sup>*</sup></label> */}
@@ -239,7 +234,7 @@ export default function Products() {
                             </div>
                             <div onClick={() => validate()} className="d-grid col-6 mx-auto">
                                 <button className='btn btn-success'>
-                                {/* <button className='btn btn-success' onClick={confirmAction()}> */}
+                                    {/* <button className='btn btn-success' onClick={confirmAction()}> */}
                                     <i className='fa-solid fa-floppy-disk'></i> Guardar
                                 </button>
                             </div>
