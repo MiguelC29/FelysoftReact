@@ -29,7 +29,7 @@ export function modalDelte(nameTable, name, setId, id, setTable, url) {
     }).then((result) => {
         if (result.isConfirmed) {
             setId(id);
-            const durl =  url + 'delete/' + id;
+            const durl = url + 'delete/' + id;
             sendRequest('PUT', { id: id }, durl, setTable, url);
         } else {
             show_alert((nameTable + ' NO fue eliminado').toUpperCase(), 'info');
