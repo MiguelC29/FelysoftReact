@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route path='/categories' element={<Categories />} />
         <Route path='/roles' element={<Roles />} />
-        <Route path='/products' element={<Products />} />
+        <Route path='/productos' element={<Products />} />
       </Routes>
     </BrowserRouter>
   );
