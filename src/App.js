@@ -1,16 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Authors from './pages/Authors';
-import Genres from './pages/Genres';
+import Categories from './pages/Categories';
+import Roles from './pages/Roles';
+import Products from './pages/Products';
 
-function App() {
+export default function App() {
   return (
-      <BrowserRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path='/genres' element = {<Genres/>}/>
-        <Route path='/authors' element = {<Authors />}/>
+        <Route path='/categories' element={<Categories />} />
+        <Route path='/roles' element={<Roles />} />
+        <Route path='/products' element={<Products />} />
       </Routes>
-      </BrowserRouter>
+    </BrowserRouter>
   );
 }
-
-export default App;
