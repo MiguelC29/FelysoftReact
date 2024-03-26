@@ -130,11 +130,10 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
     );
 }
 
-export const leftToolbarTemplate = (openNew, confirmDeleteSelected, selectedData) => {
+export const leftToolbarTemplate = (openNew) => {
     return (
         <div className="flex flex-wrap gap-2">
             <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
-            <Button label="Borrar" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedData || !selectedData.length} />
         </div>
     );
 };
