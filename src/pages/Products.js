@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { confirmAction, getData, getOneData, sendRequest, show_alert } from '../functions'
+import { DialogDelete, DialogFooter, InputChange, actionBodyTemplate, confirmDelete, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functions2'
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -13,7 +13,6 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 // import { Calendar } from 'primereact/calendar';
 import { InputMask } from 'primereact/inputmask'
-import axios from 'axios'
 
 export default function Products() {
     let emptyProduct = {
@@ -102,6 +101,7 @@ export default function Products() {
         setProductDialog(true);
     };
 
+    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -110,6 +110,8 @@ export default function Products() {
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
     };
+
+    //
 
     const hideDeleteProductsDialog = () => {
         setDeleteProductsDialog(false);
@@ -138,67 +140,30 @@ export default function Products() {
                 }
             }
 
-            // sendRequest(method, parameters, url, setProducts, URL);
-            // PUEDO USAR EL SENDREQUEST PERO ME TOCARIA MODIFICARLO Y AGREGARLE EL TOAST
-            axios({ method: method, url: url, data: parameters })
-            .then((response) => {
-                let type = response.data['status'];
-                let msg = response.data['data'];
-                // show_alert(msg, type);
-                if (type === 'success') {
-                    // document.getElementById('btnCerrar').click();
-                    // toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Producto Creado', life: 3000 });
-                    toast.current.show({ severity: 'success', summary: msg, detail: 'Producto ' + (operation === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
-                    getData(URL, setProducts);
-                }
-            })
-            .catch((error) => {
-                // show_alert('Error en la solicitud', 'error');
-                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Producto NO ' + (operation === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
-                console.log(error);
-            });
+            sendRequest(method, parameters, url, setProducts, URL, operation, toast);
             setProductDialog(false);
             setProduct(emptyProduct);
         }
     };
 
     const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+        confirmDelete(product, setProduct, setDeleteProductDialog);
     };
 
     const deleteProduct = () => {
-        const durl = URL + 'delete/' + product.idProduct;
-        // sendRequest('PUT', { id: id }, durl, setTable, url);
-        axios({ method: 'PUT', url: durl, data: { id: product.idProduct } })
-        .then((response) => {
-            let type = response.data['status'];
-            let msg = response.data['data'];
-            // show_alert(msg, type);
-            if (type === 'success') {
-                toast.current.show({ severity: 'success', summary: msg, detail: 'Producto Eliminado', life: 3000 });
-                getData(URL, setProducts);
-            }
-        })
-        .catch((error) => {
-            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Producto NO Eliminado', life: 3000 });
-            console.log(error);
-        });
-
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
+        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct);
     };
 
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    };
+    const exportCSV = () => (
+        dt.current.exportCSV()
+    );
 
     const confirmDeleteSelected = () => {
         setDeleteProductsDialog(true);
     };
 
+    // TODO: ORGANIZAR EL CONTROLADOR PARA PODER ELIMINAR MAS DE UNO
     const deleteSelectedProducts = () => {
-        // TODO: ORGANIZAR EL CONTROLADOR PARA PODER ELIMINAR MAS DE UNO
         let _products = products.filter((val) => !selectedProducts.includes(val));
 
         setProducts(_products);
@@ -208,34 +173,11 @@ export default function Products() {
     };
 
     const onInputChange = (e, name) => {
-        const val = (e.target && e.target.value) || '';
-        let _product = { ...product };
-
-        _product[`${name}`] = val;
-
-        setProduct(_product);
+        inputChange(e, name, product, setProduct);
     };
 
     const onInputNumberChange = (e, name) => {
-        const val = e.value || 0;
-        let _product = { ...product };
-
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    };
-
-    const leftToolbarTemplate = () => {
-        return (
-            <div className="flex flex-wrap gap-2">
-                <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
-            </div>
-        );
-    };
-
-    const rightToolbarTemplate = () => {
-        return <Button label="Exportar" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />;
+        inputNumberChange(e, name, product, setProduct);
     };
 
     // const imageBodyTemplate = (rowData) => {
@@ -246,37 +188,17 @@ export default function Products() {
         return formatCurrency(rowData.salePrice);
     };
 
-    const actionBodyTemplate = (rowData) => {
-        return (
-            <React.Fragment>
-                <Button icon="pi pi-pencil" rounded className="mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="danger" onClick={() => confirmDeleteProduct(rowData)} />
-            </React.Fragment>
-        );
+    const actionBodyTemplateP = (rowData) => {
+        return actionBodyTemplate(rowData, editProduct, confirmDeleteProduct);
     };
 
-    const header = (
-        <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 className="m-0">Lista de Productos</h4>
-            <span className="p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-            </span>
-        </div>
-    );
     const productDialogFooter = (
-        <React.Fragment>
-            <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDialog} />
-            <Button label="Guardar" icon="pi pi-check" onClick={saveProduct} />
-        </React.Fragment>
+        DialogFooter(hideDialog, saveProduct)
     );
     const deleteProductDialogFooter = (
-        <React.Fragment>
-            <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteProductDialog} />
-            <Button label="Si" icon="pi pi-check" severity="danger" onClick={deleteProduct} />
-        </React.Fragment>
+        deleteDialogFooter(hideDeleteProductDialog, deleteProduct)
     );
-    const deleteProductsDialogFooter = (
+    const deleteProductsDialogFooter = ( // si lo usamos tambien se puede reducir
         <React.Fragment>
             <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteProductsDialog} />
             <Button label="Si" icon="pi pi-check" severity="danger" onClick={deleteSelectedProducts} />
@@ -327,12 +249,12 @@ export default function Products() {
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew, confirmDeleteSelected, selectedProducts)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
 
                 <DataTable ref={dt} value={products} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
                     dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos" globalFilter={globalFilter} header={header}>
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos" globalFilter={globalFilter} header={header('Productos', setGlobalFilter)}>
                     <Column selectionMode="multiple" exportable={false}></Column>
                     <Column field="name" header="Nombre" sortable style={{ minWidth: '12rem' }}></Column>
                     <Column field="brand" header="Marca" sortable style={{ minWidth: '16rem' }}></Column>
@@ -342,7 +264,7 @@ export default function Products() {
                     <Column field="category.name" header="Categoria" sortable style={{ minWidth: '10rem' }}></Column>
                     <Column field="provider.name" header="Proveedor" sortable style={{ minWidth: '10rem' }}></Column>
                     {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column> */}
-                    <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '12rem' }}></Column>
+                    <Column body={actionBodyTemplateP} exportable={false} style={{ minWidth: '12rem' }}></Column>
                 </DataTable>
             </div>
 
@@ -415,17 +337,9 @@ export default function Products() {
                 </div>
             </Dialog>
 
-            <Dialog visible={deleteProductDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Eliminar Producto" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
-                <div className="confirmation-content">
-                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {product && (
-                        <span>
-                            ¿Está seguro de eliminar el producto <b>{product.name}</b>?
-                        </span>
-                    )}
-                </div>
-            </Dialog>
+            {DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto')}
 
+            {/* si lo usamos tambien se puede reducir */}
             <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Eliminar Productos" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
