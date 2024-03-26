@@ -1,23 +1,17 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Categories from './pages/Categories';
-import Typeservices from './pages/Typeservices';
-import { Sidebar } from './components/Sidebar';
-import Navbar from './components/Navbar';
+// import { Sidebar } from './components/Sidebar';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Navbar />
+        {/* <Sidebar /> */}
       </header>
 
       <Routes>
         <Route path='/categories' element = {<Categories />}/>
-        <Route path='/typeservices' element = {<Typeservices />}/>
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 }
-
-export default App;
