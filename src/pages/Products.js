@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, InputChange, actionBodyTemplate, confirmDelete, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functions2'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -40,6 +40,7 @@ export default function Products() {
     const [product, setProduct] = useState(emptyProduct);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -107,6 +108,10 @@ export default function Products() {
         setProductDialog(false);
     };
 
+    const hideConfirmProductDialog = () => {
+        setConfirmDialogVisible(false);
+    };
+
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
     };
@@ -119,6 +124,7 @@ export default function Products() {
 
     const saveProduct = () => {
         setSubmitted(true);
+        setConfirmDialogVisible(false);
 
         if (product.name.trim() && product.brand.trim() && product.expiryDate && product.salePrice && product.category && product.provider) {
             let url, method, parameters;
@@ -144,6 +150,10 @@ export default function Products() {
             setProductDialog(false);
             setProduct(emptyProduct);
         }
+    };
+
+    const confirmSave = () => {
+        setConfirmDialogVisible(true);
     };
 
     const confirmDeleteProduct = (product) => {
@@ -193,7 +203,10 @@ export default function Products() {
     };
 
     const productDialogFooter = (
-        DialogFooter(hideDialog, saveProduct)
+        DialogFooter(hideDialog, confirmSave)
+    );
+    const confirmProductDialogFooter = (
+        confirmDialogFooter(hideConfirmProductDialog, saveProduct)
     );
     const deleteProductDialogFooter = (
         deleteDialogFooter(hideDeleteProductDialog, deleteProduct)
@@ -338,6 +351,8 @@ export default function Products() {
             </Dialog>
 
             {DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto')}
+
+            {confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation)}
 
             {/* si lo usamos tambien se puede reducir */}
             <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Eliminar Productos" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>

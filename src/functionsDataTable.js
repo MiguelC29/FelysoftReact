@@ -93,6 +93,28 @@ export const deleteDialogFooter = (hideDeleteDialog, deleteData) => (
     </React.Fragment>
 );
 
+export const confirmDialogFooter = (hideDeleteDialog, saveData) => (
+    <React.Fragment>
+        <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteDialog} />
+        <Button label="Confirmar" icon="pi pi-check" severity="danger" onClick={saveData} />
+    </React.Fragment>
+);
+
+export const confirmDialog = (confirmDialogVisible, nameTable, DataDialogFooter, hideDataDialog, table, op) => {
+    return (
+        <Dialog visible={confirmDialogVisible} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`${(op === 1) ? 'Guardar' : 'Actualizar'} ${nameTable}`} modal footer={DataDialogFooter} onHide={hideDataDialog}>
+            <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                {table && (
+                    <span>
+                        {`¿Está seguro de ${(op === 1) ? 'guardar' : 'actualizar'} los datos?`}
+                    </span>
+                )}
+            </div>
+        </Dialog>
+    );
+}
+
 export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter, hideDeleteDataDialog, table, field, msg) => {
     return (
         <Dialog visible={deleteDataDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Eliminar ${nameTable}`} modal footer={deleteDataDialogFooter} onHide={hideDeleteDataDialog}>
