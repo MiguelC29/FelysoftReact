@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button';
 // import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
@@ -13,6 +10,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 // import { Calendar } from 'primereact/calendar';
 import { InputMask } from 'primereact/inputmask'
+import CustomDataTable from '../components/CustomDataTable';
 
 export default function Products() {
     let emptyProduct = {
@@ -36,9 +34,7 @@ export default function Products() {
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -117,11 +113,6 @@ export default function Products() {
     };
 
     //
-
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
-    };
-
     const saveProduct = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -164,22 +155,12 @@ export default function Products() {
         deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct);
     };
 
-    const exportCSV = () => (
-        dt.current.exportCSV()
-    );
-
-    const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
-    };
-
-    // TODO: ORGANIZAR EL CONTROLADOR PARA PODER ELIMINAR MAS DE UNO
-    const deleteSelectedProducts = () => {
-        let _products = products.filter((val) => !selectedProducts.includes(val));
-
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Productos Eliminados', life: 3000 });
+    const exportCSV = () => {
+        if (dt.current) {
+            dt.current.exportCSV();
+        } else {
+            console.error("La referencia 'dt' no está definida.");
+        }
     };
 
     const onInputChange = (e, name) => {
@@ -210,12 +191,6 @@ export default function Products() {
     );
     const deleteProductDialogFooter = (
         deleteDialogFooter(hideDeleteProductDialog, deleteProduct)
-    );
-    const deleteProductsDialogFooter = ( // si lo usamos tambien se puede reducir
-        <React.Fragment>
-            <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteProductsDialog} />
-            <Button label="Si" icon="pi pi-check" severity="danger" onClick={deleteSelectedProducts} />
-        </React.Fragment>
     );
 
     const selectedCategoryTemplate = (option, props) => {
@@ -258,27 +233,31 @@ export default function Products() {
         );
     };
 
+    const columns = [
+        { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
+        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
+        { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'category.name', header: 'Categoria', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
+        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+    ];
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew, confirmDeleteSelected, selectedProducts)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
 
-                <DataTable ref={dt} value={products} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
-                    dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos" globalFilter={globalFilter} header={header('Productos', setGlobalFilter)}>
-                    <Column selectionMode="multiple" exportable={false}></Column>
-                    <Column field="name" header="Nombre" sortable style={{ minWidth: '12rem' }}></Column>
-                    <Column field="brand" header="Marca" sortable style={{ minWidth: '16rem' }}></Column>
-                    {/* <Column field="image" header="Image" body={imageBodyTemplate}></Column> */}
-                    <Column field="salePrice" header="Precio de Venta" body={priceBodyTemplate} sortable style={{ minWidth: '8rem' }}></Column>
-                    <Column field="expiryDate" header="Fecha de Vencimiento" sortable style={{ minWidth: '10rem' }}></Column>
-                    <Column field="category.name" header="Categoria" sortable style={{ minWidth: '10rem' }}></Column>
-                    <Column field="provider.name" header="Proveedor" sortable style={{ minWidth: '10rem' }}></Column>
-                    {/* <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column> */}
-                    <Column body={actionBodyTemplateP} exportable={false} style={{ minWidth: '12rem' }}></Column>
-                </DataTable>
+                <CustomDataTable
+                    dt={dt}
+                    data={products}
+                    dataKey="id"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos"
+                    globalFilter={globalFilter}
+                    header={header('Productos', setGlobalFilter)}
+                    columns={columns}
+                />
             </div>
 
             <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
@@ -353,14 +332,6 @@ export default function Products() {
             {DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto')}
 
             {confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation)}
-
-            {/* si lo usamos tambien se puede reducir */}
-            <Dialog visible={deleteProductsDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Eliminar Productos" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
-                <div className="confirmation-content">
-                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {product && <span>¿Está seguro de eliminar el producto seleccionado?</span>}
-                </div>
-            </Dialog>
         </div>
     );
 }
