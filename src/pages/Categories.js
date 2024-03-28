@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
 
 export default function Categories() {
@@ -90,7 +88,7 @@ export default function Categories() {
     };
 
     const deleteCategory = () => {
-        deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory);
+        deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoria');
     };
 
     const exportCSV = () => {
@@ -103,10 +101,6 @@ export default function Categories() {
 
     const onInputChange = (e, name) => {
         inputChange(e, name, category, setCategory);
-    };
-
-    const onInputNumberChange = (e, name) => {
-        inputNumberChange(e, name, category, setCategory);
     };
 
     const actionBodyTemplateP = (rowData) => {

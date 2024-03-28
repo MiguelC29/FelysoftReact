@@ -152,7 +152,7 @@ export default function Products() {
     };
 
     const deleteProduct = () => {
-        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct);
+        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct, 'Producto');
     };
 
     const exportCSV = () => {
