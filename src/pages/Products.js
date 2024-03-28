@@ -137,7 +137,7 @@ export default function Products() {
                 }
             }
 
-            sendRequest(method, parameters, url, setProducts, URL, operation, toast);
+            sendRequest(method, parameters, url, setProducts, URL, operation, toast, 'Producto ');
             setProductDialog(false);
             setProduct(emptyProduct);
         }
@@ -235,7 +235,7 @@ export default function Products() {
 
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '10rem' } },
         { field: 'category.name', header: 'Categoria', sortable: true, style: { minWidth: '10rem' } },

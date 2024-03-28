@@ -18,19 +18,19 @@ export const getOneData = async (url, setData) => {
         })
 }
 
-export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast) => {
+export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast, nameTable) => {
     axios({ method: method, url: url, data: parameters })
         .then((response) => {
             let type = response.data['status'];
             let msg = response.data['data'];
             if (type === 'success') {
                 // toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Producto Creado', life: 3000 });
-                toast.current.show({ severity: 'success', summary: msg, detail: 'Producto ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+                toast.current.show({ severity: 'success', summary: msg, detail: nameTable + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
                 getData(mainUrl, setData);
             }
         })
         .catch((error) => {
-            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Producto NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
             console.log(error);
         });
 }
