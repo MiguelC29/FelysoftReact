@@ -35,6 +35,28 @@ export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast
         });
 }
 
+export const sendRequestAsc = (method, parameters, url, toast) => {
+    axios({ method: method, url: url, data: parameters })
+        .then((response) => {
+            let type = response.data['status'];
+            let msg = response.data['data'];
+            if (type === 'success') {
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: msg, life: 3000 });
+                // getData(mainUrl, setData);
+            }
+        })
+        .catch((error) => {
+            if (error.response.data.data === 'Asociación existente') {
+                // Si el error es de asociación existente, mostramos el mensaje personalizado
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
+            } else {
+                // Para otros errores, mostramos un mensaje genérico de asociación fallida
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Asociación fallida', life: 3000 });
+            }
+            console.log(error);
+        });
+}
+
 export const deleteData = (url, id, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable) => {
     const durl = url + 'delete/' + id;
     axios({ method: 'PUT', url: durl, data: { id: id } })
@@ -115,6 +137,21 @@ export const confirmDialog = (confirmDialogVisible, nameTable, DataDialogFooter,
     );
 }
 
+export const confirmDialogAsc = (confirmDialogVisible, nameTable, DataDialogFooter, hideDataDialog, table) => {
+    return (
+        <Dialog visible={confirmDialogVisible} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Asociación de ${nameTable}`} modal footer={DataDialogFooter} onHide={hideDataDialog}>
+            <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                {table && (
+                    <span>
+                        {`¿Está seguro de asociar los datos?`}
+                    </span>
+                )}
+            </div>
+        </Dialog>
+    );
+}
+
 export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter, hideDeleteDataDialog, table, field, msg) => {
     return (
         <Dialog visible={deleteDataDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Eliminar ${nameTable}`} modal footer={deleteDataDialogFooter} onHide={hideDeleteDataDialog}>
@@ -134,6 +171,14 @@ export const leftToolbarTemplate = (openNew) => {
     return (
         <div className="flex flex-wrap gap-2">
             <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
+        </div>
+    );
+};
+export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation) => {
+    return (
+        <div className="flex flex-wrap gap-2">
+            <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
+            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" severity="info" onClick={openAsociation} />
         </div>
     );
 };
