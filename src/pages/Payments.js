@@ -19,14 +19,31 @@ export default function Payments() {
         total: 0,
     }
 
+    const MethodPayment = {
+        EFECTIVO: 'EFECTIVO',
+        NEQUI: 'NEQUI',
+        TRANSACCION: 'TRANSACCION',
+    };
+
+    const State = {
+        PENDIENTE: 'PENDIENTE',
+        CANCELADO: 'CANCELADO',
+        REEMBOLSADO: 'REEMBOLSADO',
+        VENCIDO: 'VENCIDO'
+    };
+
+
+
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
         return format(date, 'dd/MM/yyyy HH:mm:ss');
-      };
+    };
 
     const URL = 'http://localhost:8086/api/payment/';
     const [payments, setPayments] = useState([]);
+    const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
     const [paymentDialog, setPaymentDialog] = useState(false);
     const [deletePaymentDialog, setDeletePaymentDialog] = useState(false);
     const [payment, setPayment] = useState(emptyPayment);
@@ -40,7 +57,6 @@ export default function Payments() {
 
     useEffect(() => {
         getData(URL, setPayments);
-        //getData('http://localhost:8086/api/provider/', setProviders);
     }, []);
 
     const formatCurrency = (value) => {
@@ -50,6 +66,8 @@ export default function Payments() {
     const openNew = () => {
         setPayment(emptyPayment);
         setTitle('Registrar Pago');
+        setSelectedMethodPayment('');
+        setSelectedState('');
         setOperation(1);
         setSubmitted(false);
         setPaymentDialog(true);
@@ -57,6 +75,8 @@ export default function Payments() {
 
     const editPayment = (payment) => {
         setPayment({ ...payment });
+        setSelectedMethodPayment(payment.methodPayment);
+        setSelectedState(payment.state);
         setTitle('Editar Pago');
         setOperation(2);
         setPaymentDialog(true);
@@ -124,9 +144,6 @@ export default function Payments() {
         }
     };
 
-    const onInputChange = (e, name) => {
-        inputChange(e, name, payment, setPayment);
-    };
 
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, payment, setPayment);
@@ -159,6 +176,17 @@ export default function Payments() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
+        label: MethodPayment[key],
+        value: key
+      }));
+    
+      const stateOptions = Object.keys(State).map(key => ({
+        label: State[key],
+        value: key
+      }));
+
+
     return (
         <div>
             <Toast ref={toast} />
@@ -178,33 +206,48 @@ export default function Payments() {
 
 
             <Dialog visible={paymentDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={paymentDialogFooter} onHide={hideDialog}>
-            <div className="field">
-                    <label htmlFor="methodPayment" className="font-bold">
-                        Método de pago
-                    </label>
-                    <Dropdown id="methodPayment" value={payment.methodPayment} onChange={(e) => onInputChange(e, 'methodPayment')} required className={classNames({ 'p-invalid': submitted && !payment.methodPayment })} />
-                {submitted && !payment.methodPayment && <small className="p-error">Método de pago es requerido.</small>}
-            
-            </div>
-
-            <div className="field">
-                    <label htmlFor="state" className="font-bold">
-                        Estado
-                    </label>
-                    <Dropdown id="state" value={payment.state} onChange={(e) => onInputChange(e, 'state')} required className={classNames({ 'p-invalid': submitted && !payment.state })} />
-                    {submitted && !payment.state && <small className="p-error">Estado es requerido.</small>}
-            </div>
-            
-                <div className="field col">
-                    <label htmlFor="total" className="font-bold">
-                        Total
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="total" value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
+                    <div className="field col">
+                        {<label htmlFor="methodPayment" className="font-bold">
+                            Método de pago
+                        </label>}
+                        <Dropdown
+                            id="methodPayment"
+                            value={selectedMethodPayment}
+                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment');}}
+                            options={methodPaymentOptions}
+                            placeholder="Seleccionar el método de pago"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.methodPayment && !selectedMethodPayment })}`}
+                        />
+                        {submitted && !payment.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
                     </div>
-                    {submitted && !payment.total && <small className="p-error">Total del pago es requerido.</small>}
-                </div>
+
+                    <div className="field col">
+                        {<label htmlFor="state" className="font-bold">
+                            Estado
+                        </label>}
+                        <Dropdown
+                            id="state"
+                            value={selectedState}
+                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
+                            options={stateOptions}
+                            placeholder="Seleccionar el estado"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.state && !selectedState })}`}
+                        />
+                        {submitted && !payment.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
+                    </div>
+
+                    <div className="field col">
+                        <label htmlFor="total" className="font-bold">
+                            Total
+                        </label>
+                        <div className="p-inputgroup">
+                            <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
+                            <InputNumber id="total" value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
+                        </div>
+                        {submitted && !payment.total && <small className="p-error">Total del pago es requerido.</small>}
+                    </div>
             </Dialog>
 
             {DialogDelete(deletePaymentDialog, 'Pago', deletePaymentDialogFooter, hideDeletePaymentDialog, payment, 'compra', 'esta')}

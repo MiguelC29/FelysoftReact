@@ -16,9 +16,9 @@ export function App() {
         <Route path='/categories' element={<Categories />} />
         <Route path='/roles' element={<Roles />} />
         <Route path='/productos' element={<Products />} />
-        <Route path='/sales' element={<Sales />} />
-        <Route path='/purchases' element={<Purchases />} />
-        <Route path='/payments' element={<Payments />} />
+        <Route path='/ventas' element={<Sales />} />
+        <Route path='/compras' element={<Purchases />} />
+        <Route path='/pagos' element={<Payments />} />
 
       </Routes>
     </BrowserRouter>
