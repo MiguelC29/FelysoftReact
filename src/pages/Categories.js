@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogAsc, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
-import { Dropdown } from 'primereact/dropdown';
+import AsociationDialog from '../components/AsociationDialog';
 
 export default function Categories() {
     let emptyCategory = {
@@ -90,7 +90,7 @@ export default function Categories() {
     const saveAsociation = () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
-        if(asociation.categoryId && asociation.providerId) {
+        if (asociation.categoryId && asociation.providerId) {
             let parameters = {
                 categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
             };
@@ -150,10 +150,6 @@ export default function Categories() {
 
     const onInputChange = (e, name) => {
         inputChange(e, name, category, setCategory);
-    };
-
-    const onInputNumberChange = (e, name) => {
-        inputNumberChange(e, name, asociation, setAsociation);
     };
 
     const actionBodyTemplateP = (rowData) => {
@@ -252,29 +248,36 @@ export default function Categories() {
 
                 {confirmDialog(confirmDialogVisible, 'Categoria', confirmCategoryDialogFooter, hideConfirmCategoryDialog, category, operation)}
 
-                <Dialog visible={asociationDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={asociationDialogFooter} onHide={hideDialog}>
-                <div className="formgrid grid">
-                    <div className="field col">
-                        <label htmlFor="category" className="font-bold">
-                            Categoria
-                        </label>
-                        <Dropdown id="category" value={selectedCategory} onChange={(e) => {  setSelectedCategory(e.value); onInputNumberChange(e, 'categoryId'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoria"
-                            filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !asociation.categoryId && !selectedCategory })}`} />
-
-                        {submitted && !asociation.categoryId && !selectedCategory && <small className="p-error">Categoria es requerida.</small>}
-                    </div>
-                    <div className="field col">
-                        <label htmlFor="provider" className="font-bold">
-                            Proveedor
-                        </label>
-                        <Dropdown id="provider" value={selectedProvider} onChange={(e) => { setSelectedProvider(e.value); onInputNumberChange(e, 'providerId'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
-                            filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !asociation.providerId && !selectedProvider })}`} />
-                        {submitted && !asociation.providerId && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
-                    </div>
-                </div>
-            </Dialog>
-
-            {confirmDialogAsc(confirmAscDialogVisible, 'Categoria y Proveedor', confirmAsociationDialogFooter, hideConfirmAsociationDialog, asociation)}
+                <AsociationDialog
+                    asociation={asociation}
+                    setAsociation={setAsociation}
+                    visible={asociationDialog}
+                    title={title}
+                    footer={asociationDialogFooter}
+                    onHide={hideDialog}
+                    labelId='category'
+                    nameTable='Categoria'
+                    labelId2='provider'
+                    nameTableTwo='Proveedor'
+                    selectedOne={selectedCategory}
+                    setSelectedOne={setSelectedCategory}
+                    idOnInputNumberOne='categoryId'
+                    idOnInputNumberTwo='providerId'
+                    valueTemplate={selectedCategoryTemplate}
+                    itemTemplate={categoryOptionTemplate}
+                    id={asociation.categoryId}
+                    id2={asociation.providerId}
+                    selectedTwo={selectedProvider}
+                    setSelected2={setSelectedProvider}
+                    options={categories}
+                    options2={providers}
+                    valueTemplateTwo={selectedProviderTemplate}
+                    itemTemplateTwo={providerOptionTemplate}
+                    filter submitted={submitted}
+                    confirmDialogVisible={confirmAscDialogVisible}
+                    confirmAsociationDialogFooter={confirmAsociationDialogFooter}
+                    hideConfirmAsociationDialog={hideConfirmAsociationDialog}
+                />
             </div>
         </div>
     )
