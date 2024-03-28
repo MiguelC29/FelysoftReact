@@ -3,6 +3,7 @@ import Categories from './pages/Categories';
 import Roles from './pages/Roles';
 import Products from './pages/Products';
 import Users from './pages/Users';
+import Providers from './pages/Providers';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path='/roles' element={<Roles />} />
         <Route path='/productos' element={<Products />} />
         <Route path='/usuarios' element={<Users />} />
+        <Route path='/proveedores' element={<Providers />} />
       </Routes>
     </BrowserRouter>
   );

@@ -35,7 +35,7 @@ export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast
         });
 }
 
-export const deleteData = (url, id, setData, toast, setDeleteDataDialog, setTable, emptyData) => {
+export const deleteData = (url, id, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable) => {
     const durl = url + 'delete/' + id;
     axios({ method: 'PUT', url: durl, data: { id: id } })
         .then((response) => {
@@ -43,12 +43,12 @@ export const deleteData = (url, id, setData, toast, setDeleteDataDialog, setTabl
             let msg = response.data['data'];
             // show_alert(msg, type);
             if (type === 'success') {
-                toast.current.show({ severity: 'success', summary: msg, detail: 'Producto Eliminado', life: 3000 });
+                toast.current.show({ severity: 'success', summary: msg, detail: nameTable + ' Eliminado', life: 3000 });
                 getData(url, setData);
             }
         })
         .catch((error) => {
-            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Producto NO Eliminado', life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO Eliminado', life: 3000 });
             console.log(error);
         });
 
