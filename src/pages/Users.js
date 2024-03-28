@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
+import { format } from 'date-fns';
 import { Password } from 'primereact/password';
 import CustomDataTable from '../components/CustomDataTable';
 
@@ -39,6 +40,12 @@ export default function Users() {
   const Gender = {
     FEMENINO: 'FEMENINO',
     MASCULINO: 'MASCULINO'
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm:ss');
   };
 
   const URL = 'http://localhost:8086/api/user/';
@@ -144,7 +151,7 @@ export default function Users() {
   };
 
   const deleteUser = () => {
-    deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser);
+    deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario');
   };
 
   const exportCSV = () => {
@@ -194,6 +201,8 @@ export default function Users() {
     "dateRegister": "2024-03-27T00:37:28.000+00:00",
     "lastModification": "2024-03-27T00:37:28.000+00:00", */
     { field: 'role.name', header: 'Rol', sortable: true, style: { minWidth: '10rem' } },
+    { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
+    { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
@@ -250,7 +259,7 @@ export default function Users() {
             <Dropdown
               id="typeDoc"
               value={selectedTypeId}
-              onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc');} } 
+              onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc'); }}
               options={typeDocOptions}
               placeholder="Seleccionar el tipo de identificación"
               required
@@ -275,7 +284,7 @@ export default function Users() {
             <Dropdown
               id="gender"
               value={selectedGender}
-              onChange={(e) => {setSelectedGender(e.value); onInputNumberChange(e, 'gender');} }
+              onChange={(e) => { setSelectedGender(e.value); onInputNumberChange(e, 'gender'); }}
               options={genderOptions}
               placeholder="Seleccionar el género"
               required
