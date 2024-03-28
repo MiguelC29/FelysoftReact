@@ -4,6 +4,7 @@ import Roles from './pages/Roles';
 import Products from './pages/Products';
 import Users from './pages/Users';
 import Providers from './pages/Providers';
+import ProductInventory from './pages/ProductInventory';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path='/productos' element={<Products />} />
         <Route path='/usuarios' element={<Users />} />
         <Route path='/proveedores' element={<Providers />} />
+        <Route path='/inventarioProductos' element={<ProductInventory />} />
       </Routes>
     </BrowserRouter>
   );
