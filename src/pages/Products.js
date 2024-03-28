@@ -9,8 +9,8 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 // import { Calendar } from 'primereact/calendar';
-import { InputMask } from 'primereact/inputmask'
 import CustomDataTable from '../components/CustomDataTable';
+import { InputMask } from 'primereact/inputmask';
 
 export default function Products() {
     let emptyProduct = {
