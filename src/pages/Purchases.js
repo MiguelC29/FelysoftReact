@@ -6,7 +6,6 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
-import { InputMask } from 'primereact/inputmask'
 import CustomDataTable from '../components/CustomDataTable';
 import { format } from 'date-fns';
 
@@ -223,8 +222,6 @@ export default function Purchases() {
                     <Dropdown id="provider" value={selectedProvider} onChange={(e) => { onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
                             filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`} />
                         {submitted && !purchase.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
-
-
                     {submitted && !purchase.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
                 </div>
             </Dialog>

@@ -4,7 +4,7 @@ import Roles from './pages/Roles';
 import Products from './pages/Products';
 import Sales from './pages/Sales';
 import Purchases from './pages/Purchases';
-//import Payments from './pages/Payments';
+import Payments from './pages/Payments';
 //import Details from './pages/Details';
 
 
@@ -18,6 +18,7 @@ export function App() {
         <Route path='/productos' element={<Products />} />
         <Route path='/sales' element={<Sales />} />
         <Route path='/purchases' element={<Purchases />} />
+        <Route path='/payments' element={<Payments />} />
 
       </Routes>
     </BrowserRouter>
