@@ -10,6 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { format } from 'date-fns';
 import { Password } from 'primereact/password';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tag } from 'primereact/tag';
 
 export default function ProductInventory() {
 
@@ -32,6 +33,14 @@ export default function ProductInventory() {
         getOneData(URL, setProductsInv);
     }, []);
 
+    const formatCurrency = (value) => {
+        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+    };
+
+    const priceBodyTemplate = (rowData) => {
+        return formatCurrency(rowData.product.salePrice);
+    };
+
     const exportCSV = () => {
         if (dt.current) {
             dt.current.exportCSV();
@@ -44,13 +53,50 @@ export default function ProductInventory() {
         return actionBodyTemplate(rowData, '', '');
     };
 
+    const statusBodyTemplate = (rowData) => {
+        return <Tag value={rowData.state} severity={getSeverity(rowData)}></Tag>;
+    };
+
+    const stockBodyTemplate = (rowData) => {
+        return <Tag value={rowData.stock} severity={getSeverityStock(rowData)} rounded></Tag>;
+    };
+
+    const getSeverity = (product) => {
+        switch (product.state) {
+            case 'DISPONIBLE':
+                return 'success';
+
+            case 'BAJO':
+                return 'warning';
+
+            case 'AGOTADO':
+                return 'danger';
+
+            default:
+                return null;
+        }
+    };
+
+    const getSeverityStock = (product) => {
+
+        if(product.stock <= 1) {
+            return 'danger';
+        } else if (product.stock < 6) {
+            return 'warning';
+        } else if (product.stock > 10) {
+            return 'success';
+        } else {
+            return null
+        }
+    };
+
     const columns = [
         { field: 'product.name', header: 'Producto', sortable: true, style: { minWidth: '5rem' } },
-        { field: 'product.salePrice', header: 'Precio de Venta', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'stock', header: 'Stock', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'state', header: 'Estado', sortable: true, style: { minWidth: '12rem' } },
+        { field: 'product.salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
+        { field: 'stock', header: 'Stock', body: stockBodyTemplate, sortable: true, style: { minWidth: '6rem' } },
+        { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'product.category.name', header: 'Categoria', sortable: true, style: { minWidth: '8rem' } },
-        { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
         { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
         { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
