@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
-// import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-// import { Calendar } from 'primereact/calendar';
-import { InputMask } from 'primereact/inputmask'
 import CustomDataTable from '../components/CustomDataTable';
+import AsociationDialog from '../components/AsociationDialog';
 
 export default function Providers() {
 
@@ -21,6 +18,19 @@ export default function Providers() {
         phoneNumber: 0,
         email: ''
     }
+
+    const emptyAsociation = {
+        categoryId: null,
+        providerId: null
+    }
+
+    const URLASC = 'http://localhost:8086/api/category/add-provider';
+    const [asociation, setAsociation] = useState(emptyAsociation);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [selectedProvider, setSelectedProvider] = useState(null);
+    const [asociationDialog, setAsociationDialog] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
 
     const URL = 'http://localhost:8086/api/provider/';
     const [providers, setProviders] = useState([]);
@@ -47,6 +57,16 @@ export default function Providers() {
         setProviderDialog(true);
     };
 
+    const openAsociation = () => {
+        setSelectedCategory('');
+        setSelectedProvider('');
+        setTitle('Registrar Asociación');
+        getData('http://localhost:8086/api/category/', setCategories);
+        getData('http://localhost:8086/api/provider/', setProviders);
+        setSubmitted(false);
+        setAsociationDialog(true);
+    };
+
     const editProvider = (provider) => {
         setProvider({ ...provider });
         setTitle('Editar Proveedor');
@@ -57,10 +77,15 @@ export default function Providers() {
     const hideDialog = () => {
         setSubmitted(false);
         setProviderDialog(false);
+        setAsociationDialog(false);
     };
 
     const hideConfirmProviderDialog = () => {
         setConfirmDialogVisible(false);
+    };
+
+    const hideConfirmAsociationDialog = () => {
+        setConfirmAscDialogVisible(false); //
     };
 
     const hideDeleteProviderDialog = () => {
@@ -103,8 +128,28 @@ export default function Providers() {
         }
     };
 
+    const saveAsociation = () => {
+        setSubmitted(true);
+        setConfirmAscDialogVisible(false);
+        if (asociation.categoryId && asociation.providerId) {
+            let parameters = {
+                categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
+            };
+
+            sendRequestAsc('POST', parameters, URLASC, toast);
+            setAsociationDialog(false);
+            setAsociation(emptyAsociation);
+            setSelectedCategory('');
+            setSelectedProvider('');
+        }
+    };
+
     const confirmSave = () => {
         setConfirmDialogVisible(true);
+    };
+
+    const confirmAsc = () => {
+        setConfirmAscDialogVisible(true);
     };
 
     const confirmDeleteProvider = (provider) => {
@@ -135,6 +180,13 @@ export default function Providers() {
         return actionBodyTemplate(rowData, editProvider, confirmDeleteProvider);
     };
 
+    const asociationDialogFooter = (
+        DialogFooter(hideDialog, confirmAsc)
+    );
+    const confirmAsociationDialogFooter = (
+        confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
+    );
+
     const providerDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
@@ -144,6 +196,46 @@ export default function Providers() {
     const deleteProviderDialogFooter = (
         deleteDialogFooter(hideDeleteProviderDialog, deleteProvider)
     );
+
+    const selectedCategoryTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const categoryOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
+    const selectedProviderTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const providerOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
 
     const columns = [
         { field: 'nit', header: 'Nit', sortable: true, style: { minWidth: '12rem' } },
@@ -157,7 +249,7 @@ export default function Providers() {
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -204,6 +296,37 @@ export default function Providers() {
                 {DialogDelete(deleteProviderDialog, 'Proveedor', deleteProviderDialogFooter, hideDeleteProviderDialog, provider, provider.name, 'el proveedor')}
 
                 {confirmDialog(confirmDialogVisible, 'Proveedor', confirmProviderDialogFooter, hideConfirmProviderDialog, provider, operation)}
+
+                <AsociationDialog
+                    asociation={asociation}
+                    setAsociation={setAsociation}
+                    visible={asociationDialog}
+                    title={title}
+                    footer={asociationDialogFooter}
+                    onHide={hideDialog}
+                    labelId='category'
+                    nameTable='Categoria'
+                    labelId2='provider'
+                    nameTableTwo='Proveedor'
+                    selectedOne={selectedCategory}
+                    setSelectedOne={setSelectedCategory}
+                    idOnInputNumberOne='categoryId'
+                    idOnInputNumberTwo='providerId'
+                    valueTemplate={selectedCategoryTemplate}
+                    itemTemplate={categoryOptionTemplate}
+                    id={asociation.categoryId}
+                    id2={asociation.providerId}
+                    selectedTwo={selectedProvider}
+                    setSelected2={setSelectedProvider}
+                    options={categories}
+                    options2={providers}
+                    valueTemplateTwo={selectedProviderTemplate}
+                    itemTemplateTwo={providerOptionTemplate}
+                    filter submitted={submitted}
+                    confirmDialogVisible={confirmAscDialogVisible}
+                    confirmAsociationDialogFooter={confirmAsociationDialogFooter}
+                    hideConfirmAsociationDialog={hideConfirmAsociationDialog}
+                />
             </div>
         </div>
     );
