@@ -137,7 +137,7 @@ export default function Products() {
                 }
             }
 
-            sendRequest(method, parameters, url, setProducts, URL, operation, toast);
+            sendRequest(method, parameters, url, setProducts, URL, operation, toast, 'Producto ');
             setProductDialog(false);
             setProduct(emptyProduct);
         }
@@ -152,7 +152,7 @@ export default function Products() {
     };
 
     const deleteProduct = () => {
-        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct);
+        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct, 'Producto');
     };
 
     const exportCSV = () => {
@@ -235,9 +235,9 @@ export default function Products() {
 
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
         { field: 'category.name', header: 'Categoria', sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
@@ -314,7 +314,7 @@ export default function Products() {
                             Categoria
                         </label>
                         <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoria"
-                            filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
+                            filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
 
                         {submitted && !product.category && !selectedCategory && <small className="p-error">Categoria es requerida.</small>}
                     </div>
@@ -323,7 +323,7 @@ export default function Products() {
                             Proveedor
                         </label>
                         <Dropdown id="provider" value={selectedProvider} onChange={(e) => { handleProviderChange(e.target.value); onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
-                            filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
+                            filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
                         {submitted && !product.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
                     </div>
                 </div>
