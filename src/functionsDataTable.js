@@ -96,29 +96,29 @@ export const header = (nameTable, globalFilter) => (
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     return (
         <React.Fragment>
-            <Button icon="pi pi-pencil" rounded className="mr-2" onClick={() => editData(rowData)} />
-            <Button icon="pi pi-trash" rounded severity="danger" onClick={() => confirmDelete(rowData)} />
+            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} />
+            <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
         </React.Fragment>
     );
 };
 
 export const DialogFooter = (hideDialog, saveData) => (
     <React.Fragment>
-        <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDialog} />
-        <Button label="Guardar" icon="pi pi-check" onClick={saveData} />
+        <Button label="Cancelar" icon="pi pi-times" className='mr-2 rounded' severity="danger" outlined onClick={hideDialog} />
+        <Button label="Guardar" icon="pi pi-check" className="rounded" severity="info" onClick={saveData} />
     </React.Fragment>
 );
 export const deleteDialogFooter = (hideDeleteDialog, deleteData) => (
     <React.Fragment>
-        <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteDialog} />
-        <Button label="Si" icon="pi pi-check" severity="danger" onClick={deleteData} />
+        <Button label="No" icon="pi pi-times" className='mr-2 rounded' outlined onClick={hideDeleteDialog} />
+        <Button label="Si" icon="pi pi-check" className='rounded' severity="danger" onClick={deleteData} />
     </React.Fragment>
 );
 
 export const confirmDialogFooter = (hideDeleteDialog, saveData) => (
     <React.Fragment>
-        <Button label="Cancelar" icon="pi pi-times" outlined onClick={hideDeleteDialog} />
-        <Button label="Confirmar" icon="pi pi-check" severity="danger" onClick={saveData} />
+        <Button label="Cancelar" icon="pi pi-times" className='mr-2 rounded' outlined onClick={hideDeleteDialog} />
+        <Button label="Confirmar" icon="pi pi-check" className='rounded' severity="info" onClick={saveData} />
     </React.Fragment>
 );
 
@@ -170,21 +170,21 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
 export const leftToolbarTemplate = (openNew) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} />
         </div>
     );
 };
 export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" severity="success" onClick={openNew} />
-            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" severity="info" onClick={openAsociation} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} />
+            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" severity="info" onClick={openAsociation} />
         </div>
     );
 };
 
 export const rightToolbarTemplate = (exportCSV) => {
-    return <Button label="Exportar" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />;
+    return <Button label="Exportar" icon="pi pi-upload" className="p-button-help rounded" onClick={exportCSV} />;
 };
 
 export const inputChange = (e, name, data, setData) => {
