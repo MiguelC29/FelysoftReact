@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import React, { useState, useRef, useEffect } from 'react';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange,leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
+import AsociationDialog from '../componets/AsociationDialog';
 
 export default function Genres() {
     let emptyGenre = {
@@ -13,6 +14,19 @@ export default function Genres() {
         name: '',
         description: ''
     };
+
+    const emptyAsociation = {
+        genreId: null,
+        authorId: null
+    }
+
+    const URLASC = 'http://localhost:8086/api/genre/add-author';
+    const [asociation, setAsociation] = useState(emptyAsociation);
+    const [selectedGenre, setSelectedGenre] = useState(null);
+    const [authors, setAuthors] = useState([]);
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [asociationDialog, setAsociationDialog] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
 
     const URL = 'http://localhost:8086/api/genre/';
     const [genres, setGenres] = useState([]);
@@ -27,12 +41,26 @@ export default function Genres() {
     const toast = useRef(null);
     const dt = useRef(null);
 
+    useEffect(() => {
+        getData('http://localhost:8086/api/genre/', setGenres);
+    }, []);
+
     const openNew = () => {
         setGenre(emptyGenre);
         setTitle('Registrar Genero');
         setOperation(1);
         setSubmitted(false);
         setGenreDialog(true);
+    };
+
+    const openAsociation = () => {
+        setSelectedGenre('');
+        setSelectedAuthor('');
+        setTitle('Registrar Asociación');
+        getData('http://localhost:8086/api/genre/', setGenres);
+        getData('http://localhost:8086/api/author/', setAuthors);
+        setSubmitted(false);
+        setAsociationDialog(true);
     };
 
     const editGenre = (genre) => {
@@ -49,6 +77,10 @@ export default function Genres() {
 
     const hideConfirmGenreDialog = () => {
         setConfirmDialogVisible(false);
+    };
+
+    const hideConfirmAsociationDialog = () => {
+        setConfirmAscDialogVisible(false); 
     };
 
     const hideDeleteGenreDialog = () => {
@@ -91,6 +123,26 @@ export default function Genres() {
         setConfirmDialogVisible(true);
     };
 
+    const saveAsociation = () => {
+        setSubmitted(true);
+        setConfirmAscDialogVisible(false);
+        if (asociation.genreId && asociation.authorId) {
+            let parameters = {
+                genreId: asociation.genreId.idGenre, authorId: asociation.authorId.idAuthor,
+            };
+
+            sendRequestAsc('POST', parameters, URLASC, toast);
+            setAsociationDialog(false);
+            setAsociation(emptyAsociation);
+            setSelectedGenre('');
+            setSelectedAuthor('');
+        }
+    };
+
+    const confirmAsc = () => {
+        setConfirmAscDialogVisible(true);
+    };
+
     const confirmDeleteGenre = (genre) => {
         confirmDelete(genre, setGenre, setDeleteGenreDialog);
     };
@@ -111,10 +163,16 @@ export default function Genres() {
         inputChange(e, name, genre, setGenre);
     };
 
-
     const actionBodyTemplateG = (rowData) => {
         return actionBodyTemplate(rowData, editGenre, confirmDeleteGenre);
     };
+
+    const asociationDialogFooter = (
+        DialogFooter(hideDialog, confirmAsc)
+    );
+    const confirmAsociationDialogFooter = (
+        confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
+    );
 
     const genreDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
@@ -127,6 +185,46 @@ export default function Genres() {
         deleteDialogFooter(hideDeleteGenreDialog, deleteGenre)
     );
 
+    const selectedAuthorTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const authorOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
+    const selectedGenreTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const genreOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
@@ -137,7 +235,7 @@ export default function Genres() {
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -172,6 +270,37 @@ export default function Genres() {
             {DialogDelete(deleteGenreDialog, 'Producto', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Genero')}
 
             {confirmDialog(confirmDialogVisible, 'Genero', confirmGenreDialogFooter, hideConfirmGenreDialog, genre, operation)}
+
+             <AsociationDialog
+                    asociation={asociation}
+                    setAsociation={setAsociation}
+                    visible={asociationDialog}
+                    title={title}
+                    footer={asociationDialogFooter}
+                    onHide={hideDialog}
+                    labelId='author'
+                    nameTable='Autor'
+                    labelId2='genre'
+                    nameTableTwo='Genero'
+                    selectedOne={selectedAuthor}
+                    setSelectedOne={setSelectedAuthor}
+                    idOnInputNumberOne='authorId'
+                    idOnInputNumberTwo='genreId'
+                    valueTemplate={selectedAuthorTemplate}
+                    itemTemplate={authorOptionTemplate}
+                    id={asociation.authorId}
+                    id2={asociation.genreId}
+                    selectedTwo={selectedGenre}
+                    setSelected2={setSelectedGenre}
+                    options={authors}
+                    options2={genres}
+                    valueTemplateTwo={selectedGenreTemplate}
+                    itemTemplateTwo={genreOptionTemplate}
+                    filter submitted={submitted}
+                    confirmDialogVisible={confirmAscDialogVisible}
+                    confirmAsociationDialogFooter={confirmAsociationDialogFooter}
+                    hideConfirmAsociationDialog={hideConfirmAsociationDialog}
+                />
         </div>
     );
 }
