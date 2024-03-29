@@ -4,6 +4,7 @@ import Books from './pages/Books';
 import Genres from './pages/Genres';
 import Authors from './pages/Authors';
 import Reserves from './pages/Reserves';
+import Categories from './pages/Categories';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path='/generos' element={<Genres />} />
         <Route path='/autores' element={<Authors />} />
         <Route path='/reservas' element={<Reserves />} />
+        <Route path='/categorias' element={<Categories />} />
       </Routes>
     </BrowserRouter>
   );

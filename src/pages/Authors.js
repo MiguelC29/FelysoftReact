@@ -45,8 +45,9 @@ export default function Authors() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData('http://localhost:8086/api/author/', setAuthors);
+        getData(URL, setAuthors);
     }, []);
+
 
     const openNew = () => {
         setAuthor(emptyAuthor);
@@ -77,6 +78,7 @@ export default function Authors() {
     const hideDialog = () => {
         setSubmitted(false);
         setAuthorDialog(false);
+        setAsociationDialog(false);
     };
 
   const hideConfirmAsociationDialog = () => {

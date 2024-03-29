@@ -42,7 +42,7 @@ export default function Genres() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData('http://localhost:8086/api/genre/', setGenres);
+        getData(URL, setGenres);
     }, []);
 
     const openNew = () => {
@@ -73,6 +73,7 @@ export default function Genres() {
     const hideDialog = () => {
         setSubmitted(false);
         setGenreDialog(false);
+        setAsociationDialog(false);
     };
 
     const hideConfirmGenreDialog = () => {
