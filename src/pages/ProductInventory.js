@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, getOneData, headerInv, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
+import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, formatCurrency, getOneData, headerInv, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -31,10 +31,6 @@ export default function ProductInventory() {
     useEffect(() => {
         getOneData(URL.concat('inventoryProducts'), setProductsInv);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openUpdate = (product) => {
         setProductInv({ ...product });

@@ -255,3 +255,7 @@ export const inputNumberChange = (e, name, data, setData) => {
 
     setData(_data);
 };
+
+export const formatCurrency = (value) => {
+    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+};
