@@ -8,15 +8,13 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-// import { Calendar } from 'primereact/calendar';
-import { InputMask } from 'primereact/inputmask'
+import { Calendar } from 'primereact/calendar';
 import CustomDataTable from '../components/CustomDataTable';
 
 export default function Products() {
     let emptyProduct = {
         idProduct: null,
         image: null,
-        typeImg: null,
         name: '',
         brand: '',
         salePrice: 0,
@@ -96,9 +94,20 @@ export default function Products() {
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
+        // Convertir la fecha de la base de datos al formato esperado por el componente Calendar
+        const formattedDate = product.expiryDate ? new Date(product.expiryDate) : null;
+        if (formattedDate) {
+            const year = formattedDate.getFullYear();
+            const month = formattedDate.getMonth();
+            const day = formattedDate.getDate() + 1;
+            const newFormattedDate = new Date(year, month, day);
+            setProduct(prevProduct => ({
+                ...prevProduct,
+                expiryDate: newFormattedDate // Aquí conviertes la fecha al formato esperado
+            }));
+        }
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -112,7 +121,6 @@ export default function Products() {
         setDeleteProductDialog(false);
     };
 
-    //
     const saveProduct = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -122,15 +130,15 @@ export default function Products() {
 
             if (product.idProduct && operation === 2) {
                 parameters = {
-                    idProduct: product.idProduct, name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate.trim(), category: product.category.idCategory, provider: product.provider.idProvider
+                    idProduct: product.idProduct, name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider
                 };
                 url = URL + 'update/' + product.idProduct;
                 method = 'PUT';
             } else {
                 if (operation === 1 && product.stock) {
-                    // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
+                    // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
                     parameters = {
-                        name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate.trim(), category: product.category.idCategory, provider: product.provider.idProvider, stockInicial: product.stock
+                        name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider, stockInicial: product.stock
                     };
                     url = URL + 'create';
                     method = 'POST';
@@ -281,8 +289,7 @@ export default function Products() {
                     <label htmlFor="expiryDate" className="font-bold">
                         Fecha de Vencimiento
                     </label>
-                    <InputMask id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} mask="9999-99-99" placeholder="9999-99-99" slotChar="yyyy-mm-dd" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
-                    {/* <Calendar id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} showButtonBar placeholder="mm/dd/yyyy" showIcon/> */}
+                    <Calendar id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} showButtonBar dateFormat='yy-mm-dd' placeholder="yy-mm-dd" showIcon />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
