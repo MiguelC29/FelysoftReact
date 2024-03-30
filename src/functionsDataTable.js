@@ -3,6 +3,7 @@ import axios from 'axios'
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { format } from 'date-fns';
 
 export const getData = async (url, setData) => {
     await axios.get(url + 'all')
@@ -30,6 +31,23 @@ export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast
         })
         .catch((error) => {
             toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+            console.log(error);
+        });
+}
+
+export const sendRequestStock = (method, parameters, url, setData, mainUrl, toast) => {
+    axios({ method: method, url: url, data: parameters })
+        .then((response) => {
+            let type = response.data['status'];
+            let msg = response.data['data'];
+            if (type === 'success') {
+                // SI SE QUIERE SE VALIDA LA OP Y SI ES UNO ES ACTUALIZADO Y SI ES 2 ES REINICIADO
+                toast.current.show({ severity: 'success', summary: msg, detail: 'Stock Actualizado', life: 3000 });
+                getData(mainUrl, setData);
+            }
+        })
+        .catch((error) => {
+            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Stock NO Actualizado', life: 3000 });
             console.log(error);
         });
 }
@@ -92,11 +110,30 @@ export const header = (nameTable, globalFilter) => (
     </div>
 );
 
+export const headerInv = (nameTable, globalFilter) => (
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+        <h4 className="m-0">Inventario de {nameTable}</h4>
+        <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
+        </span>
+    </div>
+);
+
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     return (
         <React.Fragment>
             <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} />
             <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+        </React.Fragment>
+    );
+};
+
+export const actionBodyTemplateInv = (rowData, updateStock, resetStock) => {
+    return (
+        <React.Fragment>
+            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} />
+            <Button icon="pi pi-replay" className="rounded" severity="danger" onClick={() => resetStock(rowData)} />
         </React.Fragment>
     );
 };
@@ -129,6 +166,21 @@ export const confirmDialog = (confirmDialogVisible, nameTable, DataDialogFooter,
                 {table && (
                     <span>
                         {`¿Está seguro de ${(op === 1) ? 'guardar' : 'actualizar'} los datos?`}
+                    </span>
+                )}
+            </div>
+        </Dialog>
+    );
+}
+
+export const confirmDialogStock = (confirmDialogVisible, nameTable, DataDialogFooter, hideDataDialog, table, op) => {
+    return (
+        <Dialog visible={confirmDialogVisible} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`${(op === 1) ? 'Actualizar' : 'Reiniciar'} ${nameTable}`} modal footer={DataDialogFooter} onHide={hideDataDialog}>
+            <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                {table && (
+                    <span>
+                        {`¿Está seguro de ${(op === 1) ? 'actualizar' : 'reiniciar'} el stock?`}
                     </span>
                 )}
             </div>
@@ -202,4 +254,14 @@ export const inputNumberChange = (e, name, data, setData) => {
     _data[`${name}`] = val;
 
     setData(_data);
+};
+
+export const formatCurrency = (value) => {
+    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+};
+
+export const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm:ss');
 };

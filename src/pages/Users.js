@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatDate, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
-import { format } from 'date-fns';
 import { Password } from 'primereact/password';
 import CustomDataTable from '../components/CustomDataTable';
 
@@ -40,12 +39,6 @@ export default function Users() {
   const Gender = {
     FEMENINO: 'FEMENINO',
     MASCULINO: 'MASCULINO'
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return format(date, 'dd/MM/yyyy HH:mm:ss');
   };
 
   const URL = 'http://localhost:8086/api/user/';

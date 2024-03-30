@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 // import { FileUpload } from 'primereact/fileupload';
@@ -8,15 +8,12 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-// import { Calendar } from 'primereact/calendar';
-import { InputMask } from 'primereact/inputmask'
 import CustomDataTable from '../components/CustomDataTable';
 
 export default function Products() {
     let emptyProduct = {
         idProduct: null,
         image: null,
-        typeImg: null,
         name: '',
         brand: '',
         salePrice: 0,
@@ -71,10 +68,6 @@ export default function Products() {
         }
     };
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
-
     const openNew = () => {
         setProduct(emptyProduct);
         setTitle('Registrar Producto');
@@ -98,7 +91,6 @@ export default function Products() {
         setProductDialog(true);
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -112,7 +104,6 @@ export default function Products() {
         setDeleteProductDialog(false);
     };
 
-    //
     const saveProduct = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -122,15 +113,15 @@ export default function Products() {
 
             if (product.idProduct && operation === 2) {
                 parameters = {
-                    idProduct: product.idProduct, name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate.trim(), category: product.category.idCategory, provider: product.provider.idProvider
+                    idProduct: product.idProduct, name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider
                 };
                 url = URL + 'update/' + product.idProduct;
                 method = 'PUT';
             } else {
                 if (operation === 1 && product.stock) {
-                    // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
+                    // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
                     parameters = {
-                        name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate.trim(), category: product.category.idCategory, provider: product.provider.idProvider, stockInicial: product.stock
+                        name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider, stockInicial: product.stock
                     };
                     url = URL + 'create';
                     method = 'POST';
@@ -281,8 +272,7 @@ export default function Products() {
                     <label htmlFor="expiryDate" className="font-bold">
                         Fecha de Vencimiento
                     </label>
-                    <InputMask id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} mask="9999-99-99" placeholder="9999-99-99" slotChar="yyyy-mm-dd" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
-                    {/* <Calendar id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} showButtonBar placeholder="mm/dd/yyyy" showIcon/> */}
+                    <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
@@ -302,7 +292,7 @@ export default function Products() {
                             <label htmlFor="stock" className="font-bold">
                                 Stock Inicial
                             </label>
-                            <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} />
+                            <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
                             {submitted && !product.stock && <small className="p-error">Stock inicial es requerido.</small>}
                         </div>
                     }
