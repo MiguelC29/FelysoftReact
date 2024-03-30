@@ -35,6 +35,23 @@ export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast
         });
 }
 
+export const sendRequestStock = (method, parameters, url, setData, mainUrl, toast) => {
+    axios({ method: method, url: url, data: parameters })
+        .then((response) => {
+            let type = response.data['status'];
+            let msg = response.data['data'];
+            if (type === 'success') {
+                // SI SE QUIERE SE VALIDA LA OP Y SI ES UNO ES ACTUALIZADO Y SI ES 2 ES REINICIADO
+                toast.current.show({ severity: 'success', summary: msg, detail: 'Stock Actualizado', life: 3000 });
+                getData(mainUrl, setData);
+            }
+        })
+        .catch((error) => {
+            toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Stock NO Actualizado', life: 3000 });
+            console.log(error);
+        });
+}
+
 export const sendRequestAsc = (method, parameters, url, toast) => {
     axios({ method: method, url: url, data: parameters })
         .then((response) => {
@@ -102,6 +119,15 @@ export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     );
 };
 
+export const actionBodyTemplateInv = (rowData, updateStock, resetStock) => {
+    return (
+        <React.Fragment>
+            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} />
+            <Button icon="pi pi-replay" className="rounded" severity="danger" onClick={() => resetStock(rowData)} />
+        </React.Fragment>
+    );
+};
+
 export const DialogFooter = (hideDialog, saveData) => (
     <React.Fragment>
         <Button label="Cancelar" icon="pi pi-times" className='mr-2 rounded' severity="danger" outlined onClick={hideDialog} />
@@ -130,6 +156,21 @@ export const confirmDialog = (confirmDialogVisible, nameTable, DataDialogFooter,
                 {table && (
                     <span>
                         {`¿Está seguro de ${(op === 1) ? 'guardar' : 'actualizar'} los datos?`}
+                    </span>
+                )}
+            </div>
+        </Dialog>
+    );
+}
+
+export const confirmDialogStock = (confirmDialogVisible, nameTable, DataDialogFooter, hideDataDialog, table, op) => {
+    return (
+        <Dialog visible={confirmDialogVisible} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`${(op === 1) ? 'Actualizar' : 'Reiniciar'} ${nameTable}`} modal footer={DataDialogFooter} onHide={hideDataDialog}>
+            <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                {table && (
+                    <span>
+                        {`¿Está seguro de ${(op === 1) ? 'actualizar' : 'reiniciar'} el stock?`}
                     </span>
                 )}
             </div>
