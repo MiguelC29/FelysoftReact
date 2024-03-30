@@ -24,7 +24,6 @@ export const sendRequest = (method, parameters, url, setData, mainUrl, op, toast
             let type = response.data['status'];
             let msg = response.data['data'];
             if (type === 'success') {
-                // toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Producto Creado', life: 3000 });
                 toast.current.show({ severity: 'success', summary: msg, detail: nameTable + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
                 getData(mainUrl, setData);
             }

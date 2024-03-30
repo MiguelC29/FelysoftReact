@@ -138,7 +138,7 @@ export default function Reserves() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setReserves, URL, operation, toast);
+            sendRequest(method, parameters, url, setReserves, URL, operation, toast,'Reserva ');
             setReserveDialog(false);
             setReserve(emptyReserve);
         }
@@ -152,7 +152,7 @@ export default function Reserves() {
     };
 
     const deleteReserve = () => {
-        deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve);
+        deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve,'Reserva ');
     };
 
     const exportCSV = () => {
@@ -264,7 +264,7 @@ export default function Reserves() {
                     <label htmlFor="dateReserve" className="font-bold">
                         Fecha de Reserva
                     </label>
-                    <InputMask id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} mask="9999-99-99" placeholder="9999-99-99" slotChar="yyyy-mm-dd" required className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
+                    <InputText id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} type="date" required className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
                     {submitted && !reserve.dateReserve && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
 

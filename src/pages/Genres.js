@@ -115,7 +115,7 @@ export default function Genres() {
                 
             }
 
-            sendRequest(method, parameters, url, setGenres, URL, operation, toast);
+            sendRequest(method, parameters, url, setGenres, URL, operation, toast, 'Genero ');
             setGenreDialog(false);
             setGenre(emptyGenre);
         }
@@ -149,7 +149,7 @@ export default function Genres() {
     };
 
     const deleteGenre = () => {
-        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre);
+        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Genero ');
     };
 
     const exportCSV = () => {

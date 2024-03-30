@@ -127,7 +127,7 @@ export default function Authors() {
                 
             }
 
-            sendRequest(method, parameters, url, setAuthors, URL, operation, toast);
+            sendRequest(method, parameters, url, setAuthors, URL, operation, toast, 'Autor ');
             setAuthorDialog(false);
             setAuthor(emptyAuthor);
         }
@@ -162,7 +162,7 @@ export default function Authors() {
     };
 
     const deleteAuthor = () => {
-        deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor);
+        deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor,'Autor ');
     };
 
     const exportCSV = () => {
@@ -288,7 +288,7 @@ export default function Authors() {
                     <label htmlFor="dateBirth" className="font-bold">
                         Fecha de Nacimiento
                     </label>
-                    <InputMask id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')} mask="9999-99-99" placeholder="9999-99-99" slotChar="yyyy-mm-dd" required className={classNames({ 'p-invalid': submitted && !author.dateBirth })} />
+                    <InputMask id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')}  type="date" required className={classNames({ 'p-invalid': submitted && !author.dateBirth })} />
                     {submitted && !author.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
                 </div>
 

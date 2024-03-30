@@ -161,7 +161,7 @@ export default function Books() {
 
             }
 
-            sendRequest(method, parameters, url, setBooks, URL, operation, toast);
+            sendRequest(method, parameters, url, setBooks, URL, operation, toast,'Libro ');
             setBookDialog(false);
             setBook(emptyBook);
         }
@@ -175,7 +175,7 @@ export default function Books() {
     };
 
     const deleteBook = () => {
-        deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook);
+        deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook, 'Libro ');
     };
 
     const exportCSV = () => {
