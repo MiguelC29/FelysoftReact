@@ -3,6 +3,7 @@ import axios from 'axios'
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { format } from 'date-fns';
 
 export const getData = async (url, setData) => {
     await axios.get(url + 'all')
@@ -258,4 +259,10 @@ export const inputNumberChange = (e, name, data, setData) => {
 
 export const formatCurrency = (value) => {
     return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+};
+
+export const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm:ss');
 };

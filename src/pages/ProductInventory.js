@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, formatCurrency, getOneData, headerInv, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
+import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
-import { format } from 'date-fns';
 import CustomDataTable from '../components/CustomDataTable';
 import { Tag } from 'primereact/tag';
 
@@ -81,12 +80,6 @@ export default function ProductInventory() {
 
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, productInv, setProductInv);
-    };
-
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return format(date, 'dd/MM/yyyy HH:mm:ss');
     };
 
     const priceBodyTemplate = (rowData) => {
