@@ -110,6 +110,16 @@ export const header = (nameTable, globalFilter) => (
     </div>
 );
 
+export const headerInv = (nameTable, globalFilter) => (
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+        <h4 className="m-0">Inventario de {nameTable}</h4>
+        <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
+        </span>
+    </div>
+);
+
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     return (
         <React.Fragment>

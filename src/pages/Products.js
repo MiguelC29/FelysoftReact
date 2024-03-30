@@ -8,7 +8,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
 import CustomDataTable from '../components/CustomDataTable';
 
 export default function Products() {
@@ -94,18 +93,6 @@ export default function Products() {
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
-        // Convertir la fecha de la base de datos al formato esperado por el componente Calendar
-        const formattedDate = product.expiryDate ? new Date(product.expiryDate) : null;
-        if (formattedDate) {
-            const year = formattedDate.getFullYear();
-            const month = formattedDate.getMonth();
-            const day = formattedDate.getDate() + 1;
-            const newFormattedDate = new Date(year, month, day);
-            setProduct(prevProduct => ({
-                ...prevProduct,
-                expiryDate: newFormattedDate // Aquí conviertes la fecha al formato esperado
-            }));
-        }
     };
 
     const hideDialog = () => {
@@ -289,7 +276,7 @@ export default function Products() {
                     <label htmlFor="expiryDate" className="font-bold">
                         Fecha de Vencimiento
                     </label>
-                    <Calendar id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} showButtonBar dateFormat='yy-mm-dd' placeholder="yy-mm-dd" showIcon />
+                    <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
@@ -309,7 +296,7 @@ export default function Products() {
                             <label htmlFor="stock" className="font-bold">
                                 Stock Inicial
                             </label>
-                            <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} />
+                            <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
                             {submitted && !product.stock && <small className="p-error">Stock inicial es requerido.</small>}
                         </div>
                     }

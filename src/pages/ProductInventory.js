@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, getOneData, header, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
+import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, getOneData, headerInv, inputNumberChange, rightToolbarTemplate, sendRequestStock } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -178,7 +178,7 @@ export default function ProductInventory() {
                     dataKey="id"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos"
                     globalFilter={globalFilter}
-                    header={header('Productos', setGlobalFilter)}
+                    header={headerInv('Productos', setGlobalFilter)}
                     columns={columns}
                 />
                 <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
