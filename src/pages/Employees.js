@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
-import { format } from 'date-fns';
 
 export default function Employees() {
     let emptyEmployee = {
@@ -16,7 +15,7 @@ export default function Employees() {
         salary: 0,
         specialty: '',
         dateBirth: '',
-        user: null,
+        user: '',
     };
 
     const URL = 'http://localhost:8086/api/employee/';
@@ -36,7 +35,7 @@ export default function Employees() {
 
     useEffect(() => {
         getData(URL, setEmployees);
-        getData('http://localhost:8086/api/user/', setUsers); 
+        getData('http://localhost:8086/api/user/', setUsers);
     }, []);
 
     const formatCurrency = (value) => {
@@ -46,7 +45,7 @@ export default function Employees() {
     const openNew = () => {
         setEmployee(emptyEmployee);
         setTitle('Registrar Empleado');
-        setSelectedUser(null);
+        setSelectedUser('');
         setOperation(1);
         setSubmitted(false);
         setEmployeeDialog(true);
@@ -86,8 +85,8 @@ export default function Employees() {
                     idEmployee: employee.idEmployee, 
                     salary: employee.salary, specialty: 
                     employee.specialty.trim(), 
-                    dateBirth: employee.dateBirth.trim(), 
-                    user: employee.user.idUser
+                    dateBirth: employee.dateBirth, 
+                    fkIdUser: employee.user.idUser
                 };
                 url = URL + 'update/' + employee.idEmployee;
                 method = 'PUT';
@@ -95,8 +94,8 @@ export default function Employees() {
                 parameters = {
                     salary: employee.salary, 
                     specialty: employee.specialty.trim(), 
-                    dateBirth: employee.dateBirth.trim(), 
-                    user: employee.user.idUser
+                    dateBirth: employee.dateBirth, 
+                    fkIdUser: employee.user.idUser
                 };
                 url = URL + 'create';
                 method = 'POST';
@@ -158,7 +157,7 @@ export default function Employees() {
         if (option) {
             return (
                 <div className="flex align-items-center">
-                    <div>{option.numIdentification}</div> 
+                    <div>{option.numIdentification}</div>
                 </div>
             );
         }
@@ -203,7 +202,7 @@ export default function Employees() {
                 visible={employeeDialog}
                 style={{ width: '40rem' }}
                 breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-                header="Registrar Empleado"
+                header={title}
                 modal
                 className="p-fluid"
                 footer={employeeDialogFooter}
@@ -216,8 +215,9 @@ export default function Employees() {
                     <InputText
                         id="specialty"
                         value={employee.specialty}
-                        onChange={(e) => inputChange(e, 'specialty', employee, setEmployee)}
+                        onChange={(e) => onInputChange(e, 'specialty')}
                         required
+                        autoFocus
                         className={classNames({ 'p-invalid': submitted && !employee.specialty })}
                     />
                     {submitted && !employee.specialty && <small className="p-error">Especialidad es requerida.</small>}
@@ -230,7 +230,7 @@ export default function Employees() {
                     <InputText
                         id="dateBirth"
                         value={employee.dateBirth}
-                        onChange={(e) => inputChange(e, 'dateBirth', employee, setEmployee)}
+                        onChange={(e) => onInputChange(e, 'dateBirth')}
                         type="date"
                         required
                         className={classNames({ 'p-invalid': submitted && !employee.dateBirth })}
@@ -256,7 +256,8 @@ export default function Employees() {
                     <Dropdown
                         id="numIdentification"
                         value={selectedUser}
-                        onChange={(e) => { setSelectedUser(e.value); }} 
+                        onChange={(e) => { setSelectedUser(e.value); 
+                        onInputNumberChange(e, 'user');}} 
                         options={users}
                         optionLabel="numIdentification"
                         placeholder="Seleccionar No. Identificación"
@@ -264,15 +265,15 @@ export default function Employees() {
                         valueTemplate={selectedIdentificationTemplate}
                         itemTemplate={identificationOptionTemplate}
                         required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !selectedUser })}`}
+                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted &&!employee.user && !selectedUser })}`}
                     />
-                    {submitted && !employee.numIdentification && !selectedUser && <small className="p-error">No. Identificación es requerido.</small>}
+                    {submitted && !employee.user && !selectedUser && <small className="p-error">No. Identificación es requerido.</small>}
                 </div>
             </Dialog>
 
-            {DialogDelete(deleteEmployeeDialog, 'Producto', deleteEmployeeDialogFooter, hideDeleteEmployeeDialog, employee, employee.numIdentification, 'el empleado')}
+            {DialogDelete(deleteEmployeeDialog, 'Empleado', deleteEmployeeDialogFooter, hideDeleteEmployeeDialog, employee, employee.user.numIdentification, 'el empleado con ID')}
 
-            {confirmDialog(confirmDialogVisible, 'Producto', confirmEmployeeDialogFooter, hideConfirmEmployeeDialog, employee, operation)}
+            {confirmDialog(confirmDialogVisible, 'Empleado', confirmEmployeeDialogFooter, hideConfirmEmployeeDialog, employee, operation)}
         </div>
     );
 }
