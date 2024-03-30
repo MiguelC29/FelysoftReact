@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -16,8 +16,10 @@ export default function Services() {
     state: '',
     priceAdditional: 0,
     total: '',
-    typeService: null,
+    typeService: '',
   };
+
+  // TODO: CUANDO SE ACTUALIZA EL PRECIO DEL TIPO DE SERVICIO, NO SE ACTUALIZA EN LA VISTA DE SERVICIOS
 
   const State = {
     ACTIVO: 'ACTIVO',
@@ -59,7 +61,7 @@ export default function Services() {
     setService(emptyService);
     setTitle('Registrar Servicio');
     setSelectedState('');
-    setSelectedTypeservice(null);
+    setSelectedTypeservice('');
     setOperation(1);
     setSubmitted(false);
     setServiceDialog(true);
@@ -91,7 +93,8 @@ export default function Services() {
     setSubmitted(true);
     setConfirmDialogVisible(false);
 
-    if (service.typeService && service.priceAdditional && service.state && service.total) {
+    // if (service.typeService && service.priceAdditional && service.state && service.total) {
+    if (service.typeService && service.state && service.total) {
       let url, method, parameters;
 
       if (service.idService && operation === 2) {
@@ -141,15 +144,12 @@ export default function Services() {
     }
   };
 
-  const onInputChange = (e, name) => {
-    inputChange(e, name, service, setService);
-  };
-
   const onInputNumberChange = (e, name) => {
     inputNumberChange(e, name, service, setService);
     calculateTotal();
   };
 
+  // Al editar funciona raro
   const calculateTotal = () => {
     if (selectedTypeservice && service.priceAdditional !== null && service.typeService && service.typeService.price !== null) {
       const totalPrice = parseFloat(service.typeService.price) + parseFloat(service.priceAdditional);
@@ -158,7 +158,7 @@ export default function Services() {
   };
 
   const priceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.priceAdditional);
+    return formatCurrency(rowData);
   };
 
   const actionBodyTemplateP = (rowData) => {
@@ -173,8 +173,8 @@ export default function Services() {
     { field: 'state', header: 'Estado', sortable: true, style: { minWidth: '12rem' } },
     { field: 'dateCreation', header: 'Fecha de Creación', sortable: true, body: (rowData) => formatDate(rowData.dateCreation), style: { minWidth: '16rem' } },
     { field: 'dateModification', header: 'Fecha de Modificación', sortable: true, body: (rowData) => formatDate(rowData.dateModification), style: { minWidth: '10rem' } },
-    { field: 'priceAdditional', header: 'Precio Adicional', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-    { field: 'total', header: 'Total', sortable: true, style: { minWidth: '8rem' } },
+    { field: 'priceAdditional', header: 'Precio Adicional', body: (rowData) => priceBodyTemplate(rowData.priceAdditional), sortable: true, style: { minWidth: '8rem' } },
+    { field: 'total', header: 'Total',body: (rowData) => priceBodyTemplate(rowData.total),sortable: true, style: { minWidth: '8rem' } },
     { field: 'typeService.name', header: 'Tipo de Servicio', sortable: true, style: { minWidth: '10rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
@@ -209,7 +209,7 @@ export default function Services() {
         modal
         className="p-fluid"
         footer={serviceDialogFooter}
-        onHide={hideDialog}
+        onHide={hideDialog}      
       >
         <div className="field">
           <label htmlFor="typeService" className="font-bold">
@@ -242,10 +242,10 @@ export default function Services() {
             mode="decimal"
             currency="COP"
             locale="es-CO"
-            required
-            className={classNames({ 'p-invalid': submitted && !service.priceAdditional })}
+          // Precio adicional no es obligatorio
+          // className={classNames({ 'p-invalid': submitted && !service.priceAdditional })}
           />
-          {submitted && !service.priceAdditional && <small className="p-error">Precio Adicional es requerido.</small>}
+          {/* {submitted && !service.priceAdditional && <small className="p-error">Precio Adicional es requerido.</small>} */}
         </div>
 
         <div className="field">
@@ -275,7 +275,7 @@ export default function Services() {
         </div>
       </Dialog>
 
-      {DialogDelete(deleteServiceDialog, 'Servicio', deleteServiceDialogFooter, hideDeleteServiceDialog, service, '', 'el servicio')}
+      {DialogDelete(deleteServiceDialog, 'Servicio', deleteServiceDialogFooter, hideDeleteServiceDialog, service, service.typeService.name, 'el servicio')}
 
       {confirmDialog(confirmDialogVisible, 'Servicio', confirmServiceDialogFooter, hideConfirmServiceDialog, service, operation)}
     </div>

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
@@ -21,6 +20,7 @@ export default function Charges() {
   const [charge, setCharge] = useState(emptyCharge);
   const [submitted, setSubmitted] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [deleteChargeDialog, setDeleteChargeDialog] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [title, setTitle] = useState('');
@@ -53,6 +53,10 @@ export default function Charges() {
 
   const hideConfirmChargeDialog = () => {
     setConfirmDialogVisible(false);
+  };
+
+  const hideDeleteChargeDialog = () => {
+    setDeleteChargeDialog(false);
   };
 
   const saveCharge = () => {
@@ -90,11 +94,11 @@ export default function Charges() {
   };
 
   const confirmDeleteCharge = (charge) => {
-    confirmDelete(charge, setCharge, setConfirmDialogVisible);
+    confirmDelete(charge, setCharge, setDeleteChargeDialog);
   };
 
   const deleteCharge = () => {
-    deleteData(URL, charge.idCharge, setCharges, toast, setConfirmDialogVisible, setCharge, emptyCharge);
+    deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge);
   };
 
   const exportCSV = () => {
@@ -113,8 +117,11 @@ export default function Charges() {
     return actionBodyTemplate(rowData, editCharge, confirmDeleteCharge);
   };
 
-  const chargeDialogFooter = DialogFooter(hideDialog, saveCharge);
-  const confirmChargeDialogFooter = confirmDialogFooter(hideConfirmChargeDialog, deleteCharge);
+  const chargeDialogFooter = DialogFooter(hideDialog, confirmSave);
+  const confirmChargeDialogFooter = confirmDialogFooter(hideConfirmChargeDialog, saveCharge);
+  const deleteChargeDialogFooter = (
+    deleteDialogFooter(hideDeleteChargeDialog, deleteCharge)
+  );
 
   const columns = [
     { field: 'charge', header: 'Cargo', sortable: true, style: { minWidth: '12rem' } },
@@ -157,7 +164,9 @@ export default function Charges() {
         </div>
       </Dialog>
 
-      {DialogDelete(confirmDialogVisible, 'Cargo', confirmChargeDialogFooter, hideConfirmChargeDialog, charge, '', 'el cargo')}
+      {DialogDelete(deleteChargeDialog, 'Cargo', deleteChargeDialogFooter, hideDeleteChargeDialog, charge, charge.charge, 'el cargo')}
+
+      {confirmDialog(confirmDialogVisible, 'Cargo', confirmChargeDialogFooter, hideConfirmChargeDialog, charge, operation)}
     </div>
   );
 }

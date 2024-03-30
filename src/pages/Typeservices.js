@@ -20,6 +20,7 @@ export default function TypeServices() {
   const [typeservices, setTypeservices] = useState([]);
   const [typeServiceDialog, setTypeServiceDialog] = useState(false);
   const [typeService, setTypeService] = useState(emptyTypeService);
+  const [deleteTypeServiceDialog, setDeleteTypeServiceDialog] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -54,6 +55,14 @@ export default function TypeServices() {
 
   const hideConfirmTypeServiceDialog = () => {
     setConfirmDialogVisible(false);
+  };
+
+  const hideDeleteTypeServiceDialog = () => {
+    setDeleteTypeServiceDialog(false);
+  };
+
+  const formatCurrency = (value) => {
+    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
   };
 
   const saveTypeService = () => {
@@ -93,11 +102,11 @@ export default function TypeServices() {
   };
 
   const confirmDeleteTypeService = (typeService) => {
-    confirmDelete(typeService, setTypeService, setConfirmDialogVisible);
+    confirmDelete(typeService, setTypeService, setDeleteTypeServiceDialog);
   };
 
   const deleteTypeService = () => {
-    deleteData(URL, typeService.idTypeService, setTypeservices, toast, setConfirmDialogVisible, setTypeService, emptyTypeService);
+    deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService);
   };
 
   const exportCSV = () => {
@@ -116,20 +125,31 @@ export default function TypeServices() {
     inputNumberChange(e, name, typeService, setTypeService);
   };
 
+  const priceBodyTemplate = (rowData) => {
+    return formatCurrency(rowData.price);
+};
+
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editTypeService, confirmDeleteTypeService);
   };
-  
-  const typeServiceDialogFooter = DialogFooter(hideDialog, saveTypeService);
-  const confirmTypeServiceDialogFooter = confirmDialogFooter(hideConfirmTypeServiceDialog, deleteTypeService);
+
+  const typeServiceDialogFooter = (
+    DialogFooter(hideDialog, confirmSave)
+  );
+  const confirmTypeServiceDialogFooter = (
+    confirmDialogFooter(hideConfirmTypeServiceDialog, saveTypeService)
+  );
+  const deleteTypeServiceDialogFooter = (
+    deleteDialogFooter(hideDeleteTypeServiceDialog, deleteTypeService)
+  );
 
   const columns = [
     { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
     { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
-    { field: 'price', header: 'Precio', sortable: true, style: { minWidth: '10rem' } },
+    { field: 'price', header: 'Precio', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
-  
+
 
   return (
     <div>
@@ -169,21 +189,26 @@ export default function TypeServices() {
           <label htmlFor="price" className="font-bold">
             Precio
           </label>
-          <InputNumber
-            id="price"
-            value={typeService.price}
-            onValueChange={(e) => onInputNumberChange(e, 'price')}
-            mode="decimal"
-            currency="COP"
-            locale="es-CO"
-            required
-            className={classNames({ 'p-invalid': submitted && !typeService.price })}
-          />
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
+            <InputNumber
+              id="price"
+              value={typeService.price}
+              onValueChange={(e) => onInputNumberChange(e, 'price')}
+              mode="decimal"
+              currency="COP"
+              locale="es-CO"
+              required
+              className={classNames({ 'p-invalid': submitted && !typeService.price })}
+            />
+          </div>
           {submitted && !typeService.price && <small className="p-error">Precio es requerido.</small>}
         </div>
       </Dialog>
 
-      {DialogDelete(confirmDialogVisible, 'Tipo de Servicio', confirmTypeServiceDialogFooter, hideConfirmTypeServiceDialog, typeService, '', 'el tipo de servicio')}
+      {DialogDelete(deleteTypeServiceDialog, 'Tipo de Servicio', deleteTypeServiceDialogFooter, hideDeleteTypeServiceDialog, typeService, typeService.name, 'el tipo de servicio')}
+
+      {confirmDialog(confirmDialogVisible, 'Tipo de Servicio', confirmTypeServiceDialogFooter, hideConfirmTypeServiceDialog, typeService, operation)}
     </div>
   );
 }
