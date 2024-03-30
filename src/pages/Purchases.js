@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
 import { format } from 'date-fns';
+import { InputText } from 'primereact/inputtext';
 
 export default function Purchases() {
 
@@ -15,8 +16,24 @@ export default function Purchases() {
         idPurchase: null,
         date: '',
         total: 0,
+        description: '',
+        methodPayment: '',
+        state: '',
         provider: '',
     }
+
+    const MethodPayment = {
+        EFECTIVO: 'EFECTIVO',
+        NEQUI: 'NEQUI',
+        TRANSACCION: 'TRANSACCION',
+    };
+
+    const State = {
+        PENDIENTE: 'PENDIENTE',
+        CANCELADO: 'CANCELADO',
+        REEMBOLSADO: 'REEMBOLSADO',
+        VENCIDO: 'VENCIDO'
+    };
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -27,8 +44,13 @@ export default function Purchases() {
 
     const URL = 'http://localhost:8086/api/purchase/';
     const [purchases, setPurchases] = useState([]);
+    const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
     const [providers, setProviders] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState(null);
+
+    const [purchaseExpense, setPurchaseExpense] = useState(null);
+
     const [purchaseDialog, setPurchaseDialog] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [purchase, setPurchase] = useState(emptyPurchase);
@@ -61,8 +83,13 @@ export default function Purchases() {
 
     const editPurchase = (purchase) => {
         setPurchase({ ...purchase });
-        //getData('http://localhost:8086/api/provider/', setProviders);
+        getData('http://localhost:8086/api/provider/', setProviders);
+        getOneData('http://localhost:8086/api/purchase/purchaseExpense/' + purchase.idPurchase, setPurchaseExpense);
         setSelectedProvider(purchase.provider);
+        console.log(purchase.idPurchase)
+        // setSelectedMethodPayment(purchaseExpense.payment.methodPayment);
+        // setSelectedState(purchaseExpense.payment.state);
+        console.log(purchaseExpense)
         setTitle('Editar Compra');
         setOperation(2);
         setPurchaseDialog(true);
@@ -82,23 +109,25 @@ export default function Purchases() {
         setDeletePurchaseDialog(false);
     };
 
+    
+
     const savePurchase = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
-        if (purchase.date && purchase.total && purchase.provider) {
+        if (purchase.total && purchase.provider) {
             let url, method, parameters;
 
             if (purchase.idPurchase && operation === 2) {
                 parameters = {
-                    idPurchase: purchase.idPurchase, date: purchase.date, total: purchase.total, fkIdProvider: purchase.provider.idProvider
+                    idPurchase: purchase.idPurchase, total: purchase.total, description: purchase.description, methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
                 };
                 url = URL + 'update/' + purchase.idPurchase;
                 method = 'PUT';
             } else {
                 // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
-                    date: purchase.date, total: purchase.total, fkIdProvider: purchase.provider.idProvider
+                    total: purchase.total, description: purchase.description, methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
                 };
                 url = URL + 'create';
                 method = 'POST';
@@ -184,6 +213,16 @@ export default function Purchases() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
+        label: MethodPayment[key],
+        value: key
+      }));
+    
+      const stateOptions = Object.keys(State).map(key => ({
+        label: State[key],
+        value: key
+      }));
+
 
     return (
         <div>
@@ -202,7 +241,6 @@ export default function Purchases() {
                 />
             </div>
 
-
             <Dialog visible={purchaseDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
                 <div className="field col">
                     <label htmlFor="total" className="font-bold">
@@ -216,13 +254,65 @@ export default function Purchases() {
                 </div>
 
                 <div className="field">
+                    <label htmlFor="description" className="font-bold">
+                        Desc
+                    </label>
+                    <InputText id="description" value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.description })} />
+                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
+                </div>
+
+                <div className="field col">
+                        {<label htmlFor="methodPayment" className="font-bold">
+                            Método de pago
+                        </label>}
+                        <Dropdown
+                            id="methodPayment"
+                            value={selectedMethodPayment}
+                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment');}}
+                            options={methodPaymentOptions}
+                            placeholder="Seleccionar el método de pago"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
+                        />
+                        {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
+                    </div>
+
+                    <div className="field col">
+                        {<label htmlFor="state" className="font-bold">
+                            Estado
+                        </label>}
+                        <Dropdown
+                            id="state"
+                            value={selectedState}
+                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
+                            options={stateOptions}
+                            placeholder="Seleccionar el estado"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
+                        />
+                        {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
+                    </div>
+
+
+
+                <div className="field">
                     <label htmlFor="provider" className="font-bold">
                         Proveedor
                     </label>
-                    <Dropdown id="provider" value={selectedProvider} onChange={(e) => { onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
-                            filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`} />
-                        {submitted && !purchase.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
-                    {submitted && !purchase.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
+                    <Dropdown
+                        id="provider"
+                        value={selectedProvider}
+                        onChange={(e) => {
+                            setSelectedProvider(e.value);
+                            onInputNumberChange(e, 'provider');
+                        }}
+                        options={providers}
+                        optionLabel="name"
+                        placeholder="Seleccionar Proveedor"
+                        required
+                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
+                    />
+
                 </div>
             </Dialog>
 

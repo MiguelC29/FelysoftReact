@@ -5,7 +5,8 @@ import Products from './pages/Products';
 import Sales from './pages/Sales';
 import Purchases from './pages/Purchases';
 import Payments from './pages/Payments';
-//import Details from './pages/Details';
+import Expenses from './pages/Expenses';
+import Details from './pages/Details';
 
 
 
@@ -19,6 +20,9 @@ export function App() {
         <Route path='/ventas' element={<Sales />} />
         <Route path='/compras' element={<Purchases />} />
         <Route path='/pagos' element={<Payments />} />
+        <Route path='/gastos' element={<Expenses />} />
+        <Route path='/detalles' element={<Details />} />
+
 
       </Routes>
     </BrowserRouter>

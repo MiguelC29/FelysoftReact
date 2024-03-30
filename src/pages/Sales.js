@@ -10,6 +10,7 @@ import CustomDataTable from '../components/CustomDataTable';
 import { format } from 'date-fns';
 
 
+
 export default function Sales() {
 
     let emptySale = {
@@ -23,7 +24,7 @@ export default function Sales() {
         if (!dateString) return '';
         const date = new Date(dateString);
         return format(date, 'dd/MM/yyyy HH:mm:ss');
-      };
+    };
 
     const URL = 'http://localhost:8086/api/sale/';
     const [sales, setSales] = useState([]);
@@ -53,7 +54,6 @@ export default function Sales() {
         setSale(emptySale);
         setTitle('Registrar Venta');
         setSelectedPayment('');
-        //getData('http://localhost:8086/api/payment/', setPayments);
         setOperation(1);
         setSubmitted(false);
         setSaleDialog(true);
@@ -61,7 +61,6 @@ export default function Sales() {
 
     const editSale = (sale) => {
         setSale({ ...sale });
-        //getData('http://localhost:8086/api/payment/', setPayments);
         setSelectedPayment(sale.payment);
         setTitle('Editar Venta');
         setOperation(2);
@@ -87,22 +86,25 @@ export default function Sales() {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
-        if (sale.dateSale && sale.totalSale && sale.payment) {
+        if (sale.totalSale && sale.payment) {
             let url, method, parameters;
 
             if (sale.idSale && operation === 2) {
                 parameters = {
-                    idSale: sale.idSale, dateSale: sale.dateSale, totalSale: sale.totalSale, fkIdPayment: sale.payment.idPayment
+                    idSale: sale.idSale, totalSale: sale.totalSale, fkIdPayment: sale.payment.idPayment
                 };
                 url = URL + 'update/' + sale.idSale;
                 method = 'PUT';
+
             } else {
                 // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
-                    dateSale: sale.dateSale, totalSale: sale.totalSale, fkIdPayment: sale.payment.idPayment
+                    totalSale: sale.totalSale, fkIdPayment: sale.payment.idPayment
                 };
                 url = URL + 'create';
                 method = 'POST';
+
+
             }
 
             sendRequest(method, parameters, url, setSales, URL, operation, toast);
@@ -131,18 +133,9 @@ export default function Sales() {
         }
     };
 
-    const onInputChange = (e, name) => {
-        inputChange(e, name, sale, setSale);
-    };
-
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, sale, setSale);
     };
-
-
-    // const imageBodyTemplate = (rowData) => {
-    //     return <img src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2 border-round" style={{ width: '64px' }} />;
-    // };
 
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.totalSale);
@@ -177,9 +170,6 @@ export default function Sales() {
             <div className="card">
                 <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
 
-                {
-                    console.log(sale)
-                }
                 <CustomDataTable
                     dt={dt}
                     data={sales}

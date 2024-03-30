@@ -33,7 +33,6 @@ export default function Payments() {
     };
 
 
-
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -100,19 +99,19 @@ export default function Payments() {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
-        if (payment.methodPayment && payment.state && payment.date && payment.total) {
+        if (payment.methodPayment && payment.state && payment.total) {
             let url, method, parameters;
 
             if (payment.idPayment && operation === 2) {
                 parameters = {
-                    idPayment: payment.idPayment, methodPayment: payment.methodPayment, state: payment.state, date: payment.date, total: payment.total
+                    idPayment: payment.idPayment, methodPayment: payment.methodPayment, state: payment.state, total: payment.total
                 };
                 url = URL + 'update/' + payment.idPayment;
                 method = 'PUT';
             } else {
                 // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
-                    methodPayment: payment.methodPayment, state: payment.state, date: payment.date, total: payment.total
+                    methodPayment: payment.methodPayment, state: payment.state, total: payment.total
                 };
                 url = URL + 'create';
                 method = 'POST';
