@@ -8,7 +8,7 @@ body {
     font-family: "Euclid Circular A";
 }
 
-button {
+#buttonsSide {
     background: transparent;
     border: 0;
     padding: 0;
@@ -29,6 +29,7 @@ button {
     background: #1d212a;
     border-right: 1px solid #2e303e;
     transition: width 0.4s;
+    z-index: 1000; /* Ajusta el valor del z-index según sea necesario */
 }
 
 .sidebar-header {
@@ -40,7 +41,7 @@ button {
     color: #e1ecff;
 }
 
-.sidebar .sidebar-header button {
+.sidebar .sidebar-header #buttonsSide {
     width: 54px;
 }
 
@@ -82,7 +83,7 @@ button {
     height: 20px;
 }
 
-.sidebar button {
+.sidebar #buttonsSide {
     position: relative;
     display: flex;
     gap: 16px;
@@ -99,32 +100,32 @@ button {
     transition: background 0.3s;
 }
 
-.sidebar button span:nth-child(2) {
+.sidebar #buttonsSide span:nth-child(2) {
     flex: 1 1 auto;
 }
 /* --- */
-.sidebar button>span:nth-child(3) {
+.sidebar #buttonsSide>span:nth-child(3) {
     margin-left: auto;
 }
 
-.sidebar button:is(.active, :hover) {
+.sidebar #buttonsSide:is(.active, :hover) {
     background: #004fee;
     color: #e1ecff;
 }
 
-.sidebar button span {
+.sidebar #buttonsSide span {
     transition: 0.3s;
 }
 
-.sidebar button.active>span:nth-child(3) {
+.sidebar #buttonsSide.active>span:nth-child(3) {
     rotate: -180deg;
 }
 
-.sidebar button:not(.active):hover {
+.sidebar #buttonsSide:not(.active):hover {
     background: #2e303e;
 }
 
-.sub-nav button.active::before {
+.sub-nav #buttonsSide.active::before {
     background: #e1ecff;
 }
 
@@ -138,11 +139,11 @@ button {
     height: 200px;
   } */
 
-.sub-nav button {
+.sub-nav #buttonsSide {
     padding-left: 54px;
 }
 
-.sub-nav button::before {
+.sub-nav #buttonsSide::before {
     content: "";
     position: absolute;
     top: 50%;

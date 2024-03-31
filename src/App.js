@@ -5,6 +5,7 @@ import Products from './pages/Products';
 import Users from './pages/Users';
 import Providers from './pages/Providers';
 import ProductInventory from './pages/ProductInventory';
+import VistaCategorias from './pages/VistaCategorias';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path='/usuarios' element={<Users />} />
         <Route path='/proveedores' element={<Providers />} />
         <Route path='/inventarioProductos' element={<ProductInventory />} />
+        <Route path='/vistaCategorias' element={<VistaCategorias />} />
       </Routes>
     </BrowserRouter>
   );

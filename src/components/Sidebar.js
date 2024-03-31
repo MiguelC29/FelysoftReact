@@ -15,31 +15,31 @@ const menuItems = [
         name: "Almacen",
         icon: "inventory_2",
         items: [
-            {name: "Servicios", link: "/services"},
-            {name: "Productos", link: "/products"},
-            {name: "Categorías", link: "/categories"},
-            {name: "Libros", link: "/books"},
-            {name: "Autores", link: "/authors"},
-            {name: "Géneros", link: "/genres"},
-            {name: "Clientes", link: "/clients"},
+            {name: "Servicios", link: "/servicios"},
+            {name: "Productos", link: "/productos"},
+            {name: "Categorías", link: "/categorias"},
+            {name: "Libros", link: "/libros"},
+            {name: "Autores", link: "/autores"},
+            {name: "Géneros", link: "/generos"},
+            // {name: "Clientes", link: "/clients"},
         ]
     },
     {
         name: "Venta",
         icon: "shopping_cart",
         items: [
-            {name: "Carrito de Compras", link: "/sales"},
-            {name: "Gastos", link: "/expenses"},
-            {name: "Ingresos", link: "/categories"},
-            {name: "Pagos", link: "/payments"},
+            {name: "Carrito de Compras", link: "/ventas"},
+            {name: "Gastos", link: "/gastos"},
+            {name: "Ingresos", link: "/ingresos"},
+            {name: "Pagos", link: "/pagos"},
         ]
     },
     {
         name: "Compras",
         icon: "local_shipping",
         items: [
-            {name: "Consultar Compras", link: "/purchases"},
-            {name: "Proveedores", link: "/providers"},
+            {name: "Consultar Compras", link: "/compras"},
+            {name: "Proveedores", link: "/proveedores"},
         ]
     },
     {
@@ -54,8 +54,8 @@ const menuItems = [
         name: "Inventario",
         icon: "deployed_code",
         items: [
-            {name: "Productos", link: ""},
-            {name: "Libros Digitales", link: ""},
+            {name: "Productos", link: "/inventarioProductos"},
+            {name: "Libros Digitales", link: "inventarioLibros"},
         ]
     },
     {
@@ -66,7 +66,12 @@ const menuItems = [
     {
         name: "Usuarios",
         icon: "group",
-        link: "/users",
+        items: [
+            {name: "Usuarios", link: "/usuarios"},
+            {name: "Roles", link: "/roles"},
+            {name: "Cargos", link: "/cargos"},
+            {name: "Empleados", link: "/empleados"},
+        ]
     },
     {
         name: "Configuración",
@@ -85,9 +90,9 @@ const Icon = ({ icon }) => (
     <span className="material-symbols-outlined">{icon}</span>
 );
 
-const NavHeader = () => (
+const NavHeader = ({ toggleSidebar }) => (
     <header className="sidebar-header">
-        <button type="button">
+        <button type="button" id="buttonsSide" onClick={toggleSidebar}>
             <Icon icon="menu" />
         </button>
         <div class="user">
@@ -102,6 +107,7 @@ const NavHeader = () => (
 
 const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link }) => (
     <button
+        id="buttonsSide"
         type="button"
         onClick={() => onClick(name)}
         className={isActive ? "active" : ""}
@@ -144,7 +150,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
     );
 };
 
-export const Sidebar = () => {
+export const Sidebar = ({ expanded, toggleSidebar }) => {
     const [activeItem, setActiveItem] = useState("");
 
     const handleClick = (item) => {
@@ -153,8 +159,8 @@ export const Sidebar = () => {
     };
 
     return (
-        <aside className="sidebar">
-            <NavHeader />
+        <aside className={`sidebar ${expanded ? 'expanded' : 'reduced'}`}>
+            <NavHeader toggleSidebar={toggleSidebar}/>
             {menuItems.map((item) => (
                 <div>
                     {!item.items && (
