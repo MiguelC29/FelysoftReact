@@ -175,7 +175,8 @@ export default function ProductInventory() {
                         <label htmlFor="stock" className="font-bold">
                             Stock
                         </label>
-                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} />
+                        <p>Stock actual</p>
+                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5}/>
                         {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
                     </div>
                 </Dialog>

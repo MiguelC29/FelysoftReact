@@ -239,7 +239,7 @@ export default function Categories() {
                         <label htmlFor="name" className="font-bold">
                             Nombre
                         </label>
-                        <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} />
+                        <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30}/>
                         {submitted && !category.name && <small className="p-error">Nombre de categoria es requerido.</small>}
                     </div>
                 </Dialog>
