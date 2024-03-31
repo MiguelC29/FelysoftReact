@@ -7,7 +7,8 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
 import { InputMask } from 'primereact/inputmask';
-import AsociationDialog from '../componets/AsociationDialog';
+import AsociationDialog from '../components/AsociationDialog';
+
 
 export default function Authors() {
     let emptyAuthor = {

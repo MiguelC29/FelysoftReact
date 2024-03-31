@@ -6,6 +6,8 @@ import Authors from './pages/Authors';
 import Reserves from './pages/Reserves';
 import Categories from './pages/Categories';
 import Providers from './pages/Providers';
+import BookInventory from './pages/BookInventory';
+import ProductInventory from './pages/ProductInventory';
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
         <Route path='/reservas' element={<Reserves />} />
         <Route path='/categorias' element={<Categories />} />
         <Route path='/proveedores' element={<Providers />} />
+        <Route path='/inventarioLibros' element={<BookInventory />} />
+        <Route path='/inventarioProductos' element={<ProductInventory />} />
       </Routes>
     </BrowserRouter>
   );

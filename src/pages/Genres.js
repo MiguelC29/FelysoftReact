@@ -6,7 +6,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
-import AsociationDialog from '../componets/AsociationDialog';
+import AsociationDialog from '../components/AsociationDialog';
 
 export default function Genres() {
     let emptyGenre = {
@@ -268,7 +268,7 @@ export default function Genres() {
 
             </Dialog>
 
-            {DialogDelete(deleteGenreDialog, 'Producto', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Genero')}
+            {DialogDelete(deleteGenreDialog, 'Genero', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Genero')}
 
             {confirmDialog(confirmDialogVisible, 'Genero', confirmGenreDialogFooter, hideConfirmGenreDialog, genre, operation)}
 
