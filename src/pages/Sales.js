@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,9 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
-import { format } from 'date-fns';
-
-
 
 export default function Sales() {
 
@@ -19,12 +16,6 @@ export default function Sales() {
         totalSale: 0,
         payment: '',
     }
-
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return format(date, 'dd/MM/yyyy HH:mm:ss');
-    };
 
     const URL = 'http://localhost:8086/api/sale/';
     const [sales, setSales] = useState([]);
@@ -45,10 +36,6 @@ export default function Sales() {
         getData(URL, setSales);
         getData('http://localhost:8086/api/payment/', setPayments);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openNew = () => {
         setSale(emptySale);
@@ -107,7 +94,7 @@ export default function Sales() {
 
             }
 
-            sendRequest(method, parameters, url, setSales, URL, operation, toast);
+            sendRequest(method, parameters, url, setSales, URL, operation, toast, "Venta ");
             setSaleDialog(false);
             setSale(emptySale);
         }
@@ -189,7 +176,7 @@ export default function Sales() {
                     </label>
                     <div className="p-inputgroup">
                         <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="totalSale" value={sale.totalSale} onValueChange={(e) => onInputNumberChange(e, 'totalSale')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !sale.totalSale })} />
+                        <InputNumber id="totalSale" maxLength={10} value={sale.totalSale} onValueChange={(e) => onInputNumberChange(e, 'totalSale')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !sale.totalSale })} />
                     </div>
                     {submitted && !sale.totalSale && <small className="p-error">Total de venta es requerido.</small>}
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
-import { format } from 'date-fns';
 
 export default function Expenses() {
 
@@ -27,12 +26,6 @@ export default function Expenses() {
         ARRIENDO: 'ARRIENDO',
         SERVICIOS: 'SERVICIOS',
         PROVEEDORES: 'PROVEEDORES',
-    };
-
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return format(date, 'dd/MM/yyyy HH:mm:ss');
     };
 
 
@@ -59,10 +52,6 @@ export default function Expenses() {
         getData('http://localhost:8086/api/purchase/', setPurchases);
         getData('http://localhost:8086/api/payment/', setPayments);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openNew = () => {
         setExpense(emptyExpense);
@@ -119,7 +108,7 @@ export default function Expenses() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setExpenses, URL, operation, toast);
+            sendRequest(method, parameters, url, setExpenses, URL, operation, toast, "Gasto ");
             setExpenseDialog(false);
             setExpense(emptyExpense);
         }
@@ -274,7 +263,7 @@ export default function Expenses() {
                     </label>
                     <div className="p-inputgroup">
                         <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="total" value={expense.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !expense.total })} />
+                        <InputNumber id="total" maxLength={10} value={expense.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !expense.total })} />
                     </div>
                     {submitted && !expense.total && <small className="p-error">Total del gasto es requerido.</small>}
                 </div>
@@ -283,7 +272,7 @@ export default function Expenses() {
                     <label htmlFor="description" className="font-bold">
                         Desc
                     </label>
-                    <InputText id="description" value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
+                    <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
                     {submitted && !expense.description && <small className="p-error">Descripcion es requerido.</small>}
                 </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -45,10 +45,6 @@ export default function Details() {
         getData('http://localhost:8086/api/product/', setProducts);
         getData('http://localhost:8086/api/service/', setServices);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openNew = () => {
         setDetail(emptyDetail);
@@ -107,7 +103,7 @@ export default function Details() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setDetails, URL, operation, toast);
+            sendRequest(method, parameters, url, setDetails, URL, operation, toast, "Detalle ");
             setDetailDialog(false);
             setDetail(emptyDetail);
         }
@@ -188,7 +184,7 @@ export default function Details() {
                         Cantidad
                     </label>
                     <div className="p-inputgroup">
-                        <InputNumber id="quantity" value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
+                        <InputNumber id="quantity"  maxLength={8} value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
                     </div>
                     {submitted && !detail.quantity && <small className="p-error">Cantidad es requerido.</small>}
                 </div>
@@ -199,7 +195,7 @@ export default function Details() {
                     </label>
                     <div className="p-inputgroup">
                         <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="unitPrice" value={detail.unitPrice} onValueChange={(e) => onInputNumberChange(e, 'unitPrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.unitPrice })} />
+                        <InputNumber id="unitPrice" maxLength={10} value={detail.unitPrice} onValueChange={(e) => onInputNumberChange(e, 'unitPrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.unitPrice })} />
                     </div>
                     {submitted && !detail.unitPrice && <small className="p-error">Precio único es requerido.</small>}
                 </div>

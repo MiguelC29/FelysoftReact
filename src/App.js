@@ -7,8 +7,6 @@ import Purchases from './pages/Purchases';
 import Payments from './pages/Payments';
 import Expenses from './pages/Expenses';
 import Details from './pages/Details';
-
-
 import Users from './pages/Users';
 import Providers from './pages/Providers';
 import ProductInventory from './pages/ProductInventory';

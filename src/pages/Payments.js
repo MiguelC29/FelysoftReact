@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,7 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
-import { format } from 'date-fns';
 
 export default function Payments() {
 
@@ -33,12 +32,6 @@ export default function Payments() {
     };
 
 
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return format(date, 'dd/MM/yyyy HH:mm:ss');
-    };
-
     const URL = 'http://localhost:8086/api/payment/';
     const [payments, setPayments] = useState([]);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
@@ -57,10 +50,6 @@ export default function Payments() {
     useEffect(() => {
         getData(URL, setPayments);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openNew = () => {
         setPayment(emptyPayment);
@@ -117,7 +106,7 @@ export default function Payments() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setPayments, URL, operation, toast);
+            sendRequest(method, parameters, url, setPayments, URL, operation, toast, "Pago ");
             setPaymentDialog(false);
             setPayment(emptyPayment);
         }
@@ -243,8 +232,8 @@ export default function Payments() {
                         </label>
                         <div className="p-inputgroup">
                             <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                            <InputNumber id="total" value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
-                        </div>
+                            <InputNumber id="total" maxLength={10} value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
+                        </div> 
                         {submitted && !payment.total && <small className="p-error">Total del pago es requerido.</small>}
                     </div>
             </Dialog>
