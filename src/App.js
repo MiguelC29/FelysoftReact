@@ -9,14 +9,20 @@ import Expenses from './pages/Expenses';
 import Details from './pages/Details';
 
 
+import Users from './pages/Users';
+import Providers from './pages/Providers';
+import ProductInventory from './pages/ProductInventory';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/categories' element={<Categories />} />
+        <Route path='/categorias' element={<Categories />} />
         <Route path='/roles' element={<Roles />} />
         <Route path='/productos' element={<Products />} />
+        <Route path='/usuarios' element={<Users />} />
+        <Route path='/proveedores' element={<Providers />} />
+        <Route path='/inventarioProductos' element={<ProductInventory />} />
         <Route path='/ventas' element={<Sales />} />
         <Route path='/compras' element={<Purchases />} />
         <Route path='/pagos' element={<Payments />} />
