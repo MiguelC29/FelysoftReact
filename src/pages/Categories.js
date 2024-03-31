@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportColumns, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,9 +7,11 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
 import AsociationDialog from '../components/AsociationDialog';
+import { Tooltip } from 'primereact/tooltip';
+
 
 export default function Categories() {
-    let emptyCategory = {
+    const emptyCategory = {
         idCategory: null,
         name: ''
     }
@@ -19,6 +21,7 @@ export default function Categories() {
         providerId: null
     }
 
+    // Asociation
     const URLASC = 'http://localhost:8086/api/category/add-provider';
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -140,14 +143,6 @@ export default function Categories() {
         deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoria');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputChange = (e, name) => {
         inputChange(e, name, category, setCategory);
     };
@@ -218,11 +213,17 @@ export default function Categories() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, categories, 'Reporte_Categorias') };
+    const handleExportExcel = () => { exportExcel(categories, columns, 'Categorias') };
+    const handleExportCsv = () => { exportCSV(false, dt)};
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
