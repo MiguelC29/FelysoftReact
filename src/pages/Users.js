@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatDate, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportExcel, exportPdf, formatDate, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -10,6 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
 import { Password } from 'primereact/password';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Users() {
 
@@ -184,15 +185,9 @@ export default function Users() {
     { field: 'names', header: 'Nombres', sortable: true, style: { minWidth: '16rem' } },
     { field: 'lastNames', header: 'Apellidos', sortable: true, style: { minWidth: '16rem' } },
     { field: 'address', header: 'Dirección', sortable: true, style: { minWidth: '16rem' } },
-    { field: 'phoneNumber', header: 'Número de Télefono', sortable: true, style: { minWidth: '10rem' } },
+    { field: 'phoneNumber', header: 'Télefono', sortable: true, style: { minWidth: '10rem' } },
     { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
-    // { field: 'phoneNumber', header: 'Número de Télefono', sortable: true, style: { minWidth: '10rem' } },
-    /* "username": "Admin",
-    "password": "admin123",
-    "image": null,
-    "typeImg": null,
-    "dateRegister": "2024-03-27T00:37:28.000+00:00",
-    "lastModification": "2024-03-27T00:37:28.000+00:00", */
+    /*username, password, image */
     { field: 'role.name', header: 'Rol', sortable: true, style: { minWidth: '10rem' } },
     { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
@@ -209,11 +204,17 @@ export default function Users() {
     value: key
   }));
 
+  // EXPORT DATA
+  const handleExportPdf = () => { exportPdf(columns, users, 'Reporte_Usuarios') };
+  const handleExportExcel = () => { exportExcel(users, columns, 'Usuarios') };
+  const handleExportCsv = () => { exportCSV(false, dt) };
+
   return (
     <div>
       <Toast ref={toast} />
       <div className="card">
-        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+        <Tooltip target=".export-buttons>button" position="bottom" />
+        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}
@@ -233,14 +234,14 @@ export default function Users() {
             <label htmlFor="names" className="font-bold">
               Nombres
             </label>
-            <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} />
+            <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50} />
             {submitted && !user.names && <small className="p-error">Nombres son requeridos.</small>}
           </div>
           <div className="field col">
             <label htmlFor="lastNames" className="font-bold">
               Apellidos
             </label>
-            <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} />
+            <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60} />
             {submitted && !user.lastNames && <small className="p-error">Apellidos son requeridos.</small>}
           </div>
         </div>
@@ -264,8 +265,7 @@ export default function Users() {
             <label htmlFor="numIdentification" className="font-bold">
               Número de Identificación
             </label>
-            {/* <InputNumber id="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} /> */}
-            <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} />
+            <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
             {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
           </div>
         </div>
@@ -296,14 +296,14 @@ export default function Users() {
             <label htmlFor="address" className="font-bold">
               Dirección
             </label>
-            <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} />
+            <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50} />
             {submitted && !user.address && <small className="p-error">Dirección es requerida.</small>}
           </div>
           <div className="field col">
             <label htmlFor="email" className="font-bold">
               Correo Eletrónico
             </label>
-            <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' />
+            <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
             {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
           </div>
         </div>

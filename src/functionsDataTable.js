@@ -234,9 +234,9 @@ export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation
     );
 };
 
-export const rightToolbarTemplate = (exportCSV) => {
-    return <Button label="Exportar" icon="pi pi-upload" className="p-button-help rounded" onClick={exportCSV} />;
-};
+// export const rightToolbarTemplate = (exportCSV) => {
+//     return <Button label="Exportar" icon="pi pi-upload" className="p-button-help rounded" onClick={exportCSV} />;
+// };
 
 export const inputChange = (e, name, data, setData) => {
     const val = (e.target && e.target.value) || '';
@@ -264,4 +264,76 @@ export const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return format(date, 'dd/MM/yyyy HH:mm:ss');
+};
+
+// Export data
+export const rightToolbarTemplateExport = (exportCSV, exportExcel, exportPDF) => {
+    return (
+        <div className="flex align-items-center justify-content-end gap-2 export-buttons">
+            <span><b>Exportar:</b></span>
+            <Button type="button" icon="pi pi-file" onClick={() => exportCSV(false)} data-pr-tooltip="CSV" className='rounded' />
+            <Button type="button" icon="pi pi-file-excel" severity="success" onClick={exportExcel} data-pr-tooltip="XLS" className='rounded' />
+            <Button type="button" icon="pi pi-file-pdf" severity="warning" onClick={exportPDF} data-pr-tooltip="PDF" className='rounded' />
+        </div>
+    )
+};
+
+const exportColumns = (columns) => columns.map((col) => ({ title: col.header, dataKey: col.field }));
+
+// NO FUNCIONA CON FORANEAS
+export const exportPdf = (columns, data, fileName) => {
+    import('jspdf').then((jsPDF) => {
+        import('jspdf-autotable').then(() => {
+            const doc = new jsPDF.default('l', 'pt', 'letter'); // 'l' para orientación horizontal
+            doc.autoTable(exportColumns(columns), data);
+            doc.save(`${fileName}.pdf`);
+        });
+    });
+};
+
+export const exportExcel = (data, columns, fileName) => {
+    import('xlsx').then((xlsx) => {
+        const filteredData = data.map((item) => {
+            const filteredItem = {};
+            columns.forEach((col) => {
+                if (col.field) {
+                    const fields = col.field.split('.'); // Dividir el campo si hay un punto (.) para acceder a campos anidados
+                    let value = item;
+                    for (const field of fields) {
+                        value = value[field];
+                    }
+                    filteredItem[col.header] = value;
+                }
+            });
+            return filteredItem;
+        });
+
+        const worksheet = xlsx.utils.json_to_sheet(filteredData);
+        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+        const excelBuffer = xlsx.write(workbook, {
+            bookType: 'xlsx',
+            type: 'array'
+        });
+
+        saveAsExcelFile(excelBuffer, fileName); // Nombre del archivo Excel
+    });
+};
+
+const saveAsExcelFile = (buffer, fileName) => {
+    import('file-saver').then((module) => {
+        if (module && module.default) {
+            let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+            let EXCEL_EXTENSION = '.xlsx';
+            const data = new Blob([buffer], {
+                type: EXCEL_TYPE
+            });
+
+            module.default.saveAs(data, fileName + '_export_' + EXCEL_EXTENSION); // NAME FILE
+
+        }
+    });
+};
+
+export const exportCSV = (selectionOnly, dt) => {
+    dt.current.exportCSV({ selectionOnly });
 };

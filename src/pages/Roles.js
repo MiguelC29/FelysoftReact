@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Roles() {
     let emptyRole = {
@@ -91,14 +92,6 @@ export default function Roles() {
         deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Role');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputChange = (e, name) => {
         inputChange(e, name, role, setRole);
     };
@@ -122,11 +115,17 @@ export default function Roles() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, roles, 'Reporte_Roles') };
+    const handleExportExcel = () => { exportExcel(roles, columns, 'Roles') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -143,7 +142,7 @@ export default function Roles() {
                         <label htmlFor="name" className="font-bold">
                             Nombre
                         </label>
-                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} />
+                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
                         {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
                     </div>
                 </Dialog>

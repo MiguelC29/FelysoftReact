@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
 import AsociationDialog from '../components/AsociationDialog';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Providers() {
 
@@ -160,14 +161,6 @@ export default function Providers() {
         deleteData(URL, provider.idProvider, setProviders, toast, setDeleteProviderDialog, setProvider, emptyProvider, 'Proveedor');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputChange = (e, name) => {
         inputChange(e, name, provider, setProvider);
     };
@@ -245,11 +238,17 @@ export default function Providers() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, providers, 'Reporte_Proveedores') };
+    const handleExportExcel = () => { exportExcel(providers, columns, 'Proveedores') };
+    const handleExportCsv = () => { exportCSV(false, dt)};
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -266,14 +265,14 @@ export default function Providers() {
                             <label htmlFor="nit" className="font-bold">
                                 Nit
                             </label>
-                            <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.nit })} />
+                            <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
                             {submitted && !provider.nit && <small className="p-error">Nit es requerido.</small>}
                         </div>
                         <div className="field col">
                             <label htmlFor="name" className="font-bold">
                                 Nombre
                             </label>
-                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} />
+                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50}/>
                             {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
                         </div>
                     </div>
@@ -287,7 +286,7 @@ export default function Providers() {
                             <label htmlFor="email" className="font-bold">
                                 Correo Eletrónico
                             </label>
-                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' />
+                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50}/>
                             {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
                         </div>
                     </div>
@@ -304,24 +303,24 @@ export default function Providers() {
                     title={title}
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
-                    labelId='category'
-                    nameTable='Categoria'
-                    labelId2='provider'
-                    nameTableTwo='Proveedor'
-                    selectedOne={selectedCategory}
-                    setSelectedOne={setSelectedCategory}
-                    idOnInputNumberOne='categoryId'
-                    idOnInputNumberTwo='providerId'
-                    valueTemplate={selectedCategoryTemplate}
-                    itemTemplate={categoryOptionTemplate}
-                    id={asociation.categoryId}
-                    id2={asociation.providerId}
-                    selectedTwo={selectedProvider}
-                    setSelected2={setSelectedProvider}
-                    options={categories}
-                    options2={providers}
-                    valueTemplateTwo={selectedProviderTemplate}
-                    itemTemplateTwo={providerOptionTemplate}
+                    nameTable='Proveedor'
+                    nameTableTwo='Categoria'
+                    labelId='provider'
+                    labelId2='category'
+                    selectedOne={selectedProvider}
+                    selectedTwo={selectedCategory}
+                    setSelectedOne={setSelectedProvider}
+                    setSelected2={setSelectedCategory}
+                    idOnInputNumberOne='providerId'
+                    idOnInputNumberTwo='categoryId'
+                    valueTemplate={selectedProviderTemplate}
+                    valueTemplateTwo={selectedCategoryTemplate}
+                    itemTemplate={providerOptionTemplate}
+                    itemTemplateTwo={categoryOptionTemplate}
+                    id={asociation.providerId}
+                    id2={asociation.categoryId}
+                    options={providers}
+                    options2={categories}
                     filter submitted={submitted}
                     confirmDialogVisible={confirmAscDialogVisible}
                     confirmAsociationDialogFooter={confirmAsociationDialogFooter}
