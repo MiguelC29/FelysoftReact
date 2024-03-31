@@ -13,7 +13,6 @@ export default function Purchases() {
 
     let emptyPurchase = {
         idPurchase: null,
-        date: '',
         total: 0,
         description: '',
         methodPayment: '',
@@ -42,7 +41,7 @@ export default function Purchases() {
     const [providers, setProviders] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState(null);
 
-    const [purchaseExpense, setPurchaseExpense] = useState(null);
+    const [expensePurchase, setExpensePurchase] = useState();
 
     const [purchaseDialog, setPurchaseDialog] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
@@ -69,16 +68,15 @@ export default function Purchases() {
         setSubmitted(false);
         setPurchaseDialog(true);
     };
-
+    
+    const Url = "http://localhost:8086/api/purchase/expensePurchase/";
     const editPurchase = (purchase) => {
         setPurchase({ ...purchase });
         getData('http://localhost:8086/api/provider/', setProviders);
-        getOneData('http://localhost:8086/api/purchase/purchaseExpense/' + purchase.idPurchase, setPurchaseExpense);
+        getOneData(Url.concat(purchase.idPurchase), setExpensePurchase);
         setSelectedProvider(purchase.provider);
-        console.log(purchase.idPurchase)
-        // setSelectedMethodPayment(purchaseExpense.payment.methodPayment);
-        // setSelectedState(purchaseExpense.payment.state);
-        console.log(purchaseExpense)
+        (!expensePurchase) || setSelectedMethodPayment(expensePurchase.payment.methodPayment);
+        (!expensePurchase) || setSelectedState(expensePurchase.payment.state);
         setTitle('Editar Compra');
         setOperation(2);
         setPurchaseDialog(true);
@@ -246,8 +244,8 @@ export default function Purchases() {
                     <label htmlFor="description" className="font-bold">
                         Desc
                     </label>
-                    <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.description })} />
-                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
+                    <InputText id="description" maxLength={100} value={(expensePurchase) && expensePurchase.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expensePurchase.description })} />
+                    {submitted && !expensePurchase.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
 
                 <div className="field col">
