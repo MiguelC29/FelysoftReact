@@ -143,7 +143,7 @@ export default function Roles() {
                         <label htmlFor="name" className="font-bold">
                             Nombre
                         </label>
-                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} />
+                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30}/>
                         {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
                     </div>
                 </Dialog>

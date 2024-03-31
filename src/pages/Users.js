@@ -186,13 +186,7 @@ export default function Users() {
     { field: 'address', header: 'Dirección', sortable: true, style: { minWidth: '16rem' } },
     { field: 'phoneNumber', header: 'Número de Télefono', sortable: true, style: { minWidth: '10rem' } },
     { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
-    // { field: 'phoneNumber', header: 'Número de Télefono', sortable: true, style: { minWidth: '10rem' } },
-    /* "username": "Admin",
-    "password": "admin123",
-    "image": null,
-    "typeImg": null,
-    "dateRegister": "2024-03-27T00:37:28.000+00:00",
-    "lastModification": "2024-03-27T00:37:28.000+00:00", */
+    /*username, password, image */
     { field: 'role.name', header: 'Rol', sortable: true, style: { minWidth: '10rem' } },
     { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
@@ -233,14 +227,14 @@ export default function Users() {
             <label htmlFor="names" className="font-bold">
               Nombres
             </label>
-            <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} />
+            <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50}/>
             {submitted && !user.names && <small className="p-error">Nombres son requeridos.</small>}
           </div>
           <div className="field col">
             <label htmlFor="lastNames" className="font-bold">
               Apellidos
             </label>
-            <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} />
+            <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60}/>
             {submitted && !user.lastNames && <small className="p-error">Apellidos son requeridos.</small>}
           </div>
         </div>
@@ -264,8 +258,7 @@ export default function Users() {
             <label htmlFor="numIdentification" className="font-bold">
               Número de Identificación
             </label>
-            {/* <InputNumber id="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} /> */}
-            <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} />
+            <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10}/>
             {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
           </div>
         </div>
@@ -296,14 +289,14 @@ export default function Users() {
             <label htmlFor="address" className="font-bold">
               Dirección
             </label>
-            <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} />
+            <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50}/>
             {submitted && !user.address && <small className="p-error">Dirección es requerida.</small>}
           </div>
           <div className="field col">
             <label htmlFor="email" className="font-bold">
               Correo Eletrónico
             </label>
-            <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' />
+            <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50}/>
             {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
           </div>
         </div>

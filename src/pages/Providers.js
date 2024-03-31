@@ -266,14 +266,14 @@ export default function Providers() {
                             <label htmlFor="nit" className="font-bold">
                                 Nit
                             </label>
-                            <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.nit })} />
+                            <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
                             {submitted && !provider.nit && <small className="p-error">Nit es requerido.</small>}
                         </div>
                         <div className="field col">
                             <label htmlFor="name" className="font-bold">
                                 Nombre
                             </label>
-                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} />
+                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50}/>
                             {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
                         </div>
                     </div>
@@ -287,7 +287,7 @@ export default function Providers() {
                             <label htmlFor="email" className="font-bold">
                                 Correo Eletrónico
                             </label>
-                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' />
+                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50}/>
                             {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
                         </div>
                     </div>
@@ -304,24 +304,24 @@ export default function Providers() {
                     title={title}
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
-                    labelId='category'
-                    nameTable='Categoria'
-                    labelId2='provider'
-                    nameTableTwo='Proveedor'
-                    selectedOne={selectedCategory}
-                    setSelectedOne={setSelectedCategory}
-                    idOnInputNumberOne='categoryId'
-                    idOnInputNumberTwo='providerId'
-                    valueTemplate={selectedCategoryTemplate}
-                    itemTemplate={categoryOptionTemplate}
-                    id={asociation.categoryId}
-                    id2={asociation.providerId}
-                    selectedTwo={selectedProvider}
-                    setSelected2={setSelectedProvider}
-                    options={categories}
-                    options2={providers}
-                    valueTemplateTwo={selectedProviderTemplate}
-                    itemTemplateTwo={providerOptionTemplate}
+                    nameTable='Proveedor'
+                    nameTableTwo='Categoria'
+                    labelId='provider'
+                    labelId2='category'
+                    selectedOne={selectedProvider}
+                    selectedTwo={selectedCategory}
+                    setSelectedOne={setSelectedProvider}
+                    setSelected2={setSelectedCategory}
+                    idOnInputNumberOne='providerId'
+                    idOnInputNumberTwo='categoryId'
+                    valueTemplate={selectedProviderTemplate}
+                    valueTemplateTwo={selectedCategoryTemplate}
+                    itemTemplate={providerOptionTemplate}
+                    itemTemplateTwo={categoryOptionTemplate}
+                    id={asociation.providerId}
+                    id2={asociation.categoryId}
+                    options={providers}
+                    options2={categories}
                     filter submitted={submitted}
                     confirmDialogVisible={confirmAscDialogVisible}
                     confirmAsociationDialogFooter={confirmAsociationDialogFooter}
