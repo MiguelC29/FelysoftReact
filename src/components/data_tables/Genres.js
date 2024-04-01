@@ -1,43 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange,leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import CustomDataTable from '../components/CustomDataTable';
-import { InputMask } from 'primereact/inputmask';
-import AsociationDialog from '../components/AsociationDialog';
+import CustomDataTable from '../CustomDataTable';
+import AsociationDialog from '../AsociationDialog';
 import { Tooltip } from 'primereact/tooltip';
 
-
-export default function Authors() {
-    let emptyAuthor = {
-        idAuthor: null,
+export default function Genres() {
+    let emptyGenre = {
+        idGenre: null,
         name: '',
-        nationality: '',
-        dateBirth: '',
-        biography:''
+        description: ''
     };
 
     const emptyAsociation = {
-        authorId: null,
-        genreId: null
+        genreId: null,
+        authorId: null
     }
 
     const URLASC = 'http://localhost:8086/api/genre/add-author';
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [selectedGenre, setSelectedGenre] = useState(null);
-    const [genres, setGenres] = useState([]);
+    const [authors, setAuthors] = useState([]);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [asociationDialog, setAsociationDialog] = useState(false);
     const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
 
-    const URL = 'http://localhost:8086/api/author/';
-    const [authors, setAuthors] = useState([]);
-    const [authorDialog, setAuthorDialog] = useState(false);
-    const [deleteAuthorDialog, setDeleteAuthorDialog] = useState(false);
-    const [author, setAuthor] = useState(emptyAuthor);
+    const URL = 'http://localhost:8086/api/genre/';
+    const [genres, setGenres] = useState([]);
+    const [genreDialog, setGenreDialog] = useState(false);
+    const [deleteGenreDialog, setDeleteGenreDialog] = useState(false);
+    const [genre, setGenre] = useState(emptyGenre);
     const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -47,16 +43,15 @@ export default function Authors() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setAuthors);
+        getData(URL, setGenres);
     }, []);
 
-
     const openNew = () => {
-        setAuthor(emptyAuthor);
-        setTitle('Registrar Autor');
+        setGenre(emptyGenre);
+        setTitle('Registrar Genero');
         setOperation(1);
         setSubmitted(false);
-        setAuthorDialog(true);
+        setGenreDialog(true);
     };
 
     const openAsociation = () => {
@@ -69,72 +64,63 @@ export default function Authors() {
         setAsociationDialog(true);
     };
 
-
-    const editAuthor = (author) => {
-        setAuthor({ ...author });
-        setTitle('Editar Autor');
+    const editGenre = (genre) => {
+        setGenre({ ...genre });
+        setTitle('Editar Genero');
         setOperation(2);
-        setAuthorDialog(true);
+        setGenreDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setAuthorDialog(false);
+        setGenreDialog(false);
         setAsociationDialog(false);
     };
 
-  const hideConfirmAsociationDialog = () => {
-        setConfirmAscDialogVisible(false); 
-    };
-
-    const hideConfirmAuthorDialog = () => {
+    const hideConfirmGenreDialog = () => {
         setConfirmDialogVisible(false);
     };
 
-    const hideDeleteAuthorDialog = () => {
-        setDeleteAuthorDialog(false);
+    const hideConfirmAsociationDialog = () => {
+        setConfirmAscDialogVisible(false); 
     };
 
-    const saveAuthor = () => {
+    const hideDeleteGenreDialog = () => {
+        setDeleteGenreDialog(false);
+    };
+
+    const saveGenre = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
         if (
-            author.name.trim() && 
-            author.nationality.trim() &&
-            author.dateBirth &&
-            author.biography.trim() ){
+            genre.name.trim() && 
+            genre.description.trim()) {
             let url, method, parameters;
 
-            if (author.idAuthor && operation === 2) {
+            if (genre.idGenre && operation === 2) {
                 parameters = {
-                    idAuthor: author.idAuthor, 
-                    name: author.name.trim(),
-                    nationality: author.nationality.trim(),
-                    dateBirth: author.dateBirth,
-                    biography: author.biography.trim() 
+                    idGenre: genre.idGenre,
+                    name: genre.name.trim(), 
+                    description: genre.description.trim()
                 };
-                url = URL + 'update/' + author.idAuthor;
+                url = URL + 'update/' + genre.idGenre;
                 method = 'PUT';
             } else {
                     parameters = {
-                        idAuthor: author.idAuthor, 
-                        name: author.name.trim(),
-                        nationality: author.nationality.trim(),
-                        dateBirth: author.dateBirth,
-                        biography: author.biography.trim() 
+                         name: genre.name.trim(), 
+                         description: genre.description.trim()
                     };
                     url = URL + 'create';
                     method = 'POST';
                 
             }
 
-            sendRequest(method, parameters, url, setAuthors, URL, operation, toast, 'Autor ');
-            setAuthorDialog(false);
-            setAuthor(emptyAuthor);
+            sendRequest(method, parameters, url, setGenres, URL, operation, toast, 'Genero ');
+            setGenreDialog(false);
+            setGenre(emptyGenre);
         }
     };
-
     const confirmSave = () => {
         setConfirmDialogVisible(true);
     };
@@ -159,21 +145,20 @@ export default function Authors() {
         setConfirmAscDialogVisible(true);
     };
 
-    const confirmDeleteAuthor = (author) => {
-        confirmDelete(author, setAuthor, setDeleteAuthorDialog);
+    const confirmDeleteGenre = (genre) => {
+        confirmDelete(genre, setGenre, setDeleteGenreDialog);
     };
 
-    const deleteAuthor = () => {
-        deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor,'Autor ');
+    const deleteGenre = () => {
+        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Genero ');
     };
 
     const onInputChange = (e, name) => {
-        inputChange(e, name, author, setAuthor);
+        inputChange(e, name, genre, setGenre);
     };
 
-
-    const actionBodyTemplateA = (rowData) => {
-        return actionBodyTemplate(rowData, editAuthor, confirmDeleteAuthor);
+    const actionBodyTemplateG = (rowData) => {
+        return actionBodyTemplate(rowData, editGenre, confirmDeleteGenre);
     };
 
     const asociationDialogFooter = (
@@ -183,16 +168,15 @@ export default function Authors() {
         confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
     );
 
-
-    const authorDialogFooter = (
+    const genreDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
 
-    const confirmAuthorDialogFooter = (
-        confirmDialogFooter(hideConfirmAuthorDialog, saveAuthor)
+    const confirmGenreDialogFooter = (
+        confirmDialogFooter(hideConfirmGenreDialog, saveGenre)
     );
-    const deleteAuthorDialogFooter = (
-        deleteDialogFooter(hideDeleteAuthorDialog, deleteAuthor)
+    const deleteGenreDialogFooter = (
+        deleteDialogFooter(hideDeleteGenreDialog, deleteGenre)
     );
 
     const selectedAuthorTemplate = (option, props) => {
@@ -235,78 +219,60 @@ export default function Authors() {
         );
     };
 
-
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'nationality', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
-        { field: 'dateBirth', header: 'Fecha de Nacimiento', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'biography', header: 'Biografia', sortable: true, style: { minWidth: '16rem' } },
-        { body: actionBodyTemplateA, exportable: false, style: { minWidth: '12rem' } },
+        { field: 'description', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
+        { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
     ];
 
       // EXPORT DATA
-      const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Autores') };
-      const handleExportExcel = () => { exportExcel(authors, columns, 'Autores') };
+      const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Generos') };
+      const handleExportExcel = () => { exportExcel(genres, columns, 'Generos') };
       const handleExportCsv = () => { exportCSV(false, dt)};
+ 
 
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
             <Tooltip target=".export-buttons>button" position="bottom" />
-            <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Genero', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
-                    data={authors}
+                    data={genres}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Autores"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Generos"
                     globalFilter={globalFilter}
-                    header={header('Autores', setGlobalFilter)}
+                    header={header('Generos', setGlobalFilter)}
                     columns={columns}
                 />
             </div>
 
-            <Dialog visible={authorDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={authorDialogFooter} onHide={hideDialog}>
+            <Dialog visible={genreDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={genreDialogFooter} onHide={hideDialog}>
                 <div className="field">
                     <label htmlFor="name" className="font-bold">
                         Nombre
                     </label>
-                    <InputText id="name" value={author.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !author.name })} />
-                    {submitted && !author.name && <small className="p-error">Nombre es requerido.</small>}
+                    <InputText id="name" value={genre.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !genre.name })} />
+                    {submitted && !genre.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
 
                 <div className="field">
-                    <label htmlFor="nationality" className="font-bold">
-                        Nacionalidad  
+                    <label htmlFor="description" className="font-bold">
+                        Descripción 
                     </label>
-                    <InputText id="natioality" value={author.nationality} onChange={(e) => onInputChange(e, 'nationality')} required className={classNames({ 'p-invalid': submitted && !author.nationality })} />
-                    {submitted && !author.nationality && <small className="p-error">Nacionalidad es requerida.</small>}
-                </div>
-
-                <div className="field">
-                    <label htmlFor="dateBirth" className="font-bold">
-                        Fecha de Nacimiento
-                    </label>
-                    <InputMask id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')}  type="date" required className={classNames({ 'p-invalid': submitted && !author.dateBirth })} />
-                    {submitted && !author.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
-                </div>
-
-                <div className="field">
-                    <label htmlFor="biography" className="font-bold">
-                        Biografia
-                    </label>
-                    <InputText id="biography" value={author.biography} onChange={(e) => onInputChange(e, 'biography')} required className={classNames({ 'p-invalid': submitted && !author.biography })} />
-                    {submitted && !author.biography && <small className="p-error">Biografia es requerida.</small>}
+                    <InputText id="description" value={genre.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !genre.description })} />
+                    {submitted && !genre.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
 
             </Dialog>
 
-            {DialogDelete(deleteAuthorDialog, 'Autor', deleteAuthorDialogFooter, hideDeleteAuthorDialog, author, author.name, 'el Autor')}
+            {DialogDelete(deleteGenreDialog, 'Genero', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Genero')}
 
-            {confirmDialog(confirmDialogVisible, 'Autor', confirmAuthorDialogFooter, hideConfirmAuthorDialog, author, operation)}
+            {confirmDialog(confirmDialogVisible, 'Genero', confirmGenreDialogFooter, hideConfirmGenreDialog, genre, operation)}
 
-            <AsociationDialog
+             <AsociationDialog
                     asociation={asociation}
                     setAsociation={setAsociation}
                     visible={asociationDialog}
@@ -336,7 +302,6 @@ export default function Authors() {
                     confirmAsociationDialogFooter={confirmAsociationDialogFooter}
                     hideConfirmAsociationDialog={hideConfirmAsociationDialog}
                 />
-
         </div>
     );
 }

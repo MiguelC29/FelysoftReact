@@ -20,16 +20,17 @@ import ViewEmployees from './pages/ViewEmployees';
 import ViewCharges from './pages/ViewCharges';
 
 import PasswordStrength from './components/PasswordStrength';
-
-
-        
-
-
+import ViewBooks from './pages/ViewBooks';
+import ViewReserves from './pages/ViewReserves';
+import ViewAuthors from './pages/ViewAuthors';
+import ViewGenres from './pages/ViewGenres';
+import { InicioSesion } from './components/IniciarSesion';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+      <Route path='/' element={<InicioSesion />} />
         <Route path='/categorias' element={<ViewCategories />} />
         <Route path='/roles' element={<ViewRoles />} />
         <Route path='/productos' element={<ViewProducts />} />
@@ -45,10 +46,11 @@ export default function App() {
         <Route path='/ventas' element={<ViewSales />} />
         <Route path='/pagos' element={<ViewPayments />} />
         <Route path='/detalles' element={<ViewDetails />} />
-
-
+        <Route path='/libros' element={<ViewBooks />} />
+        <Route path='/reservas' element={<ViewReserves />} />
+        <Route path='/autores' element={<ViewAuthors />} />
+        <Route path='/generos' element={<ViewGenres/>} />
         <Route path='/registroUsuario' element={<PasswordStrength />} />
-
 
       </Routes>
     </BrowserRouter>

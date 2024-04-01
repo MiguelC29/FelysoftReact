@@ -47,7 +47,7 @@ const menuItems = [
         name: "Reservas",
         icon: "event_available",
         items: [
-            {name: "Reservas Libros", link: ""},
+            {name: "Reservas Libros", link: "/reservas"},
             {name: "Reserva Servicios", link: ""},
         ]
     },
