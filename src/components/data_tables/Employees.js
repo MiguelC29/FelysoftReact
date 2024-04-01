@@ -113,7 +113,7 @@ export default function Employees() {
     };
 
     const deleteEmployee = () => {
-        deleteData(URL, employee.idEmployee, setEmployees, toast, setDeleteEmployeeDialog, setEmployee, emptyEmployee);
+        deleteData(URL, employee.idEmployee, setEmployees, toast, setDeleteEmployeeDialog, setEmployee, emptyEmployee, 'Empleado ');
     };
 
     const onInputChange = (e, name) => {

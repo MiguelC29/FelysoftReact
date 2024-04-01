@@ -99,7 +99,7 @@ export default function Charges() {
   };
 
   const deleteCharge = () => {
-    deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge);
+    deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge, 'Cargos');
   };
 
   const onInputChange = (e, name) => {
