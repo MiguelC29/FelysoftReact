@@ -64,7 +64,7 @@ const menuItems = [
         link: "",
     },
     {
-        name: "Usuarios",
+        name: "Personas",
         icon: "group",
         items: [
             {name: "Usuarios", link: "/usuarios"},
