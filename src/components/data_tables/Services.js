@@ -127,7 +127,7 @@ export default function Services() {
   };
 
   const deleteService = () => {
-    deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService);
+    deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService, 'Servicio');
   };
 
   const onInputNumberChange = (e, name) => {

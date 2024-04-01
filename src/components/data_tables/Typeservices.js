@@ -103,7 +103,7 @@ export default function TypeServices() {
   };
 
   const deleteTypeService = () => {
-    deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService);
+    deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService, 'Tipo de Servicio');
   };
 
   const onInputChange = (e, name) => {
