@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Charges() {
   let emptyCharge = {
@@ -101,14 +102,6 @@ export default function Charges() {
     deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge);
   };
 
-  const exportCSV = () => {
-    if (dt.current) {
-      dt.current.exportCSV();
-    } else {
-      console.error("La referencia 'dt' no está definida.");
-    }
-  };
-
   const onInputChange = (e, name) => {
     inputChange(e, name, charge, setCharge);
   };
@@ -129,11 +122,17 @@ export default function Charges() {
     { body: actionBodyTemplateCharge, exportable: false, style: { minWidth: '12rem' } },
   ];
 
+  // EXPORT DATA
+  const handleExportPdf = () => { exportPdf(columns, charges, 'Reporte_Categorias') };
+  const handleExportExcel = () => { exportExcel(charges, columns, 'Categorias') };
+  const handleExportCsv = () => { exportCSV(false, dt) };
+
   return (
     <div>
       <Toast ref={toast} />
       <div className="card">
-        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+        <Tooltip target=".export-buttons>button" position="bottom" />
+        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}

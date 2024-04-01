@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,6 +7,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function TypeServices() {
   let emptyTypeService = {
@@ -61,10 +62,6 @@ export default function TypeServices() {
     setDeleteTypeServiceDialog(false);
   };
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-  };
-
   const saveTypeService = () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
@@ -109,14 +106,6 @@ export default function TypeServices() {
     deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService);
   };
 
-  const exportCSV = () => {
-    if (dt.current) {
-      dt.current.exportCSV();
-    } else {
-      console.error("La referencia 'dt' no está definida.");
-    }
-  };
-
   const onInputChange = (e, name) => {
     inputChange(e, name, typeService, setTypeService);
   };
@@ -150,12 +139,17 @@ export default function TypeServices() {
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
+  // EXPORT DATA
+  const handleExportPdf = () => { exportPdf(columns, typeservices, 'Reporte_Categorias') };
+  const handleExportExcel = () => { exportExcel(typeservices, columns, 'Categorias') };
+  const handleExportCsv = () => { exportCSV(false, dt) };
 
   return (
     <div>
       <Toast ref={toast} />
       <div className="card">
-        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+        <Tooltip target=".export-buttons>button" position="bottom" />
+        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,7 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
-import { format } from 'date-fns';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Services() {
   let emptyService = {
@@ -24,12 +24,6 @@ export default function Services() {
   const State = {
     ACTIVO: 'ACTIVO',
     INACTIVO: 'INACTIVO',
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return format(date, 'dd/MM/yyyy HH:mm:ss');
   };
 
   const URL = 'http://localhost:8086/api/service/';
@@ -136,14 +130,6 @@ export default function Services() {
     deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService);
   };
 
-  const exportCSV = () => {
-    if (dt.current) {
-      dt.current.exportCSV();
-    } else {
-      console.error("La referencia 'dt' no está definida.");
-    }
-  };
-
   const onInputNumberChange = (e, name) => {
     inputNumberChange(e, name, service, setService);
     calculateTotal();
@@ -174,7 +160,7 @@ export default function Services() {
     { field: 'dateCreation', header: 'Fecha de Creación', sortable: true, body: (rowData) => formatDate(rowData.dateCreation), style: { minWidth: '16rem' } },
     { field: 'dateModification', header: 'Fecha de Modificación', sortable: true, body: (rowData) => formatDate(rowData.dateModification), style: { minWidth: '10rem' } },
     { field: 'priceAdditional', header: 'Precio Adicional', body: (rowData) => priceBodyTemplate(rowData.priceAdditional), sortable: true, style: { minWidth: '8rem' } },
-    { field: 'total', header: 'Total',body: (rowData) => priceBodyTemplate(rowData.total),sortable: true, style: { minWidth: '8rem' } },
+    { field: 'total', header: 'Total', body: (rowData) => priceBodyTemplate(rowData.total), sortable: true, style: { minWidth: '8rem' } },
     { field: 'typeService.name', header: 'Tipo de Servicio', sortable: true, style: { minWidth: '10rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
@@ -184,11 +170,17 @@ export default function Services() {
     value: key,
   }));
 
+  // EXPORT DATA
+  const handleExportPdf = () => { exportPdf(columns, services, 'Reporte_Categorias') };
+  const handleExportExcel = () => { exportExcel(services, columns, 'Categorias') };
+  const handleExportCsv = () => { exportCSV(false, dt) };
+
   return (
     <div>
       <Toast ref={toast} />
       <div className="card">
-        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+        <Tooltip target=".export-buttons>button" position="bottom" />
+        <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}
@@ -209,7 +201,7 @@ export default function Services() {
         modal
         className="p-fluid"
         footer={serviceDialogFooter}
-        onHide={hideDialog}      
+        onHide={hideDialog}
       >
         <div className="field">
           <label htmlFor="typeService" className="font-bold">

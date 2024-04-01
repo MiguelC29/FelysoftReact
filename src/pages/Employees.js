@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Employees() {
     let emptyEmployee = {
@@ -37,10 +38,6 @@ export default function Employees() {
         getData(URL, setEmployees);
         getData('http://localhost:8086/api/user/', setUsers);
     }, []);
-
-    const formatCurrency = (value) => {
-        return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-    };
 
     const openNew = () => {
         setEmployee(emptyEmployee);
@@ -82,19 +79,19 @@ export default function Employees() {
 
             if (employee.idEmployee && operation === 2) {
                 parameters = {
-                    idEmployee: employee.idEmployee, 
-                    salary: employee.salary, specialty: 
-                    employee.specialty.trim(), 
-                    dateBirth: employee.dateBirth, 
+                    idEmployee: employee.idEmployee,
+                    salary: employee.salary, specialty:
+                        employee.specialty.trim(),
+                    dateBirth: employee.dateBirth,
                     fkIdUser: employee.user.idUser
                 };
                 url = URL + 'update/' + employee.idEmployee;
                 method = 'PUT';
             } else {
                 parameters = {
-                    salary: employee.salary, 
-                    specialty: employee.specialty.trim(), 
-                    dateBirth: employee.dateBirth, 
+                    salary: employee.salary,
+                    specialty: employee.specialty.trim(),
+                    dateBirth: employee.dateBirth,
                     fkIdUser: employee.user.idUser
                 };
                 url = URL + 'create';
@@ -117,14 +114,6 @@ export default function Employees() {
 
     const deleteEmployee = () => {
         deleteData(URL, employee.idEmployee, setEmployees, toast, setDeleteEmployeeDialog, setEmployee, emptyEmployee);
-    };
-
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
     };
 
     const onInputChange = (e, name) => {
@@ -181,11 +170,17 @@ export default function Employees() {
         { body: actionBodyTemplateP, exportable: false },
     ];
 
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, employees, 'Reporte_Categorias') };
+    const handleExportExcel = () => { exportExcel(employees, columns, 'Categorias') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+                <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -256,8 +251,10 @@ export default function Employees() {
                     <Dropdown
                         id="numIdentification"
                         value={selectedUser}
-                        onChange={(e) => { setSelectedUser(e.value); 
-                        onInputNumberChange(e, 'user');}} 
+                        onChange={(e) => {
+                            setSelectedUser(e.value);
+                            onInputNumberChange(e, 'user');
+                        }}
                         options={users}
                         optionLabel="numIdentification"
                         placeholder="Seleccionar No. Identificación"
@@ -265,7 +262,7 @@ export default function Employees() {
                         valueTemplate={selectedIdentificationTemplate}
                         itemTemplate={identificationOptionTemplate}
                         required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted &&!employee.user && !selectedUser })}`}
+                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
                     />
                     {submitted && !employee.user && !selectedUser && <small className="p-error">No. Identificación es requerido.</small>}
                 </div>
