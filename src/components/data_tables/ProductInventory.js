@@ -30,9 +30,9 @@ export default function ProductInventory() {
 
     useEffect(() => {
         getOneData(URL.concat('inventoryProducts'), setProductsInv);
-    }, []);
+    }, [URL]);
 
-    const openUpdate = (product) => {
+    function openUpdate(product) {
         setProductInv({ ...product });
         setTitle('Actualizar Stock');
         setOperation(1);
