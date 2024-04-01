@@ -5,10 +5,10 @@ import ViewRoles from './pages/ViewRoles';
 import ViewUsers from './pages/ViewUsers';
 import ViewProviders from './pages/ViewProviders';
 import ViewProductInventory from './pages/ViewProductInventory';
-import Typeservices from './pages/ViewTypeservices';
-import Services from './pages/ViewServices';
-import Employees from './pages/ViewEmployees';
-import Charges from './pages/ViewCharges';
+import ViewTypeservices from './pages/ViewTypeservices';
+import ViewServices from './pages/ViewServices';
+import ViewEmployees from './pages/ViewEmployees';
+import ViewCharges from './pages/ViewCharges';
 
 
 export default function App() {
@@ -21,10 +21,10 @@ export default function App() {
         <Route path='/usuarios' element={<ViewUsers />} />
         <Route path='/proveedores' element={<ViewProviders />} />
         <Route path='/inventarioProductos' element={<ViewProductInventory />} />
-        <Route path='/tiposervicios' element={<Typeservices />} />
-        <Route path='/servicios' element={<Services />} />
-        <Route path='/empleados' element={<Employees />} />
-        <Route path='/cargos' element={<Charges />} />
+        <Route path='/tiposervicios' element={<ViewTypeservices />} />
+        <Route path='/servicios' element={<ViewServices />} />
+        <Route path='/empleados' element={<ViewEmployees />} />
+        <Route path='/cargos' element={<ViewCharges />} />
       </Routes>
     </BrowserRouter>
   );
