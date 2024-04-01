@@ -15,6 +15,7 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
             currentPageReportTemplate={currentPageReportTemplate}
             globalFilter={globalFilter}
             header={header}
+            emptyMessage="No hay datos disponibles"
         >
             {columns.map(column => (
                 <Column

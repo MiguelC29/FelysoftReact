@@ -1,137 +1,156 @@
-// import React, { useEffect, useState } from 'react'
-// import { getData, modalDelte, sendRequest, show_alert } from '../functions'
+import React, { useState, useEffect, useRef } from 'react';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable'
+import { classNames } from 'primereact/utils';
+import { Toast } from 'primereact/toast';
+import { Toolbar } from 'primereact/toolbar';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import CustomDataTable from '../components/CustomDataTable';
+import { Tooltip } from 'primereact/tooltip';
 
-// export default function Roles() {
-//     // TODO: nos falta hacer una logica, para si el registro ya marca como eliminado, y yo quiero agregar de nuevo esa categoria, la quite de eliminada - esto aplica para los campos unicos como rol
-//     const URL = 'http://localhost:8086/api/role/';
-//     const [roles, setRoles] = useState([]);
-//     const [id, setId] = useState('');
-//     const [name, setName] = useState('');
-//     const [operation, setOperation] = useState(1);
-//     const [title, setTitle] = useState('');
+export default function Roles() {
+    let emptyRole = {
+        idRole: null,
+        name: ''
+    }
 
-//     useEffect(() => {
-//         getData(URL, setRoles);
-//     }, []);
+    const URL = 'http://localhost:8086/api/role/';
+    const [roles, setRoles] = useState([]);
+    const [roleDialog, setRoleDialog] = useState(false);
+    const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
+    const [role, setRole] = useState(emptyRole);
+    const [submitted, setSubmitted] = useState(false);
+    const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState(null);
+    const [operation, setOperation] = useState();
+    const [title, setTitle] = useState('');
+    const toast = useRef(null);
+    const dt = useRef(null);
 
-//     const openModal = (op, id, name) => {
-//         setId('');
-//         setName('');
-//         setOperation(op);
-//         switch (op) {
-//             case 1:
-//                 setTitle('Registrar Rol');
-//                 break;
-//             case 2:
-//                 setTitle('Editar Rol');
-//                 setId(id);
-//                 setName(name);
-//                 break;
-//             default:
-//                 break;
-//         }
-//         window.setTimeout(() => { document.getElementById('nombre').focus(); }, 500);
-//     }
+    useEffect(() => {
+        getData(URL, setRoles);
+    }, []);
 
-//     // const openModal = (op, id, name) => {
-//     //     openModals(op, id, name, setId, setName, setOperation, setTitle, 'Rol','nombre');
-//     // }
+    const openNew = () => {
+        setRole(emptyRole);
+        setTitle('Registrar Rol');
+        setOperation(1);
+        setSubmitted(false);
+        setRoleDialog(true);
+    };
 
-//     const validate = () => {
-//         let parameters;
-//         let method;
-//         let url;
+    const editRole = (role) => {
+        setRole({ ...role });
+        setTitle('Editar Rol');
+        setOperation(2);
+        setRoleDialog(true);
+    };
 
-//         if (name.trim() === '') {
-//             show_alert('Escribe el nombre del rol', 'warning');
-//         } else {
-//             if (operation === 1) {
-//                 parameters = { name: name.trim() };
-//                 url = URL + 'create';
-//                 method = 'POST';
-//             } else {
-//                 parameters = { idRole: id, name: name.trim() };
-//                 url = URL + 'update/' + id;
-//                 method = 'PUT';
-//             }
-//             sendRequest(method, parameters, url, setRoles, URL);
-//         }
-//     }
+    const hideDialog = () => {
+        setSubmitted(false);
+        setRoleDialog(false);
+    };
 
-//     const deleteRole = (id, name) => {
-//         modalDelte('el rol', name, setId, id, setRoles, URL);
-//     }
+    const hideConfirmRoleDialog = () => {
+        setConfirmDialogVisible(false);
+    };
 
-//     return (
-//         <div className="App">
-//             <div className="container-fluid">
-//                 <div className="row mt-3">
-//                     <div className="col-md-4 offset-md-4">
-//                         <div className="d-grid mx-auto">
-//                             <button onClick={() => openModal(1)} className='btn btn-dark' data-bs-toggle='modal' data-bs-target='#modalRoles'>
-//                                 <i className='fa-solid fa-circle-plus'></i> Añadir
-//                             </button>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div className="row mt-3">
-//                     <div className="col-12 col-lg-8 offset-0 offset-lg-2">
-//                         <div className="table-responsive">
-//                             <table className='table table-bordered'>
-//                                 <thead>
-//                                     <tr>
-//                                         <th>#</th>
-//                                         <th>ROL</th>
-//                                         <th>ACCIONES</th>
-//                                     </tr>
-//                                 </thead>
-//                                 <tbody className='table-group-divider'>
-//                                     {roles.map((role, i) => (
-//                                         <tr key={role.idRole}>
-//                                             <td>{(i + 1)}</td>
-//                                             <td>{role.name}</td>
-//                                             <td>
-//                                                 <button onClick={() => openModal(2, role.idRole, role.name)} className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalRoles'>
-//                                                     <i className='fa-solid fa-edit'></i>
-//                                                 </button>
-//                                                 &nbsp;
-//                                                 <button onClick={() => deleteRole(role.idRole, role.name)} className='btn btn-danger'>
-//                                                     <i className='fa-solid fa-trash'></i>
-//                                                 </button>
-//                                             </td>
-//                                         </tr>
-//                                     ))}
-//                                 </tbody>
-//                             </table>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <div id='modalRoles' className="modal fade" aria-hidden='true'>
-//                 <div className="modal-dialog">
-//                     <div className="modal-content">
-//                         <div className="modal-header">
-//                             <label className="h5">{title}</label>
-//                             <button type='button' id='btnCerrar' className="btn-close" data-bs-dismiss='modal' aria-label='Close'></button>
-//                         </div>
-//                         <div className="modal-body">
-//                             <input type="hidden" id="id" />
-//                             <div className="input-group mb-3">
-//                                 <span className="input-group-text"><i className="fa-solid fa-gift"></i></span>
-//                                 <input type="text" id='nombre' className='form-control' placeholder='Nombre' value={name} onChange={(e) => setName(e.target.value)} />
-//                             </div>
-//                             <div onClick={() => validate()} className="d-grid col-6 mx-auto">
-//                                 <button className='btn btn-success'>
-//                                     <i className='fa-solid fa-floppy-disk'></i> Guardar
-//                                 </button>
-//                             </div>
-//                         </div>
-//                         <div className="modal-footer">
-//                             {/* <button type='button' id='btnCerrar' className='btn btn-secondary' data-bs-dismiss='modal'>Cerrar</button> */}
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
+    const hideDeleteRoleDialog = () => {
+        setDeleteRoleDialog(false);
+    };
+
+    const saveRole = () => {
+        setSubmitted(true);
+        setConfirmDialogVisible(false);
+        if (role.name.trim()) {
+            let url, method, parameters;
+            if (role.idRole && operation === 2) {
+                parameters = { idRole: role.idRole, name: role.name.trim() }
+                url = URL + 'update/' + role.idRole;
+                method = 'PUT';
+            } else {
+                parameters = { name: role.name.trim() }
+                url = URL + 'create';
+                method = 'POST';
+            }
+
+            sendRequest(method, parameters, url, setRoles, URL, operation, toast, 'Rol ');
+            setRoleDialog(false);
+            setRole(emptyRole);
+        }
+    };
+
+    const confirmSave = () => {
+        setConfirmDialogVisible(true);
+    };
+
+    const confirmDeleteRole = (role) => {
+        confirmDelete(role, setRole, setDeleteRoleDialog);
+    };
+
+    const deleteRole = () => {
+        deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Role');
+    };
+
+    const onInputChange = (e, name) => {
+        inputChange(e, name, role, setRole);
+    };
+
+    const actionBodyTemplateP = (rowData) => {
+        return actionBodyTemplate(rowData, editRole, confirmDeleteRole);
+    };
+
+    const roleDialogFooter = (
+        DialogFooter(hideDialog, confirmSave)
+    );
+    const confirmRoleDialogFooter = (
+        confirmDialogFooter(hideConfirmRoleDialog, saveRole)
+    );
+    const deleteRoleDialogFooter = (
+        deleteDialogFooter(hideDeleteRoleDialog, deleteRole)
+    );
+
+    const columns = [
+        { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
+        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+    ];
+
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, roles, 'Reporte_Roles') };
+    const handleExportExcel = () => { exportExcel(roles, columns, 'Roles') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
+
+    return (
+        <div>
+            <Toast ref={toast} />
+            <div className="card">
+                <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+
+                <CustomDataTable
+                    dt={dt}
+                    data={roles}
+                    dataKey="id"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} roles"
+                    globalFilter={globalFilter}
+                    header={header('Roles', setGlobalFilter)}
+                    columns={columns}
+                />
+
+                <Dialog visible={roleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={roleDialogFooter} onHide={hideDialog}>
+                    <div className="field">
+                        <label htmlFor="name" className="font-bold">
+                            Nombre
+                        </label>
+                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
+                        {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
+                    </div>
+                </Dialog>
+
+                {DialogDelete(deleteRoleDialog, 'Rol', deleteRoleDialogFooter, hideDeleteRoleDialog, role, role.name, 'el rol')}
+
+                {confirmDialog(confirmDialogVisible, 'Rol', confirmRoleDialogFooter, hideConfirmRoleDialog, role, operation)}
+            </div>
+        </div>
+    )
+}
