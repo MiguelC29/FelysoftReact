@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import CustomDataTable from '../components/CustomDataTable';
 import { InputMask } from 'primereact/inputmask';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Books() {
     let emptyBook = {
@@ -174,14 +175,6 @@ export default function Books() {
         deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook, 'Libro ');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputNumberChange = (e, title) => {
         inputNumberChange(e, title, book, setBook);
     };
@@ -261,11 +254,17 @@ export default function Books() {
         { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+     // EXPORT DATA
+     const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Libros') };
+     const handleExportExcel = () => { exportExcel(authors, columns, 'Libros') };
+     const handleExportCsv = () => { exportCSV(false, dt)};
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+            <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

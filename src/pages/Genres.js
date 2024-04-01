@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, getData, header, inputChange,leftToolbarTemplateAsociation, rightToolbarTemplate, sendRequest, sendRequestAsc } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange,leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../components/CustomDataTable';
 import AsociationDialog from '../components/AsociationDialog';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Genres() {
     let emptyGenre = {
@@ -152,14 +153,6 @@ export default function Genres() {
         deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Genero ');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputChange = (e, name) => {
         inputChange(e, name, genre, setGenre);
     };
@@ -232,11 +225,18 @@ export default function Genres() {
         { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+      // EXPORT DATA
+      const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Generos') };
+      const handleExportExcel = () => { exportExcel(genres, columns, 'Generos') };
+      const handleExportCsv = () => { exportCSV(false, dt)};
+ 
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+            <Tooltip target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

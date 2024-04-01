@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, sendRequest } from '../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import CustomDataTable from '../components/CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -150,14 +151,6 @@ export default function Reserves() {
         deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve,'Reserva ');
     };
 
-    const exportCSV = () => {
-        if (dt.current) {
-            dt.current.exportCSV();
-        } else {
-            console.error("La referencia 'dt' no está definida.");
-        }
-    };
-
     const onInputNumberChange = (e, description) => {
         inputNumberChange(e, description, reserve, setReserve);
     };
@@ -236,11 +229,18 @@ export default function Reserves() {
         { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+      // EXPORT DATA
+      const handleExportPdf = () => { exportPdf(columns, reserves, 'Reporte_Reservas') };
+      const handleExportExcel = () => { exportExcel(reserves, columns, 'Reservas') };
+      const handleExportCsv = () => { exportCSV(false, dt)};
+
     return (
         <div>
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplate(exportCSV)}></Toolbar>
+            <Tooltip
+             target=".export-buttons>button" position="bottom" />
+                <Toolbar className="mb-4" left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
