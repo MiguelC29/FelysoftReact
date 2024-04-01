@@ -15,12 +15,13 @@ const menuItems = [
         name: "Almacen",
         icon: "inventory_2",
         items: [
-            {name: "Servicios", link: "/servicios"},
             {name: "Productos", link: "/productos"},
             {name: "Categorías", link: "/categorias"},
             {name: "Libros", link: "/libros"},
             {name: "Autores", link: "/autores"},
             {name: "Géneros", link: "/generos"},
+            {name: "Tipo de Servicio", link: "/tiposervicios"},
+            {name: "Servicios", link: "/servicios"},
             // {name: "Clientes", link: "/clients"},
         ]
     },
