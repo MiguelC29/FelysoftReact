@@ -93,6 +93,7 @@ export const Sidebar = () => {
 
     const handleClick = (item) => {
         console.log("activeItem", activeItem);
+        if (!isOpen) return;
         setActiveItem(item !== activeItem ? item : "");
     };
 
@@ -120,11 +121,13 @@ export const Sidebar = () => {
                                 isActive={activeItem === item.name}
                                 hasSubNav={!!item.items}
                                 link={item.link}
+                                isOpen={isOpen}
                             />
                             <SubMenu
                                 activeItem={activeItem}
                                 handleClick={handleClick}
                                 item={item}
+                                isOpen={isOpen}
                             />
                         </>
                     )}
@@ -155,12 +158,12 @@ const NavHeader = ({setIsOpen, isOpen}) => (
     </header>
 );
 
-const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link }) => (
+const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link, isOpen}) => (
     <button
         id="buttonsSide"
         type="button"
         onClick={() => onClick(name)}
-        className={isActive ? "active" : ""}
+        className={isOpen && isActive ? "active" : ""}
     >
         {/* ----- */}
         {icon && <Icon icon={icon} />}
@@ -171,7 +174,7 @@ const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link }) => (
     </button>
 );
 
-const SubMenu = ({ item, activeItem, handleClick }) => {
+const SubMenu = ({ item, activeItem, handleClick, isOpen }) => {
     const navRef = useRef(null);
 
     const isSubNavOpen = (item, items) =>
@@ -181,7 +184,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
         <div
             className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
             style={{
-                height: !isSubNavOpen(item.name, item.items)
+                height: !isOpen || !isSubNavOpen(item.name, item.items)
                     ? 0
                     : navRef.current?.clientHeight,
             }}
@@ -193,6 +196,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
                         name={subItem.name}
                         isActive={activeItem === subItem.name}
                         link={subItem.link}
+                        isOpen={isOpen}
                     />
                 ))}
             </div>
