@@ -87,14 +87,63 @@ const menuItems = [
     },
 ];
 
+export const Sidebar = () => {
+    const [activeItem, setActiveItem] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClick = (item) => {
+        console.log("activeItem", activeItem);
+        setActiveItem(item !== activeItem ? item : "");
+    };
+
+    return (
+        <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+            <NavHeader setIsOpen={setIsOpen} isOpen={isOpen}/>
+            {menuItems.map((item) => (
+                <div>
+                    {!item.items && (
+                        <NavButton
+                            onClick={handleClick}
+                            name={item.name}
+                            icon={item.icon}
+                            isActive={activeItem === item.name}
+                            hasSubNav={!!item.items}
+                            link={item.link}
+                        />
+                    )}
+                    {item.items && (
+                        <>
+                            <NavButton
+                                onClick={handleClick}
+                                name={item.name}
+                                icon={item.icon}
+                                isActive={activeItem === item.name}
+                                hasSubNav={!!item.items}
+                                link={item.link}
+                            />
+                            <SubMenu
+                                activeItem={activeItem}
+                                handleClick={handleClick}
+                                item={item}
+                            />
+                        </>
+                    )}
+                </div>
+            ))}
+        </aside>
+    );
+};
+
 const Icon = ({ icon }) => (
     <span className="material-symbols-outlined">{icon}</span>
 );
 
-const NavHeader = () => (
+const NavHeader = ({setIsOpen, isOpen}) => (
     <header className="sidebar-header">
-        <button type="button" id="buttonsSide">
-            <Icon icon="menu" />
+        <button type="button" id="buttonsSide" onClick={() => setIsOpen(!isOpen)}>
+            <span className="material-symbols-outlined">
+              {isOpen ? <Icon icon="close" /> : <Icon icon="menu" />}
+            </span>
         </button>
         <div class="user">
             <img src="https://i.postimg.cc/HLH1VGmw/user.png" alt="Foto de perfil"></img>
@@ -148,51 +197,5 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
                 ))}
             </div>
         </div>
-    );
-};
-
-export const Sidebar = () => {
-    const [activeItem, setActiveItem] = useState("");
-
-    const handleClick = (item) => {
-        console.log("activeItem", activeItem);
-        setActiveItem(item !== activeItem ? item : "");
-    };
-
-    return (
-        <aside className="sidebar">
-            <NavHeader />
-            {menuItems.map((item) => (
-                <div>
-                    {!item.items && (
-                        <NavButton
-                            onClick={handleClick}
-                            name={item.name}
-                            icon={item.icon}
-                            isActive={activeItem === item.name}
-                            hasSubNav={!!item.items}
-                            link={item.link}
-                        />
-                    )}
-                    {item.items && (
-                        <>
-                            <NavButton
-                                onClick={handleClick}
-                                name={item.name}
-                                icon={item.icon}
-                                isActive={activeItem === item.name}
-                                hasSubNav={!!item.items}
-                                link={item.link}
-                            />
-                            <SubMenu
-                                activeItem={activeItem}
-                                handleClick={handleClick}
-                                item={item}
-                            />
-                        </>
-                    )}
-                </div>
-            ))}
-        </aside>
     );
 };
