@@ -25,9 +25,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.containerTable {
+  margin-left: 18rem; /* Ajusta el margen izquierdo para dejar espacio para la barra lateral */
+}
+
 .card {
   background: var(--surface-card);
   padding: 2rem;
   border-radius: 10px;
   margin-bottom: 1rem;
+  z-index: 999; /* Ajusta el valor del z-index según sea necesario */
 }
