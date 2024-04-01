@@ -10,6 +10,15 @@ import Services from './pages/ViewServices';
 import Employees from './pages/ViewEmployees';
 import Charges from './pages/ViewCharges';
 
+//gastos e ingresos
+import ViewExpenses from './pages/ViewExpenses';
+import ViewPurchases from './pages/ViewPurchases';
+import ViewSales from './pages/ViewSales';
+import ViewPayments from './pages/ViewPayments';
+import ViewDetails from './pages/ViewDetails';
+
+
+
 
 export default function App() {
   return (
@@ -24,7 +33,14 @@ export default function App() {
         <Route path='/tiposervicios' element={<Typeservices />} />
         <Route path='/servicios' element={<Services />} />
         <Route path='/empleados' element={<Employees />} />
-        <Route path='/cargos' element={<Charges />} />
+        <Route path='/cargos' element={<Charges />} />  
+        <Route path='/gastos' element={<ViewExpenses />} />
+        <Route path='/compras' element={<ViewPurchases />} />
+        <Route path='/ventas' element={<ViewSales />} />
+        <Route path='/pagos' element={<ViewPayments />} />
+        <Route path='/detalles' element={<ViewDetails />} />
+
+
       </Routes>
     </BrowserRouter>
   );

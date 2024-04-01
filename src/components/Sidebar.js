@@ -29,9 +29,9 @@ const menuItems = [
         name: "Venta",
         icon: "shopping_cart",
         items: [
-            {name: "Carrito de Compras", link: "/ventas"},
+            {name: "Carrito de Compras", link: "/santi"},
             {name: "Gastos", link: "/gastos"},
-            {name: "Ingresos", link: "/ingresos"},
+            {name: "Ventas", link: "/ventas"},
             {name: "Pagos", link: "/pagos"},
         ]
     },
