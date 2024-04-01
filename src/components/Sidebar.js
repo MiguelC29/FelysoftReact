@@ -83,7 +83,7 @@ const menuItems = [
     {
         name: "Cerrar sesión",
         icon: "logout",
-        link: "",
+        link: "/registroUsuario",
     },
 ];
 

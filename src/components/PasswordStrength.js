@@ -17,7 +17,7 @@ const getStrength = (password) => {
   return strengthLabels[strengthIndicator];
 };
 
-export const RegistrationForm = () => {
+export default function PasswordStrength() {
   const [Id, setId] = useState("");
   const [DocumentType, setDocumentType] = useState("");
   const [FirstName, setFirstName] = useState("");
@@ -63,16 +63,16 @@ export const RegistrationForm = () => {
 
   return (
     <div className="page">
-      <div className="login-card">
+      <div className="login-card text-white">
         <img src={logo} alt="Logo" />
-        <h2>Registration Form</h2>
+        <h2>Formulario de Registro</h2>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="ID"
+            placeholder="Documento de Identificación"
             value={Id}
             onChange={(e) => setId(e.target.value)}
           />
@@ -81,7 +81,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Document Type"
+            placeholder="Tipo de documento"
             value={DocumentType}
             onChange={(e) => setDocumentType(e.target.value)}
           />
@@ -90,7 +90,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="First Name"
+            placeholder="Nombres"
             value={FirstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
@@ -99,7 +99,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Last Name"
+            placeholder="Apellidos"
             value={LastName}
             onChange={(e) => setLastName(e.target.value)}
           />
@@ -108,7 +108,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Address"
+            placeholder="Dirección"
             value={Address}
             onChange={(e) => setAddress(e.target.value)}
           />
@@ -117,7 +117,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Phone"
+            placeholder="Teléfono"
             value={Phone}
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -135,7 +135,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Gender"
+            placeholder="Género"
             value={Gender}
             onChange={(e) => setGender(e.target.value)}
           />
@@ -144,7 +144,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="text"
-            placeholder="Username"
+            placeholder="Nombre de usuario"
             value={Username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -162,7 +162,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             value={Password}
             onChange={handleChange}
           />
@@ -175,7 +175,7 @@ export const RegistrationForm = () => {
             spellCheck="false"
             className="control"
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirmar Contraseña"
             value={ConfirmPassword}
             onChange={handleConfirmPasswordChange}
           />
@@ -185,7 +185,7 @@ export const RegistrationForm = () => {
           <div className="strength">{ConfirmStrength && `${ConfirmStrength} Confirm Password`}</div>
           
           <button className="control" type="submit">
-            Register
+            Regístrate
           </button>
         </form>
       </div>

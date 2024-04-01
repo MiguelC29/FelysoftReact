@@ -19,6 +19,12 @@ import ViewServices from './pages/ViewServices';
 import ViewEmployees from './pages/ViewEmployees';
 import ViewCharges from './pages/ViewCharges';
 
+import PasswordStrength from './components/PasswordStrength';
+
+
+        
+
+
 
 export default function App() {
   return (
@@ -39,6 +45,9 @@ export default function App() {
         <Route path='/ventas' element={<ViewSales />} />
         <Route path='/pagos' element={<ViewPayments />} />
         <Route path='/detalles' element={<ViewDetails />} />
+
+
+        <Route path='/registroUsuario' element={<PasswordStrength />} />
 
 
       </Routes>
