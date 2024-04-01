@@ -90,9 +90,9 @@ const Icon = ({ icon }) => (
     <span className="material-symbols-outlined">{icon}</span>
 );
 
-const NavHeader = ({ toggleSidebar }) => (
+const NavHeader = () => (
     <header className="sidebar-header">
-        <button type="button" id="buttonsSide" onClick={toggleSidebar}>
+        <button type="button" id="buttonsSide">
             <Icon icon="menu" />
         </button>
         <div class="user">
@@ -150,7 +150,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
     );
 };
 
-export const Sidebar = ({ expanded, toggleSidebar }) => {
+export const Sidebar = () => {
     const [activeItem, setActiveItem] = useState("");
 
     const handleClick = (item) => {
@@ -159,8 +159,8 @@ export const Sidebar = ({ expanded, toggleSidebar }) => {
     };
 
     return (
-        <aside className={`sidebar ${expanded ? 'expanded' : 'reduced'}`}>
-            <NavHeader toggleSidebar={toggleSidebar}/>
+        <aside className="sidebar">
+            <NavHeader />
             {menuItems.map((item) => (
                 <div>
                     {!item.items && (
