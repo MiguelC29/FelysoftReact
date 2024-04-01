@@ -88,7 +88,7 @@ export default function TypeServices() {
         method = 'POST';
       }
 
-      sendRequest(method, parameters, url, setTypeservices, URL, operation, toast, 'Tipo de Servicio');
+      sendRequest(method, parameters, url, setTypeservices, URL, operation, toast, 'Tipo de Servicio ');
       setTypeServiceDialog(false);
       setTypeService(emptyTypeService);
     }

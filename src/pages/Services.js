@@ -112,7 +112,7 @@ export default function Services() {
         method = 'POST';
       }
 
-      sendRequest(method, parameters, url, setServices, URL, operation, toast, 'Servicio');
+      sendRequest(method, parameters, url, setServices, URL, operation, toast, 'Servicio ');
       setServiceDialog(false);
       setService(emptyService);
     }

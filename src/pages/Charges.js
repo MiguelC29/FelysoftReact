@@ -84,7 +84,7 @@ export default function Charges() {
         method = 'POST';
       }
 
-      sendRequest(method, parameters, url, setCharges, URL, operation, toast, 'Cargo');
+      sendRequest(method, parameters, url, setCharges, URL, operation, toast, 'Cargo ');
       setChargeDialog(false);
       setCharge(emptyCharge);
     }

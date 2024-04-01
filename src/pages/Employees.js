@@ -98,7 +98,7 @@ export default function Employees() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setEmployees, URL, operation, toast);
+            sendRequest(method, parameters, url, setEmployees, URL, operation, toast, 'Empleado ');
             setEmployeeDialog(false);
             setEmployee(emptyEmployee);
         }
