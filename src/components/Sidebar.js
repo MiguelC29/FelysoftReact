@@ -165,8 +165,8 @@ export default function MiniDrawer({ children }) {
                         {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} /> : <Icon icon={'chevron_left'} />}
                     </IconButton>
                 </DrawerHeader>
-                <Divider />
-                <List>
+                <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
+                <List className = 'mt-4'>
                     {[
                         {
                             name: "Inicio",
@@ -253,7 +253,8 @@ export default function MiniDrawer({ children }) {
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
+                                        px: 2,
+                                        py: 2.5,
                                         marginLeft: 3.5,
                                     }}
                                     onClick={() => item.items && handleExpand(item.name)}
@@ -300,7 +301,7 @@ export default function MiniDrawer({ children }) {
                         </React.Fragment>
                     ))}
                 </List>
-                <Divider />
+                <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
             </Drawer>
             <ContentWrapper open={open}>
                 {children}
