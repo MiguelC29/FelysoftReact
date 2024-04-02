@@ -30,7 +30,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path='/' element={<InicioSesion />} />
+        <Route path='/' element={<InicioSesion />} />
         <Route path='/categorias' element={<ViewCategories />} />
         <Route path='/roles' element={<ViewRoles />} />
         <Route path='/productos' element={<ViewProducts />} />
@@ -49,7 +49,7 @@ export default function App() {
         <Route path='/libros' element={<ViewBooks />} />
         <Route path='/reservas' element={<ViewReserves />} />
         <Route path='/autores' element={<ViewAuthors />} />
-        <Route path='/generos' element={<ViewGenres/>} />
+        <Route path='/generos' element={<ViewGenres />} />
         <Route path='/registroUsuario' element={<PasswordStrength />} />
 
       </Routes>
