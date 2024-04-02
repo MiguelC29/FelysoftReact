@@ -1,7 +1,7 @@
 import React from 'react'
 import Sales from '../components/data_tables/Sales';
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/newSidebar';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewSales() {
   return (

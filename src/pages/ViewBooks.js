@@ -1,5 +1,5 @@
 import React from 'react';
-import MiniDrawer from '../components/newSidebar';
+import MiniDrawer from '../components/Sidebar';
 import Books from '../components/data_tables/Books';
 import { Box } from '@mui/material';
 

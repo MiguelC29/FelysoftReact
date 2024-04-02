@@ -1,7 +1,7 @@
 import React from 'react'
 import Roles from '../components/data_tables/Roles'
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/newSidebar';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewRoles() {
     return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import Payments from '../components/data_tables/Payments';
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/newSidebar';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewPayments() {
   return (

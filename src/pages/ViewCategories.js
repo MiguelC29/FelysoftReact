@@ -1,7 +1,7 @@
 import React from 'react';
 import Categories from '../components/data_tables/Categories';
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/newSidebar';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewCategories() {
     return (
