@@ -1,16 +1,16 @@
 import React from 'react'
-import { Sidebar } from '../components/Sidebar'
 import Roles from '../components/data_tables/Roles'
+import { Box } from '@mui/material';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewRoles() {
     return (
         <div>
-            <div>
-                <Sidebar />
-                <div className='containerTable'>
+            <MiniDrawer>
+                <Box sx={{ marginTop: 10, mx: 2 }}>
                     <Roles />
-                </div>
-            </div>
+                </Box>
+            </MiniDrawer>
         </div>
-    )
+    );
 }

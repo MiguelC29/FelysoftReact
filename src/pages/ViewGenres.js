@@ -1,16 +1,16 @@
 import React from 'react'
-import { Sidebar } from '../components/Sidebar'
 import Genres from '../components/data_tables/Genres';
+import { Box } from '@mui/material';
+import MiniDrawer from '../components/Sidebar';
 
 export default function ViewGenres() {
     return (
         <div>
-            <div>
-                <Sidebar />
-                <div className='containerTable'>
+            <MiniDrawer>
+                <Box sx={{ marginTop: 10, mx: 2 }}>
                     <Genres />
-                </div>
-            </div>
+                </Box>
+            </MiniDrawer>
         </div>
-    )
+    );
 }

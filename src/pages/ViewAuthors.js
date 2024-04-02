@@ -1,16 +1,16 @@
 import React from 'react'
-import { Sidebar } from '../components/Sidebar'
 import Authors from '../components/data_tables/Authors'
+import MiniDrawer from '../components/Sidebar';
+import { Box } from '@mui/material';
 
 export default function ViewAuthors() {
     return (
         <div>
-            <div>
-                <Sidebar />
-                <div className='containerTable'>
+            <MiniDrawer>
+                <Box sx={{ marginTop: 10, mx: 2 }}>
                     <Authors />
-                </div>
-            </div>
+                </Box>
+            </MiniDrawer>
         </div>
-    )
+    );
 }
