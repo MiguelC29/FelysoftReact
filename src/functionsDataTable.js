@@ -65,7 +65,7 @@ export const sendRequestAsc = (method, parameters, url, toast) => {
         .catch((error) => {
             if (error.response.data.data === 'Asociación existente') {
                 // Si el error es de asociación existente, mostramos el mensaje personalizado
-                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
+                toast.current.show({ severity: 'info', summary: 'Asociación Existente', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
             } else {
                 // Para otros errores, mostramos un mensaje genérico de asociación fallida
                 toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Asociación fallida', life: 3000 });

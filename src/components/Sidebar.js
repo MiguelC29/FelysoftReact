@@ -151,15 +151,18 @@ export default function MiniDrawer({ children }) {
                         <Icon icon={'menu'} />
                     </IconButton>
                     <LogoImage src={logo} alt="" />
-                    <Typography variant="h6" noWrap component="div">
+                    {!open && <Typography variant="h6" noWrap component="div">
                         FELYSOFT
-                    </Typography>
+                    </Typography>}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
+                <Typography variant="h6" noWrap component="div" className='mr-6'>
+                    FELYSOFT
+                </Typography>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} /> : <Icon icon={'chevron_left'}/>}
+                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} /> : <Icon icon={'chevron_left'} />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
@@ -174,7 +177,7 @@ export default function MiniDrawer({ children }) {
                             name: "Almacen",
                             icon: <Icon icon='inventory_2' />,
                             items: [
-                                
+
                                 { name: "Productos", icon: <IconSubItems />, link: "/productos" },
                                 { name: "Categorías", icon: <IconSubItems />, link: "/categorias" },
                                 { name: "Libros", icon: <IconSubItems />, link: "/libros" },
@@ -266,7 +269,7 @@ export default function MiniDrawer({ children }) {
                                                 ml: 'auto',
                                             }}
                                         >
-                                        {<Icon icon='expand_more' />}
+                                            {<Icon icon='expand_more' />}
                                         </IconButton>
                                     )}
                                 </ListItemButton>
