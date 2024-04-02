@@ -87,81 +87,19 @@ const menuItems = [
     },
 ];
 
-const Icon = ({ icon }) => (
-    <span className="material-symbols-outlined">{icon}</span>
-);
-
-const NavHeader = () => (
-    <header className="sidebar-header">
-        <button type="button" id="buttonsSide">
-            <Icon icon="menu" />
-        </button>
-        <div class="user">
-            <img src="https://i.postimg.cc/HLH1VGmw/user.png" alt="Foto de perfil"></img>
-            <div class="name">
-                <h5>GAES 3</h5>
-                <span>Admin</span>
-            </div>
-        </div>
-    </header>
-);
-
-const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link }) => (
-    <button
-        id="buttonsSide"
-        type="button"
-        onClick={() => onClick(name)}
-        className={isActive ? "active" : ""}
-    >
-        {/* ----- */}
-        {icon && <Icon icon={icon} />}
-        <Link to={link} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <span>{name}</span>
-        </Link>
-        {hasSubNav && <Icon icon="expand_more" />}
-    </button>
-);
-
-const SubMenu = ({ item, activeItem, handleClick }) => {
-    const navRef = useRef(null);
-
-    const isSubNavOpen = (item, items) =>
-        items.some((i) => i === activeItem) || item === activeItem;
-
-    return (
-        <div
-            className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
-            style={{
-                height: !isSubNavOpen(item.name, item.items)
-                    ? 0
-                    : navRef.current?.clientHeight,
-            }}
-        >
-            <div ref={navRef} className="sub-nav-inner">
-                {item?.items.map((subItem) => (
-                    <NavButton
-                        onClick={handleClick}
-                        name={subItem.name}
-                        isActive={activeItem === subItem.name}
-                        link={subItem.link}
-                    />
-                ))}
-            </div>
-        </div>
-    );
-};
-
 export const Sidebar = () => {
     const [activeItem, setActiveItem] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleClick = (item) => {
         console.log("activeItem", activeItem);
+        if (!isOpen) return;
         setActiveItem(item !== activeItem ? item : "");
     };
 
     return (
-        <aside className="sidebar">
-            <NavHeader />
+        <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+            <NavHeader setIsOpen={setIsOpen} isOpen={isOpen}/>
             {menuItems.map((item) => (
                 <div>
                     {!item.items && (
@@ -183,16 +121,85 @@ export const Sidebar = () => {
                                 isActive={activeItem === item.name}
                                 hasSubNav={!!item.items}
                                 link={item.link}
+                                isOpen={isOpen}
                             />
                             <SubMenu
                                 activeItem={activeItem}
                                 handleClick={handleClick}
                                 item={item}
+                                isOpen={isOpen}
                             />
                         </>
                     )}
                 </div>
             ))}
         </aside>
+    );
+};
+
+const Icon = ({ icon }) => (
+    <span className="material-symbols-outlined">{icon}</span>
+);
+
+const NavHeader = ({setIsOpen, isOpen}) => (
+    <header className="sidebar-header">
+        <button type="button" id="buttonsSide" onClick={() => setIsOpen(!isOpen)}>
+            <span className="material-symbols-outlined">
+              {isOpen ? <Icon icon="close" /> : <Icon icon="menu" />}
+            </span>
+        </button>
+        <div class="user">
+            <img src="https://i.postimg.cc/HLH1VGmw/user.png" alt="Foto de perfil"></img>
+            <div class="name">
+                <h5>GAES 3</h5>
+                <span>Admin</span>
+            </div>
+        </div>
+    </header>
+);
+
+const NavButton = ({ onClick, name, icon, isActive, hasSubNav, link, isOpen}) => (
+    <button
+        id="buttonsSide"
+        type="button"
+        onClick={() => onClick(name)}
+        className={isOpen && isActive ? "active" : ""}
+    >
+        {/* ----- */}
+        {icon && <Icon icon={icon} />}
+        <Link to={link} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span>{name}</span>
+        </Link>
+        {hasSubNav && <Icon icon="expand_more" />}
+    </button>
+);
+
+const SubMenu = ({ item, activeItem, handleClick, isOpen }) => {
+    const navRef = useRef(null);
+
+    const isSubNavOpen = (item, items) =>
+        items.some((i) => i === activeItem) || item === activeItem;
+
+    return (
+        <div
+            className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
+            style={{
+                height: !isOpen || !isSubNavOpen(item.name, item.items)
+                    ? 0
+                    : navRef.current?.clientHeight,
+            }}
+        >
+            <div ref={navRef} className="sub-nav-inner">
+                {item?.items.map((subItem) => (
+                    <NavButton
+                        onClick={handleClick}
+                        name={subItem.name}
+                        isActive={activeItem === subItem.name}
+                        link={subItem.link}
+                        isOpen={isOpen}
+                    />
+                ))}
+            </div>
+        </div>
     );
 };
