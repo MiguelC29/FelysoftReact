@@ -101,7 +101,7 @@ export const confirmDelete = (nameTable, setData, setDeleteDialog) => {
 };
 
 export const header = (nameTable, globalFilter) => (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+    <div className="bg-dark text-white flex flex-wrap gap-2 align-items-center justify-content-between">
         <h4 className="m-0">Lista de {nameTable}</h4>
         <span className="p-input-icon-left">
             <i className="pi pi-search" />

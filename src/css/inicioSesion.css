@@ -80,13 +80,7 @@
   color: transparent;
 }
 
-.input__field:placeholder-shown
-~.input__label {
-  font-size: 1rem;
-  cursor: text;
-  color: var(--secondary);
-  top: 1.5rem;
-}
+
 
 .input__label,
 .input__field:focus~.input__label {

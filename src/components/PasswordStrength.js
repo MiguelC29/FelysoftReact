@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
-import "./styles.css";
+import "../css/registroUsuario.css";
 
 const strengthLabels = ["weak", "medium", "medium", "strong"];
 
@@ -62,20 +62,24 @@ export default function PasswordStrength() {
   };
 
   return (
-    <div className="page">
+    <div className="page bg-custom"> {/* Añadí la clase 'bg-primary' para el color de fondo */}
       <div className="login-card text-white">
         <img src={logo} alt="Logo" />
         <h2>Formulario de Registro</h2>
         <form className="login-form" onSubmit={handleSubmit}>
+        <div className="input__wrapper">
           <input
             autoComplete="off"
             spellCheck="false"
             className="control"
             type="text"
             placeholder="Documento de Identificación"
+            required
             value={Id}
             onChange={(e) => setId(e.target.value)}
+
           />
+          </div>
           <input
             autoComplete="off"
             spellCheck="false"

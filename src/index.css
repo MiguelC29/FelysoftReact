@@ -28,7 +28,10 @@ body {
 .containerTable {
   margin-left: 18rem; /* Ajusta el margen izquierdo para dejar espacio para la barra lateral */
 }
-
+.map{
+  /*background-image: linear-gradient(355deg, #7affff 0, #7be8ff 25%, #76c3f6 50%, #6d9fc6 75%, #617f99 100%);*/
+  background-color: #98c0f6 ;
+}
 .card {
   background: var(--surface-card);
   padding: 2rem;

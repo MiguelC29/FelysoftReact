@@ -26,7 +26,7 @@ body {
     width: 260px;
     height: 100%;
     padding: 0 16px;
-    background: #1d212a;
+    background: #4a6eb0;
     border-right: 1px solid #2e303e;
     transition: width 0.4s;
     z-index: 1000; /* Ajusta el valor del z-index según sea necesario */
