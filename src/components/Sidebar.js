@@ -254,6 +254,7 @@ export default function MiniDrawer({ children }) {
                                         marginLeft: 3.5,
                                     }}
                                     onClick={() => item.items && handleExpand(item.name)}
+                                    href={item.link}
                                 >
                                     <ListItemIcon>
                                         {item.icon}
