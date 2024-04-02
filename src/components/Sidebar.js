@@ -215,7 +215,7 @@ export default function MiniDrawer({ children }) {
                             icon: <Icon icon='deployed_code' />,
                             items: [
                                 { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos" },
-                                { name: "Libros Digitales", icon: <IconSubItems />, link: "inventarioLibros" },
+                                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros" },
                             ]
                         },
                         {

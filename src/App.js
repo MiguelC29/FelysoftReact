@@ -25,6 +25,7 @@ import ViewReserves from './pages/ViewReserves';
 import ViewAuthors from './pages/ViewAuthors';
 import ViewGenres from './pages/ViewGenres';
 import { InicioSesion } from './components/IniciarSesion';
+import ViewBooksInventory from './pages/ViewBooksInventory';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
         <Route path='/usuarios' element={<ViewUsers />} />
         <Route path='/proveedores' element={<ViewProviders />} />
         <Route path='/inventarioProductos' element={<ViewProductInventory />} />
+        <Route path='/inventarioLibros' element={<ViewBooksInventory />} />
         <Route path='/tiposervicios' element={<ViewTypeservices />} />
         <Route path='/servicios' element={<ViewServices />} />
         <Route path='/empleados' element={<ViewEmployees />} />
