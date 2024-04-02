@@ -125,12 +125,12 @@ export default function MiniDrawer({ children }) {
         }
     };
 
-    const Icon = ({ icon }) => (
-        <span className="material-symbols-outlined">{icon}</span>
+    const Icon = ({ icon, textColor='text-black' }) => (
+        <span className={`material-symbols-outlined ${textColor}`}>{icon}</span>
     );
 
     const IconSubItems = () => (
-        <span className="material-symbols-outlined">arrow_right_alt</span>
+        <span className="material-symbols-outlined text-black text-opacity-75">arrow_right_alt</span>
     );
 
     return (
@@ -148,7 +148,7 @@ export default function MiniDrawer({ children }) {
                             ...(open && { display: 'none' }),
                         }}
                     >
-                        <Icon icon={'menu'} />
+                        <Icon icon={'menu'} textColor={'text-white'} />
                     </IconButton>
                     <LogoImage src={logo} alt="" />
                     {!open && <Typography variant="h6" noWrap component="div">
@@ -157,12 +157,12 @@ export default function MiniDrawer({ children }) {
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
+                <DrawerHeader className='bg-dark text-white'>
                 <Typography variant="h6" noWrap component="div" className='mr-6'>
                     FELYSOFT
                 </Typography>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} /> : <Icon icon={'chevron_left'} />}
+                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} textColor={'text-white'}/> : <Icon icon={'chevron_left'} textColor={'text-white'}/>}
                     </IconButton>
                 </DrawerHeader>
                 <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
