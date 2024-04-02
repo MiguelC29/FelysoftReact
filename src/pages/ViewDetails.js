@@ -1,16 +1,16 @@
 import React from 'react'
-import { Sidebar } from '../components/Sidebar'
 import Details from '../components/data_tables/Details';
+import { Box } from '@mui/material';
+import MiniDrawer from '../components/newSidebar';
 
 export default function ViewDetails() {
   return (
     <div>
-            <div>
-                <Sidebar />
-                <div className='containerTable'>
-                    <Details />
-                </div>
-            </div>
-        </div>
-  )
+        <MiniDrawer>
+            <Box sx={{ marginTop: 10, mx: 2 }}>
+                <Details />
+            </Box>
+        </MiniDrawer>
+    </div>
+);
 }

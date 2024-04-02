@@ -1,16 +1,16 @@
 import React from 'react'
-import { Sidebar } from '../components/Sidebar'
 import Providers from '../components/data_tables/Providers'
+import { Box } from '@mui/material';
+import MiniDrawer from '../components/newSidebar';
 
 export default function ViewProviders() {
     return (
         <div>
-            <div>
-                <Sidebar />
-                <div className='containerTable'>
+            <MiniDrawer>
+                <Box sx={{ marginTop: 10, mx: 2 }}>
                     <Providers />
-                </div>
-            </div>
+                </Box>
+            </MiniDrawer>
         </div>
-    )
+    );
 }
