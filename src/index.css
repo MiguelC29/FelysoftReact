@@ -71,3 +71,26 @@ body {
   /* background: rgba(221, 217, 217, 0.824); */
 
 }
+
+.dialog-btn-cancel:hover {
+  background: #f83b3b;
+  color: #e2dfdf;
+  /* transition: 5ms; */
+}
+
+.dialog-btn-confirm {
+  background: #0d56df;
+}
+
+.dialog-btn-confirm:hover {
+  background: #2867dd;
+}
+
+.confirm-dialog-delete {
+  color: #0D9276;
+}
+
+.confirm-dialog-delete:hover {
+  background-color: #0D9276;
+  color: #e2dfdf;
+}

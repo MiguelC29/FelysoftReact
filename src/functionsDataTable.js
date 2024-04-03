@@ -1,9 +1,9 @@
-import React from 'react';
-import axios from 'axios'
-import { InputText } from 'primereact/inputtext';
-import { Dialog } from 'primereact/dialog';
-import { Button } from 'primereact/button';
+import axios from 'axios';
 import { format } from 'date-fns';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import React from 'react';
 import ExportDropdown from './components/ExportDropDown';
 
 export const getData = async (url, setData) => {
@@ -141,21 +141,21 @@ export const actionBodyTemplateInv = (rowData, updateStock, resetStock) => {
 
 export const DialogFooter = (hideDialog, saveData) => (
     <React.Fragment>
-        <Button label="Cancelar" icon="pi pi-times" className='mr-2 rounded' severity="danger" outlined onClick={hideDialog} />
-        <Button label="Guardar" icon="pi pi-check" className="rounded" severity="info" onClick={saveData} />
+        <Button label="Cancelar" icon="pi pi-times" className='dialog-btn-cancel mr-2 rounded' severity="danger" outlined onClick={hideDialog} />
+        <Button label="Guardar" icon="pi pi-check" className="dialog-btn-confirm rounded" onClick={saveData} />
     </React.Fragment>
 );
 export const deleteDialogFooter = (hideDeleteDialog, deleteData) => (
     <React.Fragment>
-        <Button label="No" icon="pi pi-times" className='mr-2 rounded' outlined onClick={hideDeleteDialog} />
+        <Button label="No" icon="pi pi-times" className='confirm-dialog-delete mr-2 rounded' outlined onClick={hideDeleteDialog} />
         <Button label="Si" icon="pi pi-check" className='rounded' severity="danger" onClick={deleteData} />
     </React.Fragment>
 );
 
 export const confirmDialogFooter = (hideDeleteDialog, saveData) => (
     <React.Fragment>
-        <Button label="Cancelar" icon="pi pi-times" className='mr-2 rounded' outlined onClick={hideDeleteDialog} />
-        <Button label="Confirmar" icon="pi pi-check" className='rounded' severity="info" onClick={saveData} />
+        <Button label="Cancelar" icon="pi pi-times" className='dialog-btn-cancel mr-2 rounded' severity="danger" outlined onClick={hideDeleteDialog} />
+        <Button label="Confirmar" icon="pi pi-check" className='dialog-btn-confirm rounded' severity="info" onClick={saveData} />
     </React.Fragment>
 );
 
