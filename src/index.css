@@ -29,8 +29,9 @@ body {
   margin-left: 18rem; /* Ajusta el margen izquierdo para dejar espacio para la barra lateral */
 }
 .map{
-  /*background-image: linear-gradient(355deg, #7affff 0, #7be8ff 25%, #76c3f6 50%, #6d9fc6 75%, #617f99 100%);*/
-  background-color: #98c0f6 ;
+  /* background-color: #2d717f; */
+  /* background-color: #3d91a0; */
+  background-color: #155899;
 }
 .card {
   background: var(--surface-card);
@@ -38,4 +39,35 @@ body {
   border-radius: 10px;
   margin-bottom: 1rem;
   z-index: 999; /* Ajusta el valor del z-index según sea necesario */
+}
+
+.p-datatable .p-datatable-header {
+  background: linear-gradient(to right, #e2dfdf, #e9e7e7d2);
+
+}
+/* 
+.p-datatable .p-datatable-wrapper .p-datatable-table .p-datatable-thead {
+  background-color: #c9c4c4;
+} */
+/* 
+.p-datatable-thead tr {
+  background-color: red;
+}
+
+.p-datatable-wrapper tr {
+  background: #cccccc;
+} */
+
+/* .p-paginator-page {
+  background-color: red;
+}
+
+.p-dropdown {
+  background-color: red;
+} */
+
+.p-datatable .p-paginator {
+  background: #f3f0f0d2;
+  /* background: rgba(221, 217, 217, 0.824); */
+
 }

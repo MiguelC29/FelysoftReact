@@ -23,7 +23,9 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
                     field={column.field}
                     header={column.header}
                     sortable={column.sortable}
-                    style={column.style}
+                    style={{
+                        background: '#f3f0f0d2'
+                    }}
                     body={column.body}
                     exportable={column.exportable}
                 />

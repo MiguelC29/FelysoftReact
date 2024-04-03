@@ -101,8 +101,8 @@ export const confirmDelete = (nameTable, setData, setDeleteDialog) => {
 };
 
 export const header = (nameTable, globalFilter) => (
-    <div className="bg-dark text-white flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Lista de {nameTable}</h4>
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+        <h4 className="m-0 text-black">Lista de {nameTable}</h4>
         <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
@@ -112,7 +112,7 @@ export const header = (nameTable, globalFilter) => (
 
 export const headerInv = (nameTable, globalFilter) => (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0">Inventario de {nameTable}</h4>
+        <h4 className="m-0 text-black">Inventario de {nameTable}</h4>
         <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
@@ -123,7 +123,7 @@ export const headerInv = (nameTable, globalFilter) => (
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     return (
         <React.Fragment>
-            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} />
+            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{background: '#0d56df'}}/>
             <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
         </React.Fragment>
     );

@@ -50,7 +50,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-    backgroundColor: 'black',
+    backgroundColor: '#19191a',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
@@ -125,8 +125,8 @@ export default function MiniDrawer({ children }) {
         }
     };
 
-    const Icon = ({ icon, textColor='text-black' }) => (
-        <span className={`material-symbols-outlined ${textColor}`}>{icon}</span>
+    const Icon = ({ icon, textColor }) => (
+        <span className={`material-symbols-outlined ${textColor}`} style={{color: '#19191a'}}>{icon}</span>
     );
 
     const IconSubItems = () => (
@@ -157,7 +157,7 @@ export default function MiniDrawer({ children }) {
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader className='bg-dark text-white'>
+                <DrawerHeader className='text-white' style={{background: '#323232'}}>
                 <Typography variant="h6" noWrap component="div" className='mr-6'>
                     FELYSOFT
                 </Typography>
