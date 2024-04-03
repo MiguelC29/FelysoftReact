@@ -4,6 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { format } from 'date-fns';
+import ExportDropdown from './components/ExportDropDown';
 
 export const getData = async (url, setData) => {
     await axios.get(url + 'all')
@@ -123,7 +124,7 @@ export const headerInv = (nameTable, globalFilter) => (
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
     return (
         <React.Fragment>
-            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{background: '#0d56df'}}/>
+            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
             <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
         </React.Fragment>
     );
@@ -234,10 +235,6 @@ export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation
     );
 };
 
-// export const rightToolbarTemplate = (exportCSV) => {
-//     return <Button label="Exportar" icon="pi pi-upload" className="p-button-help rounded" onClick={exportCSV} />;
-// };
-
 export const inputChange = (e, name, data, setData) => {
     const val = (e.target && e.target.value) || '';
     let _data = { ...data };
@@ -269,12 +266,7 @@ export const formatDate = (dateString) => {
 // Export data
 export const rightToolbarTemplateExport = (exportCSV, exportExcel, exportPDF) => {
     return (
-        <div className="flex align-items-center justify-content-end gap-2 export-buttons">
-            <span><b>Exportar:</b></span>
-            <Button type="button" icon="pi pi-file" onClick={() => exportCSV(false)} data-pr-tooltip="CSV" className='rounded' />
-            <Button type="button" icon="pi pi-file-excel" severity="success" onClick={exportExcel} data-pr-tooltip="XLS" className='rounded' />
-            <Button type="button" icon="pi pi-file-pdf" severity="warning" onClick={exportPDF} data-pr-tooltip="PDF" className='rounded' />
-        </div>
+        <ExportDropdown exportCSV={exportCSV} exportExcel={exportExcel} exportPDF={exportPDF} />
     )
 };
 
