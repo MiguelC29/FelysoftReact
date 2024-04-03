@@ -17,7 +17,7 @@ body{
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #19191a;
+  background: #265073;
   font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   color: #fdfdfd;
 }
@@ -40,9 +40,20 @@ body{
   text-align: center;
 }
 
+.container-logo {
+  width: 420px;
+  height: 480px;
+}
+
 .logo {
-  width: 350px;
-  margin-right: 5vh;
+  width: 370px;
+  padding: 3vh 3vh;
+  margin: 0 3vh;
+  transition: 200ms;
+}
+
+.logo:hover {
+  width: 380px;
 }
 
 .login-form {
