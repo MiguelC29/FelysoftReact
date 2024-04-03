@@ -133,7 +133,7 @@ export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
 export const actionBodyTemplateInv = (rowData, updateStock, resetStock) => {
     return (
         <React.Fragment>
-            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} />
+            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} style={{ background: '#0d56df', borderColor: '#0d56df'}}/>
             <Button icon="pi pi-replay" className="rounded" severity="danger" onClick={() => resetStock(rowData)} />
         </React.Fragment>
     );

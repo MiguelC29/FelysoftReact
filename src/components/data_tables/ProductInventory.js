@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable'
-import { classNames } from 'primereact/utils';
+import { Dialog } from 'primereact/dialog';
+import { InputNumber } from 'primereact/inputnumber';
+import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
-import { Dialog } from 'primereact/dialog';
-import CustomDataTable from '../CustomDataTable';
-import { Tag } from 'primereact/tag';
 import { Tooltip } from 'primereact/tooltip';
+import { classNames } from 'primereact/utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
+import CustomDataTable from '../CustomDataTable';
 
 export default function ProductInventory() {
 
@@ -62,8 +62,8 @@ export default function ProductInventory() {
         setConfirmDialogVisible(false);
         let url, method = 'PUT', parameters = { idInventory: productInv.idInventory, stock: productInv.stock };
         console.log(productInv.idInventory);
-        if (productInv.idInventory && productInv.stock) {
-            if (operation === 1) {
+        if (productInv.idInventory && (productInv.stock || productInv.stock === 0)) {
+            if (operation === 1 || productInv.stock === 0) {
                 url = URL.concat('updateStock/' + productInv.idInventory);
             } else {
                 url = URL.concat('resetStock/' + productInv.idInventory);
@@ -100,23 +100,23 @@ export default function ProductInventory() {
     );
 
     const statusBodyTemplate = (rowData) => {
-        return <Tag value={rowData.state} severity={getSeverity(rowData)}></Tag>;
+        return <Tag value={rowData.state} style={{background: getSeverity(rowData)}}></Tag>;
     };
 
     const stockBodyTemplate = (rowData) => {
-        return <Tag value={rowData.stock} severity={getSeverityStock(rowData)} rounded></Tag>;
+        return <Tag value={rowData.stock} style={{background: getSeverityStock(rowData)}} rounded></Tag>;
     };
 
     const getSeverity = (product) => {
         switch (product.state) {
             case 'DISPONIBLE':
-                return 'success';
+                return '#0D9276';
 
             case 'BAJO':
-                return 'warning';
+                return '#ff9209';
 
             case 'AGOTADO':
-                return 'danger';
+                return '#e72929';
 
             default:
                 return null;
@@ -125,12 +125,12 @@ export default function ProductInventory() {
 
     const getSeverityStock = (product) => {
 
-        if (product.stock <= 1) {
-            return 'danger';
+        if (product.stock < 1) {
+            return '#e72929';
         } else if (product.stock < 6) {
-            return 'warning';
+            return '#ff9209';
         } else if (product.stock >= 6) {
-            return 'success';
+            return '#0D9276';
         } else {
             return null
         }
