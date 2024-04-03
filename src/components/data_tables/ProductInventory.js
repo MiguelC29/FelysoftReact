@@ -63,7 +63,7 @@ export default function ProductInventory() {
         let url, method = 'PUT', parameters = { idInventory: productInv.idInventory, stock: productInv.stock };
         console.log(productInv.idInventory);
         if (productInv.idInventory && (productInv.stock || productInv.stock === 0)) {
-            if (operation === 1 || productInv.stock === 0) {
+            if (operation === 1) {
                 url = URL.concat('updateStock/' + productInv.idInventory);
             } else {
                 url = URL.concat('resetStock/' + productInv.idInventory);
@@ -129,10 +129,8 @@ export default function ProductInventory() {
             return '#e72929';
         } else if (product.stock < 6) {
             return '#ff9209';
-        } else if (product.stock >= 6) {
-            return '#0D9276';
         } else {
-            return null
+            return '#0D9276';
         }
     };
 
