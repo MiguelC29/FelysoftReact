@@ -4,8 +4,8 @@ import logo from "../img/logo.svg";
 export const InicioSesion = () => {
   return (
     <div className="page">
+      <img className="logo" src={logo} alt="Logo"/>
       <div className="login-card"> 
-      <img src={logo} alt="Logo"/>
         <div className="content">
       <h2>Iniciar Sesión</h2>
           <form className="login-form">
@@ -38,7 +38,7 @@ export const InicioSesion = () => {
             </div>
             
             <button className="control" type="button">
-              Iniciar Sesión
+              INICIAR SESIÓN
             </button>
           </form>
         </div>

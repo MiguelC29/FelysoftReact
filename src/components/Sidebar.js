@@ -118,10 +118,12 @@ export default function MiniDrawer({ children }) {
     };
 
     const handleExpand = (itemName) => {
-        if (expandedItem === itemName) {
-            setExpandedItem('');
-        } else {
-            setExpandedItem(itemName);
+        if (open) {
+            if (expandedItem === itemName) {
+                setExpandedItem('');
+            } else {
+                setExpandedItem(itemName);
+            }
         }
     };
 
