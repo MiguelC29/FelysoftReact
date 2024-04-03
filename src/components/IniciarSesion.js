@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import "../css/inicioSesion.css";
 import logo from "../img/logo.svg";
+
 
 export const InicioSesion = () => {
   return (
@@ -10,7 +12,7 @@ export const InicioSesion = () => {
       <div className="login-card" style={{borderRadius: '20px 80px 80px 20px'}}>
         <div className="content">
           <h2>Iniciar Sesión</h2>
-          <form className="login-form">
+          <form className="login-form" style={{background: '#19191a'}}>
             <div className="input__wrapper">
               <input
                 autoComplete="off"
@@ -40,7 +42,7 @@ export const InicioSesion = () => {
             </div>
 
             <button className="control" type="button">
-              INICIAR SESIÓN
+              <Link to={'/productos'} className='text-white text-decoration-none'>INICIAR SESIÓN</Link>
             </button>
           </form>
         </div>
