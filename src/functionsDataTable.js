@@ -222,15 +222,15 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
 export const leftToolbarTemplate = (openNew) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073' , border:'none'}} />
         </div>
     );
 };
 export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} />
-            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" severity="info" onClick={openAsociation} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073', border:'none' }} />
+            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" severity="info" onClick={openAsociation} style={{ background: '#0D9276' , border:'none'}} />
         </div>
     );
 };
