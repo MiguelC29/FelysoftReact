@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -33,17 +33,15 @@ export default function Purchases() {
         REEMBOLSADO: 'REEMBOLSADO',
         VENCIDO: 'VENCIDO'
     };
-    
 
     const URL = 'http://localhost:8086/api/purchase/';
+    const Url = "http://localhost:8086/api/purchase/expensePurchase/";
     const [purchases, setPurchases] = useState([]);
+    const [providers, setProviders] = useState([]);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
-    const [providers, setProviders] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState(null);
-
     const [expensePurchase, setExpensePurchase] = useState();
-
     const [purchaseDialog, setPurchaseDialog] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [purchase, setPurchase] = useState(emptyPurchase);
@@ -58,32 +56,41 @@ export default function Purchases() {
     useEffect(() => {
         getData(URL, setPurchases);
         getData('http://localhost:8086/api/provider/', setProviders);
-    }, []);
+        // Verifica si expensePurchase tiene datos y si contiene la descripción
+        if (expensePurchase && expensePurchase.description) {
+            setPurchase(prevPurchase => ({ ...prevPurchase, description: expensePurchase.description })); // Establece la descripción basada en los datos recibidos
+        }
+        // Verifica si expensePurchase tiene datos de pago y si contiene el método de pago
+        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.methodPayment) {
+            setSelectedMethodPayment(expensePurchase.payment.methodPayment); // Establece el método de pago basado en los datos recibidos
+        }
+        // Verifica si expensePurchase tiene datos de pago y si contiene el estado
+        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.state) {
+            setSelectedState(expensePurchase.payment.state); // Establece el estado basado en los datos recibidos
+        }
+    }, [expensePurchase]);
 
     const openNew = () => {
         setPurchase(emptyPurchase);
         setTitle('Registrar Compra');
         setSelectedProvider('');
-        //getData('http://localhost:8086/api/provider/', setProviders);
+        setSelectedMethodPayment('');
+        setSelectedState('');
         setOperation(1);
         setSubmitted(false);
         setPurchaseDialog(true);
     };
-    
-    const Url = "http://localhost:8086/api/purchase/expensePurchase/";
+
     const editPurchase = (purchase) => {
         setPurchase({ ...purchase });
-        getData('http://localhost:8086/api/provider/', setProviders);
+        // Obtener los datos de expensePurchase
         getOneData(Url.concat(purchase.idPurchase), setExpensePurchase);
         setSelectedProvider(purchase.provider);
-        (!expensePurchase) || setSelectedMethodPayment(expensePurchase.payment.methodPayment);
-        (!expensePurchase) || setSelectedState(expensePurchase.payment.state);
         setTitle('Editar Compra');
         setOperation(2);
         setPurchaseDialog(true);
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setPurchaseDialog(false);
@@ -97,25 +104,26 @@ export default function Purchases() {
         setDeletePurchaseDialog(false);
     };
 
-    
-
     const savePurchase = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
-        if (purchase.total && purchase.provider) {
+        console.log(purchase);
+        if (purchase.total &&
+            purchase.provider &&
+            purchase.description &&
+            purchase.methodPayment &&
+            purchase.state) {
             let url, method, parameters;
 
             if (purchase.idPurchase && operation === 2) {
                 parameters = {
-                    idPurchase: purchase.idPurchase, total: purchase.total, description: purchase.description, methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
+                    idPurchase: purchase.idPurchase, total: purchase.total, description: purchase.description.trim(), methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
                 };
                 url = URL + 'update/' + purchase.idPurchase;
                 method = 'PUT';
             } else {
-                // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
-                    total: purchase.total, description: purchase.description, methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
+                    total: purchase.total, description: purchase.description.trim(), methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
                 };
                 url = URL + 'create';
                 method = 'POST';
@@ -146,7 +154,6 @@ export default function Purchases() {
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, purchase, setPurchase);
     };
-
 
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.total);
@@ -196,24 +203,24 @@ export default function Purchases() {
     const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
         label: MethodPayment[key],
         value: key
-      }));
-    
-      const stateOptions = Object.keys(State).map(key => ({
+    }));
+
+    const stateOptions = Object.keys(State).map(key => ({
         label: State[key],
         value: key
-      }));
-      
+    }));
+
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, purchases, 'Reporte_Compras') };
     const handleExportExcel = () => { exportExcel(purchases, columns, 'Compras') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
+            <div className="card" style={{ background: '#9bc1de' }}>
                 <Tooltip target=".export-buttons>button" position="bottom" />
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -233,52 +240,50 @@ export default function Purchases() {
                     </label>
                     <div className="p-inputgroup">
                         <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !purchase.total })} />
+                        <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.total })} />
                     </div>
                     {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
                 </div>
 
                 <div className="field">
                     <label htmlFor="description" className="font-bold">
-                        Desc
+                        Descripción
                     </label>
-                    <InputText id="description" maxLength={100} value={(expensePurchase) && expensePurchase.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expensePurchase.description })} />
-                    {submitted && !expensePurchase.description && <small className="p-error">Descripcion es requerida.</small>}
+                    <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !purchase.description })}/>
+                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
 
                 <div className="field col">
-                        {<label htmlFor="methodPayment" className="font-bold">
-                            Método de pago
-                        </label>}
-                        <Dropdown
-                            id="methodPayment"
-                            value={selectedMethodPayment}
-                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment');}}
-                            options={methodPaymentOptions}
-                            placeholder="Seleccionar el método de pago"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
-                        />
-                        {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
-                    </div>
+                    <label htmlFor="methodPayment" className="font-bold">
+                        Método de pago
+                    </label>
+                    <Dropdown
+                        id="methodPayment"
+                        value={selectedMethodPayment}
+                        onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
+                        options={methodPaymentOptions}
+                        placeholder="Seleccionar el método de pago"
+                        required
+                        className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
+                    />
+                    {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
+                </div>
 
-                    <div className="field col">
-                        {<label htmlFor="state" className="font-bold">
-                            Estado
-                        </label>}
-                        <Dropdown
-                            id="state"
-                            value={selectedState}
-                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
-                            options={stateOptions}
-                            placeholder="Seleccionar el estado"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
-                        />
-                        {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
-                    </div>
-
-
+                <div className="field col">
+                    <label htmlFor="state" className="font-bold">
+                        Estado
+                    </label>
+                    <Dropdown
+                        id="state"
+                        value={selectedState}
+                        onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
+                        options={stateOptions}
+                        placeholder="Seleccionar el estado"
+                        required
+                        className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
+                    />
+                    {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
+                </div>
 
                 <div className="field">
                     <label htmlFor="provider" className="font-bold">
@@ -294,17 +299,17 @@ export default function Purchases() {
                         options={providers}
                         optionLabel="name"
                         placeholder="Seleccionar Proveedor"
+                        filter valueTemplate={selectedProviderTemplate}
+                        itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
                     />
-
                 </div>
             </Dialog>
 
             {DialogDelete(deletePurchaseDialog, 'Compra', deletePurchaseDialogFooter, hideDeletePurchaseDialog, purchase, 'compra', 'esta')}
 
             {confirmDialog(confirmDialogVisible, 'Compra', confirmPurchaseDialogFooter, hideConfirmPurchaseDialog, purchase, operation)}
-
         </div>
     );
 }
