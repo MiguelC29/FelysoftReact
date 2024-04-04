@@ -62,13 +62,59 @@ body{
 }
 
 .input__wrapper {
+  position: relative;
+  padding: 15px 0 0;
   width: 100%;
+}
+.input__label {
+  position: absolute;
+  top: 19px;
+  padding: 0 4px;
+  display: block;
+  font-size: 2rem;
+  left: 8px;
+  color: var(--secondary);
+  transition: 0.3s;
+  background: #19191a;
 }
 
 .input__field {
-  width: 40vh;
-  padding: 12px;
-  font-size: 20px;
+  outline: 1.5px solid var(--secondary);
+  border-radius: 8px;
+  color: var(--secondary);
+  border:none;
+  padding-right: 32px;
+  background: transparent;
+  transition: all 0.2s;
+  width: 400px; /*Ancho del Input*/
+  max-width: 100%; /*Para que sea Responsive sin que se salga*/
+  padding: 16px; /*Largo del Input*/
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.input__field::placeholder{
+  color: transparent;
+
+}
+
+.input__field:focus::placeholder,
+.input__field:not(:placeholder-shown)::placeholder {
+  opacity: 0; 
+}
+
+.input__field:focus,
+.input__field:not(:placeholder-shown) {
+  font-size: 1.5rem; 
+}
+
+.input__field:focus ~ .input__label,
+.input__field:not(:placeholder-shown) ~ .input__label {
+  top: -1px; 
+  font-size: 1.5rem; 
+  color: var(--primary); 
+  background: #19191a;
+
 }
 
 button.control {
