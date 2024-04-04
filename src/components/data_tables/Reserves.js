@@ -294,7 +294,7 @@ export default function Reserves() {
                            Libro
                         </label>
                         <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value);onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
-                            filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
+                            filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
 
                         {submitted && !reserve.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                     </div>
@@ -304,7 +304,7 @@ export default function Reserves() {
                             Usuario
                         </label>
                         <Dropdown id="user" value={selectedUser} onChange={(e) => {handleUserChange(e.target.value);onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
-                            filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
+                            filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
                         {submitted && !reserve.user && !selectedUser && <small className="p-error">Usuario es requerido.</small>}
                     </div>
                 </div>

@@ -260,6 +260,7 @@ export default function Employees() {
                         filter
                         valueTemplate={selectedIdentificationTemplate}
                         itemTemplate={identificationOptionTemplate}
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
                     />

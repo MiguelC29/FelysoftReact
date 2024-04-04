@@ -327,7 +327,7 @@ export default function Books() {
                             Genero
                         </label>
                         <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Genero"
-                            filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
+                            filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
 
                         {submitted && !book.genre && !selectedGenre && <small className="p-error">Genero es requerido.</small>}
                     </div>
@@ -337,7 +337,7 @@ export default function Books() {
                             Autor
                         </label>
                         <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"
-                            filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
+                            filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
                         {submitted && !book.author && !selectedAuthor && <small className="p-error">Autor es requerido.</small>}
                     </div>
                 </div>

@@ -216,6 +216,7 @@ export default function Services() {
             options={typeservices}
             optionLabel="name"
             placeholder="Seleccionar el tipo de servicio"
+            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
             required
             className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
           />
@@ -252,6 +253,7 @@ export default function Services() {
             }}
             options={statesOptions}
             placeholder="Seleccionar el estado actual"
+            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
             required
             className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !service.state && !selectedState })}`}
           />

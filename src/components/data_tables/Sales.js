@@ -193,6 +193,7 @@ export default function Sales() {
                         options={payments}
                         optionLabel="methodPayment"
                         placeholder="Seleccionar Método de pago"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !sale.payment && !selectedPayment })}`}
                     />

@@ -249,6 +249,7 @@ export default function Expenses() {
                         onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
                         options={typeExpenseOptions}
                         placeholder="Seleccionar el tipo de gasto"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
                     />

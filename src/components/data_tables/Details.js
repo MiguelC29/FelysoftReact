@@ -214,6 +214,7 @@ export default function Details() {
                         options={books}
                         optionLabel="title"
                         placeholder="Seleccionar Libro"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
                     />
@@ -235,6 +236,7 @@ export default function Details() {
                         options={products}
                         optionLabel="name"
                         placeholder="Seleccionar Producto"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
                     />
@@ -256,6 +258,7 @@ export default function Details() {
                         optionLabel="state"
                         placeholder="Seleccionar Servicio"
                         required
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
                     />
                     {submitted && !detail.service && !selectedService && <small className="p-error">Servicio es requerido.</small>}

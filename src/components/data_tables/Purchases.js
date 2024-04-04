@@ -255,6 +255,7 @@ export default function Purchases() {
                             onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment');}}
                             options={methodPaymentOptions}
                             placeholder="Seleccionar el método de pago"
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                             required
                             className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
                         />
@@ -271,6 +272,7 @@ export default function Purchases() {
                             onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
                             options={stateOptions}
                             placeholder="Seleccionar el estado"
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                             required
                             className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
                         />
@@ -293,6 +295,7 @@ export default function Purchases() {
                         options={providers}
                         optionLabel="name"
                         placeholder="Seleccionar Proveedor"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
                     />
