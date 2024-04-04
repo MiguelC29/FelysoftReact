@@ -176,7 +176,6 @@ export default function Payments() {
         <div>
             <Toast ref={toast} />
             <div className="card" style={{background: '#9bc1de'}}>
-                <Tooltip target=".export-buttons>button" position="bottom" />
                 <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
@@ -202,6 +201,7 @@ export default function Payments() {
                             onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment');}}
                             options={methodPaymentOptions}
                             placeholder="Seleccionar el método de pago"
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                             required
                             className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.methodPayment && !selectedMethodPayment })}`}
                         />
@@ -218,6 +218,7 @@ export default function Payments() {
                             onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
                             options={stateOptions}
                             placeholder="Seleccionar el estado"
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                             required
                             className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.state && !selectedState })}`}
                         />

@@ -179,7 +179,6 @@ export default function Services() {
     <div>
       <Toast ref={toast} />
       <div className="card" style={{background: '#9bc1de'}}>
-        <Tooltip target=".export-buttons>button" position="bottom" />
         <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
@@ -217,6 +216,7 @@ export default function Services() {
             options={typeservices}
             optionLabel="name"
             placeholder="Seleccionar el tipo de servicio"
+            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
             required
             className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
           />
@@ -253,6 +253,7 @@ export default function Services() {
             }}
             options={statesOptions}
             placeholder="Seleccionar el estado actual"
+            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
             required
             className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !service.state && !selectedState })}`}
           />

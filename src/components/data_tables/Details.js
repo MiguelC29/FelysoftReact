@@ -164,7 +164,6 @@ export default function Details() {
         <div>
             <Toast ref={toast} />
             <div className="card" style={{background: '#9bc1de'}}>
-                <Tooltip target=".export-buttons>button" position="bottom" />
                 <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}}  left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
@@ -215,6 +214,7 @@ export default function Details() {
                         options={books}
                         optionLabel="title"
                         placeholder="Seleccionar Libro"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
                     />
@@ -236,6 +236,7 @@ export default function Details() {
                         options={products}
                         optionLabel="name"
                         placeholder="Seleccionar Producto"
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
                     />
@@ -257,6 +258,7 @@ export default function Details() {
                         optionLabel="state"
                         placeholder="Seleccionar Servicio"
                         required
+                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
                     />
                     {submitted && !detail.service && !selectedService && <small className="p-error">Servicio es requerido.</small>}

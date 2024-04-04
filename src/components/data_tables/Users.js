@@ -205,7 +205,6 @@ export default function Users() {
     <div>
       <Toast ref={toast} />
       <div className="card" style={{background: '#9bc1de'}}>
-        <Tooltip target=".export-buttons>button" position="bottom" />
         <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
@@ -248,6 +247,7 @@ export default function Users() {
               onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc'); }}
               options={typeDocOptions}
               placeholder="Seleccionar el tipo de identificación"
+              emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
               required
               className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !user.typeDoc && !selectedTypeId })}`}
             />
@@ -272,6 +272,7 @@ export default function Users() {
               onChange={(e) => { setSelectedGender(e.value); onInputNumberChange(e, 'gender'); }}
               options={genderOptions}
               placeholder="Seleccionar el género"
+              emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
               required
               className={`w-full md:w-16.1rem ${classNames({ 'p-invalid': submitted && !user.gender && !selectedGender })}`}
             />
@@ -319,7 +320,7 @@ export default function Users() {
           <label htmlFor="role" className="font-bold">
             Rol
           </label>
-          <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
+          <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
 
           {submitted && !user.role && !selectedRole && <small className="p-error">Rol es requerido.</small>}
         </div>
