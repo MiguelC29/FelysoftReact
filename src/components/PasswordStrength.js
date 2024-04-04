@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
+import logo from "../img/logo.svg";
 import "../css/registroUsuario.css";
 
 const strengthLabels = ["weak", "medium", "medium", "strong"];
