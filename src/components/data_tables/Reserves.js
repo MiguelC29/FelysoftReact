@@ -9,7 +9,6 @@ import CustomDataTable from '../CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Reserves() {
     let emptyReserve = {

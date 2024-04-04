@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import { InputMask } from 'primereact/inputmask';
 import AsociationDialog from '../AsociationDialog';
-import { Tooltip } from 'primereact/tooltip';
 
 
 export default function Authors() {

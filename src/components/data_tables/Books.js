@@ -9,7 +9,6 @@ import CustomDataTable from '../CustomDataTable';
 import { InputMask } from 'primereact/inputmask';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Books() {
     let emptyBook = {

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
-import { Tooltip } from 'primereact/tooltip';
 import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
 

@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { InputText } from 'primereact/inputtext';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Purchases() {
 

@@ -10,7 +10,6 @@ import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
 import { Password } from 'primereact/password';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Users() {
 
