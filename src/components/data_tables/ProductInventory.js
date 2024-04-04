@@ -3,7 +3,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { Tooltip } from 'primereact/tooltip';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
@@ -100,11 +99,11 @@ export default function ProductInventory() {
     );
 
     const statusBodyTemplate = (rowData) => {
-        return <Tag value={rowData.state} style={{background: getSeverity(rowData)}}></Tag>;
+        return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
     };
 
     const stockBodyTemplate = (rowData) => {
-        return <Tag value={rowData.stock} style={{background: getSeverityStock(rowData)}} rounded></Tag>;
+        return <Tag value={rowData.stock} style={{ background: getSeverityStock(rowData) }} rounded></Tag>;
     };
 
     const getSeverity = (product) => {
@@ -146,16 +145,16 @@ export default function ProductInventory() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-     // EXPORT DATA
+    // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, productsInv, 'Reporte_Inventario_Productos') };
     const handleExportExcel = () => { exportExcel(productsInv, columns, 'Inventario_Productos') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -172,7 +171,7 @@ export default function ProductInventory() {
                             Stock
                         </label>
                         <p>Stock actual</p>
-                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5}/>
+                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
                         {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
                     </div>
                 </Dialog>

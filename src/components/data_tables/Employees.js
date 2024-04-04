@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Employees() {
     let emptyEmployee = {
@@ -178,8 +177,8 @@ export default function Employees() {
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}}  left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -260,7 +259,8 @@ export default function Employees() {
                         filter
                         valueTemplate={selectedIdentificationTemplate}
                         itemTemplate={identificationOptionTemplate}
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
                     />

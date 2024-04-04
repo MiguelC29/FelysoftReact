@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Providers() {
 
@@ -241,13 +240,13 @@ export default function Providers() {
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, providers, 'Reporte_Proveedores') };
     const handleExportExcel = () => { exportExcel(providers, columns, 'Proveedores') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -271,7 +270,7 @@ export default function Providers() {
                             <label htmlFor="name" className="font-bold">
                                 Nombre
                             </label>
-                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50}/>
+                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50} />
                             {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
                         </div>
                     </div>
@@ -285,7 +284,7 @@ export default function Providers() {
                             <label htmlFor="email" className="font-bold">
                                 Correo Eletrónico
                             </label>
-                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50}/>
+                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
                             {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
                         </div>
                     </div>

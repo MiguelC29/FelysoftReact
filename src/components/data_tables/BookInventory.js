@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
-import { Tooltip } from 'primereact/tooltip';
 import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
 
@@ -62,8 +61,8 @@ export default function BookInventory() {
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

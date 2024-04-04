@@ -7,7 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Sales() {
 
@@ -55,7 +54,6 @@ export default function Sales() {
         setSaleDialog(true);
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setSaleDialog(false);
@@ -68,7 +66,6 @@ export default function Sales() {
     const hideDeleteSaleDialog = () => {
         setDeleteSaleDialog(false);
     };
-
 
     const saveSale = () => {
         setSubmitted(true);
@@ -91,8 +88,6 @@ export default function Sales() {
                 };
                 url = URL + 'create';
                 method = 'POST';
-
-
             }
 
             sendRequest(method, parameters, url, setSales, URL, operation, toast, "Venta ");
@@ -135,7 +130,6 @@ export default function Sales() {
         deleteDialogFooter(hideDeleteSaleDialog, deleteSale)
     );
 
-
     const columns = [
         { field: 'dateSale', header: 'Fecha', sortable: true, body: (rowData) => formatDate(rowData.dateSale), style: { minWidth: '12rem' } },
         { field: 'totalSale', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
@@ -146,13 +140,13 @@ export default function Sales() {
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, sales, 'Reporte_Ventas') };
     const handleExportExcel = () => { exportExcel(sales, columns, 'Ventas') };
-    const handleExportCsv = () => { exportCSV(false, dt)} ;
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -165,7 +159,6 @@ export default function Sales() {
                 />
             </div>
 
-
             <Dialog visible={saleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={saleDialogFooter} onHide={hideDialog}>
                 <div className="field col">
                     <label htmlFor="totalSale" className="font-bold">
@@ -177,7 +170,6 @@ export default function Sales() {
                     </div>
                     {submitted && !sale.totalSale && <small className="p-error">Total de venta es requerido.</small>}
                 </div>
-
 
                 <div className="field">
                     <label htmlFor="payment" className="font-bold">
@@ -193,11 +185,10 @@ export default function Sales() {
                         options={payments}
                         optionLabel="methodPayment"
                         placeholder="Seleccionar Método de pago"
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                        emptyMessage="No hay datos"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !sale.payment && !selectedPayment })}`}
                     />
-
 
                     {submitted && !sale.payment && !selectedPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
@@ -206,8 +197,6 @@ export default function Sales() {
             {DialogDelete(deleteSaleDialog, 'Venta', deleteSaleDialogFooter, hideDeleteSaleDialog, sale, 'venta', 'esta')}
 
             {confirmDialog(confirmDialogVisible, 'Venta', confirmSaleDialogFooter, hideConfirmSaleDialog, sale, operation)}
-
-
         </div>
     );
 }

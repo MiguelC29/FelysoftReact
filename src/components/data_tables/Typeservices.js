@@ -7,7 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function TypeServices() {
   let emptyTypeService = {
@@ -116,7 +115,7 @@ export default function TypeServices() {
 
   const priceBodyTemplate = (rowData) => {
     return formatCurrency(rowData.price);
-};
+  };
 
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editTypeService, confirmDeleteTypeService);
@@ -147,8 +146,8 @@ export default function TypeServices() {
   return (
     <div>
       <Toast ref={toast} />
-      <div className="card" style={{background: '#9bc1de'}}>
-        <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+      <div className="card" style={{ background: '#9bc1de' }}>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}

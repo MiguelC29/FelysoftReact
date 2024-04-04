@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { InputText } from 'primereact/inputtext';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Purchases() {
 
@@ -65,6 +64,7 @@ export default function Purchases() {
             setSelectedMethodPayment(expensePurchase.payment.methodPayment); // Establece el método de pago basado en los datos recibidos
         }
         // Verifica si expensePurchase tiene datos de pago y si contiene el estado
+        //NO FUNCIONA
         if (expensePurchase && expensePurchase.payment && expensePurchase.payment.state) {
             setSelectedState(expensePurchase.payment.state); // Establece el estado basado en los datos recibidos
         }

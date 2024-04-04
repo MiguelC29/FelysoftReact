@@ -9,7 +9,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Products() {
     let emptyProduct = {
@@ -230,13 +229,13 @@ export default function Products() {
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, products, 'Reporte_Productos') };
     const handleExportExcel = () => { exportExcel(products, columns, 'Productos') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -255,7 +254,7 @@ export default function Products() {
                     <label htmlFor="name" className="font-bold">
                         Nombre
                     </label>
-                    <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30}/>
+                    <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
                     {submitted && !product.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
                 <div className="field">
@@ -281,7 +280,7 @@ export default function Products() {
                         </label>
                         <div className="p-inputgroup">
                             <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                            <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9}/>
+                            <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
                         </div>
                         {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
                     </div>

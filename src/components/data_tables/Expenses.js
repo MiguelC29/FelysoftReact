@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Expenses() {
 
@@ -28,7 +27,6 @@ export default function Expenses() {
         SERVICIOS: 'SERVICIOS',
         PROVEEDORES: 'PROVEEDORES',
     };
-
 
     const URL = 'http://localhost:8086/api/expense/';
     const [expenses, setExpenses] = useState([]);
@@ -73,7 +71,6 @@ export default function Expenses() {
         setExpenseDialog(true);
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setExpenseDialog(false);
@@ -160,11 +157,11 @@ export default function Expenses() {
         deleteDialogFooter(hideDeleteExpenseDialog, deleteExpense)
     );
 
-    const selectedPurchaseTemplate = (option, props) => {
+    const selectedProviderTemplate = (option, props) => {
         if (option) {
             return (
                 <div className="flex align-items-center">
-                    <div>{option.name}</div>
+                    <div>{option.provider.name}</div>
                 </div>
             );
         }
@@ -172,30 +169,10 @@ export default function Expenses() {
         return <span>{props.placeholder}</span>;
     };
 
-    const purchaseOptionTemplate = (option) => {
+    const providerOptionTemplate = (option) => {
         return (
             <div className="flex align-items-center">
-                <div>{option.name}</div>
-            </div>
-        );
-    };
-
-    const selectedPaymentTemplate = (option, props) => {
-        if (option) {
-            return (
-                <div className="flex align-items-center">
-                    <div>{option.name}</div>
-                </div>
-            );
-        }
-
-        return <span>{props.placeholder}</span>;
-    };
-
-    const paymentOptionTemplate = (option) => {
-        return (
-            <div className="flex align-items-center">
-                <div>{option.name}</div>
+                <div>{option.provider.name}</div>
             </div>
         );
     };
@@ -218,14 +195,13 @@ export default function Expenses() {
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, expenses, 'Reporte_Gastos') };
     const handleExportExcel = () => { exportExcel(expenses, columns, 'Gastos') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
-
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4"  style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}}  left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -249,7 +225,7 @@ export default function Expenses() {
                         onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
                         options={typeExpenseOptions}
                         placeholder="Seleccionar el tipo de gasto"
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                        emptyMessage="No hay datos"
                         required
                         className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
                     />
@@ -269,7 +245,7 @@ export default function Expenses() {
 
                 <div className="field">
                     <label htmlFor="description" className="font-bold">
-                        Desc
+                        Descripción
                     </label>
                     <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
                     {submitted && !expense.description && <small className="p-error">Descripcion es requerido.</small>}
@@ -289,6 +265,10 @@ export default function Expenses() {
                         options={purchases}
                         optionLabel="provider.name"
                         placeholder="Seleccionar Proveedor"
+                        filter valueTemplate={selectedProviderTemplate}
+                        itemTemplate={providerOptionTemplate}
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.purchase && !selectedPurchase })}`}
                     />
@@ -309,6 +289,7 @@ export default function Expenses() {
                         options={payments}
                         optionLabel="methodPayment"
                         placeholder="Seleccionar Método de pago"
+                        emptyMessage="No hay datos"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.payment && !selectedPayment })}`}
                     />
@@ -320,7 +301,6 @@ export default function Expenses() {
             {DialogDelete(deleteExpenseDialog, 'Gasto', deleteExpenseDialogFooter, hideDeleteExpenseDialog, expense, 'gasto', 'este')}
 
             {confirmDialog(confirmDialogVisible, 'Gasto', confirmExpenseDialogFooter, hideConfirmExpenseDialog, expense, operation)}
-
         </div>
     );
 }

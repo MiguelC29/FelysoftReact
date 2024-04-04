@@ -10,7 +10,6 @@ import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
 import { Password } from 'primereact/password';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Users() {
 
@@ -204,8 +203,8 @@ export default function Users() {
   return (
     <div>
       <Toast ref={toast} />
-      <div className="card" style={{background: '#9bc1de'}}>
-        <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+      <div className="card" style={{ background: '#9bc1de' }}>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}
@@ -247,7 +246,7 @@ export default function Users() {
               onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc'); }}
               options={typeDocOptions}
               placeholder="Seleccionar el tipo de identificación"
-              emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+              emptyMessage="No hay datos"
               required
               className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !user.typeDoc && !selectedTypeId })}`}
             />
@@ -272,7 +271,7 @@ export default function Users() {
               onChange={(e) => { setSelectedGender(e.value); onInputNumberChange(e, 'gender'); }}
               options={genderOptions}
               placeholder="Seleccionar el género"
-              emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+              emptyMessage="No hay datos"
               required
               className={`w-full md:w-16.1rem ${classNames({ 'p-invalid': submitted && !user.gender && !selectedGender })}`}
             />

@@ -8,7 +8,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Services() {
   let emptyService = {
@@ -170,6 +169,26 @@ export default function Services() {
     value: key,
   }));
 
+  const selectedTypeServiceTemplate = (option, props) => {
+    if (option) {
+      return (
+        <div className="flex align-items-center">
+          <div>{option.name}</div>
+        </div>
+      );
+    }
+
+    return <span>{props.placeholder}</span>;
+  };
+
+  const typeServiceOptionTemplate = (option) => {
+    return (
+      <div className="flex align-items-center">
+        <div>{option.name}</div>
+      </div>
+    );
+  };
+
   // EXPORT DATA
   const handleExportPdf = () => { exportPdf(columns, services, 'Reporte_Categorias') };
   const handleExportExcel = () => { exportExcel(services, columns, 'Categorias') };
@@ -178,8 +197,8 @@ export default function Services() {
   return (
     <div>
       <Toast ref={toast} />
-      <div className="card" style={{background: '#9bc1de'}}>
-        <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+      <div className="card" style={{ background: '#9bc1de' }}>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}
@@ -216,6 +235,8 @@ export default function Services() {
             options={typeservices}
             optionLabel="name"
             placeholder="Seleccionar el tipo de servicio"
+            filter valueTemplate={selectedTypeServiceTemplate}
+            itemTemplate={typeServiceOptionTemplate}
             emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
             required
             className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
@@ -253,7 +274,7 @@ export default function Services() {
             }}
             options={statesOptions}
             placeholder="Seleccionar el estado actual"
-            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+            emptyMessage="No hay datos"
             required
             className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !service.state && !selectedState })}`}
           />

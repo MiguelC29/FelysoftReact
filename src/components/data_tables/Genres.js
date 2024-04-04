@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange,leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,7 +7,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Genres() {
     let emptyGenre = {
@@ -48,7 +47,7 @@ export default function Genres() {
 
     const openNew = () => {
         setGenre(emptyGenre);
-        setTitle('Registrar Genero');
+        setTitle('Registrar Género');
         setOperation(1);
         setSubmitted(false);
         setGenreDialog(true);
@@ -66,7 +65,7 @@ export default function Genres() {
 
     const editGenre = (genre) => {
         setGenre({ ...genre });
-        setTitle('Editar Genero');
+        setTitle('Editar Género');
         setOperation(2);
         setGenreDialog(true);
     };
@@ -82,7 +81,7 @@ export default function Genres() {
     };
 
     const hideConfirmAsociationDialog = () => {
-        setConfirmAscDialogVisible(false); 
+        setConfirmAscDialogVisible(false);
     };
 
     const hideDeleteGenreDialog = () => {
@@ -94,26 +93,25 @@ export default function Genres() {
         setConfirmDialogVisible(false);
 
         if (
-            genre.name.trim() && 
+            genre.name.trim() &&
             genre.description.trim()) {
             let url, method, parameters;
 
             if (genre.idGenre && operation === 2) {
                 parameters = {
                     idGenre: genre.idGenre,
-                    name: genre.name.trim(), 
+                    name: genre.name.trim(),
                     description: genre.description.trim()
                 };
                 url = URL + 'update/' + genre.idGenre;
                 method = 'PUT';
             } else {
-                    parameters = {
-                         name: genre.name.trim(), 
-                         description: genre.description.trim()
-                    };
-                    url = URL + 'create';
-                    method = 'POST';
-                
+                parameters = {
+                    name: genre.name.trim(),
+                    description: genre.description.trim()
+                };
+                url = URL + 'create';
+                method = 'POST';
             }
 
             sendRequest(method, parameters, url, setGenres, URL, operation, toast, 'Genero ');
@@ -221,29 +219,28 @@ export default function Genres() {
 
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'description', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-      // EXPORT DATA
-      const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Generos') };
-      const handleExportExcel = () => { exportExcel(genres, columns, 'Generos') };
-      const handleExportCsv = () => { exportCSV(false, dt)};
- 
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Generos') };
+    const handleExportExcel = () => { exportExcel(genres, columns, 'Generos') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
                     data={genres}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Generos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} géneros"
                     globalFilter={globalFilter}
-                    header={header('Generos', setGlobalFilter)}
+                    header={header('Géneros', setGlobalFilter)}
                     columns={columns}
                 />
             </div>
@@ -259,48 +256,47 @@ export default function Genres() {
 
                 <div className="field">
                     <label htmlFor="description" className="font-bold">
-                        Descripción 
+                        Descripción
                     </label>
                     <InputText id="description" value={genre.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !genre.description })} />
                     {submitted && !genre.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
-
             </Dialog>
 
-            {DialogDelete(deleteGenreDialog, 'Genero', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Genero')}
+            {DialogDelete(deleteGenreDialog, 'Género', deleteGenreDialogFooter, hideDeleteGenreDialog, genre, genre.name, 'el Género')}
 
-            {confirmDialog(confirmDialogVisible, 'Genero', confirmGenreDialogFooter, hideConfirmGenreDialog, genre, operation)}
+            {confirmDialog(confirmDialogVisible, 'Género', confirmGenreDialogFooter, hideConfirmGenreDialog, genre, operation)}
 
-             <AsociationDialog
-                    asociation={asociation}
-                    setAsociation={setAsociation}
-                    visible={asociationDialog}
-                    title={title}
-                    footer={asociationDialogFooter}
-                    onHide={hideDialog}
-                    labelId='author'
-                    nameTable='Autor'
-                    labelId2='genre'
-                    nameTableTwo='Genero'
-                    selectedOne={selectedAuthor}
-                    setSelectedOne={setSelectedAuthor}
-                    idOnInputNumberOne='authorId'
-                    idOnInputNumberTwo='genreId'
-                    valueTemplate={selectedAuthorTemplate}
-                    itemTemplate={authorOptionTemplate}
-                    id={asociation.authorId}
-                    id2={asociation.genreId}
-                    selectedTwo={selectedGenre}
-                    setSelected2={setSelectedGenre}
-                    options={authors}
-                    options2={genres}
-                    valueTemplateTwo={selectedGenreTemplate}
-                    itemTemplateTwo={genreOptionTemplate}
-                    filter submitted={submitted}
-                    confirmDialogVisible={confirmAscDialogVisible}
-                    confirmAsociationDialogFooter={confirmAsociationDialogFooter}
-                    hideConfirmAsociationDialog={hideConfirmAsociationDialog}
-                />
+            <AsociationDialog
+                asociation={asociation}
+                setAsociation={setAsociation}
+                visible={asociationDialog}
+                title={title}
+                footer={asociationDialogFooter}
+                onHide={hideDialog}
+                labelId='author'
+                nameTable='Autor'
+                labelId2='genre'
+                nameTableTwo='Genero'
+                selectedOne={selectedAuthor}
+                setSelectedOne={setSelectedAuthor}
+                idOnInputNumberOne='authorId'
+                idOnInputNumberTwo='genreId'
+                valueTemplate={selectedAuthorTemplate}
+                itemTemplate={authorOptionTemplate}
+                id={asociation.authorId}
+                id2={asociation.genreId}
+                selectedTwo={selectedGenre}
+                setSelected2={setSelectedGenre}
+                options={authors}
+                options2={genres}
+                valueTemplateTwo={selectedGenreTemplate}
+                itemTemplateTwo={genreOptionTemplate}
+                filter submitted={submitted}
+                confirmDialogVisible={confirmAscDialogVisible}
+                confirmAsociationDialogFooter={confirmAsociationDialogFooter}
+                hideConfirmAsociationDialog={hideConfirmAsociationDialog}
+            />
         </div>
     );
 }

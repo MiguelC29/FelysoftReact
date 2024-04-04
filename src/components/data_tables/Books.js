@@ -9,7 +9,6 @@ import CustomDataTable from '../CustomDataTable';
 import { InputMask } from 'primereact/inputmask';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Books() {
     let emptyBook = {
@@ -158,7 +157,7 @@ export default function Books() {
 
             }
 
-            sendRequest(method, parameters, url, setBooks, URL, operation, toast,'Libro ');
+            sendRequest(method, parameters, url, setBooks, URL, operation, toast, 'Libro ');
             setBookDialog(false);
             setBook(emptyBook);
         }
@@ -254,16 +253,16 @@ export default function Books() {
         { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-     // EXPORT DATA
-     const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Libros') };
-     const handleExportExcel = () => { exportExcel(authors, columns, 'Libros') };
-     const handleExportCsv = () => { exportCSV(false, dt)};
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Libros') };
+    const handleExportExcel = () => { exportExcel(authors, columns, 'Libros') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4"style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -341,9 +340,6 @@ export default function Books() {
                         {submitted && !book.author && !selectedAuthor && <small className="p-error">Autor es requerido.</small>}
                     </div>
                 </div>
-
-
-
             </Dialog>
 
             {DialogDelete(deleteBookDialog, 'Libro', deleteBookDialogFooter, hideDeleteBookDialog, book, book.title, 'el Libro')}

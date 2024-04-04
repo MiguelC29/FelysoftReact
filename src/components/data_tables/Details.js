@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,8 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { Tooltip } from 'primereact/tooltip';
-
 
 export default function Details() {
 
@@ -68,7 +66,6 @@ export default function Details() {
         setDetailDialog(true);
     };
 
-    // quizas se puede poner en el archivo functions
     const hideDialog = () => {
         setSubmitted(false);
         setDetailDialog(false);
@@ -81,7 +78,7 @@ export default function Details() {
     const hideDeleteDetailDialog = () => {
         setDeleteDetailDialog(false);
     };
-    
+
     const saveDetail = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -144,8 +141,68 @@ export default function Details() {
         deleteDialogFooter(hideDeleteDetailDialog, deleteDetail)
     );
 
+    const selectedBookTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.title}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const bookOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.title}</div>
+            </div>
+        );
+    };
+
+    const selectedProductTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const productOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
+    const selectedServiceTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.typeService.name}</div>
+                </div>
+            );
+        }
+
+        return <span>{props.placeholder}</span>;
+    };
+
+    const serviceOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.typeService.name}</div>
+            </div>
+        );
+    };
+
     const columns = [
-        { field: 'quantity', header: 'Cantidad', sortable: true, style: { minWidth: '16rem' } },,
+        { field: 'quantity', header: 'Cantidad', sortable: true, style: { minWidth: '16rem' } },
         { field: 'unitPrice', header: 'Precio único', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'product.name', header: 'Producto', sortable: true, style: { minWidth: '10rem' } },
@@ -153,18 +210,16 @@ export default function Details() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-    
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, details, 'Reporte_Detalles') };
     const handleExportExcel = () => { exportExcel(details, columns, 'Detalles') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
-
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}}  left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -177,14 +232,13 @@ export default function Details() {
                 />
             </div>
 
-
             <Dialog visible={detailDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={detailDialogFooter} onHide={hideDialog}>
                 <div className="field col">
                     <label htmlFor="quantity" className="font-bold">
                         Cantidad
                     </label>
                     <div className="p-inputgroup">
-                        <InputNumber id="quantity"  maxLength={8} value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
+                        <InputNumber id="quantity" maxLength={8} value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
                     </div>
                     {submitted && !detail.quantity && <small className="p-error">Cantidad es requerido.</small>}
                 </div>
@@ -214,13 +268,15 @@ export default function Details() {
                         options={books}
                         optionLabel="title"
                         placeholder="Seleccionar Libro"
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                        filter valueTemplate={selectedBookTemplate}
+                        itemTemplate={bookOptionTemplate}
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
                     />
                     {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                 </div>
-
 
                 <div className="field">
                     <label htmlFor="product" className="font-bold">
@@ -235,8 +291,11 @@ export default function Details() {
                         }}
                         options={products}
                         optionLabel="name"
+                        filter valueTemplate={selectedProductTemplate}
+                        itemTemplate={productOptionTemplate}
                         placeholder="Seleccionar Producto"
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
                     />
@@ -247,6 +306,7 @@ export default function Details() {
                     <label htmlFor="service" className="font-bold">
                         Servicio
                     </label>
+                    {console.log(services)}
                     <Dropdown
                         id="service"
                         value={selectedService}
@@ -255,7 +315,9 @@ export default function Details() {
                             onInputNumberChange(e, 'service');
                         }}
                         options={services}
-                        optionLabel="state"
+                        optionLabel="typeService.name"
+                        filter valueTemplate={selectedServiceTemplate}
+                        itemTemplate={serviceOptionTemplate}
                         placeholder="Seleccionar Servicio"
                         required
                         emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
@@ -264,14 +326,11 @@ export default function Details() {
                     {submitted && !detail.service && !selectedService && <small className="p-error">Servicio es requerido.</small>}
                 </div>
 
-                </Dialog>
+            </Dialog>
 
             {DialogDelete(deleteDetailDialog, 'Detalle', deleteDetailDialogFooter, hideDeleteDetailDialog, detail, 'detalle', 'este')}
 
             {confirmDialog(confirmDialogVisible, 'Detalle', confirmDetailDialogFooter, hideConfirmDetailDialog, detail, operation)}
-
         </div>
     );
 }
-    
-

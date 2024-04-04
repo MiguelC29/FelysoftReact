@@ -7,8 +7,6 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
-import { Tooltip } from 'primereact/tooltip';
-
 
 export default function Categories() {
     const emptyCategory = {
@@ -216,13 +214,13 @@ export default function Categories() {
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, categories, 'Reporte_Categorias') };
     const handleExportExcel = () => { exportExcel(categories, columns, 'Categorias') };
-    const handleExportCsv = () => { exportCSV(false, dt)};
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -239,7 +237,7 @@ export default function Categories() {
                         <label htmlFor="name" className="font-bold">
                             Nombre
                         </label>
-                        <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30}/>
+                        <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30} />
                         {submitted && !category.name && <small className="p-error">Nombre de categoria es requerido.</small>}
                     </div>
                 </Dialog>

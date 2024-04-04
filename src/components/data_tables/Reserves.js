@@ -9,7 +9,6 @@ import CustomDataTable from '../CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
-import { Tooltip } from 'primereact/tooltip';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -50,7 +49,7 @@ export default function Reserves() {
     const handleBookChange = (bookId) => {
         setSelectedBook(bookId);
     };
-    
+
     const handleUserChange = (userId) => {
         setSelectedUser(userId);
     };
@@ -68,7 +67,7 @@ export default function Reserves() {
     };
     const editReserve = (reserve) => {
         setReserve({ ...reserve });
-        
+
         setSelectedBook(reserve.book);
         setSelectedUser(reserve.user);
 
@@ -114,7 +113,7 @@ export default function Reserves() {
                     description: reserve.description.trim(),
                     deposit: reserve.deposit,
                     time: reserve.time,
-                   
+
                     fkIdBook: reserve.book.idBook,
                     fkIdUser: reserve.user.numIdentification
                 };
@@ -126,7 +125,7 @@ export default function Reserves() {
                     description: reserve.description.trim(),
                     deposit: reserve.deposit,
                     time: reserve.time,
-                    
+
                     fkIdBook: reserve.book.idBook,
                     fkIdUser: reserve.user.numIdentification
                 };
@@ -134,7 +133,7 @@ export default function Reserves() {
                 method = 'POST';
             }
 
-            sendRequest(method, parameters, url, setReserves, URL, operation, toast,'Reserva ');
+            sendRequest(method, parameters, url, setReserves, URL, operation, toast, 'Reserva ');
             setReserveDialog(false);
             setReserve(emptyReserve);
         }
@@ -148,7 +147,7 @@ export default function Reserves() {
     };
 
     const deleteReserve = () => {
-        deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve,'Reserva ');
+        deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve, 'Reserva ');
     };
 
     const onInputNumberChange = (e, description) => {
@@ -229,16 +228,16 @@ export default function Reserves() {
         { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-      // EXPORT DATA
-      const handleExportPdf = () => { exportPdf(columns, reserves, 'Reporte_Reservas') };
-      const handleExportExcel = () => { exportExcel(reserves, columns, 'Reservas') };
-      const handleExportCsv = () => { exportCSV(false, dt)};
+    // EXPORT DATA
+    const handleExportPdf = () => { exportPdf(columns, reserves, 'Reporte_Reservas') };
+    const handleExportExcel = () => { exportExcel(reserves, columns, 'Reservas') };
+    const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
             <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4"  style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -253,7 +252,7 @@ export default function Reserves() {
 
             <Dialog visible={reserveDialog} style={{ width: '40rem' }} header={title} modal className="p-fluid" footer={reserveDialogFooter} onHide={hideDialog}>
 
-            <div className="field">
+                <div className="field">
                     <label htmlFor="dateReserve" className="font-bold">
                         Fecha de Reserva
                     </label>
@@ -282,7 +281,7 @@ export default function Reserves() {
 
                 <div className="field">
                     <label htmlFor="time" className="font-bold">
-                      Hora Reserva (HH:MM:SS)
+                        Hora Reserva (HH:MM:SS)
                     </label>
                     <InputMask id="time" value={reserve.time} mask="99:99:99" onChange={(e) => onInputChange(e, 'time')} required className={classNames({ 'p-invalid': submitted && !reserve.time })} />
                     {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
@@ -291,9 +290,9 @@ export default function Reserves() {
                 <div className="formgrid grid">
                     <div className="field col">
                         <label htmlFor="book" className="font-bold">
-                           Libro
+                            Libro
                         </label>
-                        <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value);onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
+                        <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
                             filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
 
                         {submitted && !reserve.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
@@ -303,7 +302,7 @@ export default function Reserves() {
                         <label htmlFor="user" className="font-bold">
                             Usuario
                         </label>
-                        <Dropdown id="user" value={selectedUser} onChange={(e) => {handleUserChange(e.target.value);onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
+                        <Dropdown id="user" value={selectedUser} onChange={(e) => { handleUserChange(e.target.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
                             filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
                         {submitted && !reserve.user && !selectedUser && <small className="p-error">Usuario es requerido.</small>}
                     </div>
