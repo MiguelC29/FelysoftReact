@@ -115,7 +115,7 @@ export default function Reserves() {
                     time: reserve.time,
 
                     fkIdBook: reserve.book.idBook,
-                    fkIdUser: reserve.user.numIdentification
+                    fkIdUser: reserve.user.idUser
                 };
                 url = URL + 'update/' + reserve.idReserve;
                 method = 'PUT';
@@ -127,7 +127,7 @@ export default function Reserves() {
                     time: reserve.time,
 
                     fkIdBook: reserve.book.idBook,
-                    fkIdUser: reserve.user.numIdentification
+                    fkIdUser: reserve.user.idUser
                 };
                 url = URL + 'create';
                 method = 'POST';
