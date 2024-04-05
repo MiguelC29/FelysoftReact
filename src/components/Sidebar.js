@@ -15,6 +15,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import logo from '../img/logo.png';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -152,9 +153,9 @@ export default function MiniDrawer({ children }) {
                     >
                         <Icon icon={'menu'} textColor={'text-white'} />
                     </IconButton>
-                    <LogoImage src={logo} alt="" />
+                    <LogoImage src={logo} alt="Logo FELYSOFT" />
                     {!open && <Typography variant="h6" noWrap component="div">
-                        FELYSOFT
+                        <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
                     </Typography>}
                 </Toolbar>
             </AppBar>
