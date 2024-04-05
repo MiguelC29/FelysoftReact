@@ -6,7 +6,6 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
-import { InputMask } from 'primereact/inputmask';
 import AsociationDialog from '../AsociationDialog';
 
 
@@ -282,10 +281,10 @@ export default function Authors() {
 
                 <div className="field">
                     <label htmlFor="dateBirth" className="font-bold">
-                        Fecha de Nacimiento
+                        Fecha de Nacimieto
                     </label>
-                    <InputMask id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')} type="date" required className={classNames({ 'p-invalid': submitted && !author.dateBirth })} />
-                    {submitted && !author.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
+                    <InputText id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')} type="date" required className={classNames({ 'p-invalid': submitted && !authors.dateBirth })} />
+                    {submitted && !author.dateBirth && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
 
                 <div className="field">
