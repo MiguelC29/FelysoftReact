@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
-// import { FileUpload } from 'primereact/fileupload';
+import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
@@ -13,7 +13,8 @@ import CustomDataTable from '../CustomDataTable';
 export default function Products() {
     let emptyProduct = {
         idProduct: null,
-        image: null,
+        image: '',
+        typeImg: '',
         name: '',
         brand: '',
         salePrice: 0,
@@ -32,6 +33,8 @@ export default function Products() {
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [product, setProduct] = useState(emptyProduct);
+    const [file, setFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -68,11 +71,27 @@ export default function Products() {
         }
     };
 
+    const handleFileUpload = (event) => {
+        const file = event.files[0];
+        setFile(file);
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setSelectedImage(reader.result);
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
     const openNew = () => {
         setProduct(emptyProduct);
         setTitle('Registrar Producto');
         setSelectedCategory('');
         setSelectedProvider('');
+        setFile('');
+        setSelectedImage('');
         getData('http://localhost:8086/api/category/', setCategories);
         getData('http://localhost:8086/api/provider/', setProviders);
         setOperation(1);
@@ -86,6 +105,7 @@ export default function Products() {
         getData('http://localhost:8086/api/provider/', setProviders);
         setSelectedCategory(product.category);
         setSelectedProvider(product.provider);
+        setSelectedImage('');
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
@@ -109,26 +129,37 @@ export default function Products() {
         setConfirmDialogVisible(false);
 
         if (product.name.trim() && product.brand.trim() && product.expiryDate && product.salePrice && product.category && product.provider) {
-            let url, method, parameters;
+            let url, method;
+            const formData = new FormData();
 
             if (product.idProduct && operation === 2) {
-                parameters = {
-                    idProduct: product.idProduct, name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider
-                };
+                formData.append('idProduct', product.idProduct);
+                formData.append('name', product.name.trim());
+                formData.append('brand', product.brand.trim());
+                formData.append('expiryDate', product.expiryDate);
+                formData.append('salePrice', product.salePrice);
+                formData.append('category', product.category.idCategory);
+                formData.append('provider', product.provider.idProvider);
+                formData.append('image', file);
                 url = URL + 'update/' + product.idProduct;
                 method = 'PUT';
             } else {
                 if (operation === 1 && product.stock) {
                     // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
-                    parameters = {
-                        name: product.name.trim(), brand: product.brand.trim(), salePrice: product.salePrice, expiryDate: product.expiryDate, category: product.category.idCategory, provider: product.provider.idProvider, stockInicial: product.stock
-                    };
+                    formData.append('name', product.name.trim());
+                    formData.append('brand', product.brand.trim());
+                    formData.append('expiryDate', product.expiryDate);
+                    formData.append('salePrice', product.salePrice);
+                    formData.append('category', product.category.idCategory);
+                    formData.append('provider', product.provider.idProvider);
+                    formData.append('stockInicial', product.stock);
+                    formData.append('image', file);
                     url = URL + 'create';
                     method = 'POST';
                 }
             }
 
-            sendRequest(method, parameters, url, setProducts, URL, operation, toast, 'Producto ');
+            sendRequest(method, formData, url, setProducts, URL, operation, toast, 'Producto ');
             setProductDialog(false);
             setProduct(emptyProduct);
         }
@@ -154,9 +185,16 @@ export default function Products() {
         inputNumberChange(e, name, product, setProduct);
     };
 
-    // const imageBodyTemplate = (rowData) => {
-    //     return <img src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2 border-round" style={{ width: '64px' }} />;
-    // };
+    const imageBodyTemplate = (rowData) => {
+        const imageData = rowData.image;
+        const imageType = rowData.imageType;
+        if (imageData) {
+            console.log(imageType);
+            return <img src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" style={{ width: '64px', height: '64px' }} />;
+        } else {
+            return <p>No hay imagen</p>;
+        }
+    };
 
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.salePrice);
@@ -223,6 +261,7 @@ export default function Products() {
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
         { field: 'category.name', header: 'Categoria', sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
@@ -249,7 +288,7 @@ export default function Products() {
             </div>
 
             <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                {/* {product.image && <img src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.image} className="product-image block m-auto pb-3" />} */}
+                {product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
                 <div className="field">
                     <label htmlFor="name" className="font-bold">
                         Nombre
@@ -314,11 +353,33 @@ export default function Products() {
                         {submitted && !product.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
                     </div>
                 </div>
-            </Dialog>
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="image" className="font-bold">
+                            Imagen Producto
+                        </label>
+                        <FileUpload
+                            id='image'
+                            mode="basic"
+                            name="image"
+                            chooseLabel="Seleccionar Imagen"
+                            url="http://localhost:8086/api/product/create"
+                            accept="image/*"
+                            maxFileSize={2000000}
+                            onSelect={handleFileUpload}
+                        />
+                    </div>
+                    <div className="field col">
+                    {selectedImage && (
+                        <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
+                    )}
+                    </div>
+                </div>
+            </Dialog >
 
-            {DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto')}
+        { DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto') }
 
-            {confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation)}
-        </div>
+    { confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation) }
+        </div >
     );
 }
