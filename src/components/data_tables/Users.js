@@ -10,14 +10,15 @@ import { Dropdown } from 'primereact/dropdown';
 // import { InputMask } from 'primereact/inputmask'
 import { Password } from 'primereact/password';
 import CustomDataTable from '../CustomDataTable';
+import { FileUpload } from 'primereact/fileupload';
 
 export default function Users() {
 
   let emptyUser = {
     idUser: null,
     numIdentification: null,
-    image: null,
-    typeImg: null,
+    image: '',
+    typeImg: '',
     typeDoc: '',
     names: '',
     lastNames: '',
@@ -50,6 +51,8 @@ export default function Users() {
   const [userDialog, setUserDialog] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
   const [user, setUser] = useState(emptyUser);
+  const [file, setFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -63,12 +66,29 @@ export default function Users() {
     getData('http://localhost:8086/api/role/', setRoles);
   }, []);
 
+  // PUEDE QUE SE PUEDA DECLARAR GENERAL PARA RECIBLAR
+  const handleFileUpload = (event) => {
+    const file = event.files[0];
+    setFile(file);
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setSelectedImage(reader.result);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
   const openNew = () => {
     setUser(emptyUser);
     setTitle('Registrar Usuario');
     setSelectedGender('');
     setSelectedTypeId('');
     setSelectedRole('');
+    setFile('');
+    setSelectedImage('');
     setOperation(1);
     setSubmitted(false);
     setUserDialog(true);
@@ -79,6 +99,8 @@ export default function Users() {
     setSelectedGender(user.gender);
     setSelectedTypeId(user.typeDoc);
     setSelectedRole(user.role);
+    setFile('');
+    setSelectedImage('');
     setTitle('Editar Usuario');
     setOperation(2);
     setUserDialog(true);
@@ -112,24 +134,43 @@ export default function Users() {
       user.username.trim() &&
       user.password.trim() &&
       user.role) {
-      let url, method, parameters;
+      let url, method;
+      const formData = new FormData();
+
       if (user.idUser && operation === 2) {
-        parameters = {
-          idUser: user.idUser, numIdentification: user.numIdentification, typeDoc: user.typeDoc, names: user.names.trim(), lastNames: user.lastNames.trim(), address: user.address.trim(), phoneNumber: user.phoneNumber, email: user.email.trim(), gender: user.gender,
-          username: user.username.trim(), password: user.password.trim(), fkIdRole: user.role.idRole
-        };
+        formData.append('idUser', user.idUser);
+        formData.append('numIdentification', user.numIdentification);
+        formData.append('typeDoc', user.typeDoc);
+        formData.append('names', user.names.trim());
+        formData.append('lastNames', user.lastNames.trim());
+        formData.append('address', user.address.trim());
+        formData.append('phoneNumber', user.phoneNumber);
+        formData.append('email', user.email.trim());
+        formData.append('gender', user.gender);
+        formData.append('username', user.username.trim());
+        formData.append('password', user.password.trim());
+        formData.append('fkIdRole', user.role.idRole);
+        formData.append('image', file);
         url = URL + 'update/' + user.idUser;
         method = 'PUT';
       } else {
-        parameters = {
-          numIdentification: user.numIdentification, typeDoc: user.typeDoc, names: user.names.trim(), lastNames: user.lastNames.trim(), address: user.address.trim(), phoneNumber: user.phoneNumber, email: user.email.trim(), gender: user.gender,
-          username: user.username.trim(), password: user.password.trim(), fkIdRole: user.role.idRole
-        };
+        formData.append('numIdentification', user.numIdentification);
+        formData.append('typeDoc', user.typeDoc);
+        formData.append('names', user.names.trim());
+        formData.append('lastNames', user.lastNames.trim());
+        formData.append('address', user.address.trim());
+        formData.append('phoneNumber', user.phoneNumber);
+        formData.append('email', user.email.trim());
+        formData.append('gender', user.gender);
+        formData.append('username', user.username.trim());
+        formData.append('password', user.password.trim());
+        formData.append('fkIdRole', user.role.idRole);
+        formData.append('image', file);
         url = URL + 'create';
         method = 'POST';
       }
 
-      sendRequest(method, parameters, url, setUsers, URL, operation, toast, 'Usuario ');
+      sendRequest(method, formData, url, setUsers, URL, operation, toast, 'Usuario ');
       setUserDialog(false);
       setUser(emptyUser);
     }
@@ -153,6 +194,16 @@ export default function Users() {
 
   const onInputNumberChange = (e, name) => {
     inputNumberChange(e, name, user, setUser);
+  };
+
+  const imageBodyTemplate = (rowData) => {
+    const imageData = rowData.image;
+    const imageType = rowData.imageType;
+    if (imageData) {
+      return <img src={`data:${imageType};base64,${imageData}`} alt={`Imagen usuario ${rowData.name}`} className="shadow-2 border-round" style={{ width: '64px', height: '64px' }} />;
+    } else {
+      return <p>No hay imagen</p>;
+    }
   };
 
   const actionBodyTemplateP = (rowData) => {
@@ -182,6 +233,7 @@ export default function Users() {
     { field: 'role.name', header: 'Rol', sortable: true, style: { minWidth: '10rem' } },
     { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
+    { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
@@ -196,8 +248,8 @@ export default function Users() {
   }));
 
   // EXPORT DATA
-  const handleExportPdf = () => { exportPdf(columns, users, 'Reporte_Usuarios') };
-  const handleExportExcel = () => { exportExcel(users, columns, 'Usuarios') };
+  const handleExportPdf = () => { exportPdf(columns.slice(0, -2), users, 'Reporte_Usuarios') };
+  const handleExportExcel = () => { exportExcel(users, columns.slice(0, -2), 'Usuarios') };
   const handleExportCsv = () => { exportCSV(false, dt) };
 
   return (
@@ -218,7 +270,7 @@ export default function Users() {
       </div>
 
       <Dialog visible={userDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
-        {/* {product.image && <img src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.image} className="product-image block m-auto pb-3" />} */}
+        {user.image && <img src={`data:${user.typeImg};base64,${user.image}`} alt={`Imagen usuario ${user.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
         <div className="formgrid grid">
           <div className="field col">
             <label htmlFor="names" className="font-bold">
@@ -322,6 +374,28 @@ export default function Users() {
           <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
 
           {submitted && !user.role && !selectedRole && <small className="p-error">Rol es requerido.</small>}
+        </div>
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="image" className="font-bold">
+              Imagen Usuario
+            </label>
+            <FileUpload
+              id='image'
+              mode="basic"
+              name="image"
+              chooseLabel="Seleccionar Imagen"
+              url="http://localhost:8086/api/user/create"
+              accept="image/*"
+              maxFileSize={2000000}
+              onSelect={handleFileUpload}
+            />
+          </div>
+          <div className="field col">
+            {selectedImage && (
+              <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
+            )}
+          </div>
         </div>
       </Dialog>
 

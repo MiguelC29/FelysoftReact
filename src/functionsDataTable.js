@@ -273,7 +273,7 @@ export const rightToolbarTemplateExport = (exportCSV, exportExcel, exportPDF) =>
 const exportColumns = (columns) => columns.map((col) => ({ title: col.header, dataKey: col.field }));
 
 // NO FUNCIONA CON FORANEAS
-export const exportPdf = (columns, data, fileName) => {
+/* export const exportPdf = (columns, data, fileName) => {
     import('jspdf').then((jsPDF) => {
         import('jspdf-autotable').then(() => {
             const doc = new jsPDF.default('l', 'pt', 'letter'); // 'l' para orientación horizontal
@@ -281,7 +281,35 @@ export const exportPdf = (columns, data, fileName) => {
             doc.save(`${fileName}.pdf`);
         });
     });
-};
+}; */
+
+export const exportPdf = (columns, data, fileName) => {
+    import('jspdf').then((jsPDF) => {
+      import('jspdf-autotable').then(() => {
+        const doc = new jsPDF.default('l', 'pt', 'letter'); // 'l' para orientación horizontal
+  
+        const formattedData = data.map((item) => {
+          return columns.map((col) => {
+            if (col.field) {
+              const fields = col.field.split('.');
+              let value = item;
+              for (const field of fields) {
+                value = value[field];
+                if (value === undefined) {
+                  return ''; // Manejar datos faltantes (opcional)
+                }
+              }
+              return value;
+            }
+            return ''; // Manejar campos no anidados
+          });
+        });
+  
+        doc.autoTable(exportColumns(columns), formattedData);
+        doc.save(`${fileName}.pdf`);
+      });
+    });
+  };
 
 export const exportExcel = (data, columns, fileName) => {
     import('xlsx').then((xlsx) => {

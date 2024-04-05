@@ -105,6 +105,7 @@ export default function Products() {
         getData('http://localhost:8086/api/provider/', setProviders);
         setSelectedCategory(product.category);
         setSelectedProvider(product.provider);
+        setFile('');
         setSelectedImage('');
         setTitle('Editar Producto');
         setOperation(2);
@@ -189,7 +190,6 @@ export default function Products() {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
         if (imageData) {
-            console.log(imageType);
             return <img src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" style={{ width: '64px', height: '64px' }} />;
         } else {
             return <p>No hay imagen</p>;
@@ -266,8 +266,8 @@ export default function Products() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, products, 'Reporte_Productos') };
-    const handleExportExcel = () => { exportExcel(products, columns, 'Productos') };
+    const handleExportPdf = () => { exportPdf(columns.slice(0, -2), products, 'Reporte_Productos') };
+    const handleExportExcel = () => { exportExcel(products, columns.slice(0, -2), 'Productos') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
@@ -370,16 +370,16 @@ export default function Products() {
                         />
                     </div>
                     <div className="field col">
-                    {selectedImage && (
-                        <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
-                    )}
+                        {selectedImage && (
+                            <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
+                        )}
                     </div>
                 </div>
             </Dialog >
 
-        { DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto') }
+            {DialogDelete(deleteProductDialog, 'Producto', deleteProductDialogFooter, hideDeleteProductDialog, product, product.name, 'el producto')}
 
-    { confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation) }
+            {confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation)}
         </div >
     );
 }
