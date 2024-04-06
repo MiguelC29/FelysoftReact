@@ -52,7 +52,7 @@ const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
     backgroundColor: '#19191a',
-    zIndex: theme.zIndex.drawer + 1,
+    // zIndex: theme.zIndex.drawer,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -73,6 +73,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+        zIndex: 100,
         ...(open && {
             ...openedMixin(theme),
             '& .MuiDrawer-paper': openedMixin(theme),
@@ -129,7 +130,7 @@ export default function MiniDrawer({ children }) {
     };
 
     const Icon = ({ icon, textColor }) => (
-        <span className={`material-symbols-outlined ${textColor}`} style={{color: '#19191a'}}>{icon}</span>
+        <span className={`material-symbols-outlined ${textColor}`} style={{ color: '#19191a' }}>{icon}</span>
     );
 
     const IconSubItems = () => (
@@ -160,16 +161,16 @@ export default function MiniDrawer({ children }) {
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader className='text-white' style={{background: '#323232'}}>
-                <Typography variant="h6" noWrap component="div" className='mr-6'>
-                    FELYSOFT
-                </Typography>
+                <DrawerHeader className='text-white' style={{ background: '#323232' }}>
+                    <Typography variant="h6" noWrap component="div" className='mr-6'>
+                        FELYSOFT
+                    </Typography>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} textColor={'text-white'}/> : <Icon icon={'chevron_left'} textColor={'text-white'}/>}
+                        {theme.direction === 'rtl' ? <Icon icon={'chevron_right'} textColor={'text-white'} /> : <Icon icon={'chevron_left'} textColor={'text-white'} />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
-                <List className = 'mt-4'>
+                <List className='mt-4'>
                     {[
                         {
                             name: "Inicio",
@@ -225,7 +226,7 @@ export default function MiniDrawer({ children }) {
                             ]
                         },
                         {
-                            name: "Dashboard",
+                            name: "Tablero",
                             icon: <Icon icon='monitoring' />,
                             link: "",
                         },

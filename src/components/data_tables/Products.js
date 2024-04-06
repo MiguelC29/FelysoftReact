@@ -9,6 +9,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { Image } from 'primereact/image';
 
 export default function Products() {
     let emptyProduct = {
@@ -190,7 +191,7 @@ export default function Products() {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
         if (imageData) {
-            return <img src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" style={{ width: '64px', height: '64px' }} />;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
         } else {
             return <p>No hay imagen</p>;
         }

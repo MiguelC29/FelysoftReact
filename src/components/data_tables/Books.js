@@ -6,18 +6,19 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
-import { InputMask } from 'primereact/inputmask';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Books() {
+    // TODO: A LOS LIBROS TAMBIEN TOCA AGREGARLE LO DE AGREGAR IMG
     let emptyBook = {
         idBook: null,
         title: '',
         editorial: '',
         description: '',
-        yearPublication: '',
-        priceTime: 0,
+        yearPublication: null,
+        priceTime: null,
         genre: '',
         author: ''
     };
@@ -276,75 +277,91 @@ export default function Books() {
             </div>
 
             <Dialog visible={bookDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={bookDialogFooter} onHide={hideDialog}>
-                <div className="field">
-                    <label htmlFor="title" className="font-bold">
-                        Titulo
-                    </label>
-                    <InputText id="title" value={book.title} onChange={(e) => onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': submitted && !book.title })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">title</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="title" value={book.title} onChange={(e) => onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': submitted && !book.title })} />
+                            <label for="title" className="font-bold">Titulo</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !book.title && <small className="p-error">Titulo es requerido.</small>}
                 </div>
-
-                <div className="field">
-                    <label htmlFor="editorial" className="font-bold">
-                        Editorial
-                    </label>
-                    <InputText id="editorial" value={book.editorial} onChange={(e) => onInputChange(e, 'editorial')} required className={classNames({ 'p-invalid': submitted && !book.editorial })} />
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">collections_bookmark</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="editorial" value={book.editorial} onChange={(e) => onInputChange(e, 'editorial')} required className={classNames({ 'p-invalid': submitted && !book.editorial })} />
+                            <label for="editorial" className="font-bold">Editorial</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !book.editorial && <small className="p-error">Editorial es requerida.</small>}
                 </div>
-
-                <div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Descripción
-                    </label>
-                    <InputText id="description" value={book.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !book.description })} />
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="description" value={book.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !book.description })} />
+                            <label for="description" className="font-bold">Descripción</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !book.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
-
-                <div className="field">
-                    <label htmlFor="yearPublication" className="font-bold">
-                        Año de Publicacion
-                    </label>
-                    <InputMask id="yearPublication" value={book.yearPublication} onChange={(e) => onInputChange(e, 'yearPublication')} mask="9999" placeholder="9999" slotChar="yyyy" required className={classNames({ 'p-invalid': submitted && !book.yearPublication })} />
-                    {submitted && !book.yearPublication && <small className="p-error">Año de Publicacion es requerida.</small>}
-                </div>
-
-                <div className="field col">
-                    <label htmlFor="priceTime" className="font-bold">
-                        Precio de venta
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="priceTime" value={book.priceTime} onValueChange={(e) => onInputNumberChange(e, 'priceTime')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !book.priceTime })} />
-                    </div>
-                    {submitted && !book.priceTime && <small className="p-error">Precio Tiempo es requerido.</small>}
-                </div>
-
-
-                <div className="formgrid grid">
+                <div className="formgrid grid mt-5">
                     <div className="field col">
-                        <label htmlFor="genre" className="font-bold">
-                            Genero
-                        </label>
-                        <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Genero"
-                            filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
-
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">today</span>
+                            </span>
+                            <FloatLabel>
+                                <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
+                                <label for="yearPublication" className="font-bold">Año de Publicacion</label>
+                            </FloatLabel>
+                        </div>
+                        {submitted && !book.yearPublication && <small className="p-error">Año de Publicacion es requerida.</small>}
+                    </div>
+                    <div className="field col">
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">monetization_on</span>
+                            </span>
+                            <FloatLabel>
+                                <InputNumber id="priceTime" value={book.priceTime} onValueChange={(e) => onInputNumberChange(e, 'priceTime')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !book.priceTime })} />
+                                <label for="priceTime" className="font-bold">Precio de venta</label>
+                            </FloatLabel>
+                        </div>
+                        {submitted && !book.priceTime && <small className="p-error">Precio Tiempo es requerido.</small>}
+                    </div>
+                </div>
+                <div className="formgrid grid mt-4">
+                    <div className="field col">
+                        <FloatLabel>
+                            <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Género"
+                                filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
+                            <label for="genre" className="font-bold">Género</label>
+                        </FloatLabel>
                         {submitted && !book.genre && !selectedGenre && <small className="p-error">Genero es requerido.</small>}
                     </div>
-
                     <div className="field col">
-                        <label htmlFor="author" className="font-bold">
-                            Autor
-                        </label>
-                        <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"
-                            filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
+                        <FloatLabel>
+                            <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"
+                                filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
+                            <label for="author" className="font-bold">Autor</label>
+                        </FloatLabel>
                         {submitted && !book.author && !selectedAuthor && <small className="p-error">Autor es requerido.</small>}
                     </div>
                 </div>
-            </Dialog>
+            </Dialog >
 
             {DialogDelete(deleteBookDialog, 'Libro', deleteBookDialogFooter, hideDeleteBookDialog, book, book.title, 'el Libro')}
 
             {confirmDialog(confirmDialogVisible, 'Libro', confirmBookDialogFooter, hideConfirmBookDialog, book, operation)}
-        </div>
+        </div >
     );
 }

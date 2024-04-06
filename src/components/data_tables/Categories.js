@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
+import { FloatLabel } from "primereact/floatlabel";
 
 export default function Categories() {
     const emptyCategory = {
@@ -218,7 +219,7 @@ export default function Categories() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -233,11 +234,11 @@ export default function Categories() {
                 />
 
                 <Dialog visible={categoryDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
-                    <div className="field">
-                        <label htmlFor="name" className="font-bold">
-                            Nombre
-                        </label>
-                        <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30} />
+                    <div className="field mt-4">
+                        <FloatLabel>
+                            <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30} />
+                            <label for="name" className='font-bold'>Nombre</label>
+                        </FloatLabel>
                         {submitted && !category.name && <small className="p-error">Nombre de categoria es requerido.</small>}
                     </div>
                 </Dialog>

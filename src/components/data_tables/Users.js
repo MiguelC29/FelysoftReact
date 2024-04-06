@@ -11,6 +11,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
 import CustomDataTable from '../CustomDataTable';
 import { FileUpload } from 'primereact/fileupload';
+import { FloatLabel } from 'primereact/floatlabel';
+import { Image } from 'primereact/image';
 
 export default function Users() {
 
@@ -23,7 +25,7 @@ export default function Users() {
     names: '',
     lastNames: '',
     address: '',
-    phoneNumber: 0,
+    phoneNumber: null,
     email: '',
     gender: '',
     username: '',
@@ -199,8 +201,8 @@ export default function Users() {
   const imageBodyTemplate = (rowData) => {
     const imageData = rowData.image;
     const imageType = rowData.imageType;
-    if (imageData) {
-      return <img src={`data:${imageType};base64,${imageData}`} alt={`Imagen usuario ${rowData.name}`} className="shadow-2 border-round" style={{ width: '64px', height: '64px' }} />;
+    if (imageData) {  
+      return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen usuario ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
     } else {
       return <p>No hay imagen</p>;
     }
@@ -254,7 +256,7 @@ export default function Users() {
 
   return (
     <div>
-      <Toast ref={toast} />
+      <Toast ref={toast} position="bottom-right"/>
       <div className="card" style={{ background: '#9bc1de' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -271,115 +273,170 @@ export default function Users() {
 
       <Dialog visible={userDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={userDialogFooter} onHide={hideDialog}>
         {user.image && <img src={`data:${user.typeImg};base64,${user.image}`} alt={`Imagen usuario ${user.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
-        <div className="formgrid grid">
+        <div className="formgrid grid mt-5">
           <div className="field col">
-            <label htmlFor="names" className="font-bold">
-              Nombres
-            </label>
-            <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">id_card</span>
+              </span>
+              <FloatLabel>
+                <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50} />
+                <label for="names" className="font-bold">Nombres</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.names && <small className="p-error">Nombres son requeridos.</small>}
           </div>
           <div className="field col">
-            <label htmlFor="lastNames" className="font-bold">
-              Apellidos
-            </label>
-            <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">id_card</span>
+              </span>
+              <FloatLabel>
+                <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60} />
+                <label for="lastNames" className="font-bold">Apellidos</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.lastNames && <small className="p-error">Apellidos son requeridos.</small>}
           </div>
         </div>
-        <div className="formgrid grid">
+        <div className="formgrid grid mt-4">
           <div className="field col">
-            {<label htmlFor="typeDoc" className="font-bold">
-              Tipo de Identificación
-            </label>}
-            <Dropdown
-              id="typeDoc"
-              value={selectedTypeId}
-              onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc'); }}
-              options={typeDocOptions}
-              placeholder="Seleccionar el tipo de identificación"
-              emptyMessage="No hay datos"
-              required
-              className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !user.typeDoc && !selectedTypeId })}`}
-            />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">badge</span>
+              </span>
+              {/* FALTA VALIDAR QUE SE INGRESEN AÑOS VÁLIDOS, ES DECIR NO MAYORES AL ACTUAL */}
+              <FloatLabel>
+                <Dropdown
+                  id="typeDoc"
+                  value={selectedTypeId}
+                  onChange={(e) => { setSelectedTypeId(e.value); onInputNumberChange(e, 'typeDoc'); }}
+                  options={typeDocOptions}
+                  placeholder="Seleccionar el tipo de identificación"
+                  emptyMessage="No hay datos"
+                  required
+                  className={`w-full md:w-14rem rounded ${classNames({ 'p-invalid': submitted && !user.typeDoc && !selectedTypeId })}`}
+                />
+                <label for="typeDoc" className="font-bold">Tipo de Identificación</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.typeDoc && !selectedTypeId && <small className="p-error">Tipo de Identificación es requerido.</small>}
           </div>
           <div className="field col">
-            <label htmlFor="numIdentification" className="font-bold">
-              Número de Identificación
-            </label>
-            <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">badge</span>
+              </span>
+              <FloatLabel>
+                <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
+                <label for="numIdentification" className="font-bold">Número de Identificación</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
           </div>
         </div>
-        <div className="formgrid grid">
+        <div className="formgrid grid mt-4">
           <div className="field col">
-            <label htmlFor="gender" className="font-bold">
-              Género
-            </label>
-            <Dropdown
-              id="gender"
-              value={selectedGender}
-              onChange={(e) => { setSelectedGender(e.value); onInputNumberChange(e, 'gender'); }}
-              options={genderOptions}
-              placeholder="Seleccionar el género"
-              emptyMessage="No hay datos"
-              required
-              className={`w-full md:w-16.1rem ${classNames({ 'p-invalid': submitted && !user.gender && !selectedGender })}`}
-            />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">wc</span>
+              </span>
+              <FloatLabel>
+                <Dropdown
+                  id="gender"
+                  value={selectedGender}
+                  onChange={(e) => { setSelectedGender(e.value); onInputNumberChange(e, 'gender'); }}
+                  options={genderOptions}
+                  placeholder="Seleccionar el género"
+                  emptyMessage="No hay datos"
+                  required
+                  className={`w-full md:w-14rem rounded ${classNames({ 'p-invalid': submitted && !user.gender && !selectedGender })}`}
+                />
+                <label htmlFor="gender" className="font-bold">Género</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.gender && !selectedGender && <small className="p-error">Tipo de Identificación es requerido.</small>}
           </div>
           <div className="field col">
-            <label htmlFor="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
-            <InputNumber inputId="phoneNumbers" value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">call</span>
+              </span>
+              <FloatLabel>
+                <InputNumber inputId="phoneNumbers" value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
+                <label for="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
           </div>
         </div>
-        <div className="formgrid grid">
+        <div className="formgrid grid mt-4">
           <div className="field col">
-            <label htmlFor="address" className="font-bold">
-              Dirección
-            </label>
-            <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">home</span>
+              </span>
+              <FloatLabel>
+                <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50} />
+                <label for="address" className="font-bold">Dirección</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.address && <small className="p-error">Dirección es requerida.</small>}
           </div>
           <div className="field col">
-            <label htmlFor="email" className="font-bold">
-              Correo Eletrónico
-            </label>
-            <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">mail</span>
+              </span>
+              <FloatLabel>
+                <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
+                <label for="email" className="font-bold">Correo Eletrónico</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
           </div>
         </div>
-        <div className="formgrid grid">
+        <div className="formgrid grid mt-4">
           <div className="field col">
-            <label htmlFor="username" className="font-bold">
-              Nombre de Usuario
-            </label>
-            <InputText id="username" value={user.username} onChange={(e) => onInputChange(e, 'username')} required className={classNames({ 'p-invalid': submitted && !user.username })} />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">person</span>
+              </span>
+              <FloatLabel>
+                <InputText id="username" value={user.username} onChange={(e) => onInputChange(e, 'username')} required className={classNames({ 'p-invalid': submitted && !user.username })} />
+                <label for="username" className="font-bold">Nombre de Usuario</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.username && <small className="p-error">Nombre de Usuario es requerida.</small>}
           </div>
           <div className="field col">
-            <label htmlFor="password" className="font-bold">
-              Contraseña
-            </label>
-            <Password id="password" value={user.password} onChange={(e) => onInputChange(e, 'password')} toggleMask required className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' />
+            <div className="p-inputgroup flex-1">
+              <span className="p-inputgroup-addon">
+                <span class="material-symbols-outlined">key</span>
+              </span>
+              <FloatLabel>
+                <Password id="password" value={user.password} onChange={(e) => onInputChange(e, 'password')} toggleMask required className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' />
+                <label for="password" className="font-bold">Contraseña</label>
+              </FloatLabel>
+            </div>
             {submitted && !user.password && <small className="p-error">Contraseña es requerido.</small>}
           </div>
         </div>
-        <div className="field">
-          <label htmlFor="role" className="font-bold">
-            Rol
-          </label>
-          <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
-
+        <div className="field mt-4">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">admin_panel_settings</span>
+            </span>
+            <FloatLabel>
+              <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
+              <label for="role" className="font-bold">Rol</label>
+            </FloatLabel>
+          </div>
           {submitted && !user.role && !selectedRole && <small className="p-error">Rol es requerido.</small>}
         </div>
         <div className="formgrid grid">
           <div className="field col">
-            <label htmlFor="image" className="font-bold">
-              Imagen Usuario
-            </label>
+            <label for="image" className="font-bold">Foto del Usuario</label>
             <FileUpload
               id='image'
               mode="basic"

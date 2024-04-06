@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Providers() {
 
@@ -15,7 +16,7 @@ export default function Providers() {
         idProvider: null,
         nit: '',
         name: '',
-        phoneNumber: 0,
+        phoneNumber: null,
         email: ''
     }
 
@@ -258,34 +259,56 @@ export default function Providers() {
                     columns={columns}
                 />
                 <Dialog visible={providerDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={providerDialogFooter} onHide={hideDialog}>
-                    <div className="formgrid grid">
+                    <div className="formgrid grid mt-4">
                         <div className="field col">
-                            <label htmlFor="nit" className="font-bold">
-                                Nit
-                            </label>
-                            <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
-                            {submitted && !provider.nit && <small className="p-error">Nit es requerido.</small>}
+                            <div className="p-inputgroup flex-1">
+                                <span className="p-inputgroup-addon">
+                                    <span class="material-symbols-outlined">badge</span>
+                                </span>
+                                <FloatLabel>
+                                    <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
+                                    {submitted && !provider.nit && <small className="p-error">Nit es requerido.</small>}
+                                    <label for="nit" className="font-bold">Nit</label>
+                                </FloatLabel>
+                            </div>
                         </div>
                         <div className="field col">
-                            <label htmlFor="name" className="font-bold">
-                                Nombre
-                            </label>
-                            <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50} />
-                            {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
+                            <div className="p-inputgroup flex-1">
+                                <span className="p-inputgroup-addon">
+                                    <span class="material-symbols-outlined">id_card</span>
+                                </span>
+                                <FloatLabel>
+                                    <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50} />
+                                    {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
+                                    <label for="name" className="font-bold">Nombre</label>
+                                </FloatLabel>
+                            </div>
                         </div>
                     </div>
-                    <div className="formgrid grid">
+                    <div className="formgrid grid mt-4">
                         <div className="field col">
-                            <label htmlFor="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
-                            <InputNumber inputId="phoneNumbers" value={provider.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !provider.phoneNumber })} />
-                            {submitted && !provider.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
+                            <div className="p-inputgroup flex-1">
+                                <span className="p-inputgroup-addon">
+                                    <span class="material-symbols-outlined">call</span>
+                                </span>
+                                <FloatLabel>
+                                    <InputNumber inputId="phoneNumbers" value={provider.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !provider.phoneNumber })} />
+                                    {submitted && !provider.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
+                                    <label for="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
+                                </FloatLabel>
+                            </div>
                         </div>
                         <div className="field col">
-                            <label htmlFor="email" className="font-bold">
-                                Correo Eletrónico
-                            </label>
-                            <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
-                            {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
+                            <div className="p-inputgroup flex-1">
+                                <span className="p-inputgroup-addon">
+                                    <span class="material-symbols-outlined">mail</span>
+                                </span>
+                                <FloatLabel>
+                                    <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
+                                    {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
+                                    <label for="email" className="font-bold">Correo Eletrónico</label>
+                                </FloatLabel>
+                            </div>
                         </div>
                     </div>
                 </Dialog>
