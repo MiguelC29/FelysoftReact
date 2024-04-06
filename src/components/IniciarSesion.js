@@ -6,13 +6,13 @@ import logo from "../img/logo.svg";
 export const InicioSesion = () => {
   return (
     <div className="page">
-      <div className="container-logo bg-white p-3" style={{borderRadius: '60px 0 0 60px'}}>
+      <div className="container-logo bg-white p-3" style={{ borderRadius: '60px 0 0 60px' }}>
         <img className="logo" src={logo} alt="Logo" />
       </div>
-      <div className="login-card" style={{borderRadius: '20px 80px 80px 20px'}}>
+      <div className="login-card" style={{ borderRadius: '20px 80px 80px 20px' }}>
         <div className="content">
           <h2>Iniciar Sesión</h2>
-          <form className="login-form" style={{background: '#19191a'}}>
+          <form className="login-form" style={{ background: '#19191a' }}>
             <div className="input__wrapper">
               <input
                 autoComplete="off"
@@ -41,9 +41,7 @@ export const InicioSesion = () => {
               <div id="spinner" className="spinner"></div>
             </div>
 
-            <button className="control" type="button">
-              <Link to={'/productos'} className='text-white text-decoration-none'>INICIAR SESIÓN</Link>
-            </button>
+            <Link to={'/productos'} className='btn-login p-button text-decoration-none'>INICIAR SESIÓN</Link>
           </form>
         </div>
       </div>
