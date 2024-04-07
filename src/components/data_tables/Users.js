@@ -208,6 +208,14 @@ export default function Users() {
     }
   };
 
+  const genderTemplate = (rowData) => {
+    if(rowData.gender === 'MASCULINO') {
+      return 'M';
+    } else {
+      return 'F';
+    }
+};
+
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser);
   };
@@ -225,7 +233,7 @@ export default function Users() {
   const columns = [
     { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
     { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
-    { field: 'gender', header: 'Género', sortable: true, style: { minWidth: '8rem' } },
+    { field: 'gender', header: 'Género', body: genderTemplate, sortable: true, style: { minWidth: '5rem' } },
     { field: 'names', header: 'Nombres', sortable: true, style: { minWidth: '16rem' } },
     { field: 'lastNames', header: 'Apellidos', sortable: true, style: { minWidth: '16rem' } },
     { field: 'address', header: 'Dirección', sortable: true, style: { minWidth: '16rem' } },
@@ -257,7 +265,7 @@ export default function Users() {
   return (
     <div>
       <Toast ref={toast} position="bottom-right"/>
-      <div className="card" style={{ background: '#9bc1de' }}>
+      <div className="card" style={{ background: '#9bc1de', maxWidth: '89em' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
