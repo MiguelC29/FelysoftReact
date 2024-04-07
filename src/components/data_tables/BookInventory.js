@@ -9,13 +9,7 @@ export default function BookInventory() {
 
     let URL = 'http://localhost:8086/api/inventory/';
     const [booksInv, setBooksInv] = useState([]);
-    // const [bookInv, setBookInv] = useState(emptyBookInv);
-    // const [booksInvDialog, setBookInvDialog] = useState(false);
-    // const [submitted, setSubmitted] = useState(false);
-    // const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-    // const [operation, setOperation] = useState();
-    // const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -28,16 +22,16 @@ export default function BookInventory() {
     };
 
     const statusBodyTemplate = (rowData) => {
-        return <Tag value={rowData.state} severity={getSeverity(rowData)}></Tag>;
+        return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
     };
 
     const getSeverity = (book) => {
         switch (book.state) {
             case 'DISPONIBLE':
-                return 'success';
+                return '#0D9276';
 
             case 'RESERVADO':
-                return 'danger';
+                return 'rgb(14, 165, 233)';
 
             default:
                 return null;

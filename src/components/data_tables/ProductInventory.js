@@ -60,7 +60,6 @@ export default function ProductInventory() {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         let url, method = 'PUT', parameters = { idInventory: productInv.idInventory, stock: productInv.stock };
-        console.log(productInv.idInventory);
         if (productInv.idInventory && (productInv.stock || productInv.stock === 0)) {
             if (operation === 1) {
                 url = URL.concat('updateStock/' + productInv.idInventory);
@@ -68,7 +67,7 @@ export default function ProductInventory() {
                 url = URL.concat('resetStock/' + productInv.idInventory);
             }
 
-            sendRequestStock(method, parameters, url, setProductsInv, URL, toast);
+            sendRequestStock(method, parameters, url, setProductsInv, URL.concat('inventoryProducts'), toast);
             setProductsInvDialog(false);
             setProductInv(emptyProductInv);
         }

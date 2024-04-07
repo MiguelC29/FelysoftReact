@@ -44,7 +44,7 @@ export const sendRequestStock = (method, parameters, url, setData, mainUrl, toas
             if (type === 'success') {
                 // SI SE QUIERE SE VALIDA LA OP Y SI ES UNO ES ACTUALIZADO Y SI ES 2 ES REINICIADO
                 toast.current.show({ severity: 'success', summary: msg, detail: 'Stock Actualizado', life: 3000 });
-                getData(mainUrl, setData);
+                getOneData(mainUrl, setData);
             }
         })
         .catch((error) => {
