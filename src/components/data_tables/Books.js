@@ -242,14 +242,14 @@ export default function Books() {
     };
 
     const columns = [
-        { field: 'title', header: 'Titulo', sortable: true, style: { minWidth: '12rem' } },
+        { field: 'title', header: 'Título', sortable: true, style: { minWidth: '12rem' } },
         { field: 'editorial', header: 'Editorial', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'description', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
-        { field: 'yearPublication', header: 'Año de Publicacion', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'yearPublication', header: 'Año de Publicación', sortable: true, style: { minWidth: '10rem' } },
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
 
-        { field: 'genre.name', header: 'Genero', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'author.name', header: 'Author', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
 
         { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
@@ -261,7 +261,7 @@ export default function Books() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -284,10 +284,10 @@ export default function Books() {
                         </span>
                         <FloatLabel>
                             <InputText id="title" value={book.title} onChange={(e) => onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': submitted && !book.title })} />
-                            <label for="title" className="font-bold">Titulo</label>
+                            <label for="title" className="font-bold">Título</label>
                         </FloatLabel>
                     </div>
-                    {submitted && !book.title && <small className="p-error">Titulo es requerido.</small>}
+                    {submitted && !book.title && <small className="p-error">Título es requerido.</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
@@ -311,7 +311,7 @@ export default function Books() {
                             <label for="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
-                    {submitted && !book.description && <small className="p-error">Descripcion es requerida.</small>}
+                    {submitted && !book.description && <small className="p-error">Descripción es requerida.</small>}
                 </div>
                 <div className="formgrid grid mt-5">
                     <div className="field col">
@@ -321,10 +321,10 @@ export default function Books() {
                             </span>
                             <FloatLabel>
                                 <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
-                                <label for="yearPublication" className="font-bold">Año de Publicacion</label>
+                                <label for="yearPublication" className="font-bold">Año de Publicación</label>
                             </FloatLabel>
                         </div>
-                        {submitted && !book.yearPublication && <small className="p-error">Año de Publicacion es requerida.</small>}
+                        {submitted && !book.yearPublication && <small className="p-error">Año de Publicación es requerida.</small>}
                     </div>
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
@@ -346,7 +346,7 @@ export default function Books() {
                                 filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
                             <label for="genre" className="font-bold">Género</label>
                         </FloatLabel>
-                        {submitted && !book.genre && !selectedGenre && <small className="p-error">Genero es requerido.</small>}
+                        {submitted && !book.genre && !selectedGenre && <small className="p-error">Género es requerido.</small>}
                     </div>
                     <div className="field col">
                         <FloatLabel>

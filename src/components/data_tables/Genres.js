@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Genres() {
     let emptyGenre = {
@@ -230,7 +231,7 @@ export default function Genres() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -246,19 +247,29 @@ export default function Genres() {
             </div>
 
             <Dialog visible={genreDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={genreDialogFooter} onHide={hideDialog}>
-                <div className="field">
-                    <label htmlFor="name" className="font-bold">
-                        Nombre
-                    </label>
-                    <InputText id="name" value={genre.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !genre.name })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">badge</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="name" value={genre.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !genre.name })} />
+                            <label htmlFor="name" className="font-bold">Nombre</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !genre.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Descripción
-                    </label>
-                    <InputText id="description" value={genre.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !genre.description })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="description" value={genre.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !genre.description })} />
+                            <label htmlFor="description" className="font-bold">Descripción</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !genre.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
             </Dialog>
