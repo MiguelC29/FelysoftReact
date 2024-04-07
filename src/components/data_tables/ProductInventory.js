@@ -7,6 +7,7 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
 import CustomDataTable from '../CustomDataTable';
+import { Image } from 'primereact/image';
 
 export default function ProductInventory() {
 
@@ -89,6 +90,16 @@ export default function ProductInventory() {
         return actionBodyTemplateInv(rowData, openUpdate, openReset);
     };
 
+    const imageBodyTemplate = (rowData) => {
+        const imageData = rowData.product.image;
+        const imageType = rowData.product.imageType;
+        if (imageData) {
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.product.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
+        } else {
+            return <p>No hay imagen</p>;
+        }
+    };
+
     const productInvDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
@@ -133,6 +144,7 @@ export default function ProductInventory() {
     };
 
     const columns = [
+        { field: 'product.image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         { field: 'product.name', header: 'Producto', sortable: true, style: { minWidth: '5rem' } },
         { field: 'product.salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'stock', header: 'Stock', body: stockBodyTemplate, sortable: true, style: { minWidth: '6rem' } },
@@ -145,8 +157,8 @@ export default function ProductInventory() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, productsInv, 'Reporte_Inventario_Productos') };
-    const handleExportExcel = () => { exportExcel(productsInv, columns, 'Inventario_Productos') };
+    const handleExportPdf = () => { exportPdf(columns.slice(1, -1), productsInv, 'Reporte_Inventario_Productos') };
+    const handleExportExcel = () => { exportExcel(productsInv, columns.slice(1, -1), 'Inventario_Productos') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
