@@ -6,6 +6,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Roles() {
     let emptyRole = {
@@ -136,12 +137,18 @@ export default function Roles() {
                 />
 
                 <Dialog visible={roleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={roleDialogFooter} onHide={hideDialog}>
-                    <div className="field">
-                        <label htmlFor="name" className="font-bold">
-                            Nombre
-                        </label>
-                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
+                    <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">title</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
+                            <label htmlFor="name" className="font-bold">Nombre</label>
+                        </FloatLabel>
+                        </div>
                         {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
+
                     </div>
                 </Dialog>
 

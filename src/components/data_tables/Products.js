@@ -10,6 +10,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Products() {
     let emptyProduct = {
@@ -18,7 +19,7 @@ export default function Products() {
         typeImg: '',
         name: '',
         brand: '',
-        salePrice: 0,
+        salePrice: null,
         expiryDate: '',
         stockInicial: 0,
         category: '',
@@ -191,7 +192,7 @@ export default function Products() {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
         if (imageData) {
-            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
         } else {
             return <p>No hay imagen</p>;
         }
@@ -290,38 +291,40 @@ export default function Products() {
 
             <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                 {product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
-                <div className="field">
-                    <label htmlFor="name" className="font-bold">
-                        Nombre
-                    </label>
-                    <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
+                        <label for="name" className="font-bold">Nombre</label>
+                    </FloatLabel>
                     {submitted && !product.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
-                <div className="field">
-                    <label htmlFor="brand" className="font-bold">
-                        Marca
-                    </label>
-                    <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
+                <div className="field mt-5">
+                    <FloatLabel>
+                        <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
+                        <label htmlFor="brand" className="font-bold">Marca</label>
+                    </FloatLabel>
                     {submitted && !product.brand && <small className="p-error">Marca es requerida.</small>}
                 </div>
 
                 <div className="field">
-                    <label htmlFor="expiryDate" className="font-bold">
-                        Fecha de Vencimiento
-                    </label>
+                    <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
-                <div className="formgrid grid">
+                <div className="formgrid grid mt-6">
                     <div className="field col">
-                        <label htmlFor="salePrice" className="font-bold">
-                            Precio de venta
-                        </label>
-                        <div className="p-inputgroup">
-                            <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                            <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">monetization_on</span>
+                            </span>
+                            <FloatLabel>
+                                <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
+                                <label htmlFor="salePrice" className="font-bold">Precio de venta</label>
+                            </FloatLabel>
                         </div>
+
+
                         {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
                     </div>
                     {(operation === 1) &&

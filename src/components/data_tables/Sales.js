@@ -7,13 +7,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Sales() {
 
     let emptySale = {
         idSale: null,
         dateSale: '',
-        totalSale: 0,
+        totalSale: null,
         payment: '',
     }
 
@@ -160,21 +161,21 @@ export default function Sales() {
             </div>
 
             <Dialog visible={saleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={saleDialogFooter} onHide={hideDialog}>
-                <div className="field col">
-                    <label htmlFor="totalSale" className="font-bold">
-                        Total
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="totalSale" maxLength={10} value={sale.totalSale} onValueChange={(e) => onInputNumberChange(e, 'totalSale')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !sale.totalSale })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="totalSale" maxLength={10} value={sale.totalSale} onValueChange={(e) => onInputNumberChange(e, 'totalSale')} mode="decimal" currency="COP" locale="es-CO" autoFocus required className={classNames({ 'p-invalid': submitted && !sale.totalSale })} />
+                            <label htmlFor="totalSale" className="font-bold">Total</label>
+                        </FloatLabel>
                     </div>
                     {submitted && !sale.totalSale && <small className="p-error">Total de venta es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="payment" className="font-bold">
-                        Método de pago
-                    </label>
+                <div className="field mt-5">
+                    <FloatLabel>
                     <Dropdown
                         id="payment"
                         value={selectedPayment}
@@ -189,7 +190,8 @@ export default function Sales() {
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !sale.payment && !selectedPayment })}`}
                     />
-
+                        <label htmlFor="payment" className="font-bold">Método de pago</label>
+                        </FloatLabel>
                     {submitted && !sale.payment && !selectedPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
             </Dialog>

@@ -9,13 +9,14 @@ import CustomDataTable from '../CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Reserves() {
     let emptyReserve = {
         idReserve: null,
         dateReserve: '',
         description: '',
-        deposit: 0,
+        deposit: null,
         time: '',
         book: '',
         user: ''
@@ -260,50 +261,61 @@ export default function Reserves() {
                     {submitted && !reserve.dateReserve && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Descripción
-                    </label>
-                    <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
-                    {submitted && !reserve.description && <small className="p-error">Descripcion es requerida.</small>}
-                </div>
-
-                <div className="field col">
-                    <label htmlFor="deposit" className="font-bold">
-                        Deposito
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
+                            <label htmlFor="description" className="font-bold">Descripción</label>
+                        </FloatLabel>
+                        {submitted && !reserve.description && <small className="p-error">Descripcion es requerida.</small>}
                     </div>
-                    {submitted && !reserve.deposit && <small className="p-error">Deposito es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="time" className="font-bold">
-                        Hora Reserva (HH:MM:SS)
-                    </label>
-                    <InputMask id="time" value={reserve.time} mask="99:99:99" onChange={(e) => onInputChange(e, 'time')} required className={classNames({ 'p-invalid': submitted && !reserve.time })} />
-                    {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
+                            <label htmlFor="deposit" className="font-bold">Depósito</label>
+                        </FloatLabel>
+                        {submitted && !reserve.deposit && <small className="p-error">Deposito es requerido.</small>}
+                    </div>
+                </div>
+
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">schedule</span>
+                        </span>
+                        <FloatLabel>
+                            <InputMask id="time" value={reserve.time} mask="99:99:99" onChange={(e) => onInputChange(e, 'time')} required className={classNames({ 'p-invalid': submitted && !reserve.time })} />
+                            <label htmlFor="time" className="font-bold">Hora Reserva</label>
+                        </FloatLabel>
+                        {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
+                    </div>
                 </div>
 
                 <div className="formgrid grid">
-                    <div className="field col">
-                        <label htmlFor="book" className="font-bold">
-                            Libro
-                        </label>
-                        <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
-                            filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
-
+                    <div className="field col mt-5">
+                        <FloatLabel>
+                            <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
+                                filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
+                            <label htmlFor="book" className="font-bold">Libro</label>
+                        </FloatLabel>
                         {submitted && !reserve.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                     </div>
 
-                    <div className="field col">
-                        <label htmlFor="user" className="font-bold">
-                            Usuario
-                        </label>
-                        <Dropdown id="user" value={selectedUser} onChange={(e) => { handleUserChange(e.target.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
-                            filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
+                    <div className="field col mt-5">
+                        <FloatLabel>
+                            <Dropdown id="user" value={selectedUser} onChange={(e) => { handleUserChange(e.target.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
+                                filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
+                            <label htmlFor="user" className="font-bold">Usuario</label>
+                        </FloatLabel>
                         {submitted && !reserve.user && !selectedUser && <small className="p-error">Usuario es requerido.</small>}
                     </div>
                 </div>
