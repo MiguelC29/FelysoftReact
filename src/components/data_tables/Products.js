@@ -10,6 +10,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Products() {
     let emptyProduct = {
@@ -18,9 +19,9 @@ export default function Products() {
         typeImg: '',
         name: '',
         brand: '',
-        salePrice: 0,
+        salePrice: null,
         expiryDate: '',
-        stockInicial: 0,
+        stock: null,
         category: '',
         provider: ''
     };
@@ -75,6 +76,10 @@ export default function Products() {
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
+        setProduct(prevState => ({
+            ...prevState,
+            image: file,
+        }));
         const reader = new FileReader();
 
         reader.onloadend = () => {
@@ -130,7 +135,7 @@ export default function Products() {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
-        if (product.name.trim() && product.brand.trim() && product.expiryDate && product.salePrice && product.category && product.provider) {
+        if (product.name.trim() && product.brand.trim() && product.expiryDate && product.salePrice && product.category && product.provider && product.image) {
             let url, method;
             const formData = new FormData();
 
@@ -191,7 +196,7 @@ export default function Products() {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
         if (imageData) {
-            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
         } else {
             return <p>No hay imagen</p>;
         }
@@ -289,76 +294,96 @@ export default function Products() {
             </div>
 
             <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                {product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
-                <div className="field">
-                    <label htmlFor="name" className="font-bold">
-                        Nombre
-                    </label>
-                    <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
+                {operation === 2 && product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
+                            <label for="name" className="font-bold">Nombre</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !product.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
-                <div className="field">
-                    <label htmlFor="brand" className="font-bold">
-                        Marca
-                    </label>
-                    <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">shoppingmode</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
+                            <label for="brand" className="font-bold">Marca</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !product.brand && <small className="p-error">Marca es requerida.</small>}
                 </div>
-
-                <div className="field">
-                    <label htmlFor="expiryDate" className="font-bold">
-                        Fecha de Vencimiento
-                    </label>
+                <div className="field mt-3">
+                    <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
-                <div className="formgrid grid">
+                <div className="formgrid grid mt-6">
                     <div className="field col">
-                        <label htmlFor="salePrice" className="font-bold">
-                            Precio de venta
-                        </label>
-                        <div className="p-inputgroup">
-                            <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                            <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">monetization_on</span>
+                            </span>
+                            <FloatLabel>
+                                <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
+                                <label for="salePrice" className="font-bold">Precio de venta</label>
+                            </FloatLabel>
                         </div>
                         {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
                     </div>
                     {(operation === 1) &&
                         <div className="field col">
-                            <label htmlFor="stock" className="font-bold">
-                                Stock Inicial
-                            </label>
-                            <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
+                            <div className="p-inputgroup flex-1">
+                                <span className="p-inputgroup-addon">
+                                    <span class="material-symbols-outlined">inventory</span>
+                                </span>
+                                <FloatLabel>
+                                    <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
+                                    <label for="stock" className="font-bold">Stock Inicial</label>
+                                </FloatLabel>
+                            </div>
                             {submitted && !product.stock && <small className="p-error">Stock inicial es requerido.</small>}
                         </div>
                     }
                 </div>
-
-                <div className="formgrid grid">
+                <div className="formgrid grid mt-5">
                     <div className="field col">
-                        <label htmlFor="category" className="font-bold">
-                            Categoria
-                        </label>
-                        <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoria"
-                            filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
-
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">stacks</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoria"
+                                    filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
+                                <label for="category" className="font-bold">Categoria</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !product.category && !selectedCategory && <small className="p-error">Categoria es requerida.</small>}
                     </div>
                     <div className="field col">
-                        <label htmlFor="provider" className="font-bold">
-                            Proveedor
-                        </label>
-                        <Dropdown id="provider" value={selectedProvider} onChange={(e) => { handleProviderChange(e.target.value); onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
-                            filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">local_shipping</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="provider" value={selectedProvider} onChange={(e) => { handleProviderChange(e.target.value); onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
+                                    filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
+                                <label for="provider" className="font-bold">Proveedor</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !product.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
                     </div>
                 </div>
                 <div className="formgrid grid">
                     <div className="field col">
-                        <label htmlFor="image" className="font-bold">
-                            Imagen Producto
-                        </label>
+                        <label htmlFor="image" className="font-bold">Imagen Producto</label>
                         <FileUpload
                             id='image'
                             mode="basic"
@@ -368,7 +393,10 @@ export default function Products() {
                             accept="image/*"
                             maxFileSize={2000000}
                             onSelect={handleFileUpload}
+                            required
+                            className={`${classNames({ 'p-invalid': submitted && !product.image && !selectedImage })}`}
                         />
+                        {submitted && !product.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
                     </div>
                     <div className="field col">
                         {selectedImage && (
