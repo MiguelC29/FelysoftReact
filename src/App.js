@@ -26,6 +26,7 @@ import ViewAuthors from './pages/ViewAuthors';
 import ViewGenres from './pages/ViewGenres';
 import { InicioSesion } from './components/IniciarSesion';
 import ViewBooksInventory from './pages/ViewBooksInventory';
+import ViewCarrito from './pages/ViewCarrito';
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
         <Route path='/autores' element={<ViewAuthors />} />
         <Route path='/generos' element={<ViewGenres />} />
         <Route path='/registroUsuario' element={<PasswordStrength />} />
+        <Route path='/carrito' element={<ViewCarrito />} />
 
       </Routes>
     </BrowserRouter>
