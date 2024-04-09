@@ -8,12 +8,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function ProductInventory() {
 
     let emptyProductInv = {
         idInventory: null,
-        stock: 0
+        stock: null
     }
 
     let URL = 'http://localhost:8086/api/inventory/';
@@ -163,7 +164,7 @@ export default function ProductInventory() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -178,11 +179,10 @@ export default function ProductInventory() {
                 />
                 <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
                     <div className="field col">
-                        <label htmlFor="stock" className="font-bold">
-                            Stock
-                        </label>
-                        <p>Stock actual</p>
+                    <FloatLabel>
                         <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
+                        <label for="stock" className="font-bold">Stock actual</label>
+                        </FloatLabel>
                         {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
                     </div>
                 </Dialog>

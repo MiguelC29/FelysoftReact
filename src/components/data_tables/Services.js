@@ -8,12 +8,13 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Services() {
   let emptyService = {
     idService: null,
     state: '',
-    priceAdditional: 0,
+    priceAdditional: null,
     total: '',
     typeService: '',
   };
@@ -196,7 +197,7 @@ export default function Services() {
 
   return (
     <div>
-      <Toast ref={toast} />
+      <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -221,71 +222,81 @@ export default function Services() {
         footer={serviceDialogFooter}
         onHide={hideDialog}
       >
-        <div className="field">
-          <label htmlFor="typeService" className="font-bold">
-            Tipo de Servicio
-          </label>
-          <Dropdown
-            id="typeService"
-            value={selectedTypeservice}
-            onChange={(e) => {
-              setSelectedTypeservice(e.value);
-              onInputNumberChange(e, 'typeService');
-            }}
-            options={typeservices}
-            optionLabel="name"
-            placeholder="Seleccionar el tipo de servicio"
-            filter valueTemplate={selectedTypeServiceTemplate}
-            itemTemplate={typeServiceOptionTemplate}
-            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-            required
-            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
-          />
+        <div className="field mt-4">
+          <FloatLabel>
+            <Dropdown
+              id="typeService"
+              value={selectedTypeservice}
+              onChange={(e) => {
+                setSelectedTypeservice(e.value);
+                onInputNumberChange(e, 'typeService');
+              }}
+              options={typeservices}
+              optionLabel="name"
+              placeholder="Seleccionar el tipo de servicio"
+              filter valueTemplate={selectedTypeServiceTemplate}
+              itemTemplate={typeServiceOptionTemplate}
+              emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+              required
+              className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
+            />
+            <label htmlFor="typeService" className="font-bold">Tipo de Servicio</label>
+          </FloatLabel>
           {submitted && !service.typeService && !selectedTypeservice && <small className="p-error">Tipo de servicio es requerido.</small>}
         </div>
 
-        <div className="field">
-          <label htmlFor="priceAdditional" className="font-bold">
-            Precio Adicional
-          </label>
-          <InputNumber
-            id="priceAdditional"
-            value={service.priceAdditional}
-            onValueChange={(e) => onInputNumberChange(e, 'priceAdditional')}
-            mode="decimal"
-            currency="COP"
-            locale="es-CO"
-          // Precio adicional no es obligatorio
-          // className={classNames({ 'p-invalid': submitted && !service.priceAdditional })}
-          />
-          {/* {submitted && !service.priceAdditional && <small className="p-error">Precio Adicional es requerido.</small>} */}
+        <div className="field mt-5">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">monetization_on</span>
+            </span>
+            <FloatLabel>
+              <label htmlFor="priceAdditional" className="font-bold">Precio Adicional</label>
+              <InputNumber
+                id="priceAdditional"
+                value={service.priceAdditional}
+                onValueChange={(e) => onInputNumberChange(e, 'priceAdditional')}
+                mode="decimal"
+                currency="COP"
+                locale="es-CO"
+              // Precio adicional no es obligatorio
+              // className={classNames({ 'p-invalid': submitted && !service.priceAdditional })}
+              />
+            </FloatLabel>
+            {/* {submitted && !service.priceAdditional && <small className="p-error">Precio Adicional es requerido.</small>} */}
+          </div>
         </div>
-
-        <div className="field">
-          <label htmlFor="state" className="font-bold">
-            Estado
-          </label>
-          <Dropdown
-            id="state"
-            value={selectedState}
-            onChange={(e) => {
-              setSelectedState(e.value);
-              onInputNumberChange(e, 'state');
-            }}
-            options={statesOptions}
-            placeholder="Seleccionar el estado actual"
-            emptyMessage="No hay datos"
-            required
-            className={`w-full md:w-16rem ${classNames({ 'p-invalid': submitted && !service.state && !selectedState })}`}
-          />
+        <div className="field mt-5">
+          <FloatLabel>
+            <Dropdown
+              id="state"
+              value={selectedState}
+              onChange={(e) => {
+                setSelectedState(e.value);
+                onInputNumberChange(e, 'state');
+              }}
+              options={statesOptions}
+              placeholder="Seleccionar el estado actual"
+              emptyMessage="No hay datos"
+              required
+              className={`w-full md:w-16rm ${classNames({ 'p-invalid': submitted && !service.state && !selectedState })}`}
+            />
+            <label htmlFor="state" className="font-bold">Estado</label>
+          </FloatLabel>
           {submitted && !service.state && !selectedState && <small className="p-error">Estado requerido.</small>}
         </div>
 
-        <div className="field">
-          <label htmlFor="total" className="font-bold">
-            Total
-          </label>
-          <InputText id="total" value={service.total} readOnly />
+        <div className="field mt-5">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">monetization_on</span>
+            </span>
+            <FloatLabel>
+              <InputText id="total" value={service.total} readOnly />
+              <label htmlFor="total" className="font-bold">Total</label>
+            </FloatLabel>
+          </div>
+          {submitted && !service.typeService && !selectedTypeservice && <small className="p-error">Total es requerido.</small>}
         </div>
       </Dialog>
 

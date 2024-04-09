@@ -8,12 +8,13 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { InputText } from 'primereact/inputtext';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Purchases() {
 
     let emptyPurchase = {
         idPurchase: null,
-        total: 0,
+        total: null,
         description: '',
         methodPayment: '',
         state: '',
@@ -217,9 +218,9 @@ export default function Purchases() {
 
     return (
         <div>
-            <Toast ref={toast} />
-            <div className="card" style={{background: '#9bc1de'}}>
-                <Toolbar className="mb-4" style={{background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none'}} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <Toast ref={toast} position="bottom-right" />
+            <div className="card" style={{ background: '#9bc1de' }}>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -233,76 +234,87 @@ export default function Purchases() {
             </div>
 
             <Dialog visible={purchaseDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
-                <div className="field col">
-                    <label htmlFor="total" className="font-bold">
-                        Total
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.total })} />
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.total })} />
+                            <label htmlFor="total" className="font-bold">Total</label>
+                        </FloatLabel>
                     </div>
-                    {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
+                        {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Descripción
-                    </label>
-                    <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !purchase.description })}/>
-                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
+
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !purchase.description })} />
+                            <label htmlFor="description" className="font-bold">Descripción</label>
+                        </FloatLabel>
+                    </div>
+                        {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
 
-                <div className="field col">
-                    <label htmlFor="methodPayment" className="font-bold">
-                        Método de pago
-                    </label>
-                    <Dropdown
-                        id="methodPayment"
-                        value={selectedMethodPayment}
-                        onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
-                        options={methodPaymentOptions}
-                        placeholder="Seleccionar el método de pago"
-                        required
-                        className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
-                    />
+                <div className="field mt-5">
+                    <FloatLabel>
+                        <Dropdown
+                            id="methodPayment"
+                            value={selectedMethodPayment}
+                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
+                            options={methodPaymentOptions}
+                            placeholder="Seleccionar el método de pago"
+                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
+                        />
+                        <label htmlFor="methodPayment" className="font-bold">Método de pago</label>
+                    </FloatLabel>
                     {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
 
-                <div className="field col">
-                    <label htmlFor="state" className="font-bold">
-                        Estado
-                    </label>
-                    <Dropdown
-                        id="state"
-                        value={selectedState}
-                        onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
-                        options={stateOptions}
-                        placeholder="Seleccionar el estado"
-                        required
-                        className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
-                    />
+                <div className="field mt-5">
+                    <FloatLabel>
+                        <Dropdown
+                            id="state"
+                            value={selectedState}
+                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
+                            options={stateOptions}
+                            placeholder="Seleccionar el estado"
+                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
+                        />
+                        <label htmlFor="state" className="font-bold">Estado</label>
+                    </FloatLabel>
                     {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="provider" className="font-bold">
-                        Proveedor
-                    </label>
-                    <Dropdown
-                        id="provider"
-                        value={selectedProvider}
-                        onChange={(e) => {
-                            setSelectedProvider(e.value);
-                            onInputNumberChange(e, 'provider');
-                        }}
-                        options={providers}
-                        optionLabel="name"
-                        placeholder="Seleccionar Proveedor"
-                        filter valueTemplate={selectedProviderTemplate}
-                        itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
-                    />
+                <div className="field mt-5">
+                    <FloatLabel>
+                        <Dropdown
+                            id="provider"
+                            value={selectedProvider}
+                            onChange={(e) => {
+                                setSelectedProvider(e.value);
+                                onInputNumberChange(e, 'provider');
+                            }}
+                            options={providers}
+                            optionLabel="name"
+                            placeholder="Seleccionar Proveedor"
+                            filter valueTemplate={selectedProviderTemplate}
+                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
+                        />
+                        <label htmlFor="provider" className="font-bold">Proveedor</label>
+                        {submitted && !purchase.state && !selectedState && <small className="p-error">Proveedor es requerido.</small>}
+                    </FloatLabel>
                 </div>
             </Dialog>
 

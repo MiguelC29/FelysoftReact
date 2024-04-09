@@ -20,6 +20,7 @@ export default function Products() {
         name: '',
         brand: '',
         salePrice: null,
+        salePrice: null,
         expiryDate: '',
         stock: null,
         category: '',
@@ -197,6 +198,7 @@ export default function Products() {
         const imageType = rowData.imageType;
         if (imageData) {
             return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
         } else {
             return <p>No hay imagen</p>;
         }
@@ -278,7 +280,7 @@ export default function Products() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -336,6 +338,8 @@ export default function Products() {
                                 <label for="salePrice" className="font-bold">Precio de venta</label>
                             </FloatLabel>
                         </div>
+
+
                         {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
                     </div>
                     {(operation === 1) &&

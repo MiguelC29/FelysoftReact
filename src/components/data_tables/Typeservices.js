@@ -7,13 +7,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function TypeServices() {
   let emptyTypeService = {
     idTypeService: null,
     name: '',
     description: '',
-    price: 0,
+    price: null,
   };
 
   const URL = 'http://localhost:8086/api/typeservice/';
@@ -145,7 +146,7 @@ export default function TypeServices() {
 
   return (
     <div>
-      <Toast ref={toast} />
+      <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -161,38 +162,50 @@ export default function TypeServices() {
       </div>
 
       <Dialog visible={typeServiceDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={typeServiceDialogFooter} onHide={hideDialog}>
-        <div className="field">
-          <label htmlFor="name" className="font-bold">
-            Nombre
-          </label>
-          <InputText id="name" value={typeService.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !typeService.name })} />
+        <div className="field mt-4">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">title</span>
+            </span>
+            <FloatLabel>
+              <InputText id="name" value={typeService.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !typeService.name })} />
+              <label htmlFor="name" className="font-bold">Nombre</label>
+            </FloatLabel>
+          </div>
           {submitted && !typeService.name && <small className="p-error">Nombre es requerido.</small>}
         </div>
 
-        <div className="field">
-          <label htmlFor="description" className="font-bold">
-            Descripción
-          </label>
-          <InputText id="description" value={typeService.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !typeService.description })} />
+        <div className="field mt-5">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">description</span>
+            </span>
+            <FloatLabel>
+              <InputText id="description" value={typeService.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !typeService.description })} />
+              <label htmlFor="description" className="font-bold">Descripción</label>
+            </FloatLabel>
+          </div>
           {submitted && !typeService.description && <small className="p-error">Descripción es requerida.</small>}
         </div>
 
-        <div className="field">
-          <label htmlFor="price" className="font-bold">
-            Precio
-          </label>
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-            <InputNumber
-              id="price"
-              value={typeService.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode="decimal"
-              currency="COP"
-              locale="es-CO"
-              required
-              className={classNames({ 'p-invalid': submitted && !typeService.price })}
-            />
+        <div className="field mt-5">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">monetization_on</span>
+            </span>
+            <FloatLabel>
+              <InputNumber
+                id="price"
+                value={typeService.price}
+                onValueChange={(e) => onInputNumberChange(e, 'price')}
+                mode="decimal"
+                currency="COP"
+                locale="es-CO"
+                required
+                className={classNames({ 'p-invalid': submitted && !typeService.price })}
+              />
+              <label htmlFor="price" className="font-bold">Precio</label>
+            </FloatLabel>
           </div>
           {submitted && !typeService.price && <small className="p-error">Precio es requerido.</small>}
         </div>
