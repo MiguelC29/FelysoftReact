@@ -194,7 +194,7 @@ export default function MiniDrawer({ children }) {
                         {
                             name: "Inicio",
                             icon: <Icon icon='home' />,
-                            link: "/",
+                            link: "/carrito",
                         },
                         {
                             name: "Almacen",
@@ -267,7 +267,7 @@ export default function MiniDrawer({ children }) {
                         {
                             name: "Cerrar sesión",
                             icon: <Icon icon='logout' />,
-                            link: "/registroUsuario",
+                            link: "/",
                         },
                     ].map((item, index) => (
                         <React.Fragment key={index}>
