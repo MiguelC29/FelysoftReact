@@ -33,6 +33,17 @@ export default function Carrito() {
         }
     };
 
+    const getSeverityStock = (product) => {
+
+        if (product.stock < 1) {
+            return '#e72929';
+        } else if (product.stock < 6) {
+            return '#ff9209';
+        } else {
+            return '#0D9276';
+        }
+    };
+
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData).replace(/(\.00|,00)$/, '');
     };
@@ -47,9 +58,10 @@ export default function Carrito() {
 
     const listItem = (product, index) => {
         return (
+            // TODO: CAMBIAR DISEÑO
             <div className="col-12" key={product.id}>
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} />
+                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} height={140}/>
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                             <div className="text-2xl font-bold text-900">{product.product.name}</div>
@@ -58,12 +70,18 @@ export default function Carrito() {
                                     <i className="pi pi-tag"></i>
                                     <span className="font-semibold">{product.product.category.name}</span>
                                 </span>
-                                <Tag value={product.state} style={{ background: getSeverity(product) }} ></Tag>
+                            </div>
+                            <div className="flex align-items-center gap-3">
+                                {/* <b>Stock</b> */}
+                                <Tag value={product.stock} style={{ background: getSeverityStock(product) }}></Tag>
+                            </div>
+                            <div className="flex align-items-center gap-3">
+                                <Tag value={product.state} style={{ background: getSeverity(product) }}></Tag>
                             </div>
                         </div>
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                            <Button icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'}></Button>
+                            <Button icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart}></Button>
                         </div>
                     </div>
                 </div>

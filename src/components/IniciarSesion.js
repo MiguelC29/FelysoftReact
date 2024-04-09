@@ -41,7 +41,7 @@ export const InicioSesion = () => {
               <div id="spinner" className="spinner"></div>
             </div>
 
-            <Link to={'/productos'} className='btn-login p-button text-decoration-none'>INICIAR SESIÓN</Link>
+            <Link to={'/carrito'} className='btn-login p-button text-decoration-none'>INICIAR SESIÓN</Link>
           </form>
         </div>
       </div>
