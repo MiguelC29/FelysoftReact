@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
+import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
+import React, { useEffect, useState } from 'react';
 import { formatCurrency, getOneData } from '../../functionsDataTable';
 import { useCart } from '../CartContext';
-import { InputText } from 'primereact/inputtext';
 
 export default function Carrito() {
     const [products, setProducts] = useState([]);
@@ -61,7 +61,7 @@ export default function Carrito() {
             // TODO: CAMBIAR DISEÑO
             <div className="col-12" key={product.id}>
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} height={140}/>
+                    <img className="w-9 sm:w-16rem xl:w-10rem block xl:block mx-auto" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                             <div className="text-2xl font-bold text-900">{product.product.name}</div>
@@ -81,7 +81,7 @@ export default function Carrito() {
                         </div>
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                            <Button icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart}></Button>
+                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} />
                         </div>
                     </div>
                 </div>
@@ -92,21 +92,24 @@ export default function Carrito() {
     const gridItem = (product) => {
         return (
             <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product.id}>
-                <div className="p-4 border-1 surface-border surface-card border-round">
+                <div className="p-4 border-1 surface-border border-round">
                     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                         <div className="flex align-items-center gap-2">
                             <i className="pi pi-tag"></i>
                             <span className="font-semibold">{product.product.category.name}</span>
                         </div>
-                        <Tag value={product.state} style={{ background: getSeverity(product) }}></Tag>
+                        <div className="flex align-items-center gap-2">
+                            <Tag value={product.stock} style={{ background: getSeverityStock(product) }}></Tag>
+                            <Tag value={product.state} style={{ background: getSeverity(product) }}></Tag>
+                        </div>
                     </div>
                     <div className="flex flex-column align-items-center gap-3 py-5">
-                        <img className="w-9 shadow-2 border-round" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} width={100} height={200} />
+                        <img className="w-5 sm:w-16rem lg:10rem xl:w-10rem block xl:block mx-auto" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} height={120} />
                         <div className="text-2xl font-bold">{product.product.name}</div>
                     </div>
                     <div className="flex align-items-center justify-content-between">
                         <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                        <Button icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart}></Button>
+                        <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} />
                     </div>
                 </div>
             </div>
