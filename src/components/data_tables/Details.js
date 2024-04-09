@@ -7,13 +7,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Details() {
 
     let emptyDetail = {
         idDetail: null,
-        quantity: 0,
-        unitPrice: 0,
+        quantity: null,
+        unitPrice: null,
         book: '',
         product: '',
         service: '',
@@ -217,7 +218,7 @@ export default function Details() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -233,96 +234,101 @@ export default function Details() {
             </div>
 
             <Dialog visible={detailDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={detailDialogFooter} onHide={hideDialog}>
-                <div className="field col">
-                    <label htmlFor="quantity" className="font-bold">
-                        Cantidad
-                    </label>
-                    <div className="p-inputgroup">
-                        <InputNumber id="quantity" maxLength={8} value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">production_quantity_limits</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="quantity" maxLength={8} value={detail.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.quantity })} />
+                            <label htmlFor="quantity" className="font-bold">Cantidad</label>
+                        </FloatLabel>
                     </div>
                     {submitted && !detail.quantity && <small className="p-error">Cantidad es requerido.</small>}
                 </div>
 
-                <div className="field col">
-                    <label htmlFor="unitPrice" className="font-bold">
-                        Precio único
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="unitPrice" maxLength={10} value={detail.unitPrice} onValueChange={(e) => onInputNumberChange(e, 'unitPrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.unitPrice })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="unitPrice" maxLength={10} value={detail.unitPrice} onValueChange={(e) => onInputNumberChange(e, 'unitPrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !detail.unitPrice })} />
+                            <label htmlFor="unitPrice" className="font-bold">Precio único</label>
+                        </FloatLabel>
                     </div>
                     {submitted && !detail.unitPrice && <small className="p-error">Precio único es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="book" className="font-bold">
-                        Libro
-                    </label>
-                    <Dropdown
-                        id="book"
-                        value={selectedBook}
-                        onChange={(e) => {
-                            setSelectedBook(e.value);
-                            onInputNumberChange(e, 'book');
-                        }}
-                        options={books}
-                        optionLabel="title"
-                        placeholder="Seleccionar Libro"
-                        filter valueTemplate={selectedBookTemplate}
-                        itemTemplate={bookOptionTemplate}
-                        emptyMessage="No hay datos"
-                        emptyFilterMessage="No hay resultados encontrados"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
-                    />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <Dropdown
+                            id="book"
+                            value={selectedBook}
+                            onChange={(e) => {
+                                setSelectedBook(e.value);
+                                onInputNumberChange(e, 'book');
+                            }}
+                            options={books}
+                            optionLabel="title"
+                            placeholder="Seleccionar Libro"
+                            filter valueTemplate={selectedBookTemplate}
+                            itemTemplate={bookOptionTemplate}
+                            emptyMessage="No hay datos"
+                            emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
+                        />
+                        <label htmlFor="book" className="font-bold">Libro</label>
+                    </FloatLabel>
                     {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="product" className="font-bold">
-                        Producto
-                    </label>
-                    <Dropdown
-                        id="product"
-                        value={selectedProduct}
-                        onChange={(e) => {
-                            setSelectedProduct(e.value);
-                            onInputNumberChange(e, 'product');
-                        }}
-                        options={products}
-                        optionLabel="name"
-                        filter valueTemplate={selectedProductTemplate}
-                        itemTemplate={productOptionTemplate}
-                        placeholder="Seleccionar Producto"
-                        emptyMessage="No hay datos"
-                        emptyFilterMessage="No hay resultados encontrados"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
-                    />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <Dropdown
+                            id="product"
+                            value={selectedProduct}
+                            onChange={(e) => {
+                                setSelectedProduct(e.value);
+                                onInputNumberChange(e, 'product');
+                            }}
+                            options={products}
+                            optionLabel="name"
+                            filter valueTemplate={selectedProductTemplate}
+                            itemTemplate={productOptionTemplate}
+                            placeholder="Seleccionar Producto"
+                            emptyMessage="No hay datos"
+                            emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
+                        />
+                        <label htmlFor="product" className="font-bold">Producto</label>
+                    </FloatLabel>
                     {submitted && !detail.product && !selectedProduct && <small className="p-error">Producto es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="service" className="font-bold">
-                        Servicio
-                    </label>
-                    {console.log(services)}
-                    <Dropdown
-                        id="service"
-                        value={selectedService}
-                        onChange={(e) => {
-                            setSelectedService(e.value);
-                            onInputNumberChange(e, 'service');
-                        }}
-                        options={services}
-                        optionLabel="typeService.name"
-                        filter valueTemplate={selectedServiceTemplate}
-                        itemTemplate={serviceOptionTemplate}
-                        placeholder="Seleccionar Servicio"
-                        required
-                        emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
-                    />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        {console.log(services)}
+                        <Dropdown
+                            id="service"
+                            value={selectedService}
+                            onChange={(e) => {
+                                setSelectedService(e.value);
+                                onInputNumberChange(e, 'service');
+                            }}
+                            options={services}
+                            optionLabel="typeService.name"
+                            filter valueTemplate={selectedServiceTemplate}
+                            itemTemplate={serviceOptionTemplate}
+                            placeholder="Seleccionar Servicio"
+                            required
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
+                        />
+                        <label htmlFor="service" className="font-bold">Servicio</label>
+                    </FloatLabel>
                     {submitted && !detail.service && !selectedService && <small className="p-error">Servicio es requerido.</small>}
                 </div>
 

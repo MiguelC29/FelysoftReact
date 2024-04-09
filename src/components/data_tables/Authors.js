@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
+import { FloatLabel } from 'primereact/floatlabel';
 
 
 export default function Authors() {
@@ -234,9 +235,9 @@ export default function Authors() {
 
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'nationality', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'nationality', header: 'Nacionalidad', sortable: true, style: { minWidth: '16rem' } },
         { field: 'dateBirth', header: 'Fecha de Nacimiento', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'biography', header: 'Biografia', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'biography', header: 'Biografía', sortable: true, style: { minWidth: '16rem' } },
         { body: actionBodyTemplateA, exportable: false, style: { minWidth: '12rem' } },
     ];
 
@@ -247,7 +248,7 @@ export default function Authors() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Genero', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -263,36 +264,49 @@ export default function Authors() {
             </div>
 
             <Dialog visible={authorDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={authorDialogFooter} onHide={hideDialog}>
-                <div className="field">
-                    <label htmlFor="name" className="font-bold">
-                        Nombre
-                    </label>
-                    <InputText id="name" value={author.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !author.name })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">badge</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="name" value={author.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !author.name })} />
+                            <label htmlFor="name" className="font-bold">Nombre</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !author.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="nationality" className="font-bold">
-                        Nacionalidad
-                    </label>
-                    <InputText id="natioality" value={author.nationality} onChange={(e) => onInputChange(e, 'nationality')} required className={classNames({ 'p-invalid': submitted && !author.nationality })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">pin_drop</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="natioality" value={author.nationality} onChange={(e) => onInputChange(e, 'nationality')} required className={classNames({ 'p-invalid': submitted && !author.nationality })} />
+                            <label htmlFor="nationality" className="font-bold">Nacionalidad</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !author.nationality && <small className="p-error">Nacionalidad es requerida.</small>}
                 </div>
 
                 <div className="field">
-                    <label htmlFor="dateBirth" className="font-bold">
-                        Fecha de Nacimieto
-                    </label>
+                    <label htmlFor="dateBirth" className="font-bold">Fecha de Nacimiento</label>
                     <InputText id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')} type="date" required className={classNames({ 'p-invalid': submitted && !authors.dateBirth })} />
-                    {submitted && !author.dateBirth && <small className="p-error">Fecha de Reserva es requerida.</small>}
+                    {submitted && !author.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="biography" className="font-bold">
-                        Biografia
-                    </label>
-                    <InputText id="biography" value={author.biography} onChange={(e) => onInputChange(e, 'biography')} required className={classNames({ 'p-invalid': submitted && !author.biography })} />
-                    {submitted && !author.biography && <small className="p-error">Biografia es requerida.</small>}
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">person_book</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="biography" value={author.biography} onChange={(e) => onInputChange(e, 'biography')} required className={classNames({ 'p-invalid': submitted && !author.biography })} />
+                            <label htmlFor="biography" className="font-bold">Biografía</label>
+                        </FloatLabel>
+                    </div>
+                    {submitted && !author.biography && <small className="p-error">Biografía es requerida.</small>}
                 </div>
             </Dialog>
 

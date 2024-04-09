@@ -6,6 +6,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Charges() {
   let emptyCharge = {
@@ -128,7 +129,7 @@ export default function Charges() {
 
   return (
     <div>
-      <Toast ref={toast} />
+      <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -144,19 +145,29 @@ export default function Charges() {
       </div>
 
       <Dialog visible={chargeDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={chargeDialogFooter} onHide={hideDialog}>
-        <div className="field">
-          <label htmlFor="charge" className="font-bold">
-            Cargo
-          </label>
-          <InputText id="charge" value={charge.charge} onChange={(e) => onInputChange(e, 'charge')} required autoFocus className={classNames({ 'p-invalid': submitted && !charge.charge })} />
+        <div className="field mt-4">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">person</span>
+            </span>
+            <FloatLabel>
+              <InputText id="charge" value={charge.charge} onChange={(e) => onInputChange(e, 'charge')} required autoFocus className={classNames({ 'p-invalid': submitted && !charge.charge })} />
+              <label htmlFor="charge" className="font-bold">Cargo</label>
+            </FloatLabel>
+          </div>
           {submitted && !charge.charge && <small className="p-error">Cargo es requerido.</small>}
         </div>
 
-        <div className="field">
-          <label htmlFor="description" className="font-bold">
-            Descripción
-          </label>
-          <InputText id="description" value={charge.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !charge.description })} />
+        <div className="field mt-4">
+          <div className="p-inputgroup flex-1">
+            <span className="p-inputgroup-addon">
+              <span class="material-symbols-outlined">description</span>
+            </span>
+            <FloatLabel>
+              <InputText id="description" value={charge.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !charge.description })} />
+              <label htmlFor="description" className="font-bold">Descripción</label>
+            </FloatLabel>
+          </div>
           {submitted && !charge.description && <small className="p-error">Descripción es requerida.</small>}
         </div>
       </Dialog>

@@ -8,11 +8,12 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Employees() {
     let emptyEmployee = {
         idEmployee: null,
-        salary: 0,
+        salary: null,
         specialty: '',
         dateBirth: '',
         user: '',
@@ -176,7 +177,7 @@ export default function Employees() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -201,25 +202,28 @@ export default function Employees() {
                 footer={employeeDialogFooter}
                 onHide={hideDialog}
             >
-                <div className="field">
-                    <label htmlFor="specialty" className="font-bold">
-                        Especialidad
-                    </label>
-                    <InputText
-                        id="specialty"
-                        value={employee.specialty}
-                        onChange={(e) => onInputChange(e, 'specialty')}
-                        required
-                        autoFocus
-                        className={classNames({ 'p-invalid': submitted && !employee.specialty })}
-                    />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">badge</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText
+                                id="specialty"
+                                value={employee.specialty}
+                                onChange={(e) => onInputChange(e, 'specialty')}
+                                required
+                                autoFocus
+                                className={classNames({ 'p-invalid': submitted && !employee.specialty })}
+                            />
+                            <label htmlFor="specialty" className="font-bold">Especialidad</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !employee.specialty && <small className="p-error">Especialidad es requerida.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="dateBirth" className="font-bold">
-                        Fecha de Nacimiento
-                    </label>
+                <div className="field col">
+                    <label htmlFor="dateBirth" className="font-bold">Fecha de Nacimiento</label>
                     <InputText
                         id="dateBirth"
                         value={employee.dateBirth}
@@ -232,20 +236,20 @@ export default function Employees() {
                 </div>
 
                 <div className="field">
-                    <label htmlFor="salary" className="font-bold">
-                        Salario
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="salary" value={employee.salary} onValueChange={(e) => onInputNumberChange(e, 'salary')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !employee.salary })} />
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="salary" value={employee.salary} onValueChange={(e) => onInputNumberChange(e, 'salary')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !employee.salary })} />
+                            <label htmlFor="salary" className="font-bold">Salario</label>
+                        </FloatLabel>
                     </div>
                     {submitted && !employee.salary && <small className="p-error">Salario es requerido.</small>}
                 </div>
 
-                <div className="field col">
-                    <label htmlFor="numIdentification" className="font-bold">
-                        Numero de Identificación
-                    </label>
+                <div className="field mt-4">
+                <FloatLabel>
                     <Dropdown
                         id="numIdentification"
                         value={selectedUser}
@@ -264,6 +268,8 @@ export default function Employees() {
                         required
                         className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
                     />
+                        <label htmlFor="numIdentification" className="font-bold">Numero de Identificación</label>
+                    </FloatLabel>
                     {submitted && !employee.user && !selectedUser && <small className="p-error">No. Identificación es requerido.</small>}
                 </div>
             </Dialog>

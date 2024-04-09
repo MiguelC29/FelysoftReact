@@ -8,6 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
+import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Expenses() {
 
@@ -15,7 +16,7 @@ export default function Expenses() {
         idExpense: null,
         type: '',
         date: '',
-        total: 0,
+        total: null,
         description: '',
         purchase: '',
         payment: '',
@@ -199,7 +200,7 @@ export default function Expenses() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -215,85 +216,91 @@ export default function Expenses() {
             </div>
 
             <Dialog visible={expenseDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={expenseDialogFooter} onHide={hideDialog}>
-                <div className="field col">
-                    {<label htmlFor="typeExpense" className="font-bold">
-                        Tipo de gasto
-                    </label>}
-                    <Dropdown
-                        id="typeExpense"
-                        value={selectedTypeExpense}
-                        onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
-                        options={typeExpenseOptions}
-                        placeholder="Seleccionar el tipo de gasto"
-                        emptyMessage="No hay datos"
-                        required
-                        className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
-                    />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <Dropdown
+                            id="typeExpense"
+                            value={selectedTypeExpense}
+                            onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
+                            options={typeExpenseOptions}
+                            placeholder="Seleccionar el tipo de gasto"
+                            emptyMessage="No hay datos"
+                            required
+                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
+                        />
+                        <label htmlFor="typeExpense" className="font-bold">Tipo de gasto</label>
+                    </FloatLabel>
                     {submitted && !expense.typeExpense && !selectedTypeExpense && <small className="p-error">Tipo de gasto es requerido.</small>}
                 </div>
 
-                <div className="field col">
-                    <label htmlFor="total" className="font-bold">
-                        Total
-                    </label>
-                    <div className="p-inputgroup">
-                        <span className="p-inputgroup-addon" style={{ backgroundColor: 'blueviolet', color: 'white' }}>$</span>
-                        <InputNumber id="total" maxLength={10} value={expense.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !expense.total })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="total" maxLength={10} value={expense.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !expense.total })} />
+                            <label htmlFor="total" className="font-bold">Total</label>
+                        </FloatLabel>
                     </div>
                     {submitted && !expense.total && <small className="p-error">Total del gasto es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="description" className="font-bold">
-                        Descripción
-                    </label>
-                    <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
+                        <FloatLabel>
+                            <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
+                            <label htmlFor="description" className="font-bold">Descripción</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !expense.description && <small className="p-error">Descripcion es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="purchase" className="font-bold">
-                        Proveedor
-                    </label>
-                    <Dropdown
-                        id="purchase"
-                        value={selectedPurchase}
-                        onChange={(e) => {
-                            setSelectedPurchase(e.value);
-                            onInputNumberChange(e, 'purchase');
-                        }}
-                        options={purchases}
-                        optionLabel="provider.name"
-                        placeholder="Seleccionar Proveedor"
-                        filter valueTemplate={selectedProviderTemplate}
-                        itemTemplate={providerOptionTemplate}
-                        emptyMessage="No hay datos"
-                        emptyFilterMessage="No hay resultados encontrados"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.purchase && !selectedPurchase })}`}
-                    />
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <Dropdown
+                            id="purchase"
+                            value={selectedPurchase}
+                            onChange={(e) => {
+                                setSelectedPurchase(e.value);
+                                onInputNumberChange(e, 'purchase');
+                            }}
+                            options={purchases}
+                            optionLabel="provider.name"
+                            placeholder="Seleccionar Proveedor"
+                            filter valueTemplate={selectedProviderTemplate}
+                            itemTemplate={providerOptionTemplate}
+                            emptyMessage="No hay datos"
+                            emptyFilterMessage="No hay resultados encontrados"
+                            required
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.purchase && !selectedPurchase })}`}
+                        />
+                        <label htmlFor="purchase" className="font-bold">Proveedor</label>
+                    </FloatLabel>
                     {submitted && !expense.purchase && !selectedPurchase && <small className="p-error">Proveedor es requerido.</small>}
                 </div>
 
-                <div className="field">
-                    <label htmlFor="payment" className="font-bold">
-                        Método de pago
-                    </label>
-                    <Dropdown
-                        id="payment"
-                        value={selectedPayment}
-                        onChange={(e) => {
-                            setSelectedPayment(e.value);
-                            onInputNumberChange(e, 'payment');
-                        }}
-                        options={payments}
-                        optionLabel="methodPayment"
-                        placeholder="Seleccionar Método de pago"
-                        emptyMessage="No hay datos"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.payment && !selectedPayment })}`}
-                    />
-
+                <div className="field mt-4">
+                    <FloatLabel>
+                        <Dropdown
+                            id="payment"
+                            value={selectedPayment}
+                            onChange={(e) => {
+                                setSelectedPayment(e.value);
+                                onInputNumberChange(e, 'payment');
+                            }}
+                            options={payments}
+                            optionLabel="methodPayment"
+                            placeholder="Seleccionar Método de pago"
+                            emptyMessage="No hay datos"
+                            required
+                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.payment && !selectedPayment })}`}
+                        />
+                        <label htmlFor="payment" className="font-bold">Método de pago</label>
+                    </FloatLabel>
                     {submitted && !expense.payment && !selectedPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
             </Dialog>
