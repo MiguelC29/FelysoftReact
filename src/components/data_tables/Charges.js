@@ -16,12 +16,12 @@ export default function Charges() {
   };
 
   const URL = 'http://localhost:8086/api/charge/';
+  const [charge, setCharge] = useState(emptyCharge);
   const [charges, setCharges] = useState([]);
   const [chargeDialog, setChargeDialog] = useState(false);
-  const [charge, setCharge] = useState(emptyCharge);
-  const [submitted, setSubmitted] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [deleteChargeDialog, setDeleteChargeDialog] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [title, setTitle] = useState('');
@@ -63,10 +63,8 @@ export default function Charges() {
   const saveCharge = () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
-
     if (charge.charge && charge.description) {
       let url, method, parameters;
-
       if (charge.idCharge && operation === 2) {
         parameters = {
           idCharge: charge.idCharge,
@@ -83,7 +81,6 @@ export default function Charges() {
         url = URL + 'create';
         method = 'POST';
       }
-
       sendRequest(method, parameters, url, setCharges, URL, operation, toast, 'Cargo ');
       setChargeDialog(false);
       setCharge(emptyCharge);
@@ -123,8 +120,8 @@ export default function Charges() {
   ];
 
   // EXPORT DATA
-  const handleExportPdf = () => { exportPdf(columns, charges, 'Reporte_Categorias') };
-  const handleExportExcel = () => { exportExcel(charges, columns, 'Categorias') };
+  const handleExportPdf = () => { exportPdf(columns, charges, 'Reporte_Cargos') };
+  const handleExportExcel = () => { exportExcel(charges, columns, 'Cargos') };
   const handleExportCsv = () => { exportCSV(false, dt) };
 
   return (
@@ -137,7 +134,7 @@ export default function Charges() {
           dt={dt}
           data={charges}
           dataKey="idCharge"
-          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} cargos"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Cargos"
           globalFilter={globalFilter}
           header={header('Cargos', setGlobalFilter)}
           columns={columns}
@@ -148,7 +145,7 @@ export default function Charges() {
         <div className="field mt-4">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">person</span>
+              <span class="material-symbols-outlined">person_apron</span>
             </span>
             <FloatLabel>
               <InputText id="charge" value={charge.charge} onChange={(e) => onInputChange(e, 'charge')} required autoFocus className={classNames({ 'p-invalid': submitted && !charge.charge })} />
@@ -157,7 +154,6 @@ export default function Charges() {
           </div>
           {submitted && !charge.charge && <small className="p-error">Cargo es requerido.</small>}
         </div>
-
         <div className="field mt-4">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -177,4 +173,4 @@ export default function Charges() {
       {confirmDialog(confirmDialogVisible, 'Cargo', confirmChargeDialogFooter, hideConfirmChargeDialog, charge, operation)}
     </div>
   );
-}
+};

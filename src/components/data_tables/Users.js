@@ -7,7 +7,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-// import { InputMask } from 'primereact/inputmask'
 import { Password } from 'primereact/password';
 import CustomDataTable from '../CustomDataTable';
 import { FileUpload } from 'primereact/fileupload';
@@ -15,7 +14,6 @@ import { FloatLabel } from 'primereact/floatlabel';
 import { Image } from 'primereact/image';
 
 export default function Users() {
-
   let emptyUser = {
     idUser: null,
     numIdentification: null,
@@ -45,18 +43,18 @@ export default function Users() {
   };
 
   const URL = 'http://localhost:8086/api/user/';
+  const [user, setUser] = useState(emptyUser);
+  const [file, setFile] = useState(null);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedTypeId, setSelectedTypeId] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
-  const [userDialog, setUserDialog] = useState(false);
-  const [deleteUserDialog, setDeleteUserDialog] = useState(false);
-  const [user, setUser] = useState(emptyUser);
-  const [file, setFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [userDialog, setUserDialog] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [deleteUserDialog, setDeleteUserDialog] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [title, setTitle] = useState('');
@@ -138,7 +136,6 @@ export default function Users() {
       user.role) {
       let url, method;
       const formData = new FormData();
-
       if (user.idUser && operation === 2) {
         formData.append('idUser', user.idUser);
         formData.append('numIdentification', user.numIdentification);
@@ -171,11 +168,10 @@ export default function Users() {
         url = URL + 'create';
         method = 'POST';
       }
-
       sendRequest(method, formData, url, setUsers, URL, operation, toast, 'Usuario ');
       setUserDialog(false);
       setUser(emptyUser);
-    }
+    };
   };
 
   const confirmSave = () => {
@@ -201,20 +197,20 @@ export default function Users() {
   const imageBodyTemplate = (rowData) => {
     const imageData = rowData.image;
     const imageType = rowData.imageType;
-    if (imageData) {  
-      return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen usuario ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
+    if (imageData) {
+      return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen usuario ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
     } else {
       return <p>No hay imagen</p>;
     }
   };
 
   const genderTemplate = (rowData) => {
-    if(rowData.gender === 'MASCULINO') {
+    if (rowData.gender === 'MASCULINO') {
       return 'M';
     } else {
       return 'F';
     }
-};
+  };
 
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser);
@@ -223,9 +219,11 @@ export default function Users() {
   const userDialogFooter = (
     DialogFooter(hideDialog, confirmSave)
   );
+
   const confirmUserDialogFooter = (
     confirmDialogFooter(hideConfirmUserDialog, saveUser)
   );
+
   const deleteUserDialogFooter = (
     deleteDialogFooter(hideDeleteUserDialog, deleteUser)
   );
@@ -264,7 +262,7 @@ export default function Users() {
 
   return (
     <div>
-      <Toast ref={toast} position="bottom-right"/>
+      <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de', maxWidth: '89em' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -272,7 +270,7 @@ export default function Users() {
           dt={dt}
           data={users}
           dataKey="id"
-          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} usuarios"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Usuarios"
           globalFilter={globalFilter}
           header={header('Usuarios', setGlobalFilter)}
           columns={columns}
@@ -289,7 +287,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputText id="names" value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50} />
-                <label for="names" className="font-bold">Nombres</label>
+                <label htmlFor="names" className="font-bold">Nombres</label>
               </FloatLabel>
             </div>
             {submitted && !user.names && <small className="p-error">Nombres son requeridos.</small>}
@@ -301,7 +299,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputText id="lastNames" value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60} />
-                <label for="lastNames" className="font-bold">Apellidos</label>
+                <label htmlFor="lastNames" className="font-bold">Apellidos</label>
               </FloatLabel>
             </div>
             {submitted && !user.lastNames && <small className="p-error">Apellidos son requeridos.</small>}
@@ -313,7 +311,7 @@ export default function Users() {
               <span className="p-inputgroup-addon">
                 <span class="material-symbols-outlined">badge</span>
               </span>
-              {/* FALTA VALIDAR QUE SE INGRESEN AÑOS VÁLIDOS, ES DECIR NO MAYORES AL ACTUAL */}
+              {/* TODO: FALTA VALIDAR QUE SE INGRESEN AÑOS VÁLIDOS, ES DECIR NO MAYORES AL ACTUAL */}
               <FloatLabel>
                 <Dropdown
                   id="typeDoc"
@@ -325,7 +323,7 @@ export default function Users() {
                   required
                   className={`w-full md:w-14rem rounded ${classNames({ 'p-invalid': submitted && !user.typeDoc && !selectedTypeId })}`}
                 />
-                <label for="typeDoc" className="font-bold">Tipo de Identificación</label>
+                <label htmlFor="typeDoc" className="font-bold">Tipo de Identificación</label>
               </FloatLabel>
             </div>
             {submitted && !user.typeDoc && !selectedTypeId && <small className="p-error">Tipo de Identificación es requerido.</small>}
@@ -337,7 +335,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputNumber inputId="numIdentification" value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
-                <label for="numIdentification" className="font-bold">Número de Identificación</label>
+                <label htmlFor="numIdentification" className="font-bold">Número de Identificación</label>
               </FloatLabel>
             </div>
             {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
@@ -372,7 +370,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputNumber inputId="phoneNumbers" value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
-                <label for="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
+                <label htmlFor="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
               </FloatLabel>
             </div>
             {submitted && !user.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
@@ -386,7 +384,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputText id="address" value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50} />
-                <label for="address" className="font-bold">Dirección</label>
+                <label htmlFor="address" className="font-bold">Dirección</label>
               </FloatLabel>
             </div>
             {submitted && !user.address && <small className="p-error">Dirección es requerida.</small>}
@@ -398,7 +396,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputText id="email" value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
-                <label for="email" className="font-bold">Correo Eletrónico</label>
+                <label htmlFor="email" className="font-bold">Correo Eletrónico</label>
               </FloatLabel>
             </div>
             {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
@@ -412,7 +410,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <InputText id="username" value={user.username} onChange={(e) => onInputChange(e, 'username')} required className={classNames({ 'p-invalid': submitted && !user.username })} />
-                <label for="username" className="font-bold">Nombre de Usuario</label>
+                <label htmlFor="username" className="font-bold">Nombre de Usuario</label>
               </FloatLabel>
             </div>
             {submitted && !user.username && <small className="p-error">Nombre de Usuario es requerida.</small>}
@@ -424,7 +422,7 @@ export default function Users() {
               </span>
               <FloatLabel>
                 <Password id="password" value={user.password} onChange={(e) => onInputChange(e, 'password')} toggleMask required className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' />
-                <label for="password" className="font-bold">Contraseña</label>
+                <label htmlFor="password" className="font-bold">Contraseña</label>
               </FloatLabel>
             </div>
             {submitted && !user.password && <small className="p-error">Contraseña es requerido.</small>}
@@ -437,14 +435,15 @@ export default function Users() {
             </span>
             <FloatLabel>
               <Dropdown id="role" value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roles} optionLabel="name" placeholder="Seleccionar rol" emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
-              <label for="role" className="font-bold">Rol</label>
+              <label htmlFor="role" className="font-bold">Rol</label>
             </FloatLabel>
           </div>
           {submitted && !user.role && !selectedRole && <small className="p-error">Rol es requerido.</small>}
         </div>
         <div className="formgrid grid">
           <div className="field col">
-            <label for="image" className="font-bold">Foto del Usuario</label>
+            <label htmlFor="image" className="font-bold">Foto del Usuario</label>
+            {/* TODO: validar o permitir solo ciertos tipos de img - restringir a solo subir archivos de img */}
             <FileUpload
               id='image'
               mode="basic"
@@ -469,4 +468,4 @@ export default function Users() {
       {confirmDialog(confirmDialogVisible, 'Usuario', confirmUserDialogFooter, hideConfirmUserDialog, user, operation)}
     </div>
   );
-}
+};

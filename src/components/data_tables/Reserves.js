@@ -23,18 +23,16 @@ export default function Reserves() {
     };
 
     const URL = 'http://localhost:8086/api/reserve/';
-    const [reserves, setReserves] = useState([]);
-
-    const [books, setBooks] = useState([]);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
-
-    const [reserveDialog, setReserveDialog] = useState(false);
-    const [deleteReserveDialog, setDeleteReserveDialog] = useState(false);
     const [reserve, setReserve] = useState(emptyReserve);
-    const [submitted, setSubmitted] = useState(false);
+    const [reserves, setReserves] = useState([]);
+    const [books, setBooks] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [reserveDialog, setReserveDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteReserveDialog, setDeleteReserveDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -47,13 +45,6 @@ export default function Reserves() {
         getData('http://localhost:8086/api/user/', setUsers);
     }, []);
 
-    const handleBookChange = (bookId) => {
-        setSelectedBook(bookId);
-    };
-
-    const handleUserChange = (userId) => {
-        setSelectedUser(userId);
-    };
     const openNew = () => {
         setReserve(emptyReserve);
         setTitle('Registrar Reserva');
@@ -61,20 +52,16 @@ export default function Reserves() {
         setSelectedUser('');
         getData('http://localhost:8086/api/book/', setBooks);
         getData('http://localhost:8086/api/user/', setUsers);
-
         setOperation(1);
         setSubmitted(false);
         setReserveDialog(true);
     };
     const editReserve = (reserve) => {
         setReserve({ ...reserve });
-
         setSelectedBook(reserve.book);
         setSelectedUser(reserve.user);
-
         getData('http://localhost:8086/api/book/', setBooks);
         getData('http://localhost:8086/api/user/', setUsers);
-
         setTitle('Editar Reserva');
         setOperation(2);
         setReserveDialog(true);
@@ -96,7 +83,6 @@ export default function Reserves() {
     const saveReserve = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (
             reserve.dateReserve &&
             reserve.description.trim() &&
@@ -106,7 +92,6 @@ export default function Reserves() {
             reserve.user
         ) {
             let url, method, parameters;
-
             if (reserve.idReserve && operation === 2) {
                 parameters = {
                     idReserve: reserve.idReserve,
@@ -114,7 +99,6 @@ export default function Reserves() {
                     description: reserve.description.trim(),
                     deposit: reserve.deposit,
                     time: reserve.time,
-
                     fkIdBook: reserve.book.idBook,
                     fkIdUser: reserve.user.idUser
                 };
@@ -126,19 +110,18 @@ export default function Reserves() {
                     description: reserve.description.trim(),
                     deposit: reserve.deposit,
                     time: reserve.time,
-
                     fkIdBook: reserve.book.idBook,
                     fkIdUser: reserve.user.idUser
                 };
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setReserves, URL, operation, toast, 'Reserva ');
             setReserveDialog(false);
             setReserve(emptyReserve);
         }
     };
+
     const confirmSave = () => {
         setConfirmDialogVisible(true);
     };
@@ -154,6 +137,7 @@ export default function Reserves() {
     const onInputNumberChange = (e, description) => {
         inputNumberChange(e, description, reserve, setReserve);
     };
+
     const onInputChange = (e, description) => {
         inputChange(e, description, reserve, setReserve);
     };
@@ -173,6 +157,7 @@ export default function Reserves() {
     const confirmReserveDialogFooter = (
         confirmDialogFooter(hideConfirmReserveDialog, saveReserve)
     );
+
     const deleteReserveDialogFooter = (
         deleteDialogFooter(hideDeleteReserveDialog, deleteReserve)
     );
@@ -185,7 +170,6 @@ export default function Reserves() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -205,7 +189,6 @@ export default function Reserves() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -219,13 +202,11 @@ export default function Reserves() {
 
     const columns = [
         { field: 'dateReserve', header: 'Fecha de Reserva', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'description', header: 'Descripcion', sortable: true, style: { minWidth: '16rem' } },
-        { field: 'deposit', header: 'Deposito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
+        { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
+        { field: 'deposit', header: 'Depósito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'time', header: 'Hora Reserva', sortable: true, style: { minWidth: '10rem' } },
-
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
-
         { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 
@@ -252,41 +233,11 @@ export default function Reserves() {
             </div>
 
             <Dialog visible={reserveDialog} style={{ width: '40rem' }} header={title} modal className="p-fluid" footer={reserveDialogFooter} onHide={hideDialog}>
-
                 <div className="field">
-                    <label htmlFor="dateReserve" className="font-bold">
-                        Fecha de Reserva
-                    </label>
-                    <InputText id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} type="date" required className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
+                    <label htmlFor="dateReserve" className="font-bold">Fecha de Reserva</label>
+                    <InputText id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} type="date" required autoFocus className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
                     {submitted && !reserve.dateReserve && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
-
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
-                        </span>
-                        <FloatLabel>
-                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
-                            <label htmlFor="description" className="font-bold">Descripción</label>
-                        </FloatLabel>
-                        {submitted && !reserve.description && <small className="p-error">Descripcion es requerida.</small>}
-                    </div>
-                </div>
-
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
-                        </span>
-                        <FloatLabel>
-                            <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
-                            <label htmlFor="deposit" className="font-bold">Depósito</label>
-                        </FloatLabel>
-                        {submitted && !reserve.deposit && <small className="p-error">Deposito es requerido.</small>}
-                    </div>
-                </div>
-
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
@@ -299,31 +250,63 @@ export default function Reserves() {
                         {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
                     </div>
                 </div>
-
-                <div className="formgrid grid">
-                    <div className="field col mt-5">
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">description</span>
+                        </span>
                         <FloatLabel>
-                            <Dropdown id="book" value={selectedBook} onChange={(e) => { handleBookChange(e.target.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
-                                filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
-                            <label htmlFor="book" className="font-bold">Libro</label>
+                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
+                            <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
+                        {submitted && !reserve.description && <small className="p-error">Descripción es requerida.</small>}
+                    </div>
+                </div>
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
+                            <label htmlFor="deposit" className="font-bold">Depósito</label>
+                        </FloatLabel>
+                        {submitted && !reserve.deposit && <small className="p-error">Depósito es requerido.</small>}
+                    </div>
+                </div>
+                <div className="formgrid grid mt-5">
+                    <div className="field col">
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">book</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="book" value={selectedBook} onChange={(e) => { setSelectedBook(e.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
+                                    filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
+                                <label htmlFor="book" className="font-bold">Libro</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !reserve.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                     </div>
-
-                    <div className="field col mt-5">
-                        <FloatLabel>
-                            <Dropdown id="user" value={selectedUser} onChange={(e) => { handleUserChange(e.target.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="name" placeholder="Seleccionar Usuario"
-                                filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
-                            <label htmlFor="user" className="font-bold">Usuario</label>
-                        </FloatLabel>
+                    <div className="field col">
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">person</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="user" value={selectedUser} onChange={(e) => { setSelectedUser(e.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="title" placeholder="Seleccionar Usuario"
+                                    filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
+                                <label htmlFor="user" className="font-bold">Usuario</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !reserve.user && !selectedUser && <small className="p-error">Usuario es requerido.</small>}
                     </div>
                 </div>
-
             </Dialog>
+
             {DialogDelete(deleteReserveDialog, 'Reserva', deleteReserveDialogFooter, hideDeleteReserveDialog, reserve, reserve.description, 'la Reserva')}
 
             {confirmDialog(confirmDialogVisible, 'Reserva', confirmReserveDialogFooter, hideConfirmReserveDialog, reserve, operation)}
         </div>
     );
-}
+};

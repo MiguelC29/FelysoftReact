@@ -11,7 +11,6 @@ import { InputText } from 'primereact/inputtext';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Purchases() {
-
     let emptyPurchase = {
         idPurchase: null,
         total: null,
@@ -36,17 +35,17 @@ export default function Purchases() {
 
     const URL = 'http://localhost:8086/api/purchase/';
     const Url = "http://localhost:8086/api/purchase/expensePurchase/";
+    const [purchase, setPurchase] = useState(emptyPurchase);
     const [purchases, setPurchases] = useState([]);
     const [providers, setProviders] = useState([]);
+    const [expensePurchase, setExpensePurchase] = useState();
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
-    const [expensePurchase, setExpensePurchase] = useState();
     const [purchaseDialog, setPurchaseDialog] = useState(false);
-    const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
-    const [purchase, setPurchase] = useState(emptyPurchase);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -115,7 +114,6 @@ export default function Purchases() {
             purchase.methodPayment &&
             purchase.state) {
             let url, method, parameters;
-
             if (purchase.idPurchase && operation === 2) {
                 parameters = {
                     idPurchase: purchase.idPurchase, total: purchase.total, description: purchase.description.trim(), methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
@@ -129,7 +127,6 @@ export default function Purchases() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setPurchases, URL, operation, toast, "Compra ");
             setPurchaseDialog(false);
             setPurchase(emptyPurchase);
@@ -167,9 +164,11 @@ export default function Purchases() {
     const purchaseDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmPurchaseDialogFooter = (
         confirmDialogFooter(hideConfirmPurchaseDialog, savePurchase)
     );
+
     const deletePurchaseDialogFooter = (
         deleteDialogFooter(hideDeletePurchaseDialog, deletePurchase)
     );
@@ -182,7 +181,6 @@ export default function Purchases() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -226,7 +224,7 @@ export default function Purchases() {
                     dt={dt}
                     data={purchases}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} compras"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Compras"
                     globalFilter={globalFilter}
                     header={header('Compras', setGlobalFilter)}
                     columns={columns}
@@ -237,18 +235,31 @@ export default function Purchases() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
+                            <span class="material-symbols-outlined">local_shipping</span>
                         </span>
                         <FloatLabel>
-                            <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required autoFocus className={classNames({ 'p-invalid': submitted && !purchase.total })} />
-                            <label htmlFor="total" className="font-bold">Total</label>
+                            <Dropdown
+                                id="provider"
+                                value={selectedProvider}
+                                onChange={(e) => {
+                                    setSelectedProvider(e.value);
+                                    onInputNumberChange(e, 'provider');
+                                }}
+                                options={providers}
+                                optionLabel="name"
+                                placeholder="Seleccionar Proveedor"
+                                filter valueTemplate={selectedProviderTemplate}
+                                itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                autoFocus
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
+                            />
+                            <label htmlFor="provider" className="font-bold">Proveedor</label>
                         </FloatLabel>
                     </div>
-                        {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
+                    {submitted && !purchase.state && !selectedState && <small className="p-error">Proveedor es requerido.</small>}
                 </div>
-
-
-                <div className="field mt-4">
+                <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span class="material-symbols-outlined">description</span>
@@ -258,27 +269,44 @@ export default function Purchases() {
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
-                        {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
+                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
                 </div>
-
-                <div className="field mt-5">
-                    <FloatLabel>
-                        <Dropdown
-                            id="methodPayment"
-                            value={selectedMethodPayment}
-                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
-                            options={methodPaymentOptions}
-                            placeholder="Seleccionar el método de pago"
-                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
-                        />
-                        <label htmlFor="methodPayment" className="font-bold">Método de pago</label>
-                    </FloatLabel>
-                    {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
+                <div className="formgrid grid mt-5">
+                    <div className="field col">
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">monetization_on</span>
+                            </span>
+                            <FloatLabel>
+                                <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.total })}`} />
+                                <label htmlFor="total" className="font-bold">Total</label>
+                            </FloatLabel>
+                        </div>
+                        {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
+                    </div>
+                    <div className="field col">
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">currency_exchange</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown
+                                    id="methodPayment"
+                                    value={selectedMethodPayment}
+                                    onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
+                                    options={methodPaymentOptions}
+                                    placeholder="Seleccionar el método de pago"
+                                    itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                                    required
+                                    className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
+                                />
+                                <label htmlFor="methodPayment" className="font-bold">Método de pago</label>
+                            </FloatLabel>
+                        </div>
+                        {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
+                    </div>
                 </div>
-
-                <div className="field mt-5">
+                <div className="field mt-3">
                     <FloatLabel>
                         <Dropdown
                             id="state"
@@ -294,28 +322,6 @@ export default function Purchases() {
                     </FloatLabel>
                     {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
                 </div>
-
-                <div className="field mt-5">
-                    <FloatLabel>
-                        <Dropdown
-                            id="provider"
-                            value={selectedProvider}
-                            onChange={(e) => {
-                                setSelectedProvider(e.value);
-                                onInputNumberChange(e, 'provider');
-                            }}
-                            options={providers}
-                            optionLabel="name"
-                            placeholder="Seleccionar Proveedor"
-                            filter valueTemplate={selectedProviderTemplate}
-                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
-                        />
-                        <label htmlFor="provider" className="font-bold">Proveedor</label>
-                        {submitted && !purchase.state && !selectedState && <small className="p-error">Proveedor es requerido.</small>}
-                    </FloatLabel>
-                </div>
             </Dialog>
 
             {DialogDelete(deletePurchaseDialog, 'Compra', deletePurchaseDialogFooter, hideDeletePurchaseDialog, purchase, 'compra', 'esta')}
@@ -323,4 +329,4 @@ export default function Purchases() {
             {confirmDialog(confirmDialogVisible, 'Compra', confirmPurchaseDialogFooter, hideConfirmPurchaseDialog, purchase, operation)}
         </div>
     );
-}
+};

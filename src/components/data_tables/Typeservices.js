@@ -18,12 +18,12 @@ export default function TypeServices() {
   };
 
   const URL = 'http://localhost:8086/api/typeservice/';
+  const [typeService, setTypeService] = useState(emptyTypeService);
   const [typeservices, setTypeservices] = useState([]);
   const [typeServiceDialog, setTypeServiceDialog] = useState(false);
-  const [typeService, setTypeService] = useState(emptyTypeService);
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [deleteTypeServiceDialog, setDeleteTypeServiceDialog] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [title, setTitle] = useState('');
@@ -65,7 +65,6 @@ export default function TypeServices() {
   const saveTypeService = () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
-
     if (typeService.name && typeService.description && typeService.price) {
       let url, method, parameters;
 
@@ -87,7 +86,6 @@ export default function TypeServices() {
         url = URL + 'create';
         method = 'POST';
       }
-
       sendRequest(method, parameters, url, setTypeservices, URL, operation, toast, 'Tipo de Servicio ');
       setTypeServiceDialog(false);
       setTypeService(emptyTypeService);
@@ -125,9 +123,11 @@ export default function TypeServices() {
   const typeServiceDialogFooter = (
     DialogFooter(hideDialog, confirmSave)
   );
+
   const confirmTypeServiceDialogFooter = (
     confirmDialogFooter(hideConfirmTypeServiceDialog, saveTypeService)
   );
+
   const deleteTypeServiceDialogFooter = (
     deleteDialogFooter(hideDeleteTypeServiceDialog, deleteTypeService)
   );
@@ -140,8 +140,8 @@ export default function TypeServices() {
   ];
 
   // EXPORT DATA
-  const handleExportPdf = () => { exportPdf(columns, typeservices, 'Reporte_Categorias') };
-  const handleExportExcel = () => { exportExcel(typeservices, columns, 'Categorias') };
+  const handleExportPdf = () => { exportPdf(columns, typeservices, 'Reporte_Tipo_Servicios') };
+  const handleExportExcel = () => { exportExcel(typeservices, columns, 'Tipo_Servicios') };
   const handleExportCsv = () => { exportCSV(false, dt) };
 
   return (
@@ -154,7 +154,7 @@ export default function TypeServices() {
           dt={dt}
           data={typeservices}
           dataKey="idTypeService"
-          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} tipos de servicios"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Tipos de Servicios"
           globalFilter={globalFilter}
           header={header('Tipos de Servicios', setGlobalFilter)}
           columns={columns}
@@ -174,7 +174,6 @@ export default function TypeServices() {
           </div>
           {submitted && !typeService.name && <small className="p-error">Nombre es requerido.</small>}
         </div>
-
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -187,7 +186,6 @@ export default function TypeServices() {
           </div>
           {submitted && !typeService.description && <small className="p-error">Descripción es requerida.</small>}
         </div>
-
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -216,4 +214,4 @@ export default function TypeServices() {
       {confirmDialog(confirmDialogVisible, 'Tipo de Servicio', confirmTypeServiceDialogFooter, hideConfirmTypeServiceDialog, typeService, operation)}
     </div>
   );
-}
+};

@@ -9,7 +9,6 @@ import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
 
-
 export default function Authors() {
     let emptyAuthor = {
         idAuthor: null,
@@ -24,21 +23,20 @@ export default function Authors() {
         genreId: null
     }
 
+    const URL = 'http://localhost:8086/api/author/';
     const URLASC = 'http://localhost:8086/api/genre/add-author';
     const [asociation, setAsociation] = useState(emptyAsociation);
-    const [selectedGenre, setSelectedGenre] = useState(null);
-    const [genres, setGenres] = useState([]);
-    const [selectedAuthor, setSelectedAuthor] = useState(null);
-    const [asociationDialog, setAsociationDialog] = useState(false);
-    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
-
-    const URL = 'http://localhost:8086/api/author/';
-    const [authors, setAuthors] = useState([]);
-    const [authorDialog, setAuthorDialog] = useState(false);
-    const [deleteAuthorDialog, setDeleteAuthorDialog] = useState(false);
     const [author, setAuthor] = useState(emptyAuthor);
-    const [submitted, setSubmitted] = useState(false);
+    const [authors, setAuthors] = useState([]);
+    const [genres, setGenres] = useState([]);
+    const [selectedGenre, setSelectedGenre] = useState(null);
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [authorDialog, setAuthorDialog] = useState(false);
+    const [asociationDialog, setAsociationDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
+    const [deleteAuthorDialog, setDeleteAuthorDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -48,7 +46,6 @@ export default function Authors() {
     useEffect(() => {
         getData(URL, setAuthors);
     }, []);
-
 
     const openNew = () => {
         setAuthor(emptyAuthor);
@@ -67,7 +64,6 @@ export default function Authors() {
         setSubmitted(false);
         setAsociationDialog(true);
     };
-
 
     const editAuthor = (author) => {
         setAuthor({ ...author });
@@ -97,7 +93,6 @@ export default function Authors() {
     const saveAuthor = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (
             author.name.trim() &&
             author.nationality.trim() &&
@@ -127,7 +122,6 @@ export default function Authors() {
                 method = 'POST';
 
             }
-
             sendRequest(method, parameters, url, setAuthors, URL, operation, toast, 'Autor ');
             setAuthorDialog(false);
             setAuthor(emptyAuthor);
@@ -145,7 +139,6 @@ export default function Authors() {
             let parameters = {
                 genreId: asociation.genreId.idGenre, authorId: asociation.authorId.idAuthor,
             };
-
             sendRequestAsc('POST', parameters, URLASC, toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
@@ -188,6 +181,7 @@ export default function Authors() {
     const confirmAuthorDialogFooter = (
         confirmDialogFooter(hideConfirmAuthorDialog, saveAuthor)
     );
+
     const deleteAuthorDialogFooter = (
         deleteDialogFooter(hideDeleteAuthorDialog, deleteAuthor)
     );
@@ -200,7 +194,6 @@ export default function Authors() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -220,7 +213,6 @@ export default function Authors() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -231,7 +223,6 @@ export default function Authors() {
             </div>
         );
     };
-
 
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
@@ -250,7 +241,7 @@ export default function Authors() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Genero', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Género', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -276,7 +267,6 @@ export default function Authors() {
                     </div>
                     {submitted && !author.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
@@ -289,13 +279,11 @@ export default function Authors() {
                     </div>
                     {submitted && !author.nationality && <small className="p-error">Nacionalidad es requerida.</small>}
                 </div>
-
                 <div className="field">
                     <label htmlFor="dateBirth" className="font-bold">Fecha de Nacimiento</label>
                     <InputText id="dateBirth" value={author.dateBirth} onChange={(e) => onInputChange(e, 'dateBirth')} type="date" required className={classNames({ 'p-invalid': submitted && !authors.dateBirth })} />
                     {submitted && !author.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
                 </div>
-
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
@@ -324,7 +312,7 @@ export default function Authors() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Genero'
+                nameTableTwo='Género'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'
@@ -346,4 +334,4 @@ export default function Authors() {
             />
         </div>
     );
-}
+};

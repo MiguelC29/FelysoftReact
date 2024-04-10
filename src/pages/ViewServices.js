@@ -3,7 +3,6 @@ import Services from '../components/data_tables/Services'
 import { Box } from '@mui/material';
 import MiniDrawer from '../components/Sidebar';
 
-
 export default function ViewServices() {
     return (
         <div>
@@ -14,4 +13,4 @@ export default function ViewServices() {
             </MiniDrawer>
         </div>
     );
-}
+};

@@ -11,7 +11,6 @@ import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Providers() {
-
     let emptyProvider = {
         idProvider: null,
         nit: '',
@@ -25,21 +24,20 @@ export default function Providers() {
         providerId: null
     }
 
+    const URL = 'http://localhost:8086/api/provider/';
     const URLASC = 'http://localhost:8086/api/category/add-provider';
+    const [provider, setProvider] = useState(emptyProvider);
     const [asociation, setAsociation] = useState(emptyAsociation);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [providers, setProviders] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [asociationDialog, setAsociationDialog] = useState(false);
-    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
-
-    const URL = 'http://localhost:8086/api/provider/';
-    const [providers, setProviders] = useState([]);
     const [providerDialog, setProviderDialog] = useState(false);
-    const [deleteProviderDialog, setDeleteProviderDialog] = useState(false);
-    const [provider, setProvider] = useState(emptyProvider);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
+    const [deleteProviderDialog, setDeleteProviderDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -122,7 +120,6 @@ export default function Providers() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setProviders, URL, operation, toast, 'Proveedor ');
             setProviderDialog(false);
             setProvider(emptyProvider);
@@ -136,7 +133,6 @@ export default function Providers() {
             let parameters = {
                 categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
             };
-
             sendRequestAsc('POST', parameters, URLASC, toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
@@ -176,6 +172,7 @@ export default function Providers() {
     const asociationDialogFooter = (
         DialogFooter(hideDialog, confirmAsc)
     );
+
     const confirmAsociationDialogFooter = (
         confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
     );
@@ -183,9 +180,11 @@ export default function Providers() {
     const providerDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmProviderDialogFooter = (
         confirmDialogFooter(hideConfirmProviderDialog, saveProvider)
     );
+
     const deleteProviderDialogFooter = (
         deleteDialogFooter(hideDeleteProviderDialog, deleteProvider)
     );
@@ -198,7 +197,6 @@ export default function Providers() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -218,7 +216,6 @@ export default function Providers() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -247,17 +244,18 @@ export default function Providers() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoria', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoría', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
                     data={providers}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} proveedores"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Proveedores"
                     globalFilter={globalFilter}
                     header={header('Proveedores', setGlobalFilter)}
                     columns={columns}
                 />
+
                 <Dialog visible={providerDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={providerDialogFooter} onHide={hideDialog}>
                     <div className="formgrid grid mt-4">
                         <div className="field col">
@@ -267,8 +265,8 @@ export default function Providers() {
                                 </span>
                                 <FloatLabel>
                                     <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
-                                    {submitted && !provider.nit && <small className="p-error">Nit es requerido.</small>}
-                                    <label for="nit" className="font-bold">Nit</label>
+                                    {submitted && !provider.nit && <small className="p-error">NIT es requerido.</small>}
+                                    <label htmlFor="nit" className="font-bold">NIT</label>
                                 </FloatLabel>
                             </div>
                         </div>
@@ -280,7 +278,7 @@ export default function Providers() {
                                 <FloatLabel>
                                     <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50} />
                                     {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
-                                    <label for="name" className="font-bold">Nombre</label>
+                                    <label htmlFor="name" className="font-bold">Nombre</label>
                                 </FloatLabel>
                             </div>
                         </div>
@@ -294,7 +292,7 @@ export default function Providers() {
                                 <FloatLabel>
                                     <InputNumber inputId="phoneNumbers" value={provider.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !provider.phoneNumber })} />
                                     {submitted && !provider.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
-                                    <label for="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
+                                    <label htmlFor="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
                                 </FloatLabel>
                             </div>
                         </div>
@@ -306,7 +304,7 @@ export default function Providers() {
                                 <FloatLabel>
                                     <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
                                     {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
-                                    <label for="email" className="font-bold">Correo Eletrónico</label>
+                                    <label htmlFor="email" className="font-bold">Correo Eletrónico</label>
                                 </FloatLabel>
                             </div>
                         </div>
@@ -325,7 +323,7 @@ export default function Providers() {
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
                     nameTable='Proveedor'
-                    nameTableTwo='Categoria'
+                    nameTableTwo='Categoría'
                     labelId='provider'
                     labelId2='category'
                     selectedOne={selectedProvider}
@@ -350,4 +348,4 @@ export default function Providers() {
             </div>
         </div>
     );
-}
+};

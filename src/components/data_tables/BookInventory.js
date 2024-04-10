@@ -6,7 +6,6 @@ import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
 
 export default function BookInventory() {
-
     let URL = 'http://localhost:8086/api/inventory/';
     const [booksInv, setBooksInv] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -29,10 +28,8 @@ export default function BookInventory() {
         switch (book.state) {
             case 'DISPONIBLE':
                 return '#0D9276';
-
             case 'RESERVADO':
                 return 'rgb(14, 165, 233)';
-
             default:
                 return null;
         }
@@ -69,5 +66,5 @@ export default function BookInventory() {
                 />
             </div>
         </div>
-    )
-}
+    );
+};

@@ -207,6 +207,7 @@ export default function MiniDrawer({ children }) {
                             items: [
                                 { name: "Compras", icon: <IconSubItems />, link: "/compras" },
                                 { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores" },
+                                { name: "Detalles", icon: <IconSubItems />, link: "/detalles" },
                             ]
                         },
                         {

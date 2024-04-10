@@ -10,7 +10,6 @@ import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Sales() {
-
     let emptySale = {
         idSale: null,
         dateSale: '',
@@ -19,14 +18,14 @@ export default function Sales() {
     }
 
     const URL = 'http://localhost:8086/api/sale/';
+    const [sale, setSale] = useState(emptySale);
     const [sales, setSales] = useState([]);
     const [payments, setPayments] = useState([]);
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [saleDialog, setSaleDialog] = useState(false);
-    const [deleteSaleDialog, setDeleteSaleDialog] = useState(false);
-    const [sale, setSale] = useState(emptySale);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteSaleDialog, setDeleteSaleDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -71,7 +70,6 @@ export default function Sales() {
     const saveSale = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (sale.totalSale && sale.payment) {
             let url, method, parameters;
 
@@ -81,16 +79,13 @@ export default function Sales() {
                 };
                 url = URL + 'update/' + sale.idSale;
                 method = 'PUT';
-
             } else {
-                // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
                     totalSale: sale.totalSale, fkIdPayment: sale.payment.idPayment
                 };
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setSales, URL, operation, toast, "Venta ");
             setSaleDialog(false);
             setSale(emptySale);
@@ -124,9 +119,11 @@ export default function Sales() {
     const saleDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmSaleDialogFooter = (
         confirmDialogFooter(hideConfirmSaleDialog, saveSale)
     );
+
     const deleteSaleDialogFooter = (
         deleteDialogFooter(hideDeleteSaleDialog, deleteSale)
     );
@@ -153,7 +150,7 @@ export default function Sales() {
                     dt={dt}
                     data={sales}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} ventas"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Ventas"
                     globalFilter={globalFilter}
                     header={header('Ventas', setGlobalFilter)}
                     columns={columns}
@@ -173,25 +170,29 @@ export default function Sales() {
                     </div>
                     {submitted && !sale.totalSale && <small className="p-error">Total de venta es requerido.</small>}
                 </div>
-
                 <div className="field mt-5">
-                    <FloatLabel>
-                    <Dropdown
-                        id="payment"
-                        value={selectedPayment}
-                        onChange={(e) => {
-                            setSelectedPayment(e.value);
-                            onInputNumberChange(e, 'payment');
-                        }}
-                        options={payments}
-                        optionLabel="methodPayment"
-                        placeholder="Seleccionar Método de pago"
-                        emptyMessage="No hay datos"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !sale.payment && !selectedPayment })}`}
-                    />
-                        <label htmlFor="payment" className="font-bold">Método de pago</label>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">currency_exchange</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="payment"
+                                value={selectedPayment}
+                                onChange={(e) => {
+                                    setSelectedPayment(e.value);
+                                    onInputNumberChange(e, 'payment');
+                                }}
+                                options={payments}
+                                optionLabel="methodPayment"
+                                placeholder="Seleccionar Método de pago"
+                                emptyMessage="No hay datos"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !sale.payment && !selectedPayment })}`}
+                            />
+                            <label htmlFor="payment" className="font-bold">Método de pago</label>
                         </FloatLabel>
+                    </div>
                     {submitted && !sale.payment && !selectedPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
             </Dialog>
@@ -201,4 +202,4 @@ export default function Sales() {
             {confirmDialog(confirmDialogVisible, 'Venta', confirmSaleDialogFooter, hideConfirmSaleDialog, sale, operation)}
         </div>
     );
-}
+};

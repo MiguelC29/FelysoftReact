@@ -24,18 +24,16 @@ export default function Books() {
     };
 
     const URL = 'http://localhost:8086/api/book/';
-    const [books, setBooks] = useState([]);
-
-    const [genres, setGenres] = useState([]);
-    const [selectedGenre, setSelectedGenre] = useState(null);
-    const [authors, setAuthors] = useState([]);
-    const [selectedAuthor, setSelectedAuthor] = useState(null);
-
-    const [bookDialog, setBookDialog] = useState(false);
-    const [deleteBookDialog, setDeleteBookDialog] = useState(false);
     const [book, setBook] = useState(emptyBook);
-    const [submitted, setSubmitted] = useState(false);
+    const [books, setBooks] = useState([]);
+    const [genres, setGenres] = useState([]);
+    const [authors, setAuthors] = useState([]);
+    const [selectedGenre, setSelectedGenre] = useState(null);
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [bookDialog, setBookDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteBookDialog, setDeleteBookDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -77,7 +75,6 @@ export default function Books() {
         setSelectedGenre('');
         getData('http://localhost:8086/api/genre/', setGenres);
         getData('http://localhost:8086/api/author/', setAuthors);
-
         setOperation(1);
         setSubmitted(false);
         setBookDialog(true);
@@ -87,10 +84,8 @@ export default function Books() {
         setBook({ ...book });
         setSelectedAuthor(book.author);
         setSelectedGenre(book.genre);
-
         getData('http://localhost:8086/api/genre/', setGenres);
         getData('http://localhost:8086/api/author/', setAuthors);
-
         setTitle('Editar Libro');
         setOperation(2);
         setBookDialog(true);
@@ -112,17 +107,14 @@ export default function Books() {
     const saveBook = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (
             book.title.trim() &&
             book.editorial.trim() &&
             book.description.trim() &&
             book.yearPublication &&
             book.priceTime &&
-
             book.genre &&
             book.author
-
         ) {
             let url, method, parameters;
 
@@ -134,10 +126,8 @@ export default function Books() {
                     description: book.description.trim(),
                     yearPublication: book.yearPublication,
                     priceTime: book.priceTime,
-
                     fkIdGenre: book.genre.idGenre,
                     fkIdAuthor: book.author.idAuthor
-
                 };
                 url = URL + 'update/' + book.idBook;
                 method = 'PUT';
@@ -148,21 +138,18 @@ export default function Books() {
                     description: book.description.trim(),
                     yearPublication: book.yearPublication,
                     priceTime: book.priceTime,
-
                     fkIdGenre: book.genre.idGenre,
                     fkIdAuthor: book.author.idAuthor
-
                 };
                 url = URL + 'create';
                 method = 'POST';
-
             }
-
             sendRequest(method, parameters, url, setBooks, URL, operation, toast, 'Libro ');
             setBookDialog(false);
             setBook(emptyBook);
         }
     };
+
     const confirmSave = () => {
         setConfirmDialogVisible(true);
     };
@@ -178,6 +165,7 @@ export default function Books() {
     const onInputNumberChange = (e, title) => {
         inputNumberChange(e, title, book, setBook);
     };
+
     const onInputChange = (e, title) => {
         inputChange(e, title, book, setBook);
     };
@@ -197,6 +185,7 @@ export default function Books() {
     const confirmBookDialogFooter = (
         confirmDialogFooter(hideConfirmBookDialog, saveBook)
     );
+
     const deleteBookDialogFooter = (
         deleteDialogFooter(hideDeleteBookDialog, deleteBook)
     );
@@ -209,7 +198,6 @@ export default function Books() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -229,7 +217,6 @@ export default function Books() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -247,10 +234,8 @@ export default function Books() {
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'yearPublication', header: 'Año de Publicación', sortable: true, style: { minWidth: '10rem' } },
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-
         { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
         { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
-
         { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
@@ -284,7 +269,7 @@ export default function Books() {
                         </span>
                         <FloatLabel>
                             <InputText id="title" value={book.title} onChange={(e) => onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': submitted && !book.title })} />
-                            <label for="title" className="font-bold">Título</label>
+                            <label htmlFor="title" className="font-bold">Título</label>
                         </FloatLabel>
                     </div>
                     {submitted && !book.title && <small className="p-error">Título es requerido.</small>}
@@ -296,7 +281,7 @@ export default function Books() {
                         </span>
                         <FloatLabel>
                             <InputText id="editorial" value={book.editorial} onChange={(e) => onInputChange(e, 'editorial')} required className={classNames({ 'p-invalid': submitted && !book.editorial })} />
-                            <label for="editorial" className="font-bold">Editorial</label>
+                            <label htmlFor="editorial" className="font-bold">Editorial</label>
                         </FloatLabel>
                     </div>
                     {submitted && !book.editorial && <small className="p-error">Editorial es requerida.</small>}
@@ -308,7 +293,7 @@ export default function Books() {
                         </span>
                         <FloatLabel>
                             <InputText id="description" value={book.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !book.description })} />
-                            <label for="description" className="font-bold">Descripción</label>
+                            <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
                     {submitted && !book.description && <small className="p-error">Descripción es requerida.</small>}
@@ -321,7 +306,7 @@ export default function Books() {
                             </span>
                             <FloatLabel>
                                 <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
-                                <label for="yearPublication" className="font-bold">Año de Publicación</label>
+                                <label htmlFor="yearPublication" className="font-bold">Año de Publicación</label>
                             </FloatLabel>
                         </div>
                         {submitted && !book.yearPublication && <small className="p-error">Año de Publicación es requerida.</small>}
@@ -333,27 +318,37 @@ export default function Books() {
                             </span>
                             <FloatLabel>
                                 <InputNumber id="priceTime" value={book.priceTime} onValueChange={(e) => onInputNumberChange(e, 'priceTime')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !book.priceTime })} />
-                                <label for="priceTime" className="font-bold">Precio de venta</label>
+                                <label htmlFor="priceTime" className="font-bold">Precio de venta</label>
                             </FloatLabel>
                         </div>
                         {submitted && !book.priceTime && <small className="p-error">Precio Tiempo es requerido.</small>}
                     </div>
                 </div>
-                <div className="formgrid grid mt-4">
+                <div className="formgrid grid mt-3">
                     <div className="field col">
-                        <FloatLabel>
-                            <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Género"
-                                filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
-                            <label for="genre" className="font-bold">Género</label>
-                        </FloatLabel>
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">book_3</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Género"
+                                    filter valueTemplate={selectedGenreTemplate} itemTemplate={genreOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
+                                <label htmlFor="genre" className="font-bold">Género</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !book.genre && !selectedGenre && <small className="p-error">Género es requerido.</small>}
                     </div>
                     <div className="field col">
-                        <FloatLabel>
-                            <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"
-                                filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
-                            <label for="author" className="font-bold">Autor</label>
-                        </FloatLabel>
+                        <div className="p-inputgroup flex-1">
+                            <span className="p-inputgroup-addon">
+                                <span class="material-symbols-outlined">stylus_note</span>
+                            </span>
+                            <FloatLabel>
+                                <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"
+                                    filter valueTemplate={selectedAuthorTemplate} itemTemplate={authorOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.author && !selectedAuthor })}`} />
+                                <label htmlFor="author" className="font-bold">Autor</label>
+                            </FloatLabel>
+                        </div>
                         {submitted && !book.author && !selectedAuthor && <small className="p-error">Autor es requerido.</small>}
                     </div>
                 </div>
@@ -364,4 +359,4 @@ export default function Books() {
             {confirmDialog(confirmDialogVisible, 'Libro', confirmBookDialogFooter, hideConfirmBookDialog, book, operation)}
         </div >
     );
-}
+};

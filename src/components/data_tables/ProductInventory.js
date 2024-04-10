@@ -11,7 +11,6 @@ import { Image } from 'primereact/image';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function ProductInventory() {
-
     let emptyProductInv = {
         idInventory: null,
         stock: null
@@ -21,8 +20,8 @@ export default function ProductInventory() {
     const [productsInv, setProductsInv] = useState([]);
     const [productInv, setProductInv] = useState(emptyProductInv);
     const [productsInvDialog, setProductsInvDialog] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -68,7 +67,6 @@ export default function ProductInventory() {
             } else {
                 url = URL.concat('resetStock/' + productInv.idInventory);
             }
-
             sendRequestStock(method, parameters, url, setProductsInv, URL.concat('inventoryProducts'), toast);
             setProductsInvDialog(false);
             setProductInv(emptyProductInv);
@@ -95,7 +93,7 @@ export default function ProductInventory() {
         const imageData = rowData.product.image;
         const imageType = rowData.product.imageType;
         if (imageData) {
-            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.product.name}`} className="shadow-2 border-round" width="80" height="80" preview/>;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.product.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
         } else {
             return <p>No hay imagen</p>;
         }
@@ -150,7 +148,7 @@ export default function ProductInventory() {
         { field: 'product.salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'stock', header: 'Stock', body: stockBodyTemplate, sortable: true, style: { minWidth: '6rem' } },
         { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'product.category.name', header: 'Categoria', sortable: true, style: { minWidth: '8rem' } },
+        { field: 'product.category.name', header: 'Categoría', sortable: true, style: { minWidth: '8rem' } },
         { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
         { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
         { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
@@ -172,16 +170,17 @@ export default function ProductInventory() {
                     dt={dt}
                     data={productsInv}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={headerInv('Productos', setGlobalFilter)}
                     columns={columns}
                 />
+
                 <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
                     <div className="field col">
-                    <FloatLabel>
-                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
-                        <label for="stock" className="font-bold">Stock actual</label>
+                        <FloatLabel>
+                            <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required autoFocus className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
+                            <label htmlFor="stock" className="font-bold">Stock actual</label>
                         </FloatLabel>
                         {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
                     </div>
@@ -190,5 +189,5 @@ export default function ProductInventory() {
                 {confirmDialogStock(confirmDialogVisible, 'Stock', confirmProductDialogFooter, hideConfirmProductsInvDialog, productInv, operation)}
             </div>
         </div>
-    )
-}
+    );
+};

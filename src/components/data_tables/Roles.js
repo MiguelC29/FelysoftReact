@@ -15,12 +15,12 @@ export default function Roles() {
     }
 
     const URL = 'http://localhost:8086/api/role/';
+    const [role, setRole] = useState(emptyRole);
     const [roles, setRoles] = useState([]);
     const [roleDialog, setRoleDialog] = useState(false);
-    const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
-    const [role, setRole] = useState(emptyRole);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -73,7 +73,6 @@ export default function Roles() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setRoles, URL, operation, toast, 'Rol ');
             setRoleDialog(false);
             setRole(emptyRole);
@@ -89,7 +88,7 @@ export default function Roles() {
     };
 
     const deleteRole = () => {
-        deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Role');
+        deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Rol');
     };
 
     const onInputChange = (e, name) => {
@@ -103,9 +102,11 @@ export default function Roles() {
     const roleDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmRoleDialogFooter = (
         confirmDialogFooter(hideConfirmRoleDialog, saveRole)
     );
+
     const deleteRoleDialogFooter = (
         deleteDialogFooter(hideDeleteRoleDialog, deleteRole)
     );
@@ -130,7 +131,7 @@ export default function Roles() {
                     dt={dt}
                     data={roles}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} roles"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Roles"
                     globalFilter={globalFilter}
                     header={header('Roles', setGlobalFilter)}
                     columns={columns}
@@ -138,18 +139,12 @@ export default function Roles() {
 
                 <Dialog visible={roleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={roleDialogFooter} onHide={hideDialog}>
                     <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">title</span>
-                        </span>
                         <FloatLabel>
                             <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
                             <label htmlFor="name" className="font-bold">Nombre</label>
                         </FloatLabel>
-                        </div>
-                        {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
-
                     </div>
+                    {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
                 </Dialog>
 
                 {DialogDelete(deleteRoleDialog, 'Rol', deleteRoleDialogFooter, hideDeleteRoleDialog, role, role.name, 'el rol')}
@@ -157,5 +152,5 @@ export default function Roles() {
                 {confirmDialog(confirmDialogVisible, 'Rol', confirmRoleDialogFooter, hideConfirmRoleDialog, role, operation)}
             </div>
         </div>
-    )
-}
+    );
+};

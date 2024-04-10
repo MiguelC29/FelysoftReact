@@ -20,22 +20,20 @@ export default function Categories() {
         providerId: null
     }
 
-    // Asociation
     const URLASC = 'http://localhost:8086/api/category/add-provider';
-    const [asociation, setAsociation] = useState(emptyAsociation);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [providers, setProviders] = useState([]);
-    const [selectedProvider, setSelectedProvider] = useState(null);
-    const [asociationDialog, setAsociationDialog] = useState(false);
-    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
-
     const URL = 'http://localhost:8086/api/category/';
-    const [categories, setCategories] = useState([]);
-    const [categoryDialog, setCategoryDialog] = useState(false);
-    const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
+    const [asociation, setAsociation] = useState(emptyAsociation);
     const [category, setCategory] = useState(emptyCategory);
-    const [submitted, setSubmitted] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedProvider, setSelectedProvider] = useState(null);
+    const [providers, setProviders] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [asociationDialog, setAsociationDialog] = useState(false);
+    const [categoryDialog, setCategoryDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
+    const [deleteCategoryDialog, setDeleteCategoryDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -48,7 +46,7 @@ export default function Categories() {
 
     const openNew = () => {
         setCategory(emptyCategory);
-        setTitle('Registrar Categoria');
+        setTitle('Registrar Categoría');
         setOperation(1);
         setSubmitted(false);
         setCategoryDialog(true);
@@ -66,7 +64,7 @@ export default function Categories() {
 
     const editCategory = (category) => {
         setCategory({ ...category });
-        setTitle('Editar Categoria');
+        setTitle('Editar Categoría');
         setOperation(2);
         setCategoryDialog(true);
     };
@@ -96,7 +94,6 @@ export default function Categories() {
             let parameters = {
                 categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
             };
-
             sendRequestAsc('POST', parameters, URLASC, toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
@@ -119,8 +116,7 @@ export default function Categories() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
-            sendRequest(method, parameters, url, setCategories, URL, operation, toast, 'Categoria ');
+            sendRequest(method, parameters, url, setCategories, URL, operation, toast, 'Categoría ');
             setCategoryDialog(false);
             setCategory(emptyCategory);
         }
@@ -139,7 +135,7 @@ export default function Categories() {
     };
 
     const deleteCategory = () => {
-        deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoria');
+        deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoría');
     };
 
     const onInputChange = (e, name) => {
@@ -153,6 +149,7 @@ export default function Categories() {
     const asociationDialogFooter = (
         DialogFooter(hideDialog, confirmAsc)
     );
+
     const confirmAsociationDialogFooter = (
         confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
     );
@@ -160,9 +157,11 @@ export default function Categories() {
     const categoryDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmCategoryDialogFooter = (
         confirmDialogFooter(hideConfirmCategoryDialog, saveCategory)
     );
+
     const deleteCategoryDialogFooter = (
         deleteDialogFooter(hideDeleteCategoryDialog, deleteCategory)
     );
@@ -175,7 +174,6 @@ export default function Categories() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -195,7 +193,6 @@ export default function Categories() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -213,8 +210,8 @@ export default function Categories() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, categories, 'Reporte_Categorias') };
-    const handleExportExcel = () => { exportExcel(categories, columns, 'Categorias') };
+    const handleExportPdf = () => { exportPdf(columns, categories, 'Reporte_Categorías') };
+    const handleExportExcel = () => { exportExcel(categories, columns, 'Categorías') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
@@ -227,9 +224,9 @@ export default function Categories() {
                     dt={dt}
                     data={categories}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} categorias"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Categorías"
                     globalFilter={globalFilter}
-                    header={header('Categorias', setGlobalFilter)}
+                    header={header('Categorías', setGlobalFilter)}
                     columns={columns}
                 />
 
@@ -237,15 +234,15 @@ export default function Categories() {
                     <div className="field mt-4">
                         <FloatLabel>
                             <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30} />
-                            <label for="name" className='font-bold'>Nombre</label>
+                            <label htmlFor="name" className='font-bold'>Nombre</label>
                         </FloatLabel>
-                        {submitted && !category.name && <small className="p-error">Nombre de categoria es requerido.</small>}
+                        {submitted && !category.name && <small className="p-error">Nombre de categoría es requerido.</small>}
                     </div>
                 </Dialog>
 
-                {DialogDelete(deleteCategoryDialog, 'Categoria', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'el producto')}
+                {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'el producto')}
 
-                {confirmDialog(confirmDialogVisible, 'Categoria', confirmCategoryDialogFooter, hideConfirmCategoryDialog, category, operation)}
+                {confirmDialog(confirmDialogVisible, 'Categoría', confirmCategoryDialogFooter, hideConfirmCategoryDialog, category, operation)}
 
                 <AsociationDialog
                     asociation={asociation}
@@ -255,7 +252,7 @@ export default function Categories() {
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
                     labelId='category'
-                    nameTable='Categoria'
+                    nameTable='Categoría'
                     labelId2='provider'
                     nameTableTwo='Proveedor'
                     selectedOne={selectedCategory}
@@ -279,5 +276,5 @@ export default function Categories() {
                 />
             </div>
         </div>
-    )
-}
+    );
+};

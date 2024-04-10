@@ -34,4 +34,4 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
             </DataTable>
         </div>
     );
-}
+};

@@ -11,7 +11,6 @@ import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Expenses() {
-
     let emptyExpense = {
         idExpense: null,
         type: '',
@@ -30,17 +29,17 @@ export default function Expenses() {
     };
 
     const URL = 'http://localhost:8086/api/expense/';
+    const [expense, setExpense] = useState(emptyExpense);
     const [expenses, setExpenses] = useState([]);
-    const [selectedTypeExpense, setSelectedTypeExpense] = useState(null);
     const [purchases, setPurchases] = useState([]);
-    const [selectedPurchase, setSelectedPurchase] = useState(null);
     const [payments, setPayments] = useState([]);
+    const [selectedTypeExpense, setSelectedTypeExpense] = useState(null);
+    const [selectedPurchase, setSelectedPurchase] = useState(null);
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [expenseDialog, setExpenseDialog] = useState(false);
-    const [deleteExpenseDialog, setDeleteExpenseDialog] = useState(false);
-    const [expense, setExpense] = useState(emptyExpense);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteExpenseDialog, setDeleteExpenseDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -88,10 +87,9 @@ export default function Expenses() {
     const saveExpense = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
-        if (expense.type && expense.total && expense.description.trim() && expense.purchase && expense.payment) {
+        if (expense.type && expense.total && expense.description.trim() &&
+            expense.purchase && expense.payment) {
             let url, method, parameters;
-
             if (expense.idExpense && operation === 2) {
                 parameters = {
                     idExpense: expense.idExpense, type: expense.type, total: expense.total, description: expense.description.trim(), fkIdPurchase: expense.purchase.idPurchase, fkIdPayment: expense.payment.idPayment
@@ -99,14 +97,12 @@ export default function Expenses() {
                 url = URL + 'update/' + expense.idExpense;
                 method = 'PUT';
             } else {
-                // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
                     type: expense.type, total: expense.total, description: expense.description.trim(), fkIdPurchase: expense.purchase.idPurchase, fkIdPayment: expense.payment.idPayment
                 };
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setExpenses, URL, operation, toast, "Gasto ");
             setExpenseDialog(false);
             setExpense(emptyExpense);
@@ -133,7 +129,6 @@ export default function Expenses() {
         inputNumberChange(e, name, expense, setExpense);
     };
 
-
     // const typeNotProvider = (rowData) => {
     //     if (rowData.typeExpense === "PROVEEDORES") {
     //         return fo(rowData.purchase.provider); 
@@ -151,9 +146,11 @@ export default function Expenses() {
     const expenseDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmExpenseDialogFooter = (
         confirmDialogFooter(hideConfirmExpenseDialog, saveExpense)
     );
+
     const deleteExpenseDialogFooter = (
         deleteDialogFooter(hideDeleteExpenseDialog, deleteExpense)
     );
@@ -166,7 +163,6 @@ export default function Expenses() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -208,7 +204,7 @@ export default function Expenses() {
                     dt={dt}
                     data={expenses}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} gastos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Gastos"
                     globalFilter={globalFilter}
                     header={header('Gastos', setGlobalFilter)}
                     columns={columns}
@@ -217,23 +213,28 @@ export default function Expenses() {
 
             <Dialog visible={expenseDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={expenseDialogFooter} onHide={hideDialog}>
                 <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="typeExpense"
-                            value={selectedTypeExpense}
-                            onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
-                            options={typeExpenseOptions}
-                            placeholder="Seleccionar el tipo de gasto"
-                            emptyMessage="No hay datos"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
-                        />
-                        <label htmlFor="typeExpense" className="font-bold">Tipo de gasto</label>
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            {/* card_travel or wallet*/}
+                            <span class="material-symbols-outlined">water_ec</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="typeExpense"
+                                value={selectedTypeExpense}
+                                onChange={(e) => { setSelectedTypeExpense(e.value); onInputNumberChange(e, 'typeExpense'); }}
+                                options={typeExpenseOptions}
+                                placeholder="Seleccionar el tipo de gasto"
+                                emptyMessage="No hay datos"
+                                required autoFocus
+                                className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !expense.typeExpense && !selectedTypeExpense })}`}
+                            />
+                            <label htmlFor="typeExpense" className="font-bold">Tipo de gasto</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !expense.typeExpense && !selectedTypeExpense && <small className="p-error">Tipo de gasto es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
+                <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span class="material-symbols-outlined">monetization_on</span>
@@ -245,62 +246,69 @@ export default function Expenses() {
                     </div>
                     {submitted && !expense.total && <small className="p-error">Total del gasto es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
+                <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span class="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !expense.description })} />
+                            <InputText id="description" maxLength={100} value={expense.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !expense.description })} />
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
                     {submitted && !expense.description && <small className="p-error">Descripcion es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="purchase"
-                            value={selectedPurchase}
-                            onChange={(e) => {
-                                setSelectedPurchase(e.value);
-                                onInputNumberChange(e, 'purchase');
-                            }}
-                            options={purchases}
-                            optionLabel="provider.name"
-                            placeholder="Seleccionar Proveedor"
-                            filter valueTemplate={selectedProviderTemplate}
-                            itemTemplate={providerOptionTemplate}
-                            emptyMessage="No hay datos"
-                            emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.purchase && !selectedPurchase })}`}
-                        />
-                        <label htmlFor="purchase" className="font-bold">Proveedor</label>
-                    </FloatLabel>
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="purchase"
+                                value={selectedPurchase}
+                                onChange={(e) => {
+                                    setSelectedPurchase(e.value);
+                                    onInputNumberChange(e, 'purchase');
+                                }}
+                                options={purchases}
+                                optionLabel="provider.name"
+                                placeholder="Seleccionar Proveedor"
+                                filter valueTemplate={selectedProviderTemplate}
+                                itemTemplate={providerOptionTemplate}
+                                emptyMessage="No hay datos"
+                                emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.purchase && !selectedPurchase })}`}
+                            />
+                            <label htmlFor="purchase" className="font-bold">Proveedor</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !expense.purchase && !selectedPurchase && <small className="p-error">Proveedor es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="payment"
-                            value={selectedPayment}
-                            onChange={(e) => {
-                                setSelectedPayment(e.value);
-                                onInputNumberChange(e, 'payment');
-                            }}
-                            options={payments}
-                            optionLabel="methodPayment"
-                            placeholder="Seleccionar Método de pago"
-                            emptyMessage="No hay datos"
-                            required
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.payment && !selectedPayment })}`}
-                        />
-                        <label htmlFor="payment" className="font-bold">Método de pago</label>
-                    </FloatLabel>
+                <div className="field mt-5">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">currency_exchange</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="payment"
+                                value={selectedPayment}
+                                onChange={(e) => {
+                                    setSelectedPayment(e.value);
+                                    onInputNumberChange(e, 'payment');
+                                }}
+                                options={payments}
+                                optionLabel="methodPayment"
+                                placeholder="Seleccionar Método de pago"
+                                emptyMessage="No hay datos"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !expense.payment && !selectedPayment })}`}
+                            />
+                            <label htmlFor="payment" className="font-bold">Método de pago</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !expense.payment && !selectedPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
             </Dialog>
@@ -310,4 +318,4 @@ export default function Expenses() {
             {confirmDialog(confirmDialogVisible, 'Gasto', confirmExpenseDialogFooter, hideConfirmExpenseDialog, expense, operation)}
         </div>
     );
-}
+};

@@ -10,7 +10,6 @@ import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Payments() {
-
     let emptyPayment = {
         idPayment: null,
         methodPayment: '',
@@ -33,14 +32,14 @@ export default function Payments() {
     };
 
     const URL = 'http://localhost:8086/api/payment/';
+    const [payment, setPayment] = useState(emptyPayment);
     const [payments, setPayments] = useState([]);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [paymentDialog, setPaymentDialog] = useState(false);
-    const [deletePaymentDialog, setDeletePaymentDialog] = useState(false);
-    const [payment, setPayment] = useState(emptyPayment);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deletePaymentDialog, setDeletePaymentDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -86,10 +85,8 @@ export default function Payments() {
     const savePayment = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (payment.methodPayment && payment.state && payment.total) {
             let url, method, parameters;
-
             if (payment.idPayment && operation === 2) {
                 parameters = {
                     idPayment: payment.idPayment, methodPayment: payment.methodPayment, state: payment.state, total: payment.total
@@ -97,14 +94,12 @@ export default function Payments() {
                 url = URL + 'update/' + payment.idPayment;
                 method = 'PUT';
             } else {
-                // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
                     methodPayment: payment.methodPayment, state: payment.state, total: payment.total
                 };
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setPayments, URL, operation, toast, "Pago ");
             setPaymentDialog(false);
             setPayment(emptyPayment);
@@ -138,9 +133,11 @@ export default function Payments() {
     const paymentDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmPaymentDialogFooter = (
         confirmDialogFooter(hideConfirmPaymentDialog, savePayment)
     );
+
     const deletePaymentDialogFooter = (
         deleteDialogFooter(hideDeletePaymentDialog, deletePayment)
     );
@@ -178,7 +175,7 @@ export default function Payments() {
                     dt={dt}
                     data={payments}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} pagos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Pagos"
                     globalFilter={globalFilter}
                     header={header('Pagos', setGlobalFilter)}
                     columns={columns}
@@ -187,22 +184,38 @@ export default function Payments() {
 
             <Dialog visible={paymentDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={paymentDialogFooter} onHide={hideDialog}>
                 <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="methodPayment"
-                            value={selectedMethodPayment}
-                            onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
-                            options={methodPaymentOptions}
-                            placeholder="Seleccionar el método de pago"
-                            emptyMessage="No hay datos"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.methodPayment && !selectedMethodPayment })}`}
-                        />
-                        {<label htmlFor="methodPayment" className="font-bold">Método de pago</label>}
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">currency_exchange</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="methodPayment"
+                                value={selectedMethodPayment}
+                                onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
+                                options={methodPaymentOptions}
+                                placeholder="Seleccionar el método de pago"
+                                emptyMessage="No hay datos"
+                                required autoFocus
+                                className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !payment.methodPayment && !selectedMethodPayment })}`}
+                            />
+                            {<label htmlFor="methodPayment" className="font-bold">Método de pago</label>}
+                        </FloatLabel>
+                    </div>
                     {submitted && !payment.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
                 </div>
-
+                <div className="field mt-4">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">monetization_on</span>
+                        </span>
+                        <FloatLabel>
+                            <InputNumber id="total" maxLength={10} value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
+                            <label htmlFor="total" className="font-bold">Total</label>
+                        </FloatLabel>
+                    </div>
+                    {submitted && !payment.total && <small className="p-error">Total del pago es requerido.</small>}
+                </div>
                 <div className="field mt-4">
                     <FloatLabel>
                         <Dropdown
@@ -219,19 +232,6 @@ export default function Payments() {
                     </FloatLabel>
                     {submitted && !payment.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
-                        </span>
-                        <FloatLabel>
-                            <InputNumber id="total" maxLength={10} value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />
-                            <label htmlFor="total" className="font-bold">Total</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !payment.total && <small className="p-error">Total del pago es requerido.</small>}
-                </div>
             </Dialog>
 
             {DialogDelete(deletePaymentDialog, 'Pago', deletePaymentDialogFooter, hideDeletePaymentDialog, payment, 'compra', 'esta')}
@@ -239,4 +239,4 @@ export default function Payments() {
             {confirmDialog(confirmDialogVisible, 'Pago', confirmPaymentDialogFooter, hideConfirmPaymentDialog, payment, operation)}
         </div>
     );
-}
+};

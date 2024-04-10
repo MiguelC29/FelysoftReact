@@ -20,14 +20,14 @@ export default function Employees() {
     };
 
     const URL = 'http://localhost:8086/api/employee/';
+    const [employee, setEmployee] = useState(emptyEmployee);
     const [employees, setEmployees] = useState([]);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [employeeDialog, setEmployeeDialog] = useState(false);
-    const [deleteEmployeeDialog, setDeleteEmployeeDialog] = useState(false);
-    const [employee, setEmployee] = useState(emptyEmployee);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteEmployeeDialog, setDeleteEmployeeDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -56,7 +56,6 @@ export default function Employees() {
         setEmployeeDialog(true);
     };
 
-
     const hideDialog = () => {
         setSubmitted(false);
         setEmployeeDialog(false);
@@ -73,15 +72,13 @@ export default function Employees() {
     const saveEmployee = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (employee.salary && employee.specialty.trim() && employee.dateBirth && employee.user) {
             let url, method, parameters;
-
             if (employee.idEmployee && operation === 2) {
                 parameters = {
                     idEmployee: employee.idEmployee,
-                    salary: employee.salary, specialty:
-                        employee.specialty.trim(),
+                    salary: employee.salary,
+                    specialty: employee.specialty.trim(),
                     dateBirth: employee.dateBirth,
                     fkIdUser: employee.user.idUser
                 };
@@ -97,7 +94,6 @@ export default function Employees() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setEmployees, URL, operation, toast, 'Empleado ');
             setEmployeeDialog(false);
             setEmployee(emptyEmployee);
@@ -135,9 +131,11 @@ export default function Employees() {
     const employeeDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmEmployeeDialogFooter = (
         confirmDialogFooter(hideConfirmEmployeeDialog, saveEmployee)
     );
+
     const deleteEmployeeDialogFooter = (
         deleteDialogFooter(hideDeleteEmployeeDialog, deleteEmployee)
     );
@@ -150,7 +148,6 @@ export default function Employees() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -171,8 +168,8 @@ export default function Employees() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, employees, 'Reporte_Categorias') };
-    const handleExportExcel = () => { exportExcel(employees, columns, 'Categorias') };
+    const handleExportPdf = () => { exportPdf(columns, employees, 'Reporte_Empleados') };
+    const handleExportExcel = () => { exportExcel(employees, columns, 'Empleados') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
@@ -185,7 +182,7 @@ export default function Employees() {
                     dt={dt}
                     data={employees}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} empleados"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Empleados"
                     globalFilter={globalFilter}
                     header={header('Empleados', setGlobalFilter)}
                     columns={columns}
@@ -221,7 +218,6 @@ export default function Employees() {
                     </div>
                     {submitted && !employee.specialty && <small className="p-error">Especialidad es requerida.</small>}
                 </div>
-
                 <div className="field col">
                     <label htmlFor="dateBirth" className="font-bold">Fecha de Nacimiento</label>
                     <InputText
@@ -235,7 +231,7 @@ export default function Employees() {
                     {submitted && !employee.dateBirth && <small className="p-error">Fecha de Nacimiento es requerida.</small>}
                 </div>
 
-                <div className="field">
+                <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span class="material-symbols-outlined">monetization_on</span>
@@ -247,29 +243,33 @@ export default function Employees() {
                     </div>
                     {submitted && !employee.salary && <small className="p-error">Salario es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
-                <FloatLabel>
-                    <Dropdown
-                        id="numIdentification"
-                        value={selectedUser}
-                        onChange={(e) => {
-                            setSelectedUser(e.value);
-                            onInputNumberChange(e, 'user');
-                        }}
-                        options={users}
-                        optionLabel="numIdentification"
-                        placeholder="Seleccionar No. Identificación"
-                        filter
-                        valueTemplate={selectedIdentificationTemplate}
-                        itemTemplate={identificationOptionTemplate}
-                        emptyMessage="No hay datos"
-                        emptyFilterMessage="No hay resultados encontrados"
-                        required
-                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
-                    />
-                        <label htmlFor="numIdentification" className="font-bold">Numero de Identificación</label>
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">person_apron</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="numIdentification"
+                                value={selectedUser}
+                                onChange={(e) => {
+                                    setSelectedUser(e.value);
+                                    onInputNumberChange(e, 'user');
+                                }}
+                                options={users}
+                                optionLabel="numIdentification"
+                                placeholder="Seleccionar No. Identificación"
+                                filter
+                                valueTemplate={selectedIdentificationTemplate}
+                                itemTemplate={identificationOptionTemplate}
+                                emptyMessage="No hay datos"
+                                emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !employee.user && !selectedUser })}`}
+                            />
+                            <label htmlFor="numIdentification" className="font-bold">Número de Identificación</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !employee.user && !selectedUser && <small className="p-error">No. Identificación es requerido.</small>}
                 </div>
             </Dialog>
@@ -279,4 +279,4 @@ export default function Employees() {
             {confirmDialog(confirmDialogVisible, 'Empleado', confirmEmployeeDialogFooter, hideConfirmEmployeeDialog, employee, operation)}
         </div>
     );
-}
+};

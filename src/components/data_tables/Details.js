@@ -10,7 +10,6 @@ import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 
 export default function Details() {
-
     let emptyDetail = {
         idDetail: null,
         quantity: null,
@@ -21,18 +20,18 @@ export default function Details() {
     }
 
     const URL = 'http://localhost:8086/api/detail/';
+    const [detail, setDetail] = useState(emptyDetail);
     const [details, setDetails] = useState([]);
     const [books, setBooks] = useState([]);
-    const [selectedBook, setSelectedBook] = useState(null);
     const [products, setProducts] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState(null);
     const [services, setServices] = useState([]);
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedService, setSelectedService] = useState(null);
     const [detailDialog, setDetailDialog] = useState(false);
-    const [deleteDetailDialog, setDeleteDetailDialog] = useState(false);
-    const [detail, setDetail] = useState(emptyDetail);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteDetailDialog, setDeleteDetailDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -83,10 +82,8 @@ export default function Details() {
     const saveDetail = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (detail.quantity && detail.unitPrice && detail.book && detail.product && detail.service) {
             let url, method, parameters;
-
             if (detail.idDetail && operation === 2) {
                 parameters = {
                     idDetail: detail.idDetail, quantity: detail.quantity, unitPrice: detail.unitPrice, fkIdBook: detail.book.idBook, fkIdProduct: detail.product.idProduct, fkIdService: detail.service.idService
@@ -94,14 +91,12 @@ export default function Details() {
                 url = URL + 'update/' + detail.idDetail;
                 method = 'PUT';
             } else {
-                // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESEMIMAS DE SEG
                 parameters = {
                     quantity: detail.quantity, unitPrice: detail.unitPrice, fkIdBook: detail.book.idBook, fkIdProduct: detail.product.idProduct, fkIdService: detail.service.idService
                 };
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setDetails, URL, operation, toast, "Detalle ");
             setDetailDialog(false);
             setDetail(emptyDetail);
@@ -135,9 +130,11 @@ export default function Details() {
     const detailDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmDetailDialogFooter = (
         confirmDialogFooter(hideConfirmDetailDialog, saveDetail)
     );
+
     const deleteDetailDialogFooter = (
         deleteDialogFooter(hideDeleteDetailDialog, deleteDetail)
     );
@@ -150,7 +147,6 @@ export default function Details() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -170,7 +166,6 @@ export default function Details() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -190,7 +185,6 @@ export default function Details() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -226,7 +220,7 @@ export default function Details() {
                     dt={dt}
                     data={details}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} detalles"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Detalles"
                     globalFilter={globalFilter}
                     header={header('Detalles', setGlobalFilter)}
                     columns={columns}
@@ -246,7 +240,6 @@ export default function Details() {
                     </div>
                     {submitted && !detail.quantity && <small className="p-error">Cantidad es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
@@ -259,79 +252,89 @@ export default function Details() {
                     </div>
                     {submitted && !detail.unitPrice && <small className="p-error">Precio único es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="book"
-                            value={selectedBook}
-                            onChange={(e) => {
-                                setSelectedBook(e.value);
-                                onInputNumberChange(e, 'book');
-                            }}
-                            options={books}
-                            optionLabel="title"
-                            placeholder="Seleccionar Libro"
-                            filter valueTemplate={selectedBookTemplate}
-                            itemTemplate={bookOptionTemplate}
-                            emptyMessage="No hay datos"
-                            emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
-                        />
-                        <label htmlFor="book" className="font-bold">Libro</label>
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">book</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="book"
+                                value={selectedBook}
+                                onChange={(e) => {
+                                    setSelectedBook(e.value);
+                                    onInputNumberChange(e, 'book');
+                                }}
+                                options={books}
+                                optionLabel="title"
+                                placeholder="Seleccionar Libro"
+                                filter valueTemplate={selectedBookTemplate}
+                                itemTemplate={bookOptionTemplate}
+                                emptyMessage="No hay datos"
+                                emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
+                            />
+                            <label htmlFor="book" className="font-bold">Libro</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
-                    <FloatLabel>
-                        <Dropdown
-                            id="product"
-                            value={selectedProduct}
-                            onChange={(e) => {
-                                setSelectedProduct(e.value);
-                                onInputNumberChange(e, 'product');
-                            }}
-                            options={products}
-                            optionLabel="name"
-                            filter valueTemplate={selectedProductTemplate}
-                            itemTemplate={productOptionTemplate}
-                            placeholder="Seleccionar Producto"
-                            emptyMessage="No hay datos"
-                            emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
-                        />
-                        <label htmlFor="product" className="font-bold">Producto</label>
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="product"
+                                value={selectedProduct}
+                                onChange={(e) => {
+                                    setSelectedProduct(e.value);
+                                    onInputNumberChange(e, 'product');
+                                }}
+                                options={products}
+                                optionLabel="name"
+                                filter valueTemplate={selectedProductTemplate}
+                                itemTemplate={productOptionTemplate}
+                                placeholder="Seleccionar Producto"
+                                emptyMessage="No hay datos"
+                                emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
+                            />
+                            <label htmlFor="product" className="font-bold">Producto</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !detail.product && !selectedProduct && <small className="p-error">Producto es requerido.</small>}
                 </div>
-
                 <div className="field mt-4">
-                    <FloatLabel>
-                        {console.log(services)}
-                        <Dropdown
-                            id="service"
-                            value={selectedService}
-                            onChange={(e) => {
-                                setSelectedService(e.value);
-                                onInputNumberChange(e, 'service');
-                            }}
-                            options={services}
-                            optionLabel="typeService.name"
-                            filter valueTemplate={selectedServiceTemplate}
-                            itemTemplate={serviceOptionTemplate}
-                            placeholder="Seleccionar Servicio"
-                            required
-                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                            className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
-                        />
-                        <label htmlFor="service" className="font-bold">Servicio</label>
-                    </FloatLabel>
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">service_toolbox</span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="service"
+                                value={selectedService}
+                                onChange={(e) => {
+                                    setSelectedService(e.value);
+                                    onInputNumberChange(e, 'service');
+                                }}
+                                options={services}
+                                optionLabel="typeService.name"
+                                filter valueTemplate={selectedServiceTemplate}
+                                itemTemplate={serviceOptionTemplate}
+                                placeholder="Seleccionar Servicio"
+                                required
+                                emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.service && !selectedService })}`}
+                            />
+                            <label htmlFor="service" className="font-bold">Servicio</label>
+                        </FloatLabel>
+                    </div>
                     {submitted && !detail.service && !selectedService && <small className="p-error">Servicio es requerido.</small>}
                 </div>
-
             </Dialog>
 
             {DialogDelete(deleteDetailDialog, 'Detalle', deleteDetailDialogFooter, hideDeleteDetailDialog, detail, 'detalle', 'este')}
@@ -339,4 +342,4 @@ export default function Details() {
             {confirmDialog(confirmDialogVisible, 'Detalle', confirmDetailDialogFooter, hideConfirmDetailDialog, detail, operation)}
         </div>
     );
-}
+};

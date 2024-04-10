@@ -20,7 +20,6 @@ export default function Products() {
         name: '',
         brand: '',
         salePrice: null,
-        salePrice: null,
         expiryDate: '',
         stock: null,
         category: '',
@@ -28,18 +27,18 @@ export default function Products() {
     };
 
     const URL = 'http://localhost:8086/api/product/';
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [providers, setProviders] = useState([]);
-    const [selectedProvider, setSelectedProvider] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [product, setProduct] = useState(emptyProduct);
     const [file, setFile] = useState(null);
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [providers, setProviders] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [submitted, setSubmitted] = useState(false);
+    const [productDialog, setProductDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -135,8 +134,14 @@ export default function Products() {
     const saveProduct = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
-        if (product.name.trim() && product.brand.trim() && product.expiryDate && product.salePrice && product.category && product.provider && product.image) {
+        if (
+            product.name.trim() &&
+            product.brand.trim() &&
+            product.expiryDate &&
+            product.salePrice &&
+            product.category &&
+            product.provider &&
+            product.image) {
             let url, method;
             const formData = new FormData();
 
@@ -166,7 +171,6 @@ export default function Products() {
                     method = 'POST';
                 }
             }
-
             sendRequest(method, formData, url, setProducts, URL, operation, toast, 'Producto ');
             setProductDialog(false);
             setProduct(emptyProduct);
@@ -197,8 +201,7 @@ export default function Products() {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
         if (imageData) {
-            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
-            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen del producto ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
         } else {
             return <p>No hay imagen</p>;
         }
@@ -215,9 +218,11 @@ export default function Products() {
     const productDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmProductDialogFooter = (
         confirmDialogFooter(hideConfirmProductDialog, saveProduct)
     );
+
     const deleteProductDialogFooter = (
         deleteDialogFooter(hideDeleteProductDialog, deleteProduct)
     );
@@ -230,7 +235,6 @@ export default function Products() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -250,7 +254,6 @@ export default function Products() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -267,7 +270,7 @@ export default function Products() {
         { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
-        { field: 'category.name', header: 'Categoria', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'category.name', header: 'Categoría', sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
         { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
@@ -283,12 +286,12 @@ export default function Products() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-
+                
                 <CustomDataTable
                     dt={dt}
                     data={products}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={header('Productos', setGlobalFilter)}
                     columns={columns}
@@ -304,7 +307,7 @@ export default function Products() {
                         </span>
                         <FloatLabel>
                             <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
-                            <label for="name" className="font-bold">Nombre</label>
+                            <label htmlFor="name" className="font-bold">Nombre</label>
                         </FloatLabel>
                     </div>
                     {submitted && !product.name && <small className="p-error">Nombre es requerido.</small>}
@@ -316,7 +319,7 @@ export default function Products() {
                         </span>
                         <FloatLabel>
                             <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
-                            <label for="brand" className="font-bold">Marca</label>
+                            <label htmlFor="brand" className="font-bold">Marca</label>
                         </FloatLabel>
                     </div>
                     {submitted && !product.brand && <small className="p-error">Marca es requerida.</small>}
@@ -326,8 +329,7 @@ export default function Products() {
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
-
-                <div className="formgrid grid mt-6">
+                <div className="formgrid grid mt-5">
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
@@ -335,11 +337,9 @@ export default function Products() {
                             </span>
                             <FloatLabel>
                                 <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
-                                <label for="salePrice" className="font-bold">Precio de venta</label>
+                                <label htmlFor="salePrice" className="font-bold">Precio de venta</label>
                             </FloatLabel>
                         </div>
-
-
                         {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
                     </div>
                     {(operation === 1) &&
@@ -350,26 +350,26 @@ export default function Products() {
                                 </span>
                                 <FloatLabel>
                                     <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
-                                    <label for="stock" className="font-bold">Stock Inicial</label>
+                                    <label htmlFor="stock" className="font-bold">Stock Inicial</label>
                                 </FloatLabel>
                             </div>
                             {submitted && !product.stock && <small className="p-error">Stock inicial es requerido.</small>}
                         </div>
                     }
                 </div>
-                <div className="formgrid grid mt-5">
+                <div className="formgrid grid mt-3">
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
                                 <span class="material-symbols-outlined">stacks</span>
                             </span>
                             <FloatLabel>
-                                <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoria"
+                                <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoría"
                                     filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
-                                <label for="category" className="font-bold">Categoria</label>
+                                <label htmlFor="category" className="font-bold">Categoría</label>
                             </FloatLabel>
                         </div>
-                        {submitted && !product.category && !selectedCategory && <small className="p-error">Categoria es requerida.</small>}
+                        {submitted && !product.category && !selectedCategory && <small className="p-error">Categoría es requerida.</small>}
                     </div>
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
@@ -379,7 +379,7 @@ export default function Products() {
                             <FloatLabel>
                                 <Dropdown id="provider" value={selectedProvider} onChange={(e) => { handleProviderChange(e.target.value); onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
                                     filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
-                                <label for="provider" className="font-bold">Proveedor</label>
+                                <label htmlFor="provider" className="font-bold">Proveedor</label>
                             </FloatLabel>
                         </div>
                         {submitted && !product.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
@@ -415,4 +415,4 @@ export default function Products() {
             {confirmDialog(confirmDialogVisible, 'Producto', confirmProductDialogFooter, hideConfirmProductDialog, product, operation)}
         </div >
     );
-}
+};

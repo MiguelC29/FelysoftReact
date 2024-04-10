@@ -4,13 +4,13 @@ import { Box } from '@mui/material';
 import MiniDrawer from '../components/Sidebar';
 
 export default function ViewPurchases() {
-  return (
-    <div>
-        <MiniDrawer>
-            <Box sx={{ marginTop: 10, mx: 2 }}>
-                <Purchases />
-            </Box>
-        </MiniDrawer>
-    </div>
-);
-}
+    return (
+        <div>
+            <MiniDrawer>
+                <Box sx={{ marginTop: 10, mx: 2 }}>
+                    <Purchases />
+                </Box>
+            </MiniDrawer>
+        </div>
+    );
+};

@@ -18,7 +18,7 @@ export default function AsociationDialog({ ...props }) {
                     <div className="field col">
                         <FloatLabel>
                             {/* mirar si tambien poner como props el optionLabel */}
-                            <Dropdown id={props.labelId} value={props.selectedOne} onChange={(e) => { props.setSelectedOne(e.value); onInputNumberChange(e, props.idOnInputNumberOne); }} options={props.options} optionLabel="name" placeholder={`Seleccionar ${props.nameTable}`} filter={props.filter} valueTemplate={props.valueTemplate} itemTemplate={props.itemTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id && !props.selectedOne })}`} />
+                            <Dropdown id={props.labelId} value={props.selectedOne} onChange={(e) => { props.setSelectedOne(e.value); onInputNumberChange(e, props.idOnInputNumberOne); }} options={props.options} optionLabel="name" placeholder={`Seleccionar ${props.nameTable}`} filter={props.filter} valueTemplate={props.valueTemplate} itemTemplate={props.itemTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required autoFocus className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id && !props.selectedOne })}`} />
                             <label for={props.labelId} className="font-bold">{props.nameTable}</label>
                         </FloatLabel>
                         {props.submitted && !props.id && !props.selectedOne && <small className="p-error">{props.nameTable} es requerida.</small>}

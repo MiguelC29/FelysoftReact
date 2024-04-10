@@ -67,18 +67,18 @@ export default function PasswordStrength() {
         <img src={logo} alt="Logo" />
         <h2>Formulario de Registro</h2>
         <form className="login-form" onSubmit={handleSubmit}>
-        <div className="input__wrapper">
-          <input
-            autoComplete="off"
-            spellCheck="false"
-            className="control"
-            type="text"
-            placeholder="Documento de Identificación"
-            required
-            value={Id}
-            onChange={(e) => setId(e.target.value)}
+          <div className="input__wrapper">
+            <input
+              autoComplete="off"
+              spellCheck="false"
+              className="control"
+              type="text"
+              placeholder="Documento de Identificación"
+              required
+              value={Id}
+              onChange={(e) => setId(e.target.value)}
 
-          />
+            />
           </div>
           <input
             autoComplete="off"
@@ -187,7 +187,7 @@ export default function PasswordStrength() {
             <div></div>
           </div>
           <div className="strength">{ConfirmStrength && `${ConfirmStrength} Confirm Password`}</div>
-          
+
           <button className="control" type="submit">
             Regístrate
           </button>

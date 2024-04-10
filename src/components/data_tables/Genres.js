@@ -21,21 +21,20 @@ export default function Genres() {
         authorId: null
     }
 
-    const URLASC = 'http://localhost:8086/api/genre/add-author';
-    const [asociation, setAsociation] = useState(emptyAsociation);
-    const [selectedGenre, setSelectedGenre] = useState(null);
-    const [authors, setAuthors] = useState([]);
-    const [selectedAuthor, setSelectedAuthor] = useState(null);
-    const [asociationDialog, setAsociationDialog] = useState(false);
-    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
-
     const URL = 'http://localhost:8086/api/genre/';
-    const [genres, setGenres] = useState([]);
-    const [genreDialog, setGenreDialog] = useState(false);
-    const [deleteGenreDialog, setDeleteGenreDialog] = useState(false);
+    const URLASC = 'http://localhost:8086/api/genre/add-author';
     const [genre, setGenre] = useState(emptyGenre);
-    const [submitted, setSubmitted] = useState(false);
+    const [asociation, setAsociation] = useState(emptyAsociation);
+    const [authors, setAuthors] = useState([]);
+    const [genres, setGenres] = useState([]);
+    const [selectedGenre, setSelectedGenre] = useState(null);
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [genreDialog, setGenreDialog] = useState(false);
+    const [asociationDialog, setAsociationDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
+    const [deleteGenreDialog, setDeleteGenreDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -92,7 +91,6 @@ export default function Genres() {
     const saveGenre = () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-
         if (
             genre.name.trim() &&
             genre.description.trim()) {
@@ -114,12 +112,12 @@ export default function Genres() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setGenres, URL, operation, toast, 'Genero ');
             setGenreDialog(false);
             setGenre(emptyGenre);
         }
     };
+
     const confirmSave = () => {
         setConfirmDialogVisible(true);
     };
@@ -131,7 +129,6 @@ export default function Genres() {
             let parameters = {
                 genreId: asociation.genreId.idGenre, authorId: asociation.authorId.idAuthor,
             };
-
             sendRequestAsc('POST', parameters, URLASC, toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
@@ -149,7 +146,7 @@ export default function Genres() {
     };
 
     const deleteGenre = () => {
-        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Genero ');
+        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Género ');
     };
 
     const onInputChange = (e, name) => {
@@ -163,6 +160,7 @@ export default function Genres() {
     const asociationDialogFooter = (
         DialogFooter(hideDialog, confirmAsc)
     );
+
     const confirmAsociationDialogFooter = (
         confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
     );
@@ -174,6 +172,7 @@ export default function Genres() {
     const confirmGenreDialogFooter = (
         confirmDialogFooter(hideConfirmGenreDialog, saveGenre)
     );
+
     const deleteGenreDialogFooter = (
         deleteDialogFooter(hideDeleteGenreDialog, deleteGenre)
     );
@@ -186,7 +185,6 @@ export default function Genres() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -206,7 +204,6 @@ export default function Genres() {
                 </div>
             );
         }
-
         return <span>{props.placeholder}</span>;
     };
 
@@ -225,8 +222,8 @@ export default function Genres() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Generos') };
-    const handleExportExcel = () => { exportExcel(genres, columns, 'Generos') };
+    const handleExportPdf = () => { exportPdf(columns, genres, 'Reporte_Géneros') };
+    const handleExportExcel = () => { exportExcel(genres, columns, 'Géneros') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
@@ -239,7 +236,7 @@ export default function Genres() {
                     dt={dt}
                     data={genres}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} géneros"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Géneros"
                     globalFilter={globalFilter}
                     header={header('Géneros', setGlobalFilter)}
                     columns={columns}
@@ -259,8 +256,7 @@ export default function Genres() {
                     </div>
                     {submitted && !genre.name && <small className="p-error">Nombre es requerido.</small>}
                 </div>
-
-                <div className="field mt-4">
+                <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span class="material-symbols-outlined">description</span>
@@ -270,7 +266,7 @@ export default function Genres() {
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
-                    {submitted && !genre.description && <small className="p-error">Descripcion es requerida.</small>}
+                    {submitted && !genre.description && <small className="p-error">Descripción es requerida.</small>}
                 </div>
             </Dialog>
 
@@ -288,7 +284,7 @@ export default function Genres() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Genero'
+                nameTableTwo='Género'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'
@@ -310,4 +306,4 @@ export default function Genres() {
             />
         </div>
     );
-}
+};

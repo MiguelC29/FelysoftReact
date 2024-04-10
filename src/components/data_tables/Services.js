@@ -20,22 +20,21 @@ export default function Services() {
   };
 
   // TODO: CUANDO SE ACTUALIZA EL PRECIO DEL TIPO DE SERVICIO, NO SE ACTUALIZA EN LA VISTA DE SERVICIOS
-
   const State = {
     ACTIVO: 'ACTIVO',
     INACTIVO: 'INACTIVO',
   };
 
   const URL = 'http://localhost:8086/api/service/';
-  const [selectedState, setSelectedState] = useState(null);
+  const [service, setService] = useState(emptyService);
   const [services, setServices] = useState([]);
   const [typeservices, setTypeservices] = useState([]);
+  const [selectedState, setSelectedState] = useState(null);
   const [selectedTypeservice, setSelectedTypeservice] = useState(null);
   const [serviceDialog, setServiceDialog] = useState(false);
-  const [deleteServiceDialog, setDeleteServiceDialog] = useState(false);
-  const [service, setService] = useState(emptyService);
-  const [submitted, setSubmitted] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [deleteServiceDialog, setDeleteServiceDialog] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [title, setTitle] = useState('');
@@ -90,7 +89,6 @@ export default function Services() {
     // if (service.typeService && service.priceAdditional && service.state && service.total) {
     if (service.typeService && service.state && service.total) {
       let url, method, parameters;
-
       if (service.idService && operation === 2) {
         parameters = {
           idService: service.idService,
@@ -111,7 +109,6 @@ export default function Services() {
         url = URL + 'create';
         method = 'POST';
       }
-
       sendRequest(method, parameters, url, setServices, URL, operation, toast, 'Servicio ');
       setServiceDialog(false);
       setService(emptyService);
@@ -178,7 +175,6 @@ export default function Services() {
         </div>
       );
     }
-
     return <span>{props.placeholder}</span>;
   };
 
@@ -191,8 +187,8 @@ export default function Services() {
   };
 
   // EXPORT DATA
-  const handleExportPdf = () => { exportPdf(columns, services, 'Reporte_Categorias') };
-  const handleExportExcel = () => { exportExcel(services, columns, 'Categorias') };
+  const handleExportPdf = () => { exportPdf(columns, services, 'Reporte_Servicios') };
+  const handleExportExcel = () => { exportExcel(services, columns, 'Servicios') };
   const handleExportCsv = () => { exportCSV(false, dt) };
 
   return (
@@ -205,7 +201,7 @@ export default function Services() {
           dt={dt}
           data={services}
           dataKey="id"
-          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} servicios"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Servicios"
           globalFilter={globalFilter}
           header={header('Servicios', setGlobalFilter)}
           columns={columns}
@@ -237,14 +233,13 @@ export default function Services() {
               filter valueTemplate={selectedTypeServiceTemplate}
               itemTemplate={typeServiceOptionTemplate}
               emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-              required
+              required autoFocus
               className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !service.typeService && !selectedTypeservice })}`}
             />
             <label htmlFor="typeService" className="font-bold">Tipo de Servicio</label>
           </FloatLabel>
           {submitted && !service.typeService && !selectedTypeservice && <small className="p-error">Tipo de servicio es requerido.</small>}
         </div>
-
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -285,7 +280,6 @@ export default function Services() {
           </FloatLabel>
           {submitted && !service.state && !selectedState && <small className="p-error">Estado requerido.</small>}
         </div>
-
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -305,4 +299,4 @@ export default function Services() {
       {confirmDialog(confirmDialogVisible, 'Servicio', confirmServiceDialogFooter, hideConfirmServiceDialog, service, operation)}
     </div>
   );
-}
+};
