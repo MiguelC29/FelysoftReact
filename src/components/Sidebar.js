@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -16,6 +16,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import logo from '../img/logo.png';
 import { Link } from 'react-router-dom';
+import { Badge } from 'primereact/badge';
+import { useCart } from './CartContext';
 
 const drawerWidth = 240;
 
@@ -109,6 +111,16 @@ export default function MiniDrawer({ children }) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expandedItem, setExpandedItem] = React.useState('');
+    const [dateTime, setDateTime] = useState(new Date());
+    const { cartItems } = useCart();
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setDateTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -158,6 +170,13 @@ export default function MiniDrawer({ children }) {
                     {!open && <Typography variant="h6" noWrap component="div">
                         <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
                     </Typography>}
+                    <div className='d-flex align-items-end ms-auto'>
+                        <span className="material-symbols-outlined mr-5 p-overlay-badge">
+                            shopping_cart
+                            <Badge value={cartItems} id='badge-shooping-car' severity="info"></Badge>
+                        </span>
+                        <div className="datetime text-white" id="datetime">{dateTime.toLocaleString()}</div>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
@@ -175,7 +194,7 @@ export default function MiniDrawer({ children }) {
                         {
                             name: "Inicio",
                             icon: <Icon icon='home' />,
-                            link: "/",
+                            link: "/carrito",
                         },
                         {
                             name: "Almacen",
@@ -195,7 +214,7 @@ export default function MiniDrawer({ children }) {
                             name: "Venta",
                             icon: <Icon icon='shopping_cart' />,
                             items: [
-                                { name: "Carrito", icon: <IconSubItems />, link: "/santi" },
+                                { name: "Carrito", icon: <IconSubItems />, link: "/carrito" },
                                 { name: "Gastos", icon: <IconSubItems />, link: "/gastos" },
                                 { name: "Ventas", icon: <IconSubItems />, link: "/ventas" },
                                 { name: "Pagos", icon: <IconSubItems />, link: "/pagos" },
@@ -249,7 +268,7 @@ export default function MiniDrawer({ children }) {
                         {
                             name: "Cerrar sesión",
                             icon: <Icon icon='logout' />,
-                            link: "/registroUsuario",
+                            link: "/",
                         },
                     ].map((item, index) => (
                         <React.Fragment key={index}>

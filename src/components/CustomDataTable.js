@@ -2,7 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-export default function CustomDataTable({ dt, data, columns, dataKey, currentPageReportTemplate, globalFilter, header, maxWidth }) {
+export default function CustomDataTable({ dt, data, columns, dataKey, currentPageReportTemplate, globalFilter, header }) {
     return (
         <div className='card'>
             <DataTable
