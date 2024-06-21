@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
-import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
-import { FloatLabel } from 'primereact/floatlabel';
+import { FloatInputNumberIcon, FloatInputTextIcon } from '../Inputs';
 
 export default function Providers() {
     let emptyProvider = {
@@ -258,56 +255,49 @@ export default function Providers() {
 
                 <Dialog visible={providerDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={providerDialogFooter} onHide={hideDialog}>
                     <div className="formgrid grid mt-4">
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">badge</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputText id="nit" value={provider.nit} onChange={(e) => onInputChange(e, 'nit')} required autoFocus maxLength={11} className={classNames({ 'p-invalid': submitted && !provider.nit })} />
-                                    {submitted && !provider.nit && <small className="p-error">NIT es requerido.</small>}
-                                    <label htmlFor="nit" className="font-bold">NIT</label>
-                                </FloatLabel>
-                            </div>
-                        </div>
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">id_card</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputText id="name" value={provider.name} onChange={(e) => onInputChange(e, 'name')} required className={classNames({ 'p-invalid': submitted && !provider.name })} maxLength={50} />
-                                    {submitted && !provider.name && <small className="p-error">Nombre de proveedor es requerido.</small>}
-                                    <label htmlFor="name" className="font-bold">Nombre</label>
-                                </FloatLabel>
-                            </div>
-                        </div>
+                        <FloatInputTextIcon
+                            className="field col"
+                            icon='badge'
+                            value={provider.nit}
+                            onInputChange={onInputChange} field='nit'
+                            maxLength={11} required autoFocus
+                            submitted={submitted}
+                            label='NIT'
+                            errorMessage='NIT es requerido.'
+                        />
+                        <FloatInputTextIcon
+                            className="field col"
+                            icon='id_card'
+                            value={provider.name}
+                            onInputChange={onInputChange} field='name'
+                            maxLength={50} required
+                            submitted={submitted}
+                            label='Nombre'
+                            errorMessage='Nombre de proveedor es requerido.'
+                        />
                     </div>
                     <div className="formgrid grid mt-4">
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">call</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputNumber inputId="phoneNumbers" value={provider.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !provider.phoneNumber })} />
-                                    {submitted && !provider.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
-                                    <label htmlFor="phoneNumbers" className="font-bold block mb-2">Número de celular</label>
-                                </FloatLabel>
-                            </div>
-                        </div>
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">mail</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputText id="email" value={provider.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !provider.email })} placeholder='mi_correo@micorreo.com' maxLength={50} />
-                                    {submitted && !provider.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
-                                    <label htmlFor="email" className="font-bold">Correo Eletrónico</label>
-                                </FloatLabel>
-                            </div>
-                        </div>
+                        <FloatInputNumberIcon
+                            className="field col"
+                            icon='call'
+                            value={provider.phoneNumber}
+                            onInputNumberChange={onInputNumberChange} field='phoneNumber'
+                            useGrouping={false}
+                            maxLength={10} required
+                            submitted={submitted}
+                            label='Número de celular'
+                            errorMessage='Número de celular es requerido.'
+                        />
+                        <FloatInputTextIcon
+                            className="field col"
+                            icon='mail'
+                            value={provider.email}
+                            onInputChange={onInputChange} field='email'
+                            maxLength={50} required placeholder='mi_correo@micorreo.com'
+                            submitted={submitted}
+                            label='Correo Eletrónico'
+                            errorMessage='Correo Eletrónico es requerido.'
+                        />
                     </div>
                 </Dialog>
 

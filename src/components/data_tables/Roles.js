@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
-import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
-import { FloatLabel } from 'primereact/floatlabel';
+import { FloatInputText } from '../Inputs';
 
 export default function Roles() {
     let emptyRole = {
@@ -138,13 +136,15 @@ export default function Roles() {
                 />
 
                 <Dialog visible={roleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={roleDialogFooter} onHide={hideDialog}>
-                    <div className="field mt-5">
-                        <FloatLabel>
-                            <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
-                            <label htmlFor="name" className="font-bold">Nombre</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
+                    <FloatInputText
+                        className="field mt-4"
+                        value={role.name}
+                        onInputChange={onInputChange} field='name'
+                        maxLength={30} required autoFocus
+                        submitted={submitted}
+                        label='Nombre'
+                        errorMessage='Nombre del rol es requerido.'
+                    />
                 </Dialog>
 
                 {DialogDelete(deleteRoleDialog, 'Rol', deleteRoleDialogFooter, hideDeleteRoleDialog, role, role.name, 'el rol')}

@@ -4,13 +4,11 @@ import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
-import { FloatLabel } from 'primereact/floatlabel';
+import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIcon, FloatInputTextIcon } from '../Inputs';
 
 export default function Products() {
     let emptyProduct = {
@@ -286,7 +284,7 @@ export default function Products() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-                
+
                 <CustomDataTable
                     dt={dt}
                     data={products}
@@ -300,90 +298,81 @@ export default function Products() {
 
             <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                 {operation === 2 && product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
-                <div className="field mt-4">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">inventory_2</span>
-                        </span>
-                        <FloatLabel>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} maxLength={30} />
-                            <label htmlFor="name" className="font-bold">Nombre</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !product.name && <small className="p-error">Nombre es requerido.</small>}
-                </div>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">shoppingmode</span>
-                        </span>
-                        <FloatLabel>
-                            <InputText id="brand" value={product.brand} onChange={(e) => onInputChange(e, 'brand')} required className={classNames({ 'p-invalid': submitted && !product.brand })} maxLength={30} />
-                            <label htmlFor="brand" className="font-bold">Marca</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !product.brand && <small className="p-error">Marca es requerida.</small>}
-                </div>
+                <FloatInputTextIcon
+                    className="field mt-4"
+                    icon='inventory_2'
+                    value={product.name}
+                    onInputChange={onInputChange} field='name'
+                    maxLength={30} required autoFocus
+                    submitted={submitted}
+                    label='Nombre'
+                    errorMessage='Nombre es requerido.'
+                />
+                <FloatInputTextIcon
+                    className="field mt-5"
+                    icon='shoppingmode'
+                    value={product.brand}
+                    onInputChange={onInputChange} field='brand'
+                    maxLength={30} required
+                    submitted={submitted}
+                    label='Marca'
+                    errorMessage='Marca es requerida.'
+                />
                 <div className="field mt-3">
                     <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
                 <div className="formgrid grid mt-5">
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">monetization_on</span>
-                            </span>
-                            <FloatLabel>
-                                <InputNumber id="salePrice" value={product.salePrice} onValueChange={(e) => onInputNumberChange(e, 'salePrice')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !product.salePrice })} maxLength={9} />
-                                <label htmlFor="salePrice" className="font-bold">Precio de venta</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !product.salePrice && <small className="p-error">Precio de venta es requerido.</small>}
-                    </div>
+                    <FloatInputNumberMoneyIcon
+                        className="field col"
+                        value={product.salePrice}
+                        onInputNumberChange={onInputNumberChange} field='salePrice'
+                        maxLength={9} required
+                        submitted={submitted}
+                        label='Precio de venta'
+                        errorMessage='Precio de venta es requerido.'
+                    />
                     {(operation === 1) &&
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">inventory</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputNumber id="stock" value={product.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !product.stock })} maxLength={5} />
-                                    <label htmlFor="stock" className="font-bold">Stock Inicial</label>
-                                </FloatLabel>
-                            </div>
-                            {submitted && !product.stock && <small className="p-error">Stock inicial es requerido.</small>}
-                        </div>
+                        <FloatInputNumberIcon
+                            className="field col"
+                            icon='inventory'
+                            value={product.stock}
+                            onInputNumberChange={onInputNumberChange} field='stock'
+                            maxLength={5} required
+                            submitted={submitted}
+                            label='Stock Inicial'
+                            errorMessage='Stock inicial es requerido.'
+                        />
                     }
                 </div>
                 <div className="formgrid grid mt-3">
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">stacks</span>
-                            </span>
-                            <FloatLabel>
-                                <Dropdown id="category" value={selectedCategory} onChange={(e) => { handleCategoryChange(e.target.value); onInputNumberChange(e, 'category'); }} options={categories} optionLabel="name" placeholder="Seleccionar categoría"
-                                    filter valueTemplate={selectedCategoryTemplate} itemTemplate={categoryOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.category && !selectedCategory })}`} />
-                                <label htmlFor="category" className="font-bold">Categoría</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !product.category && !selectedCategory && <small className="p-error">Categoría es requerida.</small>}
-                    </div>
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">local_shipping</span>
-                            </span>
-                            <FloatLabel>
-                                <Dropdown id="provider" value={selectedProvider} onChange={(e) => { handleProviderChange(e.target.value); onInputNumberChange(e, 'provider'); }} options={providers} optionLabel="name" placeholder="Seleccionar proveedor"
-                                    filter valueTemplate={selectedProviderTemplate} itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !product.provider && !selectedProvider })}`} />
-                                <label htmlFor="provider" className="font-bold">Proveedor</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !product.provider && !selectedProvider && <small className="p-error">Proveedor es requerido.</small>}
-                    </div>
+                    <FloatDropdownSearchIcon
+                        className="field col"
+                        icon='stacks' field='category' required
+                        value={selectedCategory}
+                        handleChange={handleCategoryChange}
+                        onInputNumberChange={onInputNumberChange}
+                        options={categories} optionLabel="name"
+                        placeholder="Seleccionar categoría"
+                        valueTemplate={selectedCategoryTemplate}
+                        itemTemplate={categoryOptionTemplate}
+                        submitted={submitted} fieldForeign={product.category}
+                        label="Categoría" errorMessage="Categoría es requerida."
+                    />
+                    <FloatDropdownSearchIcon
+                        className="field col"
+                        icon='local_shipping' field='provider' required
+                        value={selectedProvider}
+                        handleChange={handleProviderChange}
+                        onInputNumberChange={onInputNumberChange}
+                        options={providers} optionLabel="name"
+                        placeholder="Seleccionar proveedor"
+                        valueTemplate={selectedProviderTemplate}
+                        itemTemplate={providerOptionTemplate}
+                        submitted={submitted} fieldForeign={product.provider}
+                        label="Proveedor" errorMessage="Proveedor es requerido."
+                    />
                 </div>
                 <div className="formgrid grid">
                     <div className="field col">

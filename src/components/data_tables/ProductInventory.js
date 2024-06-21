@@ -1,14 +1,12 @@
 import { Dialog } from 'primereact/dialog';
-import { InputNumber } from 'primereact/inputnumber';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
-import { FloatLabel } from 'primereact/floatlabel';
+import { FloatInputNumber } from '../Inputs';
 
 export default function ProductInventory() {
     let emptyProductInv = {
@@ -177,13 +175,15 @@ export default function ProductInventory() {
                 />
 
                 <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
-                    <div className="field col">
-                        <FloatLabel>
-                            <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required autoFocus className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
-                            <label htmlFor="stock" className="font-bold">Stock actual</label>
-                        </FloatLabel>
-                        {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
-                    </div>
+                    <FloatInputNumber
+                        className="field mt-4"
+                        value={(operation === 2) && productInv.stock}
+                        onInputNumberChange={onInputNumberChange} field='stock'
+                        maxLength={5} required autoFocus
+                        submitted={submitted}
+                        label='Stock actual'
+                        errorMessage='Stock es requerido.'
+                    />
                 </Dialog>
 
                 {confirmDialogStock(confirmDialogVisible, 'Stock', confirmProductDialogFooter, hideConfirmProductsInvDialog, productInv, operation)}

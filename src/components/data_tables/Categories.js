@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
-import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
-import { FloatLabel } from "primereact/floatlabel";
+import { FloatInputText } from '../Inputs';
 
 export default function Categories() {
     const emptyCategory = {
@@ -231,13 +229,15 @@ export default function Categories() {
                 />
 
                 <Dialog visible={categoryDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={categoryDialogFooter} onHide={hideDialog}>
-                    <div className="field mt-4">
-                        <FloatLabel>
-                            <InputText id="name" value={category.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !category.name })} maxLength={30} />
-                            <label htmlFor="name" className='font-bold'>Nombre</label>
-                        </FloatLabel>
-                        {submitted && !category.name && <small className="p-error">Nombre de categoría es requerido.</small>}
-                    </div>
+                    <FloatInputText
+                        className="field mt-4"
+                        value={category.name}
+                        onInputChange={onInputChange} field='name'
+                        maxLength={30} required autoFocus
+                        submitted={submitted}
+                        label='Nombre'
+                        errorMessage='Nombre de categoría es requerido.'
+                    />
                 </Dialog>
 
                 {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'el producto')}
@@ -251,25 +251,26 @@ export default function Categories() {
                     title={title}
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
-                    labelId='category'
-                    nameTable='Categoría'
-                    labelId2='provider'
-                    nameTableTwo='Proveedor'
-                    selectedOne={selectedCategory}
-                    setSelectedOne={setSelectedCategory}
                     idOnInputNumberOne='categoryId'
                     idOnInputNumberTwo='providerId'
+                    selectedOne={selectedCategory}
+                    setSelectedOne={setSelectedCategory}
+                    selectedTwo={selectedProvider}
+                    setSelectedTwo={setSelectedProvider}
+                    options={categories}
+                    optionsTwo={providers}
+                    optionLabel="name"
+                    nameTable='Categoría'
+                    nameTableTwo='Proveedor'
+                    submitted={submitted}
                     valueTemplate={selectedCategoryTemplate}
                     itemTemplate={categoryOptionTemplate}
-                    id={asociation.categoryId}
-                    id2={asociation.providerId}
-                    selectedTwo={selectedProvider}
-                    setSelected2={setSelectedProvider}
-                    options={categories}
-                    options2={providers}
                     valueTemplateTwo={selectedProviderTemplate}
                     itemTemplateTwo={providerOptionTemplate}
-                    filter submitted={submitted}
+                    idOne={asociation.categoryId}
+                    idTwo={asociation.providerId}
+                    errorMessageOne="Categoría es requerida."
+                    errorMessageTwo="Proveedor es requerido."
                     confirmDialogVisible={confirmAscDialogVisible}
                     confirmAsociationDialogFooter={confirmAsociationDialogFooter}
                     hideConfirmAsociationDialog={hideConfirmAsociationDialog}

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
 import { confirmDialogAsc, inputNumberChange } from '../functionsDataTable';
-import { classNames } from 'primereact/utils';
-import { FloatLabel } from 'primereact/floatlabel';
+import { FloatDropdownSearch } from './Inputs';
 
 export default function AsociationDialog({ ...props }) {
 
@@ -15,22 +13,35 @@ export default function AsociationDialog({ ...props }) {
         <>
             <Dialog visible={props.visible} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={props.title} modal className="p-fluid" footer={props.footer} onHide={props.onHide}>
                 <div className="formgrid grid mt-5">
-                    <div className="field col">
-                        <FloatLabel>
-                            {/* mirar si tambien poner como props el optionLabel */}
-                            <Dropdown id={props.labelId} value={props.selectedOne} onChange={(e) => { props.setSelectedOne(e.value); onInputNumberChange(e, props.idOnInputNumberOne); }} options={props.options} optionLabel="name" placeholder={`Seleccionar ${props.nameTable}`} filter={props.filter} valueTemplate={props.valueTemplate} itemTemplate={props.itemTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required autoFocus className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id && !props.selectedOne })}`} />
-                            <label for={props.labelId} className="font-bold">{props.nameTable}</label>
-                        </FloatLabel>
-                        {props.submitted && !props.id && !props.selectedOne && <small className="p-error">{props.nameTable} es requerida.</small>}
-                    </div>
-                    <div className="field col">
-                        <FloatLabel>
-                            {/* mirar si tambien poner como props el optionLabel */}
-                            <Dropdown id={props.labelId2} value={props.selectedTwo} onChange={(e) => { props.setSelected2(e.value); onInputNumberChange(e, props.idOnInputNumberTwo); }} options={props.options2} optionLabel="name" placeholder={`Seleccionar ${props.nameTableTwo}`} filter={props.filter} valueTemplate={props.valueTemplateTwo} itemTemplate={props.itemTemplateTwo} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id2 && !props.selectedTwo })}`} />
-                            <label for={props.labelIdTwo} className="font-bold">{props.nameTableTwo}</label>
-                        </FloatLabel>
-                        {props.submitted && !props.id2 && !props.selectedTwo && <small className="p-error">{props.nameTableTwo} es requerida.</small>}
-                    </div>
+                    {/* corregir el tamaño de los inputs */}
+                    <FloatDropdownSearch
+                        className="field col"
+                        field={props.idOnInputNumberOne}
+                        value={props.selectedOne}
+                        handleChange={props.setSelectedOne}
+                        onInputNumberChange={onInputNumberChange}
+                        options={props.options} optionLabel={props.optionLabel}
+                        placeholder={`Seleccionar ${props.nameTable}`}
+                        valueTemplate={props.valueTemplate}
+                        itemTemplate={props.itemTemplate}
+                        required autoFocus
+                        submitted={props.submitted} fieldForeign={props.idOne}
+                        label={props.nameTable} errorMessage={props.errorMessageOne}
+                    />
+                    <FloatDropdownSearch
+                        className="field col"
+                        field={props.idOnInputNumberTwo}
+                        value={props.selectedTwo}
+                        handleChange={props.setSelectedTwo}
+                        onInputNumberChange={onInputNumberChange}
+                        options={props.optionsTwo} optionLabel={props.optionLabel}
+                        placeholder={`Seleccionar ${props.nameTableTwo}`}
+                        valueTemplate={props.valueTemplateTwo}
+                        itemTemplate={props.itemTemplateTwo}
+                        required
+                        submitted={props.submitted} fieldForeign={props.idTwo}
+                        label={props.nameTableTwo} errorMessage={props.errorMessageTwo}
+                    />
                 </div>
             </Dialog>
             {confirmDialogAsc(props.confirmDialogVisible, `${props.nameTable} y ${props.nameTableTwo}`, props.confirmAsociationDialogFooter, props.hideConfirmAsociationDialog, props.asociation)}
