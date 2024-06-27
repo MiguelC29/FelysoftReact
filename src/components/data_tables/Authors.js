@@ -312,7 +312,7 @@ export default function Authors() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Género'
+                nameTableTwo='Genero'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'

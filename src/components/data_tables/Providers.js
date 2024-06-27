@@ -313,7 +313,7 @@ export default function Providers() {
                     footer={asociationDialogFooter}
                     onHide={hideDialog}
                     nameTable='Proveedor'
-                    nameTableTwo='Categoría'
+                    nameTableTwo='Categoria'
                     labelId='provider'
                     labelId2='category'
                     selectedOne={selectedProvider}

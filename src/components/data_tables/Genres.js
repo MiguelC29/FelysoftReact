@@ -284,7 +284,7 @@ export default function Genres() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Género'
+                nameTableTwo='Genero'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'
