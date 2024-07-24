@@ -7,6 +7,7 @@ import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialog
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
 import { FloatInputNumber } from '../Inputs';
+import Request_Service from '../service/Request_Service';
 
 export default function ProductInventory() {
     let emptyProductInv = {
@@ -14,7 +15,7 @@ export default function ProductInventory() {
         stock: null
     }
 
-    let URL = 'http://localhost:8086/api/inventory/';
+    const URL = '/inventory/';
     const [productsInv, setProductsInv] = useState([]);
     const [productInv, setProductInv] = useState(emptyProductInv);
     const [productsInvDialog, setProductsInvDialog] = useState(false);
@@ -27,8 +28,8 @@ export default function ProductInventory() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getOneData(URL.concat('inventoryProducts'), setProductsInv);
-    }, [URL]);
+        Request_Service.getData(URL.concat('inventoryProducts'), setProductsInv);
+    }, []);
 
     function openUpdate(product) {
         setProductInv({ ...product });

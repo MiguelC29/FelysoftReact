@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatInputText } from '../Inputs';
+import Request_Service from '../service/Request_Service';
 
 export default function Categories() {
     const emptyCategory = {
@@ -19,7 +20,7 @@ export default function Categories() {
     }
 
     const URLASC = 'http://localhost:8086/api/category/add-provider';
-    const URL = 'http://localhost:8086/api/category/';
+    const URL = '/category/';
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [category, setCategory] = useState(emptyCategory);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -39,7 +40,7 @@ export default function Categories() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setCategories);
+        Request_Service.getData(URL.concat('all'), setCategories);
     }, []);
 
     const openNew = () => {

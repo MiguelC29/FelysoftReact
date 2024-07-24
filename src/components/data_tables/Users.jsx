@@ -68,7 +68,7 @@ export default function Users() {
   const dt = useRef(null);
 
   useEffect(() => {
-    Request_Service.getData(URL + 'all', setUsers);
+    Request_Service.getData(URL.concat('all'), setUsers);
   }, []);
 
   // PUEDE QUE SE PUEDA DECLARAR GENERAL PARA RECIBLAR
