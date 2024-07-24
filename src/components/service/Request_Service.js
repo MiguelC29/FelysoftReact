@@ -6,23 +6,51 @@ class Request_Service {
     static async sendRequest(method, parameters, url, op, toast, nameTable, mainUrl, setData) {
         try {
             const token = localStorage.getItem('token');
-            await axios({ method: method, url: this.BASE_URL + url, data: parameters, headers: {Authorization: `Bearer ${token}`} })
+            await axios({ method: method, url: this.BASE_URL + url, data: parameters, 
+                headers: { Authorization: `Bearer ${token}` } 
+                })
+                .then((response) => {
+                    const type = response.data['status'];
+                    const msg = response.data['data'];
+                    if (type === 'success') {
+                        toast.current.show({ severity: 'success', summary: msg, detail: nameTable + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+                        this.getData(mainUrl, setData);
+                    }
+                    return response.data;
+                })
+                .catch((error) => {
+                    toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+                    console.log(error);
+                });
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async sendRequestAsociation(parameters, url, toast) {
+        const token = localStorage.getItem('token');
+        await axios.post(this.BASE_URL + url, parameters, 
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
             .then((response) => {
-                const type = response.data['status'];
-                const msg = response.data['data'];
+                let type = response.data['status'];
+                let msg = response.data['data'];
                 if (type === 'success') {
-                    toast.current.show({ severity: 'success', summary: msg, detail: nameTable + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
-                    this.getData(mainUrl, setData);
+                    toast.current.show({ severity: 'success', summary: 'Exitoso', detail: msg, life: 3000 });
                 }
                 return response.data;
             })
             .catch((error) => {
-                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+                if (error.response.data.data === 'Asociación existente') {
+                    // Si el error es de asociación existente, mostramos el mensaje personalizado
+                    toast.current.show({ severity: 'info', summary: 'Asociación Existente', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
+                } else {
+                    // Para otros errores, mostramos un mensaje genérico de asociación fallida
+                    toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Asociación fallida', life: 3000 });
+                }
                 console.log(error);
             });
-        } catch(err) {
-            throw err;
-        }
     }
 
     static async getData(url, setData) {
@@ -30,14 +58,13 @@ class Request_Service {
             const token = localStorage.getItem('token'); // Retrieve the token from localstorage
             await axios.get(this.BASE_URL + url, 
                 {
-                    headers: {Authorization: `Bearer ${token}`}
-                }
-            )
-            .then((response) => {
-                console.log(response);
-                setData(response.data.data);
-                return response.data;
-            })
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then((response) => {
+                    console.log(response);
+                    setData(response.data.data);
+                    return response.data;
+                })
         } catch (error) {
             console.error('Error fetching users: ', error);
         }
@@ -63,7 +90,7 @@ class Request_Service {
                 toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO Eliminado', life: 3000 });
                 console.log(error);
             });
-    
+
         setDeleteDataDialog(false);
         setTable(emptyData);
     }
