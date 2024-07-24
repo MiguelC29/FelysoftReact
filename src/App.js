@@ -13,7 +13,6 @@ import ViewSales from './pages/ViewSales';
 import ViewPayments from './pages/ViewPayments';
 import ViewDetails from './pages/ViewDetails';
 
-
 import ViewTypeservices from './pages/ViewTypeservices';
 import ViewServices from './pages/ViewServices';
 import ViewEmployees from './pages/ViewEmployees';
@@ -24,18 +23,17 @@ import ViewBooks from './pages/ViewBooks';
 import ViewReserves from './pages/ViewReserves';
 import ViewAuthors from './pages/ViewAuthors';
 import ViewGenres from './pages/ViewGenres';
-import { InicioSesion } from './components/IniciarSesion';
+import { LoginPage } from './components/auth/LoginPage';
 import ViewBooksInventory from './pages/ViewBooksInventory';
 import ViewCarrito from './pages/ViewCarrito';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
-import LoginPage from './components/auth/LoginPage';
 import RegistrationPage from './components/auth/RegistrationPage';
 import ProfilePage from './components/userspage/ProfilePage'
 import UpdateUser from './components/userspage/UpdateUser'
-import UserManagementPage from './components/userspage/UserManagementPage'
 import UserService from './components/service/UserService';
 import { useAuth } from './components/context/AuthProvider';
+import Users from './components/data_tables/Users';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -88,7 +86,8 @@ export default function App() {
 
             {/* Rutas solo para administradores */}
             <Route path='/register' element={<AdminRoute element={<RegistrationPage />} />} />
-            <Route path='/admin/user-management' element={<AdminRoute element={<UserManagementPage />} />} />
+            {/* <Route path='/admin/user-management' element={<AdminRoute element={<UserManagementPage />} />} /> */}
+            <Route path='/admin/user-management' element={<AdminRoute element={<Users />} />} />
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
