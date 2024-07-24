@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function TypeServices() {
   let emptyTypeService = {
@@ -17,7 +18,7 @@ export default function TypeServices() {
     price: null,
   };
 
-  const URL = 'http://localhost:8086/api/typeservice/';
+  const URL = '/typeservice/';
   const [typeService, setTypeService] = useState(emptyTypeService);
   const [typeservices, setTypeservices] = useState([]);
   const [typeServiceDialog, setTypeServiceDialog] = useState(false);
@@ -31,7 +32,7 @@ export default function TypeServices() {
   const dt = useRef(null);
 
   useEffect(() => {
-    getData(URL, setTypeservices);
+    Request_Service.getData(URL.concat('all'), setTypeservices);
   }, []);
 
   const openNew = () => {
@@ -62,7 +63,7 @@ export default function TypeServices() {
     setDeleteTypeServiceDialog(false);
   };
 
-  const saveTypeService = () => {
+  const saveTypeService = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
     if (typeService.name && typeService.description && typeService.price) {
@@ -86,7 +87,7 @@ export default function TypeServices() {
         url = URL + 'create';
         method = 'POST';
       }
-      sendRequest(method, parameters, url, setTypeservices, URL, operation, toast, 'Tipo de Servicio ');
+      await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Tipo de Servicio ', URL.concat('all'), setTypeservices);
       setTypeServiceDialog(false);
       setTypeService(emptyTypeService);
     }
@@ -101,7 +102,7 @@ export default function TypeServices() {
   };
 
   const deleteTypeService = () => {
-    deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService, 'Tipo de Servicio');
+    Request_Service.deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService, 'Tipo de Servicio ', URL.concat('all'));
   };
 
   const onInputChange = (e, name) => {

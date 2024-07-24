@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
@@ -19,7 +19,6 @@ export default function Categories() {
         providerId: null
     }
 
-    const URLASC = 'http://localhost:8086/api/category/add-provider';
     const URL = '/category/';
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [category, setCategory] = useState(emptyCategory);
@@ -55,8 +54,8 @@ export default function Categories() {
         setSelectedCategory('');
         setSelectedProvider('');
         setTitle('Registrar Asociación');
-        getData('http://localhost:8086/api/category/', setCategories);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        Request_Service.getData(URL.concat('all'), setCategories);
+        Request_Service.getData('/provider/all', setProviders);
         setSubmitted(false);
         setAsociationDialog(true);
     };
@@ -86,14 +85,14 @@ export default function Categories() {
         setDeleteCategoryDialog(false);
     };
 
-    const saveAsociation = () => {
+    const saveAsociation = async () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
         if (asociation.categoryId && asociation.providerId) {
             let parameters = {
                 categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
             };
-            sendRequestAsc('POST', parameters, URLASC, toast);
+            await Request_Service.sendRequestAsociation(parameters, URL.concat('add-provider'), toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
             setSelectedCategory('');
@@ -101,7 +100,7 @@ export default function Categories() {
         }
     };
 
-    const saveCategory = () => {
+    const saveCategory = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (category.name.trim()) {
@@ -115,7 +114,7 @@ export default function Categories() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setCategories, URL, operation, toast, 'Categoría ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Categoría ', URL.concat('all'), setCategories)
             setCategoryDialog(false);
             setCategory(emptyCategory);
         }
@@ -134,7 +133,7 @@ export default function Categories() {
     };
 
     const deleteCategory = () => {
-        deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoría');
+        Request_Service.deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoría ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {

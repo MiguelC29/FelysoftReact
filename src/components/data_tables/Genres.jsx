@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Genres() {
     let emptyGenre = {
@@ -21,8 +22,7 @@ export default function Genres() {
         authorId: null
     }
 
-    const URL = 'http://localhost:8086/api/genre/';
-    const URLASC = 'http://localhost:8086/api/genre/add-author';
+    const URL = '/genre/';
     const [genre, setGenre] = useState(emptyGenre);
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [authors, setAuthors] = useState([]);
@@ -42,7 +42,7 @@ export default function Genres() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setGenres);
+        Request_Service.getData(URL.concat('all'), setGenres);
     }, []);
 
     const openNew = () => {
@@ -57,8 +57,8 @@ export default function Genres() {
         setSelectedGenre('');
         setSelectedAuthor('');
         setTitle('Registrar Asociación');
-        getData('http://localhost:8086/api/genre/', setGenres);
-        getData('http://localhost:8086/api/author/', setAuthors);
+        Request_Service.getData(URL.concat('all'), setGenres);
+        Request_Service.getData('/author/all', setAuthors);
         setSubmitted(false);
         setAsociationDialog(true);
     };
@@ -88,7 +88,7 @@ export default function Genres() {
         setDeleteGenreDialog(false);
     };
 
-    const saveGenre = () => {
+    const saveGenre = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -112,7 +112,7 @@ export default function Genres() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setGenres, URL, operation, toast, 'Genero ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Género ', URL.concat('all'), setGenres)
             setGenreDialog(false);
             setGenre(emptyGenre);
         }
@@ -122,14 +122,14 @@ export default function Genres() {
         setConfirmDialogVisible(true);
     };
 
-    const saveAsociation = () => {
+    const saveAsociation = async () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
         if (asociation.genreId && asociation.authorId) {
             let parameters = {
                 genreId: asociation.genreId.idGenre, authorId: asociation.authorId.idAuthor,
             };
-            sendRequestAsc('POST', parameters, URLASC, toast);
+            await Request_Service.sendRequestAsociation(parameters, URL.concat('add-author'), toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
             setSelectedGenre('');
@@ -146,7 +146,7 @@ export default function Genres() {
     };
 
     const deleteGenre = () => {
-        deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Género ');
+        Request_Service.deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Género ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {
@@ -284,7 +284,7 @@ export default function Genres() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Genero'
+                nameTableTwo='Género'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'

@@ -165,7 +165,7 @@ export default function Users() {
         }
         formData.append('role', user.role);
         formData.append('image', file);
-        url = 'update/' + user.idUser;
+        url = URL + 'update/' + user.idUser;
         method = 'PUT';
       } else {
         formData.append('numIdentification', user.numIdentification);
@@ -180,10 +180,10 @@ export default function Users() {
         formData.append('password', user.password.trim());
         formData.append('role', user.role);
         formData.append('image', file);
-        url = 'create';
+        url = URL + 'create';
         method = 'POST';
       }
-      await Request_Service.sendRequest(method, formData, URL + url, operation, toast, 'Usuario ', URL + 'all', setUsers);
+      await Request_Service.sendRequest(method, formData, url, operation, toast, 'Usuario ', URL.concat('all'), setUsers);
       setUserDialog(false);
       setUser(emptyUser);
     };
@@ -199,7 +199,7 @@ export default function Users() {
 
   const deleteUser = () => {
     // deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario');
-    Request_Service.deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario ', URL + 'all');
+    Request_Service.deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario ', URL.concat('all'));
   };
 
   const onInputChange = (e, name) => {

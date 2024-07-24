@@ -24,6 +24,9 @@ function Navbar() {
             {isAdmin && <li><Link to="/admin/user-management">User Management</Link></li>}
             {isAdmin && <li><Link to="/inventory-product">Inventario</Link></li>}
             {isAdmin && <li><Link to="/categories">Categorias</Link></li>}
+            {isAdmin && <li><Link to="/providers">Proveedores</Link></li>}
+            {isAdmin && <li><Link to="/typeServices">Tipo Servicio</Link></li>}
+            {isAdmin && <li><Link to="/genres">Géneros</Link></li>}
             {isAuthenticated && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
         </ul>
     </nav>

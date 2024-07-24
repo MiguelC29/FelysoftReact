@@ -36,6 +36,9 @@ import { useAuth } from './components/context/AuthProvider';
 import Users from './components/data_tables/Users';
 import ProductInventory from './components/data_tables/ProductInventory';
 import Categories from './components/data_tables/Categories';
+import Providers from './components/data_tables/Providers';
+import TypeServices from './components/data_tables/Typeservices';
+import Genres from './components/data_tables/Genres';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -93,6 +96,11 @@ export default function App() {
             {/* <Route path='/admin/user-management' element={<AdminRoute element={<ViewUsers />} />} /> */}
             <Route path='/inventory-product' element={<AdminRoute element={<ProductInventory />} />} />
             <Route path='/categories' element={<AdminRoute element={<Categories />} />} />
+            <Route path='/providers' element={<AdminRoute element={<Providers />} />} />
+            <Route path='/typeServices' element={<AdminRoute element={<TypeServices />} />} />
+            <Route path='/genres' element={<AdminRoute element={<Genres />} />} />
+
+
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}

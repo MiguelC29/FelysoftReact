@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatInputNumberIcon, FloatInputTextIcon } from '../Inputs';
+import Request_Service from '../service/Request_Service';
 
 export default function Providers() {
     let emptyProvider = {
@@ -21,8 +22,7 @@ export default function Providers() {
         providerId: null
     }
 
-    const URL = 'http://localhost:8086/api/provider/';
-    const URLASC = 'http://localhost:8086/api/category/add-provider';
+    const URL = '/provider/';
     const [provider, setProvider] = useState(emptyProvider);
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [providers, setProviders] = useState([]);
@@ -42,7 +42,7 @@ export default function Providers() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setProviders);
+        Request_Service.getData(URL.concat('all'), setProviders);
     }, []);
 
     const openNew = () => {
@@ -57,8 +57,8 @@ export default function Providers() {
         setSelectedCategory('');
         setSelectedProvider('');
         setTitle('Registrar Asociación');
-        getData('http://localhost:8086/api/category/', setCategories);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        Request_Service.getData('/category/all', setCategories);
+        Request_Service.getData(URL.concat('all'), setProviders);
         setSubmitted(false);
         setAsociationDialog(true);
     };
@@ -88,7 +88,7 @@ export default function Providers() {
         setDeleteProviderDialog(false);
     };
 
-    const saveProvider = () => {
+    const saveProvider = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -117,20 +117,20 @@ export default function Providers() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setProviders, URL, operation, toast, 'Proveedor ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Proveedor ', URL.concat('all'), setProviders)
             setProviderDialog(false);
             setProvider(emptyProvider);
         }
     };
 
-    const saveAsociation = () => {
+    const saveAsociation = async () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
         if (asociation.categoryId && asociation.providerId) {
             let parameters = {
                 categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
             };
-            sendRequestAsc('POST', parameters, URLASC, toast);
+            await Request_Service.sendRequestAsociation(parameters, '/category/add-provider', toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
             setSelectedCategory('');
@@ -151,7 +151,7 @@ export default function Providers() {
     };
 
     const deleteProvider = () => {
-        deleteData(URL, provider.idProvider, setProviders, toast, setDeleteProviderDialog, setProvider, emptyProvider, 'Proveedor');
+        Request_Service.deleteData(URL, provider.idProvider, setProviders, toast, setDeleteProviderDialog, setProvider, emptyProvider, 'Proveedor ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {
