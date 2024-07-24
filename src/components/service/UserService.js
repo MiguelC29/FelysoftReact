@@ -5,7 +5,7 @@ class UserService {
 
     static async login(email, password) {
         try {
-            
+
             const response = await axios.post(`${UserService.BASE_URL}/auth/login`, {email, password})
             return response.data;
 
@@ -18,21 +18,6 @@ class UserService {
         try {
             
             const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                }
-            )
-            return response.data;
-
-        } catch(err) {
-            throw err;
-        }
-    }
-
-    static async getAllUsers(token) {
-        try {
-            
-            const response = await axios.get(`${UserService.BASE_URL}/auth/admin/get-all-users`,
                 {
                     headers: {Authorization: `Bearer ${token}`}
                 }
@@ -59,40 +44,10 @@ class UserService {
         }
     }
 
-    static async getUserById(userId, token) {
-        try {
-            
-            const response = await axios.get(`${UserService.BASE_URL}/auth/admin/get-user/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                }
-            )
-            return response.data;
-
-        } catch(err) {
-            throw err;
-        }
-    }
-
     static async deleteUser(userId, token) {
         try {
             
-            const response = await axios.delete(`${UserService.BASE_URL}/auth/admin/delete/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                }
-            )
-            return response.data;
-
-        } catch(err) {
-            throw err;
-        }
-    }
-
-    static async updateUser(userId, userData, token) {
-        try {
-            
-            const response = await axios.put(`${UserService.BASE_URL}/auth/admin/update/${userId}`, userData,
+            const response = await axios.put(`${UserService.BASE_URL}/user/delete/${userId}`,
                 {
                     headers: {Authorization: `Bearer ${token}`}
                 }
