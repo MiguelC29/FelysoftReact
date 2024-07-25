@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
@@ -9,8 +9,10 @@ import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
 import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIcon, FloatInputTextIcon } from '../Inputs';
+import Request_Service from '../service/Request_Service';
 
 export default function Products() {
+    // falta corregir error de imagen al editar, ya que si agrego una nuevo, en el form la img de arriba se pierde
     let emptyProduct = {
         idProduct: null,
         image: '',
@@ -24,7 +26,7 @@ export default function Products() {
         provider: ''
     };
 
-    const URL = 'http://localhost:8086/api/product/';
+    const URL = '/product/';
     const [product, setProduct] = useState(emptyProduct);
     const [file, setFile] = useState(null);
     const [products, setProducts] = useState([]);
@@ -44,15 +46,23 @@ export default function Products() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setProducts);
-        getData('http://localhost:8086/api/category/', setCategories);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        Request_Service.getData(URL.concat('all'), setProducts);
+        getCategories();
+        getProviders();
     }, []);
+
+    const getCategories = () => {
+        return Request_Service.getData('/category/all', setCategories);
+    }
+
+    const getProviders = () => {
+        return Request_Service.getData('/provider/all', setProviders);
+    }
 
     const handleCategoryChange = (categoryId) => {
         setSelectedCategory(categoryId);
         if (categoryId) {
-            getOneData(`${'http://localhost:8086/api/provider/providersByCategory/'}${categoryId.idCategory}`, setProviders);
+            Request_Service.getData(`/provider/providersByCategory/${categoryId.idCategory}`, setProviders);
         }
         if (selectedCategory) {
             setSelectedProvider('');
@@ -63,7 +73,7 @@ export default function Products() {
     const handleProviderChange = (providerId) => {
         setSelectedProvider(providerId);
         if (providerId) {
-            getOneData(`${'http://localhost:8086/api/category/categoriesByProvider/'}${providerId.idProvider}`, setCategories);
+            Request_Service.getData(`/category/categoriesByProvider/${providerId.idProvider}`, setCategories);
         }
         if (selectedProvider) {
             setSelectedCategory('');
@@ -96,8 +106,8 @@ export default function Products() {
         setSelectedProvider('');
         setFile('');
         setSelectedImage('');
-        getData('http://localhost:8086/api/category/', setCategories);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        getCategories();
+        getProviders();
         setOperation(1);
         setSubmitted(false);
         setProductDialog(true);
@@ -105,8 +115,8 @@ export default function Products() {
 
     const editProduct = (product) => {
         setProduct({ ...product });
-        getData('http://localhost:8086/api/category/', setCategories);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        getCategories();
+        getProviders();
         setSelectedCategory(product.category);
         setSelectedProvider(product.provider);
         setFile('');
@@ -129,7 +139,7 @@ export default function Products() {
         setDeleteProductDialog(false);
     };
 
-    const saveProduct = () => {
+    const saveProduct = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -169,7 +179,7 @@ export default function Products() {
                     method = 'POST';
                 }
             }
-            sendRequest(method, formData, url, setProducts, URL, operation, toast, 'Producto ');
+            await Request_Service.sendRequest(method, formData, url, operation, toast, 'Producto ', URL.concat('all'), setProducts);
             setProductDialog(false);
             setProduct(emptyProduct);
         }
@@ -184,7 +194,7 @@ export default function Products() {
     };
 
     const deleteProduct = () => {
-        deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct, 'Producto');
+        Request_Service.deleteData(URL, product.idProduct, setProducts, toast, setDeleteProductDialog, setProduct, emptyProduct, 'Producto ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {
