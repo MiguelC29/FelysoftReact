@@ -39,6 +39,9 @@ import Categories from './components/data_tables/Categories';
 import Providers from './components/data_tables/Providers';
 import TypeServices from './components/data_tables/Typeservices';
 import Genres from './components/data_tables/Genres';
+import Authors from './components/data_tables/Authors';
+import Books from './components/data_tables/Books';
+import BookInventory from './components/data_tables/BookInventory';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -91,6 +94,7 @@ export default function App() {
 
             {/* Rutas solo para administradores */}
             <Route path='/register' element={<AdminRoute element={<RegistrationPage />} />} />
+
             {/* <Route path='/admin/user-management' element={<AdminRoute element={<UserManagementPage />} />} /> */}
             <Route path='/admin/user-management' element={<AdminRoute element={<Users />} />} />
             {/* <Route path='/admin/user-management' element={<AdminRoute element={<ViewUsers />} />} /> */}
@@ -99,7 +103,9 @@ export default function App() {
             <Route path='/providers' element={<AdminRoute element={<Providers />} />} />
             <Route path='/typeServices' element={<AdminRoute element={<TypeServices />} />} />
             <Route path='/genres' element={<AdminRoute element={<Genres />} />} />
-
+            <Route path='/authors' element={<AdminRoute element={<Authors />} />} />
+            <Route path='/books' element={<AdminRoute element={<Books />} />} />
+            <Route path='/books-inventory' element={<AdminRoute element={<BookInventory />} />} />
 
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             

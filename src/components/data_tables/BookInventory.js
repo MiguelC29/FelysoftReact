@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, rightToolbarTemplateExport } from '../../functionsDataTable';
+import React, { useEffect, useRef, useState } from 'react';
+import { exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, headerInv, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
+import Request_Service from '../service/Request_Service';
 
 export default function BookInventory() {
-    let URL = 'http://localhost:8086/api/inventory/';
     const [booksInv, setBooksInv] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
     useEffect(() => {
-        getOneData(URL.concat('inventoryBooks'), setBooksInv);
-    }, [URL]);
+        Request_Service.getData('/inventory/inventoryBooks', setBooksInv);
+    }, []);
 
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.book.priceTime);

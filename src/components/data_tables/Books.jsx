@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import CustomDataTable from '../CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Books() {
     // TODO: A LOS LIBROS TAMBIEN TOCA AGREGARLE LO DE AGREGAR IMG
@@ -23,7 +24,7 @@ export default function Books() {
         author: ''
     };
 
-    const URL = 'http://localhost:8086/api/book/';
+    const URL = '/book/';
     const [book, setBook] = useState(emptyBook);
     const [books, setBooks] = useState([]);
     const [genres, setGenres] = useState([]);
@@ -41,15 +42,23 @@ export default function Books() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setBooks);
-        getData('http://localhost:8086/api/genre/', setGenres);
-        getData('http://localhost:8086/api/author/', setAuthors);
+        Request_Service.getData(URL.concat('all'), setBooks);
+        getGenres();
+        getAuthors();
     }, []);
+
+    const getGenres = () => {
+        return Request_Service.getData('/genre/all', setGenres);
+    }
+
+    const getAuthors = () => {
+        return Request_Service.getData('/author/all', setAuthors);
+    }
 
     const handleGenreChange = (genreId) => {
         setSelectedGenre(genreId);
         if (genreId) {
-            getOneData(`${'http://localhost:8086/api/author/authorsByGenre/'}${genreId.idGenre}`, setAuthors);
+            Request_Service.getData(`/author/authorsByGenre/${genreId.idGenre}`, setAuthors);
         }
         if (selectedGenre) {
             setSelectedAuthor('');
@@ -60,7 +69,7 @@ export default function Books() {
     const handleAuthorChange = (authorId) => {
         setSelectedAuthor(authorId);
         if (authorId) {
-            getOneData(`${'http://localhost:8086/api/genre/genresByAuthor/'}${authorId.idAuthor}`, setGenres);
+            Request_Service.getData(`/genre/genresByAuthor/${authorId.idAuthor}`, setGenres);
         }
         if (selectedAuthor) {
             setSelectedGenre('');
@@ -73,8 +82,8 @@ export default function Books() {
         setTitle('Registrar Libro');
         setSelectedAuthor('');
         setSelectedGenre('');
-        getData('http://localhost:8086/api/genre/', setGenres);
-        getData('http://localhost:8086/api/author/', setAuthors);
+        getGenres();
+        getAuthors();
         setOperation(1);
         setSubmitted(false);
         setBookDialog(true);
@@ -84,8 +93,8 @@ export default function Books() {
         setBook({ ...book });
         setSelectedAuthor(book.author);
         setSelectedGenre(book.genre);
-        getData('http://localhost:8086/api/genre/', setGenres);
-        getData('http://localhost:8086/api/author/', setAuthors);
+        getGenres();
+        getAuthors();
         setTitle('Editar Libro');
         setOperation(2);
         setBookDialog(true);
@@ -104,7 +113,7 @@ export default function Books() {
         setDeleteBookDialog(false);
     };
 
-    const saveBook = () => {
+    const saveBook = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -144,7 +153,7 @@ export default function Books() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setBooks, URL, operation, toast, 'Libro ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Libro ', URL.concat('all'), setBooks);
             setBookDialog(false);
             setBook(emptyBook);
         }
@@ -159,7 +168,7 @@ export default function Books() {
     };
 
     const deleteBook = () => {
-        deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook, 'Libro ');
+        Request_Service.deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook, 'Libro ', URL.concat('all'));
     };
 
     const onInputNumberChange = (e, title) => {

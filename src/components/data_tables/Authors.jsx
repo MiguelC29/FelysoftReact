@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport, sendRequest, sendRequestAsc } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Authors() {
     let emptyAuthor = {
@@ -23,8 +24,7 @@ export default function Authors() {
         genreId: null
     }
 
-    const URL = 'http://localhost:8086/api/author/';
-    const URLASC = 'http://localhost:8086/api/genre/add-author';
+    const URL = '/author/';
     const [asociation, setAsociation] = useState(emptyAsociation);
     const [author, setAuthor] = useState(emptyAuthor);
     const [authors, setAuthors] = useState([]);
@@ -44,7 +44,7 @@ export default function Authors() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setAuthors);
+        Request_Service.getData(URL.concat('all'), setAuthors);
     }, []);
 
     const openNew = () => {
@@ -59,8 +59,8 @@ export default function Authors() {
         setSelectedGenre('');
         setSelectedAuthor('');
         setTitle('Registrar Asociación');
-        getData('http://localhost:8086/api/genre/', setGenres);
-        getData('http://localhost:8086/api/author/', setAuthors);
+        Request_Service.getData('/genre/all', setGenres);
+        Request_Service.getData(URL.concat('all'), setAuthors);
         setSubmitted(false);
         setAsociationDialog(true);
     };
@@ -90,7 +90,7 @@ export default function Authors() {
         setDeleteAuthorDialog(false);
     };
 
-    const saveAuthor = () => {
+    const saveAuthor = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -122,7 +122,7 @@ export default function Authors() {
                 method = 'POST';
 
             }
-            sendRequest(method, parameters, url, setAuthors, URL, operation, toast, 'Autor ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Autor ', URL.concat('all'), setAuthors)
             setAuthorDialog(false);
             setAuthor(emptyAuthor);
         }
@@ -132,14 +132,14 @@ export default function Authors() {
         setConfirmDialogVisible(true);
     };
 
-    const saveAsociation = () => {
+    const saveAsociation = async () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
         if (asociation.genreId && asociation.authorId) {
             let parameters = {
                 genreId: asociation.genreId.idGenre, authorId: asociation.authorId.idAuthor,
             };
-            sendRequestAsc('POST', parameters, URLASC, toast);
+            await Request_Service.sendRequestAsociation(parameters, '/genre/add-author', toast);
             setAsociationDialog(false);
             setAsociation(emptyAsociation);
             setSelectedGenre('');
@@ -156,7 +156,7 @@ export default function Authors() {
     };
 
     const deleteAuthor = () => {
-        deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor, 'Autor');
+        Request_Service.deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor, 'Autor ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {
@@ -312,7 +312,7 @@ export default function Authors() {
                 labelId='author'
                 nameTable='Autor'
                 labelId2='genre'
-                nameTableTwo='Genero'
+                nameTableTwo='Género'
                 selectedOne={selectedAuthor}
                 setSelectedOne={setSelectedAuthor}
                 idOnInputNumberOne='authorId'
