@@ -143,7 +143,8 @@ export default function Products() {
             product.expiryDate &&
             product.salePrice &&
             product.category &&
-            product.provider) {
+            product.provider &&
+            file) {
             let url, method;
             const formData = new FormData();
 
@@ -159,7 +160,7 @@ export default function Products() {
                 url = URL + 'update/' + product.idProduct;
                 method = 'PUT';
             } else {
-                if (operation === 1 && product.stock && file) {
+                if (operation === 1 && product.stock) {
                     // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
                     formData.append('name', product.name.trim());
                     formData.append('brand', product.brand.trim());
