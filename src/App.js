@@ -43,6 +43,8 @@ import Authors from './components/data_tables/Authors';
 import Books from './components/data_tables/Books';
 import BookInventory from './components/data_tables/BookInventory';
 import Products from './components/data_tables/Products';
+import Services from './components/data_tables/Services';
+import Charges from './components/data_tables/Charges';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -103,11 +105,13 @@ export default function App() {
             <Route path='/products' element={<AdminRoute element={<Products />} />} />
             <Route path='/categories' element={<AdminRoute element={<Categories />} />} />
             <Route path='/providers' element={<AdminRoute element={<Providers />} />} />
+            <Route path='/services' element={<AdminRoute element={<Services />} />} />
             <Route path='/typeServices' element={<AdminRoute element={<TypeServices />} />} />
             <Route path='/genres' element={<AdminRoute element={<Genres />} />} />
             <Route path='/authors' element={<AdminRoute element={<Authors />} />} />
             <Route path='/books' element={<AdminRoute element={<Books />} />} />
             <Route path='/books-inventory' element={<AdminRoute element={<BookInventory />} />} />
+            <Route path='/charges' element={<AdminRoute element={<Charges />} />} />
 
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             

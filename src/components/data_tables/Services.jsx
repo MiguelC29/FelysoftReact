@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Services() {
   let emptyService = {
@@ -25,7 +26,7 @@ export default function Services() {
     INACTIVO: 'INACTIVO',
   };
 
-  const URL = 'http://localhost:8086/api/service/';
+  const URL = '/service/';
   const [service, setService] = useState(emptyService);
   const [services, setServices] = useState([]);
   const [typeservices, setTypeservices] = useState([]);
@@ -42,8 +43,8 @@ export default function Services() {
   const dt = useRef(null);
 
   useEffect(() => {
-    getData(URL, setServices);
-    getData('http://localhost:8086/api/typeservice/', setTypeservices);
+    Request_Service.getData(URL.concat('all'), setServices);
+    Request_Service.getData('/typeservice/all', setTypeservices);
   }, []);
 
   const formatCurrency = (value) => {
@@ -82,7 +83,7 @@ export default function Services() {
     setDeleteServiceDialog(false);
   };
 
-  const saveService = () => {
+  const saveService = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
 
@@ -109,7 +110,7 @@ export default function Services() {
         url = URL + 'create';
         method = 'POST';
       }
-      sendRequest(method, parameters, url, setServices, URL, operation, toast, 'Servicio ');
+      await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Servicio ', URL.concat('all'), setServices);
       setServiceDialog(false);
       setService(emptyService);
     }
@@ -124,7 +125,7 @@ export default function Services() {
   };
 
   const deleteService = () => {
-    deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService, 'Servicio');
+    Request_Service.deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService, 'Servicio ', URL.concat('all'));
   };
 
   const onInputNumberChange = (e, name) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Charges() {
   let emptyCharge = {
@@ -15,7 +16,7 @@ export default function Charges() {
     description: '',
   };
 
-  const URL = 'http://localhost:8086/api/charge/';
+  const URL = '/charge/';
   const [charge, setCharge] = useState(emptyCharge);
   const [charges, setCharges] = useState([]);
   const [chargeDialog, setChargeDialog] = useState(false);
@@ -29,7 +30,7 @@ export default function Charges() {
   const dt = useRef(null);
 
   useEffect(() => {
-    getData(URL, setCharges);
+    Request_Service.getData(URL.concat('all'), setCharges);
   }, []);
 
   const openNew = () => {
@@ -60,7 +61,7 @@ export default function Charges() {
     setDeleteChargeDialog(false);
   };
 
-  const saveCharge = () => {
+  const saveCharge = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
     if (charge.charge && charge.description) {
@@ -81,7 +82,7 @@ export default function Charges() {
         url = URL + 'create';
         method = 'POST';
       }
-      sendRequest(method, parameters, url, setCharges, URL, operation, toast, 'Cargo ');
+      await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Cargo ', URL.concat('all'), setCharges);
       setChargeDialog(false);
       setCharge(emptyCharge);
     }
@@ -96,7 +97,7 @@ export default function Charges() {
   };
 
   const deleteCharge = () => {
-    deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge, 'Cargos');
+    Request_Service.deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge, 'Cargo ', URL.concat('all'));
   };
 
   const onInputChange = (e, name) => {

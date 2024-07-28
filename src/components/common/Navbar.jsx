@@ -27,11 +27,13 @@ function Navbar() {
             {isAdmin && <li><Link to="/products">Productos</Link></li>}
             {isAdmin && <li><Link to="/categories">Categorias</Link></li>}
             {isAdmin && <li><Link to="/providers">Proveedores</Link></li>}
+            {isAdmin && <li><Link to="/services">Servicios</Link></li>}
             {isAdmin && <li><Link to="/typeServices">Tipo Servicio</Link></li>}
             {isAdmin && <li><Link to="/genres">Géneros</Link></li>}
             {isAdmin && <li><Link to="/authors">Autores</Link></li>}
             {isAdmin && <li><Link to="/books">Libros</Link></li>}
             {isAdmin && <li><Link to="/books-inventory">Inventario - Libros</Link></li>}
+            {isAdmin && <li><Link to="/charges">Cargos</Link></li>}
 
             {isAuthenticated && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
         </ul>

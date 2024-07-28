@@ -12,7 +12,6 @@ import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIco
 import Request_Service from '../service/Request_Service';
 
 export default function Products() {
-    // falta corregir error de imagen al editar, ya que si agrego una nuevo, en el form la img de arriba se pierde
     let emptyProduct = {
         idProduct: null,
         image: '',
@@ -84,10 +83,6 @@ export default function Products() {
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
-        setProduct(prevState => ({
-            ...prevState,
-            image: file,
-        }));
         const reader = new FileReader();
 
         reader.onloadend = () => {
@@ -148,8 +143,7 @@ export default function Products() {
             product.expiryDate &&
             product.salePrice &&
             product.category &&
-            product.provider &&
-            product.image) {
+            product.provider) {
             let url, method;
             const formData = new FormData();
 
@@ -165,7 +159,7 @@ export default function Products() {
                 url = URL + 'update/' + product.idProduct;
                 method = 'PUT';
             } else {
-                if (operation === 1 && product.stock) {
+                if (operation === 1 && product.stock && file) {
                     // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
                     formData.append('name', product.name.trim());
                     formData.append('brand', product.brand.trim());
