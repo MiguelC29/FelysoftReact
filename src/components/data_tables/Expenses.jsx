@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Expenses() {
     let emptyExpense = {
@@ -28,7 +29,7 @@ export default function Expenses() {
         PROVEEDORES: 'PROVEEDORES',
     };
 
-    const URL = 'http://localhost:8086/api/expense/';
+    const URL = '/expense/';
     const [expense, setExpense] = useState(emptyExpense);
     const [expenses, setExpenses] = useState([]);
     const [purchases, setPurchases] = useState([]);
@@ -47,9 +48,9 @@ export default function Expenses() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setExpenses);
-        getData('http://localhost:8086/api/purchase/', setPurchases);
-        getData('http://localhost:8086/api/payment/', setPayments);
+        Request_Service.getData(URL.concat('all'), setExpenses);
+        Request_Service.getData('/purchase/all', setPurchases);
+        Request_Service.getData('/payment/all', setPayments);
     }, []);
 
     const openNew = () => {
@@ -84,7 +85,7 @@ export default function Expenses() {
         setDeleteExpenseDialog(false);
     };
 
-    const saveExpense = () => {
+    const saveExpense = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (expense.type && expense.total && expense.description.trim() &&
@@ -103,7 +104,7 @@ export default function Expenses() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setExpenses, URL, operation, toast, "Gasto ");
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Gasto ', URL.concat('all'), setExpenses);
             setExpenseDialog(false);
             setExpense(emptyExpense);
         }
@@ -118,7 +119,8 @@ export default function Expenses() {
     };
 
     const deleteExpense = () => {
-        deleteData(URL, expense.idExpense, setExpenses, toast, setDeleteExpenseDialog, setExpense, emptyExpense, "Gasto");
+        Request_Service.deleteData(URL, expense.idExpense, setExpenses, toast, setDeleteExpenseDialog, setExpense, emptyExpense, 'Gasto ', URL.concat('all'));
+
     };
 
     const onInputChange = (e, name) => {

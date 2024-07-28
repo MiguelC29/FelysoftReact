@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Employees() {
     let emptyEmployee = {
@@ -19,7 +20,7 @@ export default function Employees() {
         user: '',
     };
 
-    const URL = 'http://localhost:8086/api/employee/';
+    const URL = '/employee/';
     const [employee, setEmployee] = useState(emptyEmployee);
     const [employees, setEmployees] = useState([]);
     const [users, setUsers] = useState([]);
@@ -35,8 +36,8 @@ export default function Employees() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setEmployees);
-        getData('http://localhost:8086/api/user/', setUsers);
+        Request_Service.getData(URL.concat('all'), setEmployees);
+        Request_Service.getData('/user/all', setUsers);
     }, []);
 
     const openNew = () => {
@@ -69,7 +70,7 @@ export default function Employees() {
         setDeleteEmployeeDialog(false);
     };
 
-    const saveEmployee = () => {
+    const saveEmployee = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (employee.salary && employee.specialty.trim() && employee.dateBirth && employee.user) {
@@ -94,7 +95,7 @@ export default function Employees() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setEmployees, URL, operation, toast, 'Empleado ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Empleado ', URL.concat('all'), setEmployees);
             setEmployeeDialog(false);
             setEmployee(emptyEmployee);
         }
@@ -109,7 +110,7 @@ export default function Employees() {
     };
 
     const deleteEmployee = () => {
-        deleteData(URL, employee.idEmployee, setEmployees, toast, setDeleteEmployeeDialog, setEmployee, emptyEmployee, 'Empleado ');
+        Request_Service.deleteData(URL, employee.idEmployee, setEmployees, toast, setDeleteEmployeeDialog, setEmployee, emptyEmployee, 'Empleado ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {

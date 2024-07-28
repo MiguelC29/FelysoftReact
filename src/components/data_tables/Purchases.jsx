@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, getOneData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -9,6 +9,7 @@ import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { InputText } from 'primereact/inputtext';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Purchases() {
     let emptyPurchase = {
@@ -23,7 +24,7 @@ export default function Purchases() {
     const MethodPayment = {
         EFECTIVO: 'EFECTIVO',
         NEQUI: 'NEQUI',
-        TRANSACCION: 'TRANSACCION',
+        TRANSACCION: 'TRANSACCION'
     };
 
     const State = {
@@ -33,8 +34,7 @@ export default function Purchases() {
         VENCIDO: 'VENCIDO'
     };
 
-    const URL = 'http://localhost:8086/api/purchase/';
-    const Url = "http://localhost:8086/api/purchase/expensePurchase/";
+    const URL = '/purchase/';
     const [purchase, setPurchase] = useState(emptyPurchase);
     const [purchases, setPurchases] = useState([]);
     const [providers, setProviders] = useState([]);
@@ -53,8 +53,8 @@ export default function Purchases() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setPurchases);
-        getData('http://localhost:8086/api/provider/', setProviders);
+        Request_Service.getData(URL.concat('all'), setPurchases);
+        Request_Service.getData('/provider/all', setProviders);
         // Verifica si expensePurchase tiene datos y si contiene la descripción
         if (expensePurchase && expensePurchase.description) {
             setPurchase(prevPurchase => ({ ...prevPurchase, description: expensePurchase.description })); // Establece la descripción basada en los datos recibidos
@@ -84,7 +84,7 @@ export default function Purchases() {
     const editPurchase = (purchase) => {
         setPurchase({ ...purchase });
         // Obtener los datos de expensePurchase
-        getOneData(Url.concat(purchase.idPurchase), setExpensePurchase);
+        Request_Service.getData(URL.concat('expensePurchase/', purchase.idPurchase), setExpensePurchase);
         setSelectedProvider(purchase.provider);
         setTitle('Editar Compra');
         setOperation(2);
@@ -104,7 +104,7 @@ export default function Purchases() {
         setDeletePurchaseDialog(false);
     };
 
-    const savePurchase = () => {
+    const savePurchase = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         console.log(purchase);
@@ -127,7 +127,7 @@ export default function Purchases() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setPurchases, URL, operation, toast, "Compra ");
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Compra ', URL.concat('all'), setPurchases);
             setPurchaseDialog(false);
             setPurchase(emptyPurchase);
         }
@@ -142,7 +142,7 @@ export default function Purchases() {
     };
 
     const deletePurchase = () => {
-        deleteData(URL, purchase.idPurchase, setPurchases, toast, setDeletePurchaseDialog, setPurchase, emptyPurchase, "Compra");
+        Request_Service.deleteData(URL, purchase.idPurchase, setPurchases, toast, setDeletePurchaseDialog, setPurchase, emptyPurchase, 'Compra ', URL.concat('all'));
     };
 
     const onInputChange = (e, name) => {
@@ -296,7 +296,7 @@ export default function Purchases() {
                                     onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
                                     options={methodPaymentOptions}
                                     placeholder="Seleccionar el método de pago"
-                                    itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                                    emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                                     required
                                     className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
                                 />
@@ -310,11 +310,12 @@ export default function Purchases() {
                     <FloatLabel>
                         <Dropdown
                             id="state"
+                            name='state'
                             value={selectedState}
                             onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
                             options={stateOptions}
                             placeholder="Seleccionar el estado"
-                            itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
                             required
                             className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
                         />

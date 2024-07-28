@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Payments() {
     let emptyPayment = {
@@ -31,7 +32,7 @@ export default function Payments() {
         VENCIDO: 'VENCIDO'
     };
 
-    const URL = 'http://localhost:8086/api/payment/';
+    const URL = '/payment/';
     const [payment, setPayment] = useState(emptyPayment);
     const [payments, setPayments] = useState([]);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
@@ -47,7 +48,7 @@ export default function Payments() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setPayments);
+        Request_Service.getData(URL.concat('all'), setPayments);
     }, []);
 
     const openNew = () => {
@@ -82,7 +83,7 @@ export default function Payments() {
         setDeletePaymentDialog(false);
     };
 
-    const savePayment = () => {
+    const savePayment = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (payment.methodPayment && payment.state && payment.total) {
@@ -100,7 +101,7 @@ export default function Payments() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setPayments, URL, operation, toast, "Pago ");
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Pago ', URL.concat('all'), setPayments);
             setPaymentDialog(false);
             setPayment(emptyPayment);
         }
@@ -115,7 +116,7 @@ export default function Payments() {
     };
 
     const deletePayment = () => {
-        deleteData(URL, payment.idPayment, setPayments, toast, setDeletePaymentDialog, setPayment, emptyPayment, "Pago");
+        Request_Service.deleteData(URL, payment.idPayment, setPayments, toast, setDeletePaymentDialog, setPayment, emptyPayment, 'Pago ', URL.concat('all'));
     };
 
     const onInputNumberChange = (e, name) => {

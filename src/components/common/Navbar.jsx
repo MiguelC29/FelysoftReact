@@ -34,6 +34,14 @@ function Navbar() {
             {isAdmin && <li><Link to="/books">Libros</Link></li>}
             {isAdmin && <li><Link to="/books-inventory">Inventario - Libros</Link></li>}
             {isAdmin && <li><Link to="/charges">Cargos</Link></li>}
+            {isAdmin && <li><Link to="/employees">Empleados</Link></li>}
+            {isAdmin && <li><Link to="/details">Detalles</Link></li>}
+            {isAdmin && <li><Link to="/payments">Pagos</Link></li>}
+            {isAdmin && <li><Link to="/expenses">Gastos</Link></li>}
+            {isAdmin && <li><Link to="/sales">Ventas</Link></li>}
+            {isAdmin && <li><Link to="/reserves">Reservas</Link></li>}
+            {isAdmin && <li><Link to="/carrito">Carrito</Link></li>}
+            {isAdmin && <li><Link to="/purchases">Compras</Link></li>}
 
             {isAuthenticated && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
         </ul>

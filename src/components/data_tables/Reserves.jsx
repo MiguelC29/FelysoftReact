@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -10,6 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -22,7 +23,7 @@ export default function Reserves() {
         user: ''
     };
 
-    const URL = 'http://localhost:8086/api/reserve/';
+    const URL = '/reserve/';
     const [reserve, setReserve] = useState(emptyReserve);
     const [reserves, setReserves] = useState([]);
     const [books, setBooks] = useState([]);
@@ -40,18 +41,26 @@ export default function Reserves() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setReserves);
-        getData('http://localhost:8086/api/book/', setBooks);
-        getData('http://localhost:8086/api/user/', setUsers);
+        Request_Service.getData(URL.concat('all'), setReserves);
+        getBooks();
+        getUsers();
     }, []);
+
+    const getBooks = () => {
+        return Request_Service.getData('/book/all', setBooks);
+    }
+
+    const getUsers = () => {
+        return Request_Service.getData('/user/all', setUsers);
+    }
 
     const openNew = () => {
         setReserve(emptyReserve);
         setTitle('Registrar Reserva');
         setSelectedBook('');
         setSelectedUser('');
-        getData('http://localhost:8086/api/book/', setBooks);
-        getData('http://localhost:8086/api/user/', setUsers);
+        getBooks();
+        getUsers();
         setOperation(1);
         setSubmitted(false);
         setReserveDialog(true);
@@ -60,8 +69,8 @@ export default function Reserves() {
         setReserve({ ...reserve });
         setSelectedBook(reserve.book);
         setSelectedUser(reserve.user);
-        getData('http://localhost:8086/api/book/', setBooks);
-        getData('http://localhost:8086/api/user/', setUsers);
+        getBooks();
+        getUsers();
         setTitle('Editar Reserva');
         setOperation(2);
         setReserveDialog(true);
@@ -80,7 +89,7 @@ export default function Reserves() {
         setDeleteReserveDialog(false);
     };
 
-    const saveReserve = () => {
+    const saveReserve = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (
@@ -116,7 +125,7 @@ export default function Reserves() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setReserves, URL, operation, toast, 'Reserva ');
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Reserva ', URL.concat('all'), setReserves);
             setReserveDialog(false);
             setReserve(emptyReserve);
         }
@@ -131,7 +140,7 @@ export default function Reserves() {
     };
 
     const deleteReserve = () => {
-        deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve, 'Reserva ');
+        Request_Service.deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve, 'Reserva ', URL.concat('all'));
     };
 
     const onInputNumberChange = (e, description) => {

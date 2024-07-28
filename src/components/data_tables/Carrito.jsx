@@ -4,8 +4,9 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useState } from 'react';
-import { formatCurrency, getOneData } from '../../functionsDataTable';
+import { formatCurrency } from '../../functionsDataTable';
 import { useCart } from '../CartContext';
+import Request_Service from '../service/Request_Service';
 
 export default function Carrito() {
     const [products, setProducts] = useState([]);
@@ -14,7 +15,7 @@ export default function Carrito() {
     const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
-        getOneData('http://localhost:8086/api/inventory/inventoryProducts', setProducts);
+        Request_Service.getData('/inventory/inventoryProducts', setProducts);
     }, []);
 
     const getSeverity = (product) => {
@@ -81,7 +82,8 @@ export default function Carrito() {
                         </div>
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} />
+                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} onClick={addToCart} />
+                            {/* <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} /> */}
                         </div>
                     </div>
                 </div>
@@ -130,7 +132,8 @@ export default function Carrito() {
     };
 
     const filteredProducts = products.filter(product =>
-        product.product.name.toLowerCase().includes(globalFilter.toLowerCase())
+        // product.product.name.toLowerCase().includes(globalFilter.toLowerCase())
+        product.product.name.toLowerCase().includes(globalFilter.toLowerCase()) && product.state !== 'AGOTADO' // SI EL PRODUCTO ESTA AGOTADO NO APARECE
     );
 
     const header = () => {

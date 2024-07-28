@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Details() {
     let emptyDetail = {
@@ -19,7 +20,7 @@ export default function Details() {
         service: '',
     }
 
-    const URL = 'http://localhost:8086/api/detail/';
+    const URL = '/detail/';
     const [detail, setDetail] = useState(emptyDetail);
     const [details, setDetails] = useState([]);
     const [books, setBooks] = useState([]);
@@ -39,10 +40,10 @@ export default function Details() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setDetails);
-        getData('http://localhost:8086/api/book/', setBooks);
-        getData('http://localhost:8086/api/product/', setProducts);
-        getData('http://localhost:8086/api/service/', setServices);
+        Request_Service.getData(URL.concat('all'), setDetails);
+        Request_Service.getData('/book/all', setBooks);
+        Request_Service.getData('/product/all', setProducts);
+        Request_Service.getData('/service/all', setServices);
     }, []);
 
     const openNew = () => {
@@ -79,7 +80,7 @@ export default function Details() {
         setDeleteDetailDialog(false);
     };
 
-    const saveDetail = () => {
+    const saveDetail = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (detail.quantity && detail.unitPrice && detail.book && detail.product && detail.service) {
@@ -97,7 +98,7 @@ export default function Details() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setDetails, URL, operation, toast, "Detalle ");
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Detalle ', URL.concat('all'), setDetails);
             setDetailDialog(false);
             setDetail(emptyDetail);
         }
@@ -112,7 +113,7 @@ export default function Details() {
     };
 
     const deleteDetail = () => {
-        deleteData(URL, detail.idDetail, setDetails, toast, setDeleteDetailDialog, setDetail, emptyDetail, "Detalle");
+        Request_Service.deleteData(URL, detail.idDetail, setDetails, toast, setDeleteDetailDialog, setDetail, emptyDetail, 'Detalle ', URL.concat('all'));
     };
 
     const onInputNumberChange = (e, name) => {

@@ -45,6 +45,14 @@ import BookInventory from './components/data_tables/BookInventory';
 import Products from './components/data_tables/Products';
 import Services from './components/data_tables/Services';
 import Charges from './components/data_tables/Charges';
+import Employees from './components/data_tables/Employees';
+import Details from './components/data_tables/Details';
+import Expenses from './components/data_tables/Expenses';
+import Payments from './components/data_tables/Payments';
+import Sales from './components/data_tables/Sales';
+import Reserves from './components/data_tables/Reserves';
+import Carrito from './components/data_tables/Carrito';
+import Purchases from './components/data_tables/Purchases';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -112,6 +120,14 @@ export default function App() {
             <Route path='/books' element={<AdminRoute element={<Books />} />} />
             <Route path='/books-inventory' element={<AdminRoute element={<BookInventory />} />} />
             <Route path='/charges' element={<AdminRoute element={<Charges />} />} />
+            <Route path='/employees' element={<AdminRoute element={<Employees />} />} />
+            <Route path='/details' element={<AdminRoute element={<Details />} />} />
+            <Route path='/payments' element={<AdminRoute element={<Payments />} />} />
+            <Route path='/expenses' element={<AdminRoute element={<Expenses />} />} />
+            <Route path='/sales' element={<AdminRoute element={<Sales />} />} />
+            <Route path='/reserves' element={<AdminRoute element={<Reserves />} />} />
+            <Route path='/carrito' element={<AdminRoute element={<Carrito />} />} />
+            <Route path='/purchases' element={<AdminRoute element={<Purchases />} />} />
 
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             

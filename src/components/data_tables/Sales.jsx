@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getData, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,6 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
+import Request_Service from '../service/Request_Service';
 
 export default function Sales() {
     let emptySale = {
@@ -17,7 +18,7 @@ export default function Sales() {
         payment: '',
     }
 
-    const URL = 'http://localhost:8086/api/sale/';
+    const URL = '/sale/';
     const [sale, setSale] = useState(emptySale);
     const [sales, setSales] = useState([]);
     const [payments, setPayments] = useState([]);
@@ -33,8 +34,8 @@ export default function Sales() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getData(URL, setSales);
-        getData('http://localhost:8086/api/payment/', setPayments);
+        Request_Service.getData(URL.concat('all'), setSales);
+        Request_Service.getData('/payment/all', setPayments);
     }, []);
 
     const openNew = () => {
@@ -67,7 +68,7 @@ export default function Sales() {
         setDeleteSaleDialog(false);
     };
 
-    const saveSale = () => {
+    const saveSale = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         if (sale.totalSale && sale.payment) {
@@ -86,7 +87,7 @@ export default function Sales() {
                 url = URL + 'create';
                 method = 'POST';
             }
-            sendRequest(method, parameters, url, setSales, URL, operation, toast, "Venta ");
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Venta ', URL.concat('all'), setSales);
             setSaleDialog(false);
             setSale(emptySale);
         }
@@ -101,7 +102,7 @@ export default function Sales() {
     };
 
     const deleteSale = () => {
-        deleteData(URL, sale.idSale, setSales, toast, setDeleteSaleDialog, setSale, emptySale, "Venta");
+        Request_Service.deleteData(URL, sale.idSale, setSales, toast, setDeleteSaleDialog, setSale, emptySale, 'Venta ', URL.concat('all'));
     };
 
     const onInputNumberChange = (e, name) => {
