@@ -32,7 +32,7 @@ import ViewCarrito from './pages/ViewCarrito';
 import RegistrationPage from './components/auth/RegistrationPage';
 import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
-import UnauthorizedPage from './components/auth/UnauthorizedPage';
+import Error404 from './components/common/Error404';
 
 export default function App() {
 
@@ -75,7 +75,7 @@ export default function App() {
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
-            {/* PROVISIONAL */} <Route path='/unauthorized' element={<UnauthorizedPage />} />
+            <Route path='/unauthorized' element={<Error404 />} />
             <Route path='*' element={<Navigate to="/login" replace />} />
           </Routes>
         </div>

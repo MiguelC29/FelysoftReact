@@ -1,9 +1,13 @@
 import React from 'react';
-import './Error404.css';
+import { Link } from 'react-router-dom';
+import './../../css/Error404.css';
 
 const Error404 = () => {
+  const handleClick = () => {
+    console.log('Button clicked');
+  };
   return (
-    <div className="container container-star">
+    <div className="container-404 container-star">
       {Array(30).fill().map((_, i) => (
         <div key={i} className="star-1"></div>
       ))}
@@ -25,9 +29,9 @@ const Error404 = () => {
           <div className="number">4</div>
         </div>
         <div className="subtitle">Lamentamos informarte que el archivo no ha sido encontrado</div>
-        <a href="/principal/index.html">
-          <button>Volver</button>
-        </a>
+        <Link to="/perfil">
+          <button className="btn-volver" onClick={handleClick}>Volver</button>
+        </Link>
       </div>
     </div>
   );
