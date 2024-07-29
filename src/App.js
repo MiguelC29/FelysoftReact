@@ -31,19 +31,10 @@ import ViewCarrito from './pages/ViewCarrito';
 // import Footer from './components/common/Footer';
 import RegistrationPage from './components/auth/RegistrationPage';
 import UpdateUser from './components/userspage/UpdateUser'
-import UserService from './components/service/UserService';
-import { useAuth } from './components/context/AuthProvider';
+import RoleProtectedRoute from './components/context/RoleProtectedRoute';
+import UnauthorizedPage from './components/auth/UnauthorizedPage';
 
 export default function App() {
-  const ProtectedRoute = ({ element }) => {
-    const { isAuthenticated } = useAuth();
-    return isAuthenticated ? element : <Navigate to="/login" replace />;
-  };
-  
-  const AdminRoute = ({ element }) => {
-    const { isAuthenticated } = useAuth();
-    return isAuthenticated && UserService.isAdmin() ? element : <Navigate to="/login" replace />;
-  };
 
   return (
     //     <Route path='/roles' element={<ViewRoles />} />
@@ -55,35 +46,36 @@ export default function App() {
           <Routes>
             <Route exact path='/' element={<LoginPage />} />
             <Route exact path='/login' element={<LoginPage />} />
-            <Route path='/perfil' element={<ProtectedRoute element={<ViewProfile />} />} />
+            <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER']} />} />
 
             {/* Rutas solo para administradores */}
-            <Route path='/register' element={<AdminRoute element={<RegistrationPage />} />} />
-            <Route path='/usuarios' element={<AdminRoute element={<ViewUsers />} />} />
-            <Route path='/inventarioProductos' element={<AdminRoute element={<ViewProductInventory />} />} />
-            <Route path='/productos' element={<AdminRoute element={<ViewProducts />} />} />
-            <Route path='/categorias' element={<AdminRoute element={<ViewCategories />} />} />
-            <Route path='/proveedores' element={<AdminRoute element={<ViewProviders />} />} />
-            <Route path='/servicios' element={<AdminRoute element={<ViewServices />} />} />
-            <Route path='/tiposervicios' element={<AdminRoute element={<ViewTypeservices />} />} />
-            <Route path='/generos' element={<AdminRoute element={<ViewGenres />} />} />
-            <Route path='/autores' element={<AdminRoute element={<ViewAuthors />} />} />
-            <Route path='/libros' element={<AdminRoute element={<ViewBooks />} />} />
-            <Route path='/inventarioLibros' element={<AdminRoute element={<ViewBooksInventory />} />} />
-            <Route path='/cargos' element={<AdminRoute element={<ViewCharges />} />} />
-            <Route path='/empleados' element={<AdminRoute element={<ViewEmployees />} />} />
-            <Route path='/detalles' element={<AdminRoute element={<ViewDetails />} />} />
-            <Route path='/pagos' element={<AdminRoute element={<ViewPayments />} />} />
-            <Route path='/gastos' element={<AdminRoute element={<ViewExpenses />} />} />
-            <Route path='/ventas' element={<AdminRoute element={<ViewSales />} />} />
-            <Route path='/reservas' element={<AdminRoute element={<ViewReserves />} />} />
-            <Route path='/carrito' element={<AdminRoute element={<ViewCarrito />} />} />
-            <Route path='/compras' element={<AdminRoute element={<ViewPurchases />} />} />
+            <Route path='/register' element={<RoleProtectedRoute element={<RegistrationPage />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/usuarios' element={<RoleProtectedRoute element={<ViewUsers />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/generos' element={<RoleProtectedRoute element={<ViewGenres />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/autores' element={<RoleProtectedRoute element={<ViewAuthors />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/detalles' element={<RoleProtectedRoute element={<ViewDetails />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR']} />} />
 
 
-            <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
+            <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
+            {/* PROVISIONAL */} <Route path='/unauthorized' element={<UnauthorizedPage />} />
             <Route path='*' element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
