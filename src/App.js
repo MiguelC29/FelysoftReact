@@ -50,26 +50,27 @@ export default function App() {
 
             {/* Rutas solo para administradores */}
             <Route path='/register' element={<RoleProtectedRoute element={<RegistrationPage />} roles={['ADMINISTRATOR']} />} />
+
             <Route path='/usuarios' element={<RoleProtectedRoute element={<ViewUsers />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
-            <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'CUSTOMER']} />} />
-            <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/generos' element={<RoleProtectedRoute element={<ViewGenres />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/autores' element={<RoleProtectedRoute element={<ViewAuthors />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
+            <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
+            <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
+            <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON']} />} />
+            <Route path='/generos' element={<RoleProtectedRoute element={<ViewGenres />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON','CUSTOMER']} />} />
+            <Route path='/autores' element={<RoleProtectedRoute element={<ViewAuthors />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON','CUSTOMER']} />} />
+            <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON','CUSTOMER']} />} />
+            <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
             <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/detalles' element={<RoleProtectedRoute element={<ViewDetails />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/detalles' element={<RoleProtectedRoute element={<ViewDetails />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','FINANCIAL_MANAGER','SALESPERSON']} />} />
+            <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER','SALESPERSON']} />} />
+            <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} />
+            <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER','SALESPERSON']} />} />
+            <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR','SALESPERSON','CUSTOMER']} />} />
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
 
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
