@@ -282,6 +282,11 @@ export default function MiniDrawer({ children }) {
         items: item.items ? item.items.filter(subItem => subItem.roles ? subItem.roles.includes(userRole) : true) : []
     }));
 
+    const CustomLink = styled(Link)({
+        textDecoration: 'none',
+        color: 'inherit',
+    });
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -327,7 +332,7 @@ export default function MiniDrawer({ children }) {
                 <List className='mt-4'>
                     {filteredMenuItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            <ListItem disablePadding>
+                            <ListItem disablePadding component={CustomLink} to={item.link}>
                                 <ListItemButton
                                     sx={{
                                         minHeight: 48,
@@ -367,7 +372,7 @@ export default function MiniDrawer({ children }) {
                             {item.items && item.items.length > 0 && (
                                 <SubItemsWrapper in={expandedItem === item.name} timeout="auto" unmountOnExit>
                                     {item.items.map((subItem, subIndex) => (
-                                        <ListItem key={subIndex} disablePadding>
+                                        <ListItem key={subIndex} disablePadding component={CustomLink} to={subItem.link}>
                                             <ListItemButton
                                                 sx={{
                                                     minHeight: 48,
