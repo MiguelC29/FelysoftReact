@@ -113,6 +113,7 @@ const LogoImage = styled('img')({
 export default function MiniDrawer({ children }) {
     const { isAuthenticated, logout } = useAuth();
     const isAdmin = UserService.isAdmin();
+    const isCustomer = UserService.isCustomer();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expandedItem, setExpandedItem] = React.useState('');
@@ -167,85 +168,96 @@ export default function MiniDrawer({ children }) {
             name: "Inicio",
             icon: <Icon icon='home' />,
             link: "/carrito",
+            roles: ['ADMINISTRATOR'] // Roles permitidos
         },
         {
             name: "Almacen",
             icon: <Icon icon='inventory_2' />,
             items: [
-                { name: "Productos", icon: <IconSubItems />, link: "/productos" },
-                { name: "Categorías", icon: <IconSubItems />, link: "/categorias" },
-                { name: "Libros", icon: <IconSubItems />, link: "/libros" },
-                { name: "Autores", icon: <IconSubItems />, link: "/autores" },
-                { name: "Géneros", icon: <IconSubItems />, link: "/generos" },
-                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios" },
-                { name: "Servicios", icon: <IconSubItems />, link: "/servicios" },
-            ]
+                { name: "Productos", icon: <IconSubItems />, link: "/productos", roles: ['ADMINISTRATOR', 'CUSTOMER','INVENTORY_MANAGER'] },
+                { name: "Categorías", icon: <IconSubItems />, link: "/categorias", roles: ['ADMINISTRATOR'] },
+                { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR'] },
+                { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR'] },
+                { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR'] },
+                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios", roles: ['ADMINISTRATOR'] },
+                { name: "Servicios", icon: <IconSubItems />, link: "/servicios", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR', 'CUSTOMER']
         },
         {
             name: "Venta",
             icon: <Icon icon='shopping_cart' />,
             items: [
-                { name: "Carrito", icon: <IconSubItems />, link: "/carrito" },
-                { name: "Gastos", icon: <IconSubItems />, link: "/gastos" },
-                { name: "Ventas", icon: <IconSubItems />, link: "/ventas" },
-                { name: "Pagos", icon: <IconSubItems />, link: "/pagos" },
-            ]
+                { name: "Carrito", icon: <IconSubItems />, link: "/carrito", roles: ['ADMINISTRATOR'] },
+                { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR'] },
+                { name: "Ventas", icon: <IconSubItems />, link: "/ventas", roles: ['ADMINISTRATOR'] },
+                { name: "Pagos", icon: <IconSubItems />, link: "/pagos", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Compras",
             icon: <Icon icon='local_shipping' />,
             items: [
-                { name: "Compras", icon: <IconSubItems />, link: "/compras" },
-                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores" },
-                { name: "Detalles", icon: <IconSubItems />, link: "/detalles" },
-            ]
+                { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR'] },
+                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR'] },
+                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Reservas",
             icon: <Icon icon='event_available' />,
             items: [
-                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas" },
-                { name: "Reserva Servicios", icon: <IconSubItems />, link: "" },
-            ]
+                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas", roles: ['ADMINISTRATOR'] },
+                { name: "Reserva Servicios", icon: <IconSubItems />, link: "", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Inventario",
             icon: <Icon icon='deployed_code' />,
             items: [
-                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos" },
-                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros" },
-            ]
+                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos", roles: ['ADMINISTRATOR'] },
+                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Tablero",
             icon: <Icon icon='monitoring' />,
             link: "",
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Personas",
             icon: <Icon icon='group' />,
             items: [
-                { name: "Usuarios", icon: <IconSubItems />, link: "/usuarios" },
-                { name: "Roles", icon: <IconSubItems />, link: "/roles" },
-                { name: "Cargos", icon: <IconSubItems />, link: "/cargos" },
-                { name: "Empleados", icon: <IconSubItems />, link: "/empleados" },
-            ]
+                { name: "Usuarios", icon: <IconSubItems />, link: "/usuarios", roles: ['ADMINISTRATOR'] },
+                // { name: "Roles", icon: <IconSubItems />, link: "/roles", roles: ['ADMINISTRATOR'] },
+                { name: "Cargos", icon: <IconSubItems />, link: "/cargos", roles: ['ADMINISTRATOR'] },
+                { name: "Empleados", icon: <IconSubItems />, link: "/empleados", roles: ['ADMINISTRATOR'] },
+            ],
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Configuración",
             icon: <Icon icon='settings' />,
             link: "",
+            roles: ['ADMINISTRATOR']
         },
         {
             name: "Perfil",
             icon: <Icon icon='person' />,
             link: "/perfil",
+            roles: ['ADMINISTRATOR', 'CUSTOMER']
         },
         {
             name: "Cerrar sesión",
             icon: <Icon icon='logout' />,
             link: "/",
-            onClick: handleLogout
+            onClick: handleLogout,
+            roles: ['ADMINISTRATOR', 'CUSTOMER']
         },
     ];
 
@@ -259,6 +271,16 @@ export default function MiniDrawer({ children }) {
             </Box>
         );
     }
+
+    const userRole = isAdmin ? 'ADMINISTRATOR' : isCustomer ? 'CUSTOMER' : '';
+
+    // Filtrar elementos del menú según el rol
+    const filteredMenuItems = menuItems.filter(item =>
+        item.roles ? item.roles.includes(userRole) : true
+    ).map(item => ({
+        ...item,
+        items: item.items ? item.items.filter(subItem => subItem.roles ? subItem.roles.includes(userRole) : true) : []
+    }));
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -301,48 +323,46 @@ export default function MiniDrawer({ children }) {
                 </DrawerHeader>
                 <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
                 <List className='mt-4'>
-                    {menuItems.map((item, index) => (
+                    {filteredMenuItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            {(!item.items || isAdmin) && ( // Mostrar elementos basados en isAdmin
-                                <ListItem disablePadding>
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2,
-                                            py: 2.5,
-                                            marginLeft: 3.5,
-                                        }}
-                                        onClick={(e) => {
-                                            if (item.onClick) {
-                                                item.onClick(e); // Manejar el clic para cerrar sesión
-                                            } else {
-                                                if (item.items) {
-                                                    handleExpand(item.name);
-                                                } else if (item.link) {
-                                                    window.location.href = item.link; // Navegar a la URL del enlace
-                                                }
+                            <ListItem disablePadding>
+                                <ListItemButton
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2,
+                                        py: 2.5,
+                                        marginLeft: 3.5,
+                                    }}
+                                    onClick={(e) => {
+                                        if (item.onClick) {
+                                            item.onClick(e); // Manejar el clic para cerrar sesión
+                                        } else {
+                                            if (item.items) {
+                                                handleExpand(item.name);
+                                            } else if (item.link) {
+                                                window.location.href = item.link; // Navegar a la URL del enlace
                                             }
-                                        }}
-                                        // href={item.link}
-                                    >
-                                        <ListItemIcon>
-                                            {item.icon}
-                                        </ListItemIcon>
-                                        <ListItemText primary={item.name} />
-                                        {item.items && open && (
-                                            <IconButton
-                                                sx={{
-                                                    ml: 'auto',
-                                                }}
-                                            >
-                                                {<Icon icon='expand_more' />}
-                                            </IconButton>
-                                        )}
-                                    </ListItemButton>
-                                </ListItem>
-                            )}
-                            {item.items && (
+                                        }
+                                    }}
+                                // href={item.link}
+                                >
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.name} />
+                                    {item.items && item.items.length > 0 && open && (
+                                        <IconButton
+                                            sx={{
+                                                ml: 'auto',
+                                            }}
+                                        >
+                                            {<Icon icon='expand_more' />}
+                                        </IconButton>
+                                    )}
+                                </ListItemButton>
+                            </ListItem>
+                            {item.items && item.items.length > 0 && (
                                 <SubItemsWrapper in={expandedItem === item.name} timeout="auto" unmountOnExit>
                                     {item.items.map((subItem, subIndex) => (
                                         <ListItem key={subIndex} disablePadding>

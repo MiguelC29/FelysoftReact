@@ -52,7 +52,7 @@ export default function App() {
             <Route path='/register' element={<RoleProtectedRoute element={<RegistrationPage />} roles={['ADMINISTRATOR']} />} />
             <Route path='/usuarios' element={<RoleProtectedRoute element={<ViewUsers />} roles={['ADMINISTRATOR']} />} />
             <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
-            <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR']} />} />
+            <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'CUSTOMER']} />} />
             <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR']} />} />
             <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR']} />} />
             <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR']} />} />
