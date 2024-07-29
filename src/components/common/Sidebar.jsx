@@ -14,10 +14,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import logo from '../img/logo.png';
+import logo from '../../img/logo.png';
 import { Link } from 'react-router-dom';
 import { Badge } from 'primereact/badge';
-import { useCart } from './CartContext';
+import { useCart } from '../CartContext';
+import { useAuth } from '../context/AuthProvider';
+import UserService from '../service/UserService';
+
 
 const drawerWidth = 240;
 
@@ -108,6 +111,8 @@ const LogoImage = styled('img')({
 });
 
 export default function MiniDrawer({ children }) {
+    const { isAuthenticated, logout } = useAuth();
+    const isAdmin = UserService.isAdmin();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expandedItem, setExpandedItem] = React.useState('');
@@ -121,6 +126,14 @@ export default function MiniDrawer({ children }) {
 
         return () => clearInterval(intervalId);
     }, []);
+
+    const handleLogout = (e) => {
+        e.preventDefault(); // Prevenir la acción predeterminada del enlace
+        const confirmDelete = window.confirm('¿Seguro que quieres cerrar la sesión?')
+        if (confirmDelete) {
+            logout();
+        }
+    }
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -148,6 +161,104 @@ export default function MiniDrawer({ children }) {
     const IconSubItems = () => (
         <span className="material-symbols-outlined text-black text-opacity-75">arrow_right_alt</span>
     );
+
+    const menuItems = [
+        {
+            name: "Inicio",
+            icon: <Icon icon='home' />,
+            link: "/carrito",
+        },
+        {
+            name: "Almacen",
+            icon: <Icon icon='inventory_2' />,
+            items: [
+                { name: "Productos", icon: <IconSubItems />, link: "/productos" },
+                { name: "Categorías", icon: <IconSubItems />, link: "/categorias" },
+                { name: "Libros", icon: <IconSubItems />, link: "/libros" },
+                { name: "Autores", icon: <IconSubItems />, link: "/autores" },
+                { name: "Géneros", icon: <IconSubItems />, link: "/generos" },
+                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios" },
+                { name: "Servicios", icon: <IconSubItems />, link: "/servicios" },
+            ]
+        },
+        {
+            name: "Venta",
+            icon: <Icon icon='shopping_cart' />,
+            items: [
+                { name: "Carrito", icon: <IconSubItems />, link: "/carrito" },
+                { name: "Gastos", icon: <IconSubItems />, link: "/gastos" },
+                { name: "Ventas", icon: <IconSubItems />, link: "/ventas" },
+                { name: "Pagos", icon: <IconSubItems />, link: "/pagos" },
+            ]
+        },
+        {
+            name: "Compras",
+            icon: <Icon icon='local_shipping' />,
+            items: [
+                { name: "Compras", icon: <IconSubItems />, link: "/compras" },
+                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores" },
+                { name: "Detalles", icon: <IconSubItems />, link: "/detalles" },
+            ]
+        },
+        {
+            name: "Reservas",
+            icon: <Icon icon='event_available' />,
+            items: [
+                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas" },
+                { name: "Reserva Servicios", icon: <IconSubItems />, link: "" },
+            ]
+        },
+        {
+            name: "Inventario",
+            icon: <Icon icon='deployed_code' />,
+            items: [
+                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos" },
+                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros" },
+            ]
+        },
+        {
+            name: "Tablero",
+            icon: <Icon icon='monitoring' />,
+            link: "",
+        },
+        {
+            name: "Personas",
+            icon: <Icon icon='group' />,
+            items: [
+                { name: "Usuarios", icon: <IconSubItems />, link: "/usuarios" },
+                { name: "Roles", icon: <IconSubItems />, link: "/roles" },
+                { name: "Cargos", icon: <IconSubItems />, link: "/cargos" },
+                { name: "Empleados", icon: <IconSubItems />, link: "/empleados" },
+            ]
+        },
+        {
+            name: "Configuración",
+            icon: <Icon icon='settings' />,
+            link: "",
+        },
+        {
+            name: "Perfil",
+            icon: <Icon icon='person' />,
+            link: "/perfil",
+        },
+        {
+            name: "Cerrar sesión",
+            icon: <Icon icon='logout' />,
+            link: "/",
+            onClick: handleLogout
+        },
+    ];
+
+    // SI NO ESTA AUTENTICADO NO SE MUESTRA EL SIDEBAR
+    if (!isAuthenticated) {
+        return (
+            <Box sx={{ display: 'flex' }}>
+                <ContentWrapper open={false}>
+                    {children}
+                </ContentWrapper>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -190,115 +301,47 @@ export default function MiniDrawer({ children }) {
                 </DrawerHeader>
                 <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
                 <List className='mt-4'>
-                    {[
-                        {
-                            name: "Inicio",
-                            icon: <Icon icon='home' />,
-                            link: "/carrito",
-                        },
-                        {
-                            name: "Almacen",
-                            icon: <Icon icon='inventory_2' />,
-                            items: [
-
-                                { name: "Productos", icon: <IconSubItems />, link: "/productos" },
-                                { name: "Categorías", icon: <IconSubItems />, link: "/categorias" },
-                                { name: "Libros", icon: <IconSubItems />, link: "/libros" },
-                                { name: "Autores", icon: <IconSubItems />, link: "/autores" },
-                                { name: "Géneros", icon: <IconSubItems />, link: "/generos" },
-                                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios" },
-                                { name: "Servicios", icon: <IconSubItems />, link: "/servicios" },
-                            ]
-                        },
-                        {
-                            name: "Venta",
-                            icon: <Icon icon='shopping_cart' />,
-                            items: [
-                                { name: "Carrito", icon: <IconSubItems />, link: "/carrito" },
-                                { name: "Gastos", icon: <IconSubItems />, link: "/gastos" },
-                                { name: "Ventas", icon: <IconSubItems />, link: "/ventas" },
-                                { name: "Pagos", icon: <IconSubItems />, link: "/pagos" },
-                            ]
-                        },
-                        {
-                            name: "Compras",
-                            icon: <Icon icon='local_shipping' />,
-                            items: [
-                                { name: "Compras", icon: <IconSubItems />, link: "/compras" },
-                                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores" },
-                                { name: "Detalles", icon: <IconSubItems />, link: "/detalles" },
-                            ]
-                        },
-                        {
-                            name: "Reservas",
-                            icon: <Icon icon='event_available' />,
-                            items: [
-                                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas" },
-                                { name: "Reserva Servicios", icon: <IconSubItems />, link: "" },
-                            ]
-                        },
-                        {
-                            name: "Inventario",
-                            icon: <Icon icon='deployed_code' />,
-                            items: [
-                                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos" },
-                                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros" },
-                            ]
-                        },
-                        {
-                            name: "Tablero",
-                            icon: <Icon icon='monitoring' />,
-                            link: "",
-                        },
-                        {
-                            name: "Personas",
-                            icon: <Icon icon='group' />,
-                            items: [
-                                { name: "Usuarios", icon: <IconSubItems />, link: "/usuarios" },
-                                { name: "Roles", icon: <IconSubItems />, link: "/roles" },
-                                { name: "Cargos", icon: <IconSubItems />, link: "/cargos" },
-                                { name: "Empleados", icon: <IconSubItems />, link: "/empleados" },
-                            ]
-                        },
-                        {
-                            name: "Configuración",
-                            icon: <Icon icon='settings' />,
-                            link: "",
-                        },
-                        {
-                            name: "Cerrar sesión",
-                            icon: <Icon icon='logout' />,
-                            link: "/",
-                        },
-                    ].map((item, index) => (
+                    {menuItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            <ListItem disablePadding>
-                                <ListItemButton
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2,
-                                        py: 2.5,
-                                        marginLeft: 3.5,
-                                    }}
-                                    onClick={() => item.items && handleExpand(item.name)}
-                                    href={item.link}
-                                >
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.name} />
-                                    {item.items && open && (
-                                        <IconButton
-                                            sx={{
-                                                ml: 'auto',
-                                            }}
-                                        >
-                                            {<Icon icon='expand_more' />}
-                                        </IconButton>
-                                    )}
-                                </ListItemButton>
-                            </ListItem>
+                            {(!item.items || isAdmin) && ( // Mostrar elementos basados en isAdmin
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                        sx={{
+                                            minHeight: 48,
+                                            justifyContent: open ? 'initial' : 'center',
+                                            px: 2,
+                                            py: 2.5,
+                                            marginLeft: 3.5,
+                                        }}
+                                        onClick={(e) => {
+                                            if (item.onClick) {
+                                                item.onClick(e); // Manejar el clic para cerrar sesión
+                                            } else {
+                                                if (item.items) {
+                                                    handleExpand(item.name);
+                                                } else if (item.link) {
+                                                    window.location.href = item.link; // Navegar a la URL del enlace
+                                                }
+                                            }
+                                        }}
+                                        // href={item.link}
+                                    >
+                                        <ListItemIcon>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={item.name} />
+                                        {item.items && open && (
+                                            <IconButton
+                                                sx={{
+                                                    ml: 'auto',
+                                                }}
+                                            >
+                                                {<Icon icon='expand_more' />}
+                                            </IconButton>
+                                        )}
+                                    </ListItemButton>
+                                </ListItem>
+                            )}
                             {item.items && (
                                 <SubItemsWrapper in={expandedItem === item.name} timeout="auto" unmountOnExit>
                                     {item.items.map((subItem, subIndex) => (

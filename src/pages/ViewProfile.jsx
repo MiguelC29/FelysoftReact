@@ -1,16 +1,16 @@
 import React from 'react'
-import Payments from '../components/data_tables/Payments';
+import MiniDrawer from '../components/common/Sidebar';
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import ProfilePage from '../components/userspage/ProfilePage';
 
-export default function ViewPayments() {
+export default function ViewProfile() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Payments />
+                    <ProfilePage />
                 </Box>
             </MiniDrawer>
         </div>
     );
-};
+}

@@ -1,14 +1,14 @@
 import React from 'react'
-import Providers from '../components/data_tables/Providers'
+import Roles from '../components/data_tables/Roles'
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import MiniDrawer from '../components/common/Sidebar';
 
-export default function ViewProviders() {
+export default function ViewRoles() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Providers />
+                    <Roles />
                 </Box>
             </MiniDrawer>
         </div>

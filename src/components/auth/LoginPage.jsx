@@ -31,7 +31,7 @@ export const LoginPage = () => {
           localStorage.setItem('token', userData.token);
           localStorage.setItem('role', userData.role);
           login(); // Actualizar el estado de autenticación
-          navigate('/profile', { replace: true }); // Navegar a /profile
+          navigate('/perfil', { replace: true }); // Aqui se coloca la pagina a la que queremos que navegue despues de loguearse
           setErrorVisible(false);
         } else {
           console.log(userData)

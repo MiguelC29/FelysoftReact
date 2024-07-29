@@ -45,8 +45,8 @@ export default function Users() {
   };
 
   const Role = {
-    ADMINISTRATOR: "ADMINISTRATOR",
-    CUSTOMER: "CUSTOMER"
+    ADMINISTRATOR: 'ADMINISTRATOR',
+    CUSTOMER: 'CUSTOMER'
   }
 
   const URL = '/user/';

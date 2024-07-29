@@ -1,14 +1,14 @@
 import React from 'react';
-import MiniDrawer from '../components/Sidebar';
-import Books from '../components/data_tables/Books';
+import Categories from '../components/data_tables/Categories';
 import { Box } from '@mui/material';
+import MiniDrawer from '../components/common/Sidebar';
 
-export default function ViewBooks() {
+export default function ViewCategories() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Books />
+                    <Categories />
                 </Box>
             </MiniDrawer>
         </div>

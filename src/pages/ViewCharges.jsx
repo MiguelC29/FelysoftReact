@@ -1,14 +1,14 @@
 import React from 'react'
-import Roles from '../components/data_tables/Roles'
+import Charges from '../components/data_tables/Charges'
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import MiniDrawer from '../components/common/Sidebar';
 
-export default function ViewRoles() {
+export default function ViewCharges() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Roles />
+                    <Charges />
                 </Box>
             </MiniDrawer>
         </div>

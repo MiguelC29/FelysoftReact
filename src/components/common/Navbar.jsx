@@ -42,6 +42,7 @@ function Navbar() {
             {isAdmin && <li><Link to="/reserves">Reservas</Link></li>}
             {isAdmin && <li><Link to="/carrito">Carrito</Link></li>}
             {isAdmin && <li><Link to="/purchases">Compras</Link></li>}
+            {isAdmin && <li><Link to="/carrito-prueba">Prueba</Link></li>}
 
             {isAuthenticated && <li><Link to="/" onClick={handleLogout}>Logout</Link></li>}
         </ul>

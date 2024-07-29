@@ -1,7 +1,7 @@
 import React from 'react'
 import Reserves from '../components/data_tables/Reserves';
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import MiniDrawer from '../components/common/Sidebar';
 
 export default function ViewReserves() {
     return (

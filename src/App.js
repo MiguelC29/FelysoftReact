@@ -1,8 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ViewCategories from './pages/ViewCategories';
 import ViewProducts from './pages/ViewProducts';
-import ViewRoles from './pages/ViewRoles';
+// import ViewRoles from './pages/ViewRoles';
 import ViewUsers from './pages/ViewUsers';
+import ViewProfile from './pages/ViewProfile';
 import ViewProviders from './pages/ViewProviders';
 import ViewProductInventory from './pages/ViewProductInventory';
 
@@ -18,7 +19,7 @@ import ViewServices from './pages/ViewServices';
 import ViewEmployees from './pages/ViewEmployees';
 import ViewCharges from './pages/ViewCharges';
 
-import PasswordStrength from './components/PasswordStrength';
+// import PasswordStrength from './components/PasswordStrength';
 import ViewBooks from './pages/ViewBooks';
 import ViewReserves from './pages/ViewReserves';
 import ViewAuthors from './pages/ViewAuthors';
@@ -26,33 +27,12 @@ import ViewGenres from './pages/ViewGenres';
 import { LoginPage } from './components/auth/LoginPage';
 import ViewBooksInventory from './pages/ViewBooksInventory';
 import ViewCarrito from './pages/ViewCarrito';
-import Navbar from './components/common/Navbar';
-import Footer from './components/common/Footer';
+// import Navbar from './components/common/Navbar';
+// import Footer from './components/common/Footer';
 import RegistrationPage from './components/auth/RegistrationPage';
-import ProfilePage from './components/userspage/ProfilePage'
 import UpdateUser from './components/userspage/UpdateUser'
 import UserService from './components/service/UserService';
 import { useAuth } from './components/context/AuthProvider';
-import Users from './components/data_tables/Users';
-import ProductInventory from './components/data_tables/ProductInventory';
-import Categories from './components/data_tables/Categories';
-import Providers from './components/data_tables/Providers';
-import TypeServices from './components/data_tables/Typeservices';
-import Genres from './components/data_tables/Genres';
-import Authors from './components/data_tables/Authors';
-import Books from './components/data_tables/Books';
-import BookInventory from './components/data_tables/BookInventory';
-import Products from './components/data_tables/Products';
-import Services from './components/data_tables/Services';
-import Charges from './components/data_tables/Charges';
-import Employees from './components/data_tables/Employees';
-import Details from './components/data_tables/Details';
-import Expenses from './components/data_tables/Expenses';
-import Payments from './components/data_tables/Payments';
-import Sales from './components/data_tables/Sales';
-import Reserves from './components/data_tables/Reserves';
-import Carrito from './components/data_tables/Carrito';
-import Purchases from './components/data_tables/Purchases';
 
 export default function App() {
   const ProtectedRoute = ({ element }) => {
@@ -66,68 +46,40 @@ export default function App() {
   };
 
   return (
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path='/' element={<InicioSesion />} />
-    //     <Route path='/categorias' element={<ViewCategories />} />
     //     <Route path='/roles' element={<ViewRoles />} />
-    //     <Route path='/productos' element={<ViewProducts />} />
-    //     <Route path='/usuarios' element={<ViewUsers />} />
-    //     <Route path='/proveedores' element={<ViewProviders />} />
-    //     <Route path='/inventarioProductos' element={<ViewProductInventory />} />
-    //     <Route path='/inventarioLibros' element={<ViewBooksInventory />} />
-    //     <Route path='/tiposervicios' element={<ViewTypeservices />} />
-    //     <Route path='/servicios' element={<ViewServices />} />
-    //     <Route path='/empleados' element={<ViewEmployees />} />
-    //     <Route path='/cargos' element={<ViewCharges />} />
-    //     <Route path='/gastos' element={<ViewExpenses />} />
-    //     <Route path='/compras' element={<ViewPurchases />} />
-    //     <Route path='/ventas' element={<ViewSales />} />
-    //     <Route path='/pagos' element={<ViewPayments />} />
-    //     <Route path='/detalles' element={<ViewDetails />} />
-    //     <Route path='/libros' element={<ViewBooks />} />
-    //     <Route path='/reservas' element={<ViewReserves />} />
-    //     <Route path='/autores' element={<ViewAuthors />} />
-    //     <Route path='/generos' element={<ViewGenres />} />
     //     <Route path='/registroUsuario' element={<PasswordStrength />} />
-    //     <Route path='/carrito' element={<ViewCarrito />} />
-
-    //   </Routes>
-    // </BrowserRouter>
     <BrowserRouter>
       <div className="App">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="content">
           <Routes>
             <Route exact path='/' element={<LoginPage />} />
             <Route exact path='/login' element={<LoginPage />} />
-            <Route path='/profile' element={<ProtectedRoute element={<ProfilePage />} />} />
+            <Route path='/perfil' element={<ProtectedRoute element={<ViewProfile />} />} />
 
             {/* Rutas solo para administradores */}
             <Route path='/register' element={<AdminRoute element={<RegistrationPage />} />} />
+            <Route path='/usuarios' element={<AdminRoute element={<ViewUsers />} />} />
+            <Route path='/inventarioProductos' element={<AdminRoute element={<ViewProductInventory />} />} />
+            <Route path='/productos' element={<AdminRoute element={<ViewProducts />} />} />
+            <Route path='/categorias' element={<AdminRoute element={<ViewCategories />} />} />
+            <Route path='/proveedores' element={<AdminRoute element={<ViewProviders />} />} />
+            <Route path='/servicios' element={<AdminRoute element={<ViewServices />} />} />
+            <Route path='/tiposervicios' element={<AdminRoute element={<ViewTypeservices />} />} />
+            <Route path='/generos' element={<AdminRoute element={<ViewGenres />} />} />
+            <Route path='/autores' element={<AdminRoute element={<ViewAuthors />} />} />
+            <Route path='/libros' element={<AdminRoute element={<ViewBooks />} />} />
+            <Route path='/inventarioLibros' element={<AdminRoute element={<ViewBooksInventory />} />} />
+            <Route path='/cargos' element={<AdminRoute element={<ViewCharges />} />} />
+            <Route path='/empleados' element={<AdminRoute element={<ViewEmployees />} />} />
+            <Route path='/detalles' element={<AdminRoute element={<ViewDetails />} />} />
+            <Route path='/pagos' element={<AdminRoute element={<ViewPayments />} />} />
+            <Route path='/gastos' element={<AdminRoute element={<ViewExpenses />} />} />
+            <Route path='/ventas' element={<AdminRoute element={<ViewSales />} />} />
+            <Route path='/reservas' element={<AdminRoute element={<ViewReserves />} />} />
+            <Route path='/carrito' element={<AdminRoute element={<ViewCarrito />} />} />
+            <Route path='/compras' element={<AdminRoute element={<ViewPurchases />} />} />
 
-            {/* <Route path='/admin/user-management' element={<AdminRoute element={<UserManagementPage />} />} /> */}
-            <Route path='/admin/user-management' element={<AdminRoute element={<Users />} />} />
-            {/* <Route path='/admin/user-management' element={<AdminRoute element={<ViewUsers />} />} /> */}
-            <Route path='/inventory-product' element={<AdminRoute element={<ProductInventory />} />} />
-            <Route path='/products' element={<AdminRoute element={<Products />} />} />
-            <Route path='/categories' element={<AdminRoute element={<Categories />} />} />
-            <Route path='/providers' element={<AdminRoute element={<Providers />} />} />
-            <Route path='/services' element={<AdminRoute element={<Services />} />} />
-            <Route path='/typeServices' element={<AdminRoute element={<TypeServices />} />} />
-            <Route path='/genres' element={<AdminRoute element={<Genres />} />} />
-            <Route path='/authors' element={<AdminRoute element={<Authors />} />} />
-            <Route path='/books' element={<AdminRoute element={<Books />} />} />
-            <Route path='/books-inventory' element={<AdminRoute element={<BookInventory />} />} />
-            <Route path='/charges' element={<AdminRoute element={<Charges />} />} />
-            <Route path='/employees' element={<AdminRoute element={<Employees />} />} />
-            <Route path='/details' element={<AdminRoute element={<Details />} />} />
-            <Route path='/payments' element={<AdminRoute element={<Payments />} />} />
-            <Route path='/expenses' element={<AdminRoute element={<Expenses />} />} />
-            <Route path='/sales' element={<AdminRoute element={<Sales />} />} />
-            <Route path='/reserves' element={<AdminRoute element={<Reserves />} />} />
-            <Route path='/carrito' element={<AdminRoute element={<Carrito />} />} />
-            <Route path='/purchases' element={<AdminRoute element={<Purchases />} />} />
 
             <Route path='/update-user/:userId' element={<AdminRoute element={<UpdateUser />} />} />
             
@@ -135,7 +87,7 @@ export default function App() {
             <Route path='*' element={<Navigate to="/login" replace />} />
           </Routes>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </BrowserRouter>
   );

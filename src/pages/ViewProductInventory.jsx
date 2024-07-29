@@ -1,7 +1,7 @@
 import React from 'react'
 import ProductInventory from '../components/data_tables/ProductInventory'
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import MiniDrawer from '../components/common/Sidebar';
 
 export default function ViewProductInventory() {
     return (

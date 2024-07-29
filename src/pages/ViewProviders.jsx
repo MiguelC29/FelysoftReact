@@ -1,14 +1,14 @@
 import React from 'react'
-import Expenses from '../components/data_tables/Expenses';
+import Providers from '../components/data_tables/Providers'
 import { Box } from '@mui/material';
-import MiniDrawer from '../components/Sidebar';
+import MiniDrawer from '../components/common/Sidebar';
 
-export default function ViewExpenses() {
+export default function ViewProviders() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Expenses />
+                    <Providers />
                 </Box>
             </MiniDrawer>
         </div>
