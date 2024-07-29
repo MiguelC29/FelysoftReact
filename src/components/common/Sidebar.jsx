@@ -304,10 +304,12 @@ export default function MiniDrawer({ children }) {
                         <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
                     </Typography>}
                     <div className='d-flex align-items-end ms-auto'>
-                        <span className="material-symbols-outlined mr-5 p-overlay-badge">
-                            shopping_cart
-                            <Badge value={cartItems} id='badge-shooping-car' severity="info"></Badge>
-                        </span>
+                        {isAdmin &&
+                            <span className="material-symbols-outlined mr-5 p-overlay-badge">
+                                shopping_cart
+                                <Badge value={cartItems} id='badge-shooping-car' severity="info"></Badge>
+                            </span>
+                        }
                         <div className="datetime text-white" id="datetime">{dateTime.toLocaleString()}</div>
                     </div>
                 </Toolbar>
