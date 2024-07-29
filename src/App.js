@@ -76,7 +76,7 @@ export default function App() {
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
             <Route path='/unauthorized' element={<Error404 />} />
-            <Route path='*' element={<Navigate to="/login" replace />} />
+            <Route path='*' element={<Navigate to="/unauthorized" replace />} />
           </Routes>
         </div>
         {/* <Footer /> */}
