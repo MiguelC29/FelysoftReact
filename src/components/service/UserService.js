@@ -75,24 +75,24 @@ class UserService {
         return role === 'ADMINISTRATOR'
     }
 
-    static isCustomer() { // isUser
+    static isCustomer() {
         const role = localStorage.getItem('role')
-        return role === 'CUSTOMER' // for my case I'd try with a customer, later I need to try it with an user
+        return role === 'CUSTOMER'
     }
 
-    static isSalesPerson() { // isUser
+    static isSalesPerson() {
         const role = localStorage.getItem('role')
-        return role === 'SALESPERSON' // for my case I'd try with a customer, later I need to try it with an user
+        return role === 'SALESPERSON'
     }
 
-    static isFinancialManager() { // isUser
+    static isFinancialManager() {
         const role = localStorage.getItem('role')
-        return role === 'FINANCIAL_MANAGER' // for my case I'd try with a customer, later I need to try it with an user
+        return role === 'FINANCIAL_MANAGER' 
     }
 
-    static isInventoryManager() { // isUser
+    static isInventoryManager() {
         const role = localStorage.getItem('role')
-        return role === 'INVENTORY_MANAGER' // for my case I'd try with a customer, later I need to try it with an user
+        return role === 'INVENTORY_MANAGER'
     }
 
     static adminOnly() {

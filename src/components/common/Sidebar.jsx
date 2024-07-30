@@ -114,6 +114,9 @@ export default function MiniDrawer({ children }) {
     const { isAuthenticated, logout } = useAuth();
     const isAdmin = UserService.isAdmin();
     const isCustomer = UserService.isCustomer();
+    const isSalesPerson = UserService.isSalesPerson();
+    const isFinancialManager = UserService.isFinancialManager();
+    const isInventoryManager = UserService.isInventoryManager();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expandedItem, setExpandedItem] = React.useState('');
@@ -168,66 +171,66 @@ export default function MiniDrawer({ children }) {
             name: "Inicio",
             icon: <Icon icon='home' />,
             link: "/carrito",
-            roles: ['ADMINISTRATOR'] // Roles permitidos
+            roles: ['ADMINISTRATOR', 'SALESPERSON'] // Roles permitidos
         },
         {
             name: "Almacen",
             icon: <Icon icon='inventory_2' />,
             items: [
-                { name: "Productos", icon: <IconSubItems />, link: "/productos", roles: ['ADMINISTRATOR', 'CUSTOMER','INVENTORY_MANAGER'] },
-                { name: "Categorías", icon: <IconSubItems />, link: "/categorias", roles: ['ADMINISTRATOR'] },
-                { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR'] },
-                { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR'] },
-                { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR'] },
-                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios", roles: ['ADMINISTRATOR'] },
-                { name: "Servicios", icon: <IconSubItems />, link: "/servicios", roles: ['ADMINISTRATOR'] },
+                { name: "Productos", icon: <IconSubItems />, link: "/productos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Categorías", icon: <IconSubItems />, link: "/categorias", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Servicios", icon: <IconSubItems />, link: "/servicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON'] },
             ],
-            roles: ['ADMINISTRATOR', 'CUSTOMER']
+            roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON']
         },
         {
             name: "Venta",
             icon: <Icon icon='shopping_cart' />,
             items: [
-                { name: "Carrito", icon: <IconSubItems />, link: "/carrito", roles: ['ADMINISTRATOR'] },
-                { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR'] },
-                { name: "Ventas", icon: <IconSubItems />, link: "/ventas", roles: ['ADMINISTRATOR'] },
-                { name: "Pagos", icon: <IconSubItems />, link: "/pagos", roles: ['ADMINISTRATOR'] },
+                { name: "Carrito", icon: <IconSubItems />, link: "/carrito", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
+                { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER'] },
+                { name: "Ventas", icon: <IconSubItems />, link: "/ventas", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
+                { name: "Pagos", icon: <IconSubItems />, link: "/pagos", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
             ],
-            roles: ['ADMINISTRATOR']
+            roles: ['ADMINISTRATOR', 'SALESPERSON', 'FINANCIAL_MANAGER']
         },
         {
             name: "Compras",
             icon: <Icon icon='local_shipping' />,
             items: [
-                { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR'] },
-                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR'] },
-                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR'] },
+                { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER'] },
+                { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER'] },
             ],
-            roles: ['ADMINISTRATOR']
+            roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER']
         },
         {
             name: "Reservas",
             icon: <Icon icon='event_available' />,
             items: [
-                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas", roles: ['ADMINISTRATOR'] },
-                { name: "Reserva Servicios", icon: <IconSubItems />, link: "", roles: ['ADMINISTRATOR'] },
+                { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
+                { name: "Reserva Servicios", icon: <IconSubItems />, link: "", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
             ],
-            roles: ['ADMINISTRATOR']
+            roles: ['ADMINISTRATOR', 'SALESPERSON']
         },
         {
             name: "Inventario",
             icon: <Icon icon='deployed_code' />,
             items: [
-                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos", roles: ['ADMINISTRATOR'] },
-                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros", roles: ['ADMINISTRATOR'] },
+                { name: "Productos", icon: <IconSubItems />, link: "/inventarioProductos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON'] },
+                { name: "Libros Digitales", icon: <IconSubItems />, link: "/inventarioLibros", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON'] },
             ],
-            roles: ['ADMINISTRATOR']
+            roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON']
         },
         {
             name: "Tablero",
             icon: <Icon icon='monitoring' />,
             link: "",
-            roles: ['ADMINISTRATOR']
+            roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER']
         },
         {
             name: "Personas",
@@ -250,14 +253,14 @@ export default function MiniDrawer({ children }) {
             name: "Perfil",
             icon: <Icon icon='person' />,
             link: "/perfil",
-            roles: ['ADMINISTRATOR', 'CUSTOMER']
+            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
         },
         {
             name: "Cerrar sesión",
             icon: <Icon icon='logout' />,
             link: "/",
             onClick: handleLogout,
-            roles: ['ADMINISTRATOR', 'CUSTOMER']
+            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
         },
     ];
 
@@ -272,7 +275,12 @@ export default function MiniDrawer({ children }) {
         );
     }
 
-    const userRole = isAdmin ? 'ADMINISTRATOR' : isCustomer ? 'CUSTOMER' : '';
+    const userRole = isAdmin ? 'ADMINISTRATOR'
+                 : isCustomer ? 'CUSTOMER'
+                 : isSalesPerson ? 'SALESPERSON'
+                 : isFinancialManager ? 'FINANCIAL_MANAGER'
+                 : isInventoryManager ? 'INVENTORY_MANAGER'
+                 : '';
 
     // Filtrar elementos del menú según el rol
     const filteredMenuItems = menuItems.filter(item =>

@@ -46,7 +46,7 @@ export default function App() {
           <Routes>
             <Route exact path='/' element={<LoginPage />} />
             <Route exact path='/login' element={<LoginPage />} />
-            <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER']} />} />
+            <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER', 'INVENTORY_MANAGER','SALESPERSON','FINANCIAL_MANAGER']} />} />
 
             {/* Rutas solo para administradores */}
             <Route path='/register' element={<RoleProtectedRoute element={<RegistrationPage />} roles={['ADMINISTRATOR']} />} />
