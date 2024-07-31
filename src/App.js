@@ -32,6 +32,7 @@ import ViewCarrito from './pages/ViewCarrito';
 import RegistrationPage from './components/auth/RegistrationPage';
 import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
+import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
 
 export default function App() {
@@ -43,8 +44,8 @@ export default function App() {
         {/* <Navbar /> */}
         <div className="content">
           <Routes>
-            <Route exact path='/' element={<LoginPage />} />
-            <Route exact path='/login' element={<LoginPage />} />
+            <Route exact path='/' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
+            <Route exact path='/login' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
             <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER', 'INVENTORY_MANAGER','SALESPERSON','FINANCIAL_MANAGER']} />} />
 
             {/* Rutas solo para administradores */}
