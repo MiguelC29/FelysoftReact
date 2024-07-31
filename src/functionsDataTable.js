@@ -5,6 +5,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import ExportDropdown from './components/ExportDropDown';
+import UserService from './components/service/UserService';
 
 export const getData = async (url, setData) => {
     await axios.get(url + 'all')
@@ -122,10 +123,13 @@ export const headerInv = (nameTable, globalFilter) => (
 );
 
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
+    const isAdmin = UserService.isAdmin();
     return (
         <React.Fragment>
             <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
-            <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+            { isAdmin &&
+                <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+            }
         </React.Fragment>
     );
 };
