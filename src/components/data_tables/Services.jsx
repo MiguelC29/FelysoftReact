@@ -10,6 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Services() {
   let emptyService = {
@@ -41,6 +42,10 @@ export default function Services() {
   const [title, setTitle] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
+
+  // ROLES
+  const isAdmin = UserService.isAdmin();
+  const isInventoryManager = UserService.isInventoryManager();
 
   useEffect(() => {
     Request_Service.getData(URL.concat('all'), setServices);
@@ -160,7 +165,7 @@ export default function Services() {
     { field: 'priceAdditional', header: 'Precio Adicional', body: (rowData) => priceBodyTemplate(rowData.priceAdditional), sortable: true, style: { minWidth: '8rem' } },
     { field: 'total', header: 'Total', body: (rowData) => priceBodyTemplate(rowData.total), sortable: true, style: { minWidth: '8rem' } },
     { field: 'typeService.name', header: 'Tipo de Servicio', sortable: true, style: { minWidth: '10rem' } },
-    { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+    (isInventoryManager || isAdmin) && { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
   const statesOptions = Object.keys(State).map((key) => ({
@@ -192,11 +197,16 @@ export default function Services() {
   const handleExportExcel = () => { exportExcel(services, columns, 'Servicios') };
   const handleExportCsv = () => { exportCSV(false, dt) };
 
+  // const contentLeftToolbar = ((isAdmin || isInventoryManager)) ? leftToolbarTemplate(openNew) : '';
+
   return (
     <div>
       <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
-        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+        {
+          (isAdmin || isInventoryManager) &&
+          <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+        }
 
         <CustomDataTable
           dt={dt}
