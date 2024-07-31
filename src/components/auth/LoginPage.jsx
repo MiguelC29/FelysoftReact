@@ -20,7 +20,7 @@ export const LoginPage = () => {
   const [errorVisible, setErrorVisible] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth(); // Usar el contexto de autenticación
+  const { login, authError } = useAuth(); // Usar el contexto de autenticación
 
   const handleSubmit = async () => {
     setSubmitted(true);
@@ -30,6 +30,7 @@ export const LoginPage = () => {
         if (userData.token) {
           localStorage.setItem('token', userData.token);
           localStorage.setItem('role', userData.role);
+          localStorage.setItem('tokenExpiration', userData.expirationTime); // Guardar la expiración aquí
           login(); // Actualizar el estado de autenticación
           navigate('/perfil', { replace: true }); // Aqui se coloca la pagina a la que queremos que navegue despues de loguearse
           setErrorVisible(false);
@@ -76,6 +77,7 @@ export const LoginPage = () => {
         <div className="content">
           <h2>Iniciar Sesión</h2>
           <div className="login-form" style={{ background: '#19191a' }} method='post'>
+            {authError && <small className="p-error">{authError}</small>}
             <div className="input__wrapper">
               <input
                 id="email"

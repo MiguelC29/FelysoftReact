@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ViewCategories from './pages/ViewCategories';
 import ViewProducts from './pages/ViewProducts';
 // import ViewRoles from './pages/ViewRoles';
@@ -39,7 +39,6 @@ export default function App() {
   return (
     //     <Route path='/roles' element={<ViewRoles />} />
     //     <Route path='/registroUsuario' element={<PasswordStrength />} />
-    <BrowserRouter>
       <div className="App">
         {/* <Navbar /> */}
         <div className="content">
@@ -82,6 +81,5 @@ export default function App() {
         </div>
         {/* <Footer /> */}
       </div>
-    </BrowserRouter>
   );
 }

@@ -14,17 +14,20 @@ import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { CartProvider } from './components/CartContext';
 import { AuthProvider } from './components/context/AuthProvider';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <PrimeReactProvider>
-      <CartProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </CartProvider>
-    </PrimeReactProvider>
+    <BrowserRouter>
+      <PrimeReactProvider>
+        <CartProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </CartProvider>
+      </PrimeReactProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
