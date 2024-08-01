@@ -5,6 +5,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import ExportDropdown from './components/ExportDropDown';
+import UserService from './components/service/UserService';
 
 export const getData = async (url, setData) => {
     await axios.get(url + 'all')
@@ -44,7 +45,7 @@ export const sendRequestStock = (method, parameters, url, setData, mainUrl, toas
             if (type === 'success') {
                 // SI SE QUIERE SE VALIDA LA OP Y SI ES UNO ES ACTUALIZADO Y SI ES 2 ES REINICIADO
                 toast.current.show({ severity: 'success', summary: msg, detail: 'Stock Actualizado', life: 3000 });
-                getData(mainUrl, setData);
+                getOneData(mainUrl, setData);
             }
         })
         .catch((error) => {
@@ -122,10 +123,13 @@ export const headerInv = (nameTable, globalFilter) => (
 );
 
 export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
+    const isAdmin = UserService.isAdmin();
     return (
         <React.Fragment>
             <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
-            <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+            { isAdmin &&
+                <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+            }
         </React.Fragment>
     );
 };

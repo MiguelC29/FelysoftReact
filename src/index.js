@@ -7,18 +7,27 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'primeicons/primeicons.css';
 import { PrimeReactProvider } from 'primereact/api';
+import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import { CartProvider } from './components/CartContext';
+import { AuthProvider } from './components/context/AuthProvider';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <PrimeReactProvider>
-      <App />
-    </PrimeReactProvider>
+    <BrowserRouter>
+      <PrimeReactProvider>
+        <CartProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </CartProvider>
+      </PrimeReactProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

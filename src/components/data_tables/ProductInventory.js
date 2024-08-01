@@ -1,26 +1,26 @@
 import { Dialog } from 'primereact/dialog';
-import { InputNumber } from 'primereact/inputnumber';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, getOneData, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
+import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
 import CustomDataTable from '../CustomDataTable';
+import { Image } from 'primereact/image';
+import { FloatInputNumber } from '../Inputs';
+import Request_Service from '../service/Request_Service';
 
 export default function ProductInventory() {
-
     let emptyProductInv = {
         idInventory: null,
-        stock: 0
+        stock: null
     }
 
-    let URL = 'http://localhost:8086/api/inventory/';
+    const URL = '/inventory/';
     const [productsInv, setProductsInv] = useState([]);
     const [productInv, setProductInv] = useState(emptyProductInv);
     const [productsInvDialog, setProductsInvDialog] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -28,8 +28,8 @@ export default function ProductInventory() {
     const dt = useRef(null);
 
     useEffect(() => {
-        getOneData(URL.concat('inventoryProducts'), setProductsInv);
-    }, [URL]);
+        Request_Service.getData(URL.concat('inventoryProducts'), setProductsInv);
+    }, []);
 
     function openUpdate(product) {
         setProductInv({ ...product });
@@ -60,15 +60,13 @@ export default function ProductInventory() {
         setSubmitted(true);
         setConfirmDialogVisible(false);
         let url, method = 'PUT', parameters = { idInventory: productInv.idInventory, stock: productInv.stock };
-        console.log(productInv.idInventory);
         if (productInv.idInventory && (productInv.stock || productInv.stock === 0)) {
             if (operation === 1) {
                 url = URL.concat('updateStock/' + productInv.idInventory);
             } else {
                 url = URL.concat('resetStock/' + productInv.idInventory);
             }
-
-            sendRequestStock(method, parameters, url, setProductsInv, URL, toast);
+            sendRequestStock(method, parameters, url, setProductsInv, URL.concat('inventoryProducts'), toast);
             setProductsInvDialog(false);
             setProductInv(emptyProductInv);
         }
@@ -88,6 +86,16 @@ export default function ProductInventory() {
 
     const actionBodyTemplateP = (rowData) => {
         return actionBodyTemplateInv(rowData, openUpdate, openReset);
+    };
+
+    const imageBodyTemplate = (rowData) => {
+        const imageData = rowData.product.image;
+        const imageType = rowData.product.imageType;
+        if (imageData) {
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen producto ${rowData.product.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
+        } else {
+            return <p>No hay imagen</p>;
+        }
     };
 
     const productInvDialogFooter = (
@@ -134,11 +142,12 @@ export default function ProductInventory() {
     };
 
     const columns = [
+        { field: 'product.image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         { field: 'product.name', header: 'Producto', sortable: true, style: { minWidth: '5rem' } },
         { field: 'product.salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'stock', header: 'Stock', body: stockBodyTemplate, sortable: true, style: { minWidth: '6rem' } },
         { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'product.category.name', header: 'Categoria', sortable: true, style: { minWidth: '8rem' } },
+        { field: 'product.category.name', header: 'Categoría', sortable: true, style: { minWidth: '8rem' } },
         { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
         { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
         { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
@@ -146,13 +155,13 @@ export default function ProductInventory() {
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, productsInv, 'Reporte_Inventario_Productos') };
-    const handleExportExcel = () => { exportExcel(productsInv, columns, 'Inventario_Productos') };
+    const handleExportPdf = () => { exportPdf(columns.slice(1, -1), productsInv, 'Reporte_Inventario_Productos') };
+    const handleExportExcel = () => { exportExcel(productsInv, columns.slice(1, -1), 'Inventario_Productos') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -160,24 +169,26 @@ export default function ProductInventory() {
                     dt={dt}
                     data={productsInv}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} productos"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={headerInv('Productos', setGlobalFilter)}
                     columns={columns}
                 />
+
                 <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
-                    <div className="field col">
-                        <label htmlFor="stock" className="font-bold">
-                            Stock
-                        </label>
-                        <p>Stock actual</p>
-                        <InputNumber id="stock" value={(operation === 2) && productInv.stock} onValueChange={(e) => onInputNumberChange(e, 'stock')} required className={classNames({ 'p-invalid': submitted && !productInv.stock })} maxLength={5} />
-                        {submitted && !productInv.stock && <small className="p-error">Stock es requerido.</small>}
-                    </div>
+                    <FloatInputNumber
+                        className="field mt-4"
+                        value={(operation === 2) && productInv.stock}
+                        onInputNumberChange={onInputNumberChange} field='stock'
+                        maxLength={5} required autoFocus
+                        submitted={submitted}
+                        label='Stock actual'
+                        errorMessage='Stock es requerido.'
+                    />
                 </Dialog>
 
                 {confirmDialogStock(confirmDialogVisible, 'Stock', confirmProductDialogFooter, hideConfirmProductsInvDialog, productInv, operation)}
             </div>
         </div>
-    )
-}
+    );
+};

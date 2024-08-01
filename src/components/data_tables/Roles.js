@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteData, deleteDialogFooter, exportCSV, exportExcel, exportPdf, getData, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport, sendRequest } from '../../functionsDataTable'
-import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
+import { FloatInputText } from '../Inputs';
 
 export default function Roles() {
     let emptyRole = {
@@ -14,12 +13,12 @@ export default function Roles() {
     }
 
     const URL = 'http://localhost:8086/api/role/';
+    const [role, setRole] = useState(emptyRole);
     const [roles, setRoles] = useState([]);
     const [roleDialog, setRoleDialog] = useState(false);
-    const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
-    const [role, setRole] = useState(emptyRole);
-    const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [deleteRoleDialog, setDeleteRoleDialog] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [title, setTitle] = useState('');
@@ -72,7 +71,6 @@ export default function Roles() {
                 url = URL + 'create';
                 method = 'POST';
             }
-
             sendRequest(method, parameters, url, setRoles, URL, operation, toast, 'Rol ');
             setRoleDialog(false);
             setRole(emptyRole);
@@ -88,7 +86,7 @@ export default function Roles() {
     };
 
     const deleteRole = () => {
-        deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Role');
+        deleteData(URL, role.idRole, setRoles, toast, setDeleteRoleDialog, setRole, emptyRole, 'Rol');
     };
 
     const onInputChange = (e, name) => {
@@ -102,9 +100,11 @@ export default function Roles() {
     const roleDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
+
     const confirmRoleDialogFooter = (
         confirmDialogFooter(hideConfirmRoleDialog, saveRole)
     );
+
     const deleteRoleDialogFooter = (
         deleteDialogFooter(hideDeleteRoleDialog, deleteRole)
     );
@@ -121,7 +121,7 @@ export default function Roles() {
 
     return (
         <div>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
@@ -129,20 +129,22 @@ export default function Roles() {
                     dt={dt}
                     data={roles}
                     dataKey="id"
-                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} roles"
+                    currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Roles"
                     globalFilter={globalFilter}
                     header={header('Roles', setGlobalFilter)}
                     columns={columns}
                 />
 
                 <Dialog visible={roleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={roleDialogFooter} onHide={hideDialog}>
-                    <div className="field">
-                        <label htmlFor="name" className="font-bold">
-                            Nombre
-                        </label>
-                        <InputText id="name" value={role.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !role.name })} maxLength={30} />
-                        {submitted && !role.name && <small className="p-error">Nombre del rol es requerido.</small>}
-                    </div>
+                    <FloatInputText
+                        className="field mt-4"
+                        value={role.name}
+                        onInputChange={onInputChange} field='name'
+                        maxLength={30} required autoFocus
+                        submitted={submitted}
+                        label='Nombre'
+                        errorMessage='Nombre del rol es requerido.'
+                    />
                 </Dialog>
 
                 {DialogDelete(deleteRoleDialog, 'Rol', deleteRoleDialogFooter, hideDeleteRoleDialog, role, role.name, 'el rol')}
@@ -150,5 +152,5 @@ export default function Roles() {
                 {confirmDialog(confirmDialogVisible, 'Rol', confirmRoleDialogFooter, hideConfirmRoleDialog, role, operation)}
             </div>
         </div>
-    )
-}
+    );
+};

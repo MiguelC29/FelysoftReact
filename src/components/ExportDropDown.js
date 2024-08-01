@@ -3,7 +3,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCsv, faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
-export default function ExportDropdown ({ exportCSV, exportExcel, exportPDF }) {
+export default function ExportDropdown({ exportCSV, exportExcel, exportPDF }) {
   const exportOptions = [
     { label: 'CSV', value: 'csv', icon: faFileCsv },
     { label: 'EXCEL', value: 'xls', icon: faFileExcel },
@@ -29,7 +29,7 @@ export default function ExportDropdown ({ exportCSV, exportExcel, exportPDF }) {
   const optionTemplate = (option) => {
     return (
       <div className="p-flex p-align-center">
-        <span><FontAwesomeIcon icon={option.icon} size="lg"/> {option.label}</span>
+        <span><FontAwesomeIcon icon={option.icon} size="lg" /> {option.label}</span>
       </div>
     );
   };
