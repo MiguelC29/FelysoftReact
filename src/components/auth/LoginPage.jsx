@@ -20,10 +20,11 @@ export const LoginPage = () => {
   const [errorVisible, setErrorVisible] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login, authError } = useAuth(); // Usar el contexto de autenticación
+  const { login, authError, setAuthError } = useAuth(); // Usar el contexto de autenticación
 
   const handleSubmit = async () => {
     setSubmitted(true);
+    setAuthError('');
     if (user.email && user.password) {
       try {
         const userData = await UserService.login(user.email, user.password);
