@@ -133,7 +133,7 @@ export default function Carrito() {
 
     const filteredProducts = products.filter(product =>
         // product.product.name.toLowerCase().includes(globalFilter.toLowerCase())
-        product.product.name.toLowerCase().includes(globalFilter.toLowerCase()) && product.state !== 'AGOTADO' // SI EL PRODUCTO ESTA AGOTADO NO APARECE
+        product.product.name.toLowerCase().includes(globalFilter.toLowerCase()) && (product.state !== 'AGOTADO' && product.stock !== 0) // SI EL PRODUCTO ESTA AGOTADO NO APARECE
     );
 
     const header = () => {
