@@ -5,12 +5,17 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function BookInventory() {
     const [booksInv, setBooksInv] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+
+    // ROLES
+    const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData('/inventory/inventoryBooks', setBooksInv);
@@ -53,7 +58,10 @@ export default function BookInventory() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                { 
+                    (isAdmin || isInventoryManager) && 
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                }
 
                 <CustomDataTable
                     dt={dt}

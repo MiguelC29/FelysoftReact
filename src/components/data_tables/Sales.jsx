@@ -9,6 +9,7 @@ import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Sales() {
     let emptySale = {
@@ -32,6 +33,9 @@ export default function Sales() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+    // Roles
+    const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setSales);
@@ -145,7 +149,7 @@ export default function Sales() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

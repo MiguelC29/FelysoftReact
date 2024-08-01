@@ -7,6 +7,7 @@ import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatInputNumberIcon, FloatInputTextIcon } from '../Inputs';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Providers() {
     let emptyProvider = {
@@ -40,6 +41,9 @@ export default function Providers() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+    // ROLES
+    const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setProviders);
@@ -241,7 +245,7 @@ export default function Providers() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoría', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoría', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
