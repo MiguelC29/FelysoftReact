@@ -10,6 +10,7 @@ import CustomDataTable from '../CustomDataTable';
 import { InputText } from 'primereact/inputtext';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Purchases() {
     let emptyPurchase = {
@@ -51,6 +52,10 @@ export default function Purchases() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+    const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
+    const isFinancialManager = UserService.isFinancialManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setPurchases);
@@ -196,7 +201,7 @@ export default function Purchases() {
         { field: 'date', header: 'Fecha', sortable: true, body: (rowData) => formatDate(rowData.date), style: { minWidth: '12rem' } },
         { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
-        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isInventoryManager) && { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
@@ -218,7 +223,7 @@ export default function Purchases() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew)} right={ (isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

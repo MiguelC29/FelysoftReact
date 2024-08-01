@@ -202,7 +202,7 @@ export default function MiniDrawer({ children }) {
             name: "Compras",
             icon: <Icon icon='local_shipping' />,
             items: [
-                { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER'] },
                 { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER','SALESPERSON'] },
             ],
