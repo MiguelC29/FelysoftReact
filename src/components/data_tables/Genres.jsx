@@ -9,6 +9,7 @@ import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Genres() {
     let emptyGenre = {
@@ -40,6 +41,10 @@ export default function Genres() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+      // ROLES
+        const isAdmin = UserService.isAdmin();
+        const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setGenres);
@@ -218,7 +223,7 @@ export default function Genres() {
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
-        { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isInventoryManager ) && { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -230,8 +235,9 @@ export default function Genres() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-
+                {(isAdmin || isInventoryManager) &&
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                }
                 <CustomDataTable
                     dt={dt}
                     data={genres}

@@ -11,6 +11,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -40,6 +41,10 @@ export default function Reserves() {
     const toast = useRef(null);
     const dt = useRef(null);
 
+      // ROLES
+        const isAdmin = UserService.isAdmin();
+        const isSalesPerson = UserService.isSalesPerson();
+
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setReserves);
         getBooks();
@@ -51,9 +56,12 @@ export default function Reserves() {
     }
 
     const getUsers = () => {
-        return Request_Service.getData('/user/all', setUsers);
+        return Request_Service.getData('/user/all', (data) => {
+            const customers = data.filter(user => user.role === 'CUSTOMER');
+            setUsers(customers);
+        });
     }
-
+   
     const openNew = () => {
         setReserve(emptyReserve);
         setTitle('Registrar Reserva');
@@ -216,7 +224,7 @@ export default function Reserves() {
         { field: 'time', header: 'Hora Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
-        { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isSalesPerson)&&{ body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -228,8 +236,9 @@ export default function Reserves() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-
+                {   (isAdmin || isSalesPerson) &&
+                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                }
                 <CustomDataTable
                     dt={dt}
                     data={reserves}
@@ -303,7 +312,7 @@ export default function Reserves() {
                                 <span class="material-symbols-outlined">person</span>
                             </span>
                             <FloatLabel>
-                                <Dropdown id="user" value={selectedUser} onChange={(e) => { setSelectedUser(e.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="title" placeholder="Seleccionar Usuario"
+                                <Dropdown id="user" value={selectedUser} onChange={(e) => { setSelectedUser(e.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="names" placeholder="Seleccionar Usuario"
                                     filter valueTemplate={selectedUserTemplate} itemTemplate={userOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.user && !selectedUser })}`} />
                                 <label htmlFor="user" className="font-bold">Usuario</label>
                             </FloatLabel>

@@ -10,6 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Books() {
     // TODO: A LOS LIBROS TAMBIEN TOCA AGREGARLE LO DE AGREGAR IMG
@@ -40,6 +41,10 @@ export default function Books() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+      // ROLES
+        const isAdmin = UserService.isAdmin();
+        const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setBooks);
@@ -245,7 +250,7 @@ export default function Books() {
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
         { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
-        { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isInventoryManager) && { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -257,8 +262,10 @@ export default function Books() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-
+                {
+                    (isAdmin || isInventoryManager) &&
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                }
                 <CustomDataTable
                     dt={dt}
                     data={books}

@@ -9,6 +9,7 @@ import CustomDataTable from '../CustomDataTable';
 import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
+import UserService from '../service/UserService';
 
 export default function Authors() {
     let emptyAuthor = {
@@ -42,6 +43,10 @@ export default function Authors() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+
+      // ROLES
+        const isAdmin = UserService.isAdmin();
+        const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setAuthors);
@@ -229,7 +234,7 @@ export default function Authors() {
         { field: 'nationality', header: 'Nacionalidad', sortable: true, style: { minWidth: '16rem' } },
         { field: 'dateBirth', header: 'Fecha de Nacimiento', sortable: true, style: { minWidth: '10rem' } },
         { field: 'biography', header: 'Biografía', sortable: true, style: { minWidth: '16rem' } },
-        { body: actionBodyTemplateA, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isInventoryManager) && { body: actionBodyTemplateA, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -241,8 +246,9 @@ export default function Authors() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Género', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
-
+                {  (isAdmin || isInventoryManager) &&
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Género', openAsociation)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                }
                 <CustomDataTable
                     dt={dt}
                     data={authors}
