@@ -6,16 +6,19 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
+import { Image } from 'primereact/image';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
+import { FileUpload } from 'primereact/fileupload';
 
 export default function Books() {
-    // TODO: A LOS LIBROS TAMBIEN TOCA AGREGARLE LO DE AGREGAR IMG
     let emptyBook = {
         idBook: null,
+        image: '',
+        typeImg: '',
         title: '',
         editorial: '',
         description: '',
@@ -26,10 +29,12 @@ export default function Books() {
     };
 
     const URL = '/book/';
+    const [file, setFile] = useState(null);
     const [book, setBook] = useState(emptyBook);
     const [books, setBooks] = useState([]);
     const [genres, setGenres] = useState([]);
     const [authors, setAuthors] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [bookDialog, setBookDialog] = useState(false);
@@ -42,9 +47,9 @@ export default function Books() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-      // ROLES
-        const isAdmin = UserService.isAdmin();
-        const isInventoryManager = UserService.isInventoryManager();
+    // ROLES
+    const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setBooks);
@@ -82,11 +87,27 @@ export default function Books() {
         }
     };
 
+    const handleFileUpload = (event) => {
+        const file = event.files[0];
+        setFile(file);
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setSelectedImage(reader.result);
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
     const openNew = () => {
         setBook(emptyBook);
         setTitle('Registrar Libro');
         setSelectedAuthor('');
         setSelectedGenre('');
+        setSelectedImage('')
+        setFile('');
         getGenres();
         getAuthors();
         setOperation(1);
@@ -98,6 +119,8 @@ export default function Books() {
         setBook({ ...book });
         setSelectedAuthor(book.author);
         setSelectedGenre(book.genre);
+        setSelectedImage('')
+        setFile('');
         getGenres();
         getAuthors();
         setTitle('Editar Libro');
@@ -128,37 +151,39 @@ export default function Books() {
             book.yearPublication &&
             book.priceTime &&
             book.genre &&
-            book.author
+            book.author &&
+            (operation === 1) ? file: book.image
         ) {
-            let url, method, parameters;
+            let url, method;
+            const formData = new FormData();
 
             if (book.idBook && operation === 2) {
-                parameters = {
-                    idBook: book.idBook,
-                    title: book.title.trim(),
-                    editorial: book.editorial.trim(),
-                    description: book.description.trim(),
-                    yearPublication: book.yearPublication,
-                    priceTime: book.priceTime,
-                    fkIdGenre: book.genre.idGenre,
-                    fkIdAuthor: book.author.idAuthor
-                };
+                formData.append('idBook',book.idBook);
+                formData.append('title',book.title.trim());
+                formData.append('editorial',book.editorial.trim());
+                formData.append('description',book.description.trim());
+                formData.append('yearPublication',book.yearPublication);
+                formData.append('priceTime',book.priceTime);
+                formData.append('genre',book.genre.idGenre);
+                formData.append('author',book.author.idAuthor);
+                formData.append('image',file);
+            
                 url = URL + 'update/' + book.idBook;
                 method = 'PUT';
             } else {
-                parameters = {
-                    title: book.title.trim(),
-                    editorial: book.editorial.trim(),
-                    description: book.description.trim(),
-                    yearPublication: book.yearPublication,
-                    priceTime: book.priceTime,
-                    fkIdGenre: book.genre.idGenre,
-                    fkIdAuthor: book.author.idAuthor
-                };
+                formData.append('title',book.title.trim());
+                formData.append('editorial',book.editorial.trim());
+                formData.append('description',book.description.trim());
+                formData.append('yearPublication',book.yearPublication);
+                formData.append('priceTime',book.priceTime);
+                formData.append('genre',book.genre.idGenre);
+                formData.append('author',book.author.idAuthor);
+                formData.append('image',file);
+                
                 url = URL + 'create';
                 method = 'POST';
             }
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Libro ', URL.concat('all'), setBooks);
+            await Request_Service.sendRequest(method, formData, url, operation, toast, 'Libro ', URL.concat('all'), setBooks);
             setBookDialog(false);
             setBook(emptyBook);
         }
@@ -182,6 +207,16 @@ export default function Books() {
 
     const onInputChange = (e, title) => {
         inputChange(e, title, book, setBook);
+    };
+
+    const imageBodyTemplate = (rowData) => {
+        const imageData = rowData.image;
+        const imageType = rowData.imageType;
+        if (imageData) {
+            return <Image src={`data:${imageType};base64,${imageData}`} alt={`Imagen del Libro ${rowData.name}`} className="shadow-2 border-round" width="80" height="80" preview />;
+        } else {
+            return <p>No hay imagen</p>;
+        }
     };
 
     const priceBodyTemplate = (rowData) => {
@@ -250,6 +285,7 @@ export default function Books() {
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
         { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'image', header:'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         (isAdmin || isInventoryManager) && { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
@@ -278,6 +314,7 @@ export default function Books() {
             </div>
 
             <Dialog visible={bookDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={bookDialogFooter} onHide={hideDialog}>
+                {operation === 2 && book.image && <img src={`data:${book.typeImg};base64,${book.image}`} alt={`Imagen Libro ${book.title}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
@@ -321,7 +358,7 @@ export default function Books() {
                                 <span class="material-symbols-outlined">today</span>
                             </span>
                             <FloatLabel>
-                                <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
+                                <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" minLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
                                 <label htmlFor="yearPublication" className="font-bold">Año de Publicación</label>
                             </FloatLabel>
                         </div>
@@ -366,6 +403,29 @@ export default function Books() {
                             </FloatLabel>
                         </div>
                         {submitted && !book.author && !selectedAuthor && <small className="p-error">Autor es requerido.</small>}
+                    </div>
+                </div>
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="image" className="font-bold">Imagen Libro</label>
+                        <FileUpload
+                            id='image'
+                            mode="basic"
+                            name="image"
+                            chooseLabel="Seleccionar Imagen"
+                            url="http://localhost:8086/api/book/create"
+                            accept="image/*"
+                            maxFileSize={2000000}
+                            onSelect={handleFileUpload}
+                            required
+                            className={`${classNames({ 'p-invalid': submitted && !book.image && !selectedImage })}`}
+                        />
+                        {submitted && !book.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
+                    </div>
+                    <div className="field col">
+                        {selectedImage && (
+                            <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
+                        )}
                     </div>
                 </div>
             </Dialog >

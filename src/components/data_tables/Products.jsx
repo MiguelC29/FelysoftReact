@@ -144,7 +144,7 @@ export default function Products() {
             product.salePrice &&
             product.category &&
             product.provider &&
-            file) {
+            (operation === 1) ? file: product.image) {
             let url, method;
             const formData = new FormData();
 
