@@ -20,6 +20,7 @@ import { Badge } from 'primereact/badge';
 import { useCart } from '../CartContext';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
+import CartModal from '../data_tables/CartModal';
 
 
 const drawerWidth = 240;
@@ -122,6 +123,8 @@ export default function MiniDrawer({ children }) {
     const [expandedItem, setExpandedItem] = React.useState('');
     const [dateTime, setDateTime] = useState(new Date());
     const { cartItems } = useCart();
+    const { getCartItemCount } = useCart();
+    const [cartVisible, setCartVisible] = React.useState(false);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -204,9 +207,9 @@ export default function MiniDrawer({ children }) {
             items: [
                 { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER'] },
                 { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
-                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER','SALESPERSON'] },
+                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER', 'SALESPERSON'] },
             ],
-            roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER','SALESPERSON']
+            roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER', 'SALESPERSON']
         },
         {
             name: "Reservas",
@@ -276,11 +279,11 @@ export default function MiniDrawer({ children }) {
     }
 
     const userRole = isAdmin ? 'ADMINISTRATOR'
-                 : isCustomer ? 'CUSTOMER'
-                 : isSalesPerson ? 'SALESPERSON'
-                 : isFinancialManager ? 'FINANCIAL_MANAGER'
-                 : isInventoryManager ? 'INVENTORY_MANAGER'
-                 : '';
+        : isCustomer ? 'CUSTOMER'
+            : isSalesPerson ? 'SALESPERSON'
+                : isFinancialManager ? 'FINANCIAL_MANAGER'
+                    : isInventoryManager ? 'INVENTORY_MANAGER'
+                        : '';
 
     // Filtrar elementos del menú según el rol
     const filteredMenuItems = menuItems.filter(item =>
@@ -317,14 +320,15 @@ export default function MiniDrawer({ children }) {
                         <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
                     </Typography>}
                     <div className='d-flex align-items-end ms-auto'>
-                        {(isAdmin || isSalesPerson) &&
-                            <span className="material-symbols-outlined mr-5 p-overlay-badge">
+                        {(isAdmin || isSalesPerson) && (
+                            <span className="material-symbols-outlined mr-5 p-overlay-badge" onClick={() => setCartVisible(true)}>
                                 shopping_cart
-                                <Badge value={cartItems} id='badge-shooping-car' severity="info"></Badge>
+                                <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info"></Badge>
                             </span>
-                        }
+                        )}
                         <div className="datetime text-white" id="datetime">{dateTime.toLocaleString()}</div>
                     </div>
+                    <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
