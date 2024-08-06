@@ -65,16 +65,28 @@ export const sendRequestAsc = (method, parameters, url, toast) => {
             }
         })
         .catch((error) => {
+            let associationType = error.response.data.associationType;
+            let entity1 = error.response.data.entity1;
+            let entity2 = error.response.data.entity2;
             if (error.response.data.data === 'Asociación existente') {
-                // Si el error es de asociación existente, mostramos el mensaje personalizado
-                toast.current.show({ severity: 'info', summary: 'Asociación Existente', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
+                toast.current.show({ 
+                    severity: 'info', 
+                    summary: 'Asociación Existente', 
+                    detail: `La asociación entre ${entity1} y ${entity2} ya existe.`, 
+                    life: 3000 
+                });
             } else {
-                // Para otros errores, mostramos un mensaje genérico de asociación fallida
-                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Asociación fallida', life: 3000 });
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Error en la solicitud', 
+                    detail: 'Asociación fallida', 
+                    life: 3000 
+                });
             }
             console.log(error);
         });
 }
+
 
 export const deleteData = (url, id, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable) => {
     const durl = url + 'delete/' + id;

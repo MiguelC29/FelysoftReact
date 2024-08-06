@@ -29,29 +29,42 @@ class Request_Service {
 
     static async sendRequestAsociation(parameters, url, toast) {
         const token = localStorage.getItem('token');
-        await axios.post(this.BASE_URL + url, parameters, 
-            {
+        try {
+            const response = await axios.post(this.BASE_URL + url, parameters, {
                 headers: { Authorization: `Bearer ${token}` }
-            })
-            .then((response) => {
-                let type = response.data['status'];
-                let msg = response.data['data'];
-                if (type === 'success') {
-                    toast.current.show({ severity: 'success', summary: 'Exitoso', detail: msg, life: 3000 });
-                }
-                return response.data;
-            })
-            .catch((error) => {
-                if (error.response.data.data === 'Asociación existente') {
-                    // Si el error es de asociación existente, mostramos el mensaje personalizado
-                    toast.current.show({ severity: 'info', summary: 'Asociación Existente', detail: 'La asociación entre la categoría y el proveedor ya existe.', life: 3000 });
-                } else {
-                    // Para otros errores, mostramos un mensaje genérico de asociación fallida
-                    toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Asociación fallida', life: 3000 });
-                }
-                console.log(error);
             });
+    
+            let type = response.data['status'];
+            let msg = response.data['data'];
+            if (type === 'success') {
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: msg, life: 3000 });
+            }
+            return response.data;
+    
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.data === 'Asociación existente') {
+                let entity1 = error.response.data.entity1;
+                let entity2 = error.response.data.entity2;
+                // Si el error es de asociación existente, mostramos el mensaje personalizado
+                toast.current.show({ 
+                    severity: 'info', 
+                    summary: 'Asociación Existente', 
+                    detail: `La asociación entre ${entity1} y ${entity2} ya existe.`, 
+                    life: 3000 
+                });
+            } else {
+                // Para otros errores, mostramos un mensaje genérico de asociación fallida
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Error en la solicitud', 
+                    detail: 'Asociación fallida', 
+                    life: 3000 
+                });
+            }
+            console.log(error);
+        }
     }
+    
 
     static async getData(url, setData) {
         try {
