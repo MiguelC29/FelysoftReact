@@ -112,26 +112,48 @@ export default function Purchases() {
     const savePurchase = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        console.log(purchase);
-        if (purchase.total &&
+
+        // Verificar si los campos requeridos están presentes y válidos
+        const isValid = purchase.total &&
             purchase.provider &&
-            purchase.description &&
+            purchase.description.trim() &&
             purchase.methodPayment &&
-            purchase.state) {
-            let url, method, parameters;
-            if (purchase.idPurchase && operation === 2) {
-                parameters = {
-                    idPurchase: purchase.idPurchase, total: purchase.total, description: purchase.description.trim(), methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
-                };
-                url = URL + 'update/' + purchase.idPurchase;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    total: purchase.total, description: purchase.description.trim(), methodPayment: purchase.methodPayment, state: purchase.state, fkIdProvider: purchase.provider.idProvider
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+            purchase.state;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (purchase.idPurchase && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idPurchase: purchase.idPurchase,
+                total: purchase.total,
+                description: purchase.description.trim(),
+                methodPayment: purchase.methodPayment,
+                state: purchase.state,
+                fkIdProvider: purchase.provider.idProvider
+            };
+            url = URL + 'update/' + purchase.idPurchase;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                total: purchase.total,
+                description: purchase.description.trim(),
+                methodPayment: purchase.methodPayment,
+                state: purchase.state,
+                fkIdProvider: purchase.provider.idProvider
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Compra ', URL.concat('all'), setPurchases);
             setPurchaseDialog(false);
             setPurchase(emptyPurchase);
@@ -223,7 +245,7 @@ export default function Purchases() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew)} right={ (isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew)} right={(isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

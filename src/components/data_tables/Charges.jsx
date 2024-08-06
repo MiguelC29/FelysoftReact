@@ -64,24 +64,38 @@ export default function Charges() {
   const saveCharge = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
-    if (charge.charge && charge.description) {
-      let url, method, parameters;
-      if (charge.idCharge && operation === 2) {
-        parameters = {
-          idCharge: charge.idCharge,
-          charge: charge.charge,
-          description: charge.description,
-        };
-        url = URL + 'update/' + charge.idCharge;
-        method = 'PUT';
-      } else {
-        parameters = {
-          charge: charge.charge,
-          description: charge.description,
-        };
-        url = URL + 'create';
-        method = 'POST';
-      }
+
+    // Verificar si todos los campos requeridos están presentes
+    const isValid = charge.charge && charge.description;
+
+    // Mostrar mensaje de error si algún campo requerido falta
+    if (!isValid) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+      return;
+    }
+
+    let url, method, parameters;
+
+    if (charge.idCharge && operation === 2) {
+      // Asegurarse de que los campos no estén vacíos al editar
+      parameters = {
+        idCharge: charge.idCharge,
+        charge: charge.charge,
+        description: charge.description
+      };
+      url = URL + 'update/' + charge.idCharge;
+      method = 'PUT';
+    } else {
+      // Verificar que los campos requeridos están presentes al crear
+      parameters = {
+        charge: charge.charge,
+        description: charge.description
+      };
+      url = URL + 'create';
+      method = 'POST';
+    }
+
+    if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Cargo ', URL.concat('all'), setCharges);
       setChargeDialog(false);
       setCharge(emptyCharge);

@@ -44,9 +44,9 @@ export default function Authors() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-      // ROLES
-        const isAdmin = UserService.isAdmin();
-        const isInventoryManager = UserService.isInventoryManager();
+    // ROLES
+    const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setAuthors);
@@ -98,36 +98,43 @@ export default function Authors() {
     const saveAuthor = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            author.name.trim() &&
-            author.nationality.trim() &&
-            author.dateBirth &&
-            author.biography.trim()) {
-            let url, method, parameters;
 
-            if (author.idAuthor && operation === 2) {
-                parameters = {
-                    idAuthor: author.idAuthor,
-                    name: author.name.trim(),
-                    nationality: author.nationality.trim(),
-                    dateBirth: author.dateBirth,
-                    biography: author.biography.trim()
-                };
-                url = URL + 'update/' + author.idAuthor;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    idAuthor: author.idAuthor,
-                    name: author.name.trim(),
-                    nationality: author.nationality.trim(),
-                    dateBirth: author.dateBirth,
-                    biography: author.biography.trim()
-                };
-                url = URL + 'create';
-                method = 'POST';
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = author.name.trim() && author.nationality.trim() && author.dateBirth && author.biography.trim();
 
-            }
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Autor ', URL.concat('all'), setAuthors)
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (author.idAuthor && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idAuthor: author.idAuthor,
+                name: author.name.trim(),
+                nationality: author.nationality.trim(),
+                dateBirth: author.dateBirth,
+                biography: author.biography.trim()
+            };
+            url = URL + 'update/' + author.idAuthor;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                name: author.name.trim(),
+                nationality: author.nationality.trim(),
+                dateBirth: author.dateBirth,
+                biography: author.biography.trim()
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Autor ', URL.concat('all'), setAuthors);
             setAuthorDialog(false);
             setAuthor(emptyAuthor);
         }
@@ -246,7 +253,7 @@ export default function Authors() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                {  (isAdmin || isInventoryManager) &&
+                {(isAdmin || isInventoryManager) &&
                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Género', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable

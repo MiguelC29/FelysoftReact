@@ -90,21 +90,40 @@ export default function Payments() {
     const savePayment = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (payment.methodPayment && payment.state && payment.total) {
-            let url, method, parameters;
-            if (payment.idPayment && operation === 2) {
-                parameters = {
-                    idPayment: payment.idPayment, methodPayment: payment.methodPayment, state: payment.state, total: payment.total
-                };
-                url = URL + 'update/' + payment.idPayment;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    methodPayment: payment.methodPayment, state: payment.state, total: payment.total
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+
+        // Verificar si los campos requeridos están presentes y válidos
+        const isValid = payment.methodPayment && payment.state && payment.total;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (payment.idPayment && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idPayment: payment.idPayment,
+                methodPayment: payment.methodPayment,
+                state: payment.state,
+                total: payment.total
+            };
+            url = URL + 'update/' + payment.idPayment;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                methodPayment: payment.methodPayment,
+                state: payment.state,
+                total: payment.total
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Pago ', URL.concat('all'), setPayments);
             setPaymentDialog(false);
             setPayment(emptyPayment);

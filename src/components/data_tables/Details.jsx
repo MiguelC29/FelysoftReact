@@ -83,21 +83,44 @@ export default function Details() {
     const saveDetail = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (detail.quantity && detail.unitPrice && detail.book && detail.product && detail.service) {
-            let url, method, parameters;
-            if (detail.idDetail && operation === 2) {
-                parameters = {
-                    idDetail: detail.idDetail, quantity: detail.quantity, unitPrice: detail.unitPrice, fkIdBook: detail.book.idBook, fkIdProduct: detail.product.idProduct, fkIdService: detail.service.idService
-                };
-                url = URL + 'update/' + detail.idDetail;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    quantity: detail.quantity, unitPrice: detail.unitPrice, fkIdBook: detail.book.idBook, fkIdProduct: detail.product.idProduct, fkIdService: detail.service.idService
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = detail.quantity && detail.unitPrice && detail.book && detail.product && detail.service;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (detail.idDetail && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idDetail: detail.idDetail,
+                quantity: detail.quantity,
+                unitPrice: detail.unitPrice,
+                fkIdBook: detail.book.idBook,
+                fkIdProduct: detail.product.idProduct,
+                fkIdService: detail.service.idService
+            };
+            url = URL + 'update/' + detail.idDetail;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                quantity: detail.quantity,
+                unitPrice: detail.unitPrice,
+                fkIdBook: detail.book.idBook,
+                fkIdProduct: detail.product.idProduct,
+                fkIdService: detail.service.idService
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Detalle ', URL.concat('all'), setDetails);
             setDetailDialog(false);
             setDetail(emptyDetail);

@@ -144,45 +144,56 @@ export default function Books() {
     const saveBook = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            book.title.trim() &&
+
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = book.title.trim() &&
             book.editorial.trim() &&
             book.description.trim() &&
             book.yearPublication &&
             book.priceTime &&
             book.genre &&
             book.author &&
-            (operation === 1) ? file: book.image
-        ) {
-            let url, method;
-            const formData = new FormData();
+            ((operation === 1) ? file : book.image);
 
-            if (book.idBook && operation === 2) {
-                formData.append('idBook',book.idBook);
-                formData.append('title',book.title.trim());
-                formData.append('editorial',book.editorial.trim());
-                formData.append('description',book.description.trim());
-                formData.append('yearPublication',book.yearPublication);
-                formData.append('priceTime',book.priceTime);
-                formData.append('genre',book.genre.idGenre);
-                formData.append('author',book.author.idAuthor);
-                formData.append('image',file);
-            
-                url = URL + 'update/' + book.idBook;
-                method = 'PUT';
-            } else {
-                formData.append('title',book.title.trim());
-                formData.append('editorial',book.editorial.trim());
-                formData.append('description',book.description.trim());
-                formData.append('yearPublication',book.yearPublication);
-                formData.append('priceTime',book.priceTime);
-                formData.append('genre',book.genre.idGenre);
-                formData.append('author',book.author.idAuthor);
-                formData.append('image',file);
-                
-                url = URL + 'create';
-                method = 'POST';
-            }
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method;
+        const formData = new FormData();
+
+        if (book.idBook && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            formData.append('idBook', book.idBook);
+            formData.append('title', book.title.trim());
+            formData.append('editorial', book.editorial.trim());
+            formData.append('description', book.description.trim());
+            formData.append('yearPublication', book.yearPublication);
+            formData.append('priceTime', book.priceTime);
+            formData.append('genre', book.genre.idGenre);
+            formData.append('author', book.author.idAuthor);
+            formData.append('image', file);
+
+            url = URL + 'update/' + book.idBook;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            formData.append('title', book.title.trim());
+            formData.append('editorial', book.editorial.trim());
+            formData.append('description', book.description.trim());
+            formData.append('yearPublication', book.yearPublication);
+            formData.append('priceTime', book.priceTime);
+            formData.append('genre', book.genre.idGenre);
+            formData.append('author', book.author.idAuthor);
+            formData.append('image', file);
+
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Libro ', URL.concat('all'), setBooks);
             setBookDialog(false);
             setBook(emptyBook);
@@ -285,7 +296,7 @@ export default function Books() {
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
         { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'image', header:'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
+        { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         (isAdmin || isInventoryManager) && { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 

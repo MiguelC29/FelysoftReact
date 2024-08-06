@@ -88,22 +88,45 @@ export default function Expenses() {
     const saveExpense = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (expense.type && expense.total && expense.description.trim() &&
-            expense.purchase && expense.payment) {
-            let url, method, parameters;
-            if (expense.idExpense && operation === 2) {
-                parameters = {
-                    idExpense: expense.idExpense, type: expense.type, total: expense.total, description: expense.description.trim(), fkIdPurchase: expense.purchase.idPurchase, fkIdPayment: expense.payment.idPayment
-                };
-                url = URL + 'update/' + expense.idExpense;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    type: expense.type, total: expense.total, description: expense.description.trim(), fkIdPurchase: expense.purchase.idPurchase, fkIdPayment: expense.payment.idPayment
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+
+        // Verificar si todos los campos requeridos están presentes y válidos
+        const isValid = expense.type && expense.total && expense.description.trim() &&
+            expense.purchase && expense.payment;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (expense.idExpense && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idExpense: expense.idExpense,
+                type: expense.type,
+                total: expense.total,
+                description: expense.description.trim(),
+                fkIdPurchase: expense.purchase.idPurchase,
+                fkIdPayment: expense.payment.idPayment
+            };
+            url = URL + 'update/' + expense.idExpense;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                type: expense.type,
+                total: expense.total,
+                description: expense.description.trim(),
+                fkIdPurchase: expense.purchase.idPurchase,
+                fkIdPayment: expense.payment.idPayment
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Gasto ', URL.concat('all'), setExpenses);
             setExpenseDialog(false);
             setExpense(emptyExpense);

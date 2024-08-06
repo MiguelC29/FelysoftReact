@@ -38,7 +38,7 @@ export default function Categories() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    
+
     // ROLES
     const isAdmin = UserService.isAdmin();
 
@@ -107,18 +107,37 @@ export default function Categories() {
     const saveCategory = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (category.name.trim()) {
-            let url, method, parameters;
-            if (category.idCategory && operation === 2) {
-                parameters = { idCategory: category.idCategory, name: category.name.trim() }
-                url = URL + 'update/' + category.idCategory;
-                method = 'PUT';
-            } else {
-                parameters = { name: category.name.trim() }
-                url = URL + 'create';
-                method = 'POST';
-            }
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Categoría ', URL.concat('all'), setCategories)
+
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = category.name.trim();
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (category.idCategory && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idCategory: category.idCategory,
+                name: category.name.trim()
+            };
+            url = URL + 'update/' + category.idCategory;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                name: category.name.trim()
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Categoría ', URL.concat('all'), setCategories);
             setCategoryDialog(false);
             setCategory(emptyCategory);
         }

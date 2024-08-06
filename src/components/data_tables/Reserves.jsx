@@ -41,9 +41,9 @@ export default function Reserves() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-      // ROLES
-        const isAdmin = UserService.isAdmin();
-        const isSalesPerson = UserService.isSalesPerson();
+    // ROLES
+    const isAdmin = UserService.isAdmin();
+    const isSalesPerson = UserService.isSalesPerson();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setReserves);
@@ -61,7 +61,7 @@ export default function Reserves() {
             setUsers(customers);
         });
     }
-   
+
     const openNew = () => {
         setReserve(emptyReserve);
         setTitle('Registrar Reserva');
@@ -100,39 +100,51 @@ export default function Reserves() {
     const saveReserve = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            reserve.dateReserve &&
+
+        // Verificar si los campos requeridos están presentes y válidos
+        const isValid = reserve.dateReserve &&
             reserve.description.trim() &&
             reserve.deposit &&
             reserve.time &&
             reserve.book &&
-            reserve.user
-        ) {
-            let url, method, parameters;
-            if (reserve.idReserve && operation === 2) {
-                parameters = {
-                    idReserve: reserve.idReserve,
-                    dateReserve: reserve.dateReserve,
-                    description: reserve.description.trim(),
-                    deposit: reserve.deposit,
-                    time: reserve.time,
-                    fkIdBook: reserve.book.idBook,
-                    fkIdUser: reserve.user.idUser
-                };
-                url = URL + 'update/' + reserve.idReserve;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    dateReserve: reserve.dateReserve,
-                    description: reserve.description.trim(),
-                    deposit: reserve.deposit,
-                    time: reserve.time,
-                    fkIdBook: reserve.book.idBook,
-                    fkIdUser: reserve.user.idUser
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+            reserve.user;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (reserve.idReserve && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idReserve: reserve.idReserve,
+                dateReserve: reserve.dateReserve,
+                description: reserve.description.trim(),
+                deposit: reserve.deposit,
+                time: reserve.time,
+                fkIdBook: reserve.book.idBook,
+                fkIdUser: reserve.user.idUser
+            };
+            url = URL + 'update/' + reserve.idReserve;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                dateReserve: reserve.dateReserve,
+                description: reserve.description.trim(),
+                deposit: reserve.deposit,
+                time: reserve.time,
+                fkIdBook: reserve.book.idBook,
+                fkIdUser: reserve.user.idUser
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Reserva ', URL.concat('all'), setReserves);
             setReserveDialog(false);
             setReserve(emptyReserve);
@@ -224,7 +236,7 @@ export default function Reserves() {
         { field: 'time', header: 'Hora Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
-        (isAdmin || isSalesPerson)&&{ body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isSalesPerson) && { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -236,8 +248,8 @@ export default function Reserves() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                {   (isAdmin || isSalesPerson) &&
-                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                {(isAdmin || isSalesPerson) &&
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
@@ -265,8 +277,8 @@ export default function Reserves() {
                             <InputMask id="time" value={reserve.time} mask="99:99:99" onChange={(e) => onInputChange(e, 'time')} required className={classNames({ 'p-invalid': submitted && !reserve.time })} />
                             <label htmlFor="time" className="font-bold">Hora Reserva</label>
                         </FloatLabel>
-                        {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
                     </div>
+                    {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
@@ -277,8 +289,8 @@ export default function Reserves() {
                             <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
-                        {submitted && !reserve.description && <small className="p-error">Descripción es requerida.</small>}
                     </div>
+                    {submitted && !reserve.description && <small className="p-error">Descripción es requerida.</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
@@ -289,8 +301,8 @@ export default function Reserves() {
                             <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
                             <label htmlFor="deposit" className="font-bold">Depósito</label>
                         </FloatLabel>
-                        {submitted && !reserve.deposit && <small className="p-error">Depósito es requerido.</small>}
                     </div>
+                    {submitted && !reserve.deposit && <small className="p-error">Depósito es requerido.</small>}
                 </div>
                 <div className="formgrid grid mt-5">
                     <div className="field col">

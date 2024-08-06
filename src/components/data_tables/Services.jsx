@@ -92,29 +92,41 @@ export default function Services() {
     setSubmitted(true);
     setConfirmDialogVisible(false);
 
-    // if (service.typeService && service.priceAdditional && service.state && service.total) {
-    if (service.typeService && service.state && service.total) {
-      let url, method, parameters;
-      if (service.idService && operation === 2) {
-        parameters = {
-          idService: service.idService,
-          state: service.state,
-          priceAdditional: service.priceAdditional,
-          total: service.total,
-          fkIdTypeService: service.typeService.idTypeService,
-        };
-        url = URL + 'update/' + service.idService;
-        method = 'PUT';
-      } else {
-        parameters = {
-          state: service.state,
-          priceAdditional: service.priceAdditional,
-          total: service.total,
-          fkIdTypeService: service.typeService.idTypeService,
-        };
-        url = URL + 'create';
-        method = 'POST';
-      }
+    // Verificar si los campos requeridos están presentes y válidos
+    const isValid = service.typeService && service.state && service.total;
+
+    // Mostrar mensaje de error si algún campo requerido falta
+    if (!isValid) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+      return;
+    }
+
+    let url, method, parameters;
+
+    if (service.idService && operation === 2) {
+      // Asegurarse de que los campos no estén vacíos al editar
+      parameters = {
+        idService: service.idService,
+        state: service.state,
+        priceAdditional: service.priceAdditional,
+        total: service.total,
+        fkIdTypeService: service.typeService.idTypeService,
+      };
+      url = URL + 'update/' + service.idService;
+      method = 'PUT';
+    } else {
+      // Verificar que los campos requeridos están presentes al crear
+      parameters = {
+        state: service.state,
+        priceAdditional: service.priceAdditional,
+        total: service.total,
+        fkIdTypeService: service.typeService.idTypeService,
+      };
+      url = URL + 'create';
+      method = 'POST';
+    }
+
+    if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Servicio ', URL.concat('all'), setServices);
       setServiceDialog(false);
       setService(emptyService);
@@ -297,11 +309,11 @@ export default function Services() {
               <span class="material-symbols-outlined">monetization_on</span>
             </span>
             <FloatLabel>
-              <InputText id="total" value={service.total} readOnly />
+              <InputText id="total" value={service.total} readOnly className={`w-full md:w-16rm ${classNames({ 'p-invalid': submitted && !service.total })}`} />
               <label htmlFor="total" className="font-bold">Total</label>
             </FloatLabel>
           </div>
-          {submitted && !service.typeService && !selectedTypeservice && <small className="p-error">Total es requerido.</small>}
+          {submitted && !service.total && <small className="p-error">Total es requerido.</small>}
         </div>
       </Dialog>
 

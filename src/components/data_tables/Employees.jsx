@@ -73,28 +73,42 @@ export default function Employees() {
     const saveEmployee = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (employee.salary && employee.specialty.trim() && employee.dateBirth && employee.user) {
-            let url, method, parameters;
-            if (employee.idEmployee && operation === 2) {
-                parameters = {
-                    idEmployee: employee.idEmployee,
-                    salary: employee.salary,
-                    specialty: employee.specialty.trim(),
-                    dateBirth: employee.dateBirth,
-                    fkIdUser: employee.user.idUser
-                };
-                url = URL + 'update/' + employee.idEmployee;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    salary: employee.salary,
-                    specialty: employee.specialty.trim(),
-                    dateBirth: employee.dateBirth,
-                    fkIdUser: employee.user.idUser
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
+
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = employee.salary && employee.specialty.trim() && employee.dateBirth && employee.user;
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (employee.idEmployee && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idEmployee: employee.idEmployee,
+                salary: employee.salary,
+                specialty: employee.specialty.trim(),
+                dateBirth: employee.dateBirth,
+                fkIdUser: employee.user.idUser
+            };
+            url = URL + 'update/' + employee.idEmployee;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                salary: employee.salary,
+                specialty: employee.specialty.trim(),
+                dateBirth: employee.dateBirth,
+                fkIdUser: employee.user.idUser
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Empleado ', URL.concat('all'), setEmployees);
             setEmployeeDialog(false);
             setEmployee(emptyEmployee);
