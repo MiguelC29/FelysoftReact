@@ -19,8 +19,13 @@ class Request_Service {
                     return response.data;
                 })
                 .catch((error) => {
-                    toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
-                    console.log(error);
+                    if(error.response.data.data === 'Datos Desahibilitados'){
+                        toast.current.show({ severity: 'error', summary: 'Datos Desahibilitados', detail: error.response.data.detail , life: 3000 });
+                    }
+                    else{
+                        toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO ' + (op === 1 ? 'Creado' : 'Actualizado'), life: 3000 });
+                    }
+                   console.log(error);
                 });
         } catch (err) {
             throw err;
