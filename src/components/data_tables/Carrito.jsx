@@ -11,7 +11,7 @@ import Request_Service from '../service/Request_Service';
 export default function Carrito() {
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
-    const { updateCartItems } = useCart();
+    const { addToCart } = useCart();
     const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
@@ -49,13 +49,14 @@ export default function Carrito() {
         return formatCurrency(rowData).replace(/(\.00|,00)$/, '');
     };
 
-    const addToCart = () => {
-        // Lógica para agregar productos al carrito
-        // Aquí deberías implementar la lógica para agregar un producto al carrito
-        // Por ejemplo, puedes tener un estado para mantener el número de productos en el carrito
-        // y luego llamar a la función updateCartItems con el nuevo valor
-        updateCartItems(prevCount => prevCount + 1); // Ejemplo: aumentar en 1 el número de productos en el carrito
-    };
+    const handleAddToCart = (product) => {
+        const item = {
+            id: product.id,
+            product: product.product,
+            quantity: 1
+        };
+        addToCart(item);
+    };   
 
     const listItem = (product, index) => {
         return (
@@ -82,7 +83,7 @@ export default function Carrito() {
                         </div>
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} onClick={addToCart} />
+                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} onClick={() => handleAddToCart(product)} />
                             {/* <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} /> */}
                         </div>
                     </div>
@@ -111,7 +112,7 @@ export default function Carrito() {
                     </div>
                     <div className="flex align-items-center justify-content-between">
                         <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                        <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} />
+                        <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={() => handleAddToCart(product)} />
                     </div>
                 </div>
             </div>

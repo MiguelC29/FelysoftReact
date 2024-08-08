@@ -137,48 +137,61 @@ export default function Products() {
     const saveProduct = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            product.name.trim() &&
-            product.brand.trim() &&
-            product.expiryDate &&
-            product.salePrice &&
-            product.category &&
-            product.provider &&
-            (operation === 1) ? file: product.image) {
-            let url, method;
-            const formData = new FormData();
-
-            if (product.idProduct && operation === 2) {
-                formData.append('idProduct', product.idProduct);
+    
+        // Verificar si todos los campos requeridos están presentes
+        const isValid = product.name.trim() && 
+                        product.brand.trim() &&
+                        product.expiryDate &&
+                        product.salePrice &&
+                        product.category &&
+                        product.provider &&
+                        (operation === 1 ? file : true);
+    
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+    
+        let url, method;
+        const formData = new FormData();
+    
+        if (product.idProduct && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            formData.append('idProduct', product.idProduct);
+            formData.append('name', product.name.trim());
+            formData.append('brand', product.brand.trim());
+            formData.append('expiryDate', product.expiryDate);
+            formData.append('salePrice', product.salePrice);
+            formData.append('category', product.category.idCategory);
+            formData.append('provider', product.provider.idProvider);
+            if (file) {
+                formData.append('image', file);
+            }
+            url = URL + 'update/' + product.idProduct;
+            method = 'PUT';
+        } else {
+            // Verificar que el stock inicial está presente solo al crear
+            if (operation === 1 && product.stock) {
                 formData.append('name', product.name.trim());
                 formData.append('brand', product.brand.trim());
                 formData.append('expiryDate', product.expiryDate);
                 formData.append('salePrice', product.salePrice);
                 formData.append('category', product.category.idCategory);
                 formData.append('provider', product.provider.idProvider);
+                formData.append('stockInicial', product.stock);
                 formData.append('image', file);
-                url = URL + 'update/' + product.idProduct;
-                method = 'PUT';
-            } else {
-                if (operation === 1 && product.stock) {
-                    // FALTA VER QUE AL ENVIAR LA SOLICITUD PONE ERROR EN LOS CAMPOS DEL FORM, SOLO QUE SE VE POR MILESIMAS DE SEG
-                    formData.append('name', product.name.trim());
-                    formData.append('brand', product.brand.trim());
-                    formData.append('expiryDate', product.expiryDate);
-                    formData.append('salePrice', product.salePrice);
-                    formData.append('category', product.category.idCategory);
-                    formData.append('provider', product.provider.idProvider);
-                    formData.append('stockInicial', product.stock);
-                    formData.append('image', file);
-                    url = URL + 'create';
-                    method = 'POST';
-                }
+                url = URL + 'create';
+                method = 'POST';
             }
+        }
+    
+        if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Producto ', URL.concat('all'), setProducts);
             setProductDialog(false);
             setProduct(emptyProduct);
         }
-    };
+    };    
 
     const confirmSave = () => {
         setConfirmDialogVisible(true);

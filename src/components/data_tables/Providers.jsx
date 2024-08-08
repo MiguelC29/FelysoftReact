@@ -95,33 +95,46 @@ export default function Providers() {
     const saveProvider = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            provider.nit.trim() &&
+
+        // Verificar si los campos requeridos están presentes y válidos
+        const isValid = provider.nit.trim() &&
             provider.name.trim() &&
             provider.phoneNumber &&
-            provider.email.trim()) {
-            let url, method, parameters;
-            if (provider.idProvider && operation === 2) {
-                parameters = {
-                    idProvider: provider.idProvider,
-                    nit: provider.nit.trim(),
-                    name: provider.name.trim(),
-                    phoneNumber: provider.phoneNumber,
-                    email: provider.email.trim()
-                }
-                url = URL + 'update/' + provider.idProvider;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    nit: provider.nit.trim(),
-                    name: provider.name.trim(),
-                    phoneNumber: provider.phoneNumber,
-                    email: provider.email.trim()
-                }
-                url = URL + 'create';
-                method = 'POST';
-            }
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Proveedor ', URL.concat('all'), setProviders)
+            provider.email.trim();
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (provider.idProvider && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idProvider: provider.idProvider,
+                nit: provider.nit.trim(),
+                name: provider.name.trim(),
+                phoneNumber: provider.phoneNumber,
+                email: provider.email.trim()
+            };
+            url = URL + 'update/' + provider.idProvider;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                nit: provider.nit.trim(),
+                name: provider.name.trim(),
+                phoneNumber: provider.phoneNumber,
+                email: provider.email.trim()
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Proveedor ', URL.concat('all'), setProviders);
             setProviderDialog(false);
             setProvider(emptyProvider);
         }

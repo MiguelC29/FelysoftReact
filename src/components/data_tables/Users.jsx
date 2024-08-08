@@ -134,7 +134,9 @@ export default function Users() {
   const saveUser = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
-    if (
+
+    // Verificar si los campos requeridos están presentes y válidos
+    const isValid =
       user.numIdentification &&
       user.typeDoc &&
       user.names.trim() &&
@@ -145,48 +147,57 @@ export default function Users() {
       user.gender &&
       user.user_name.trim() &&
       user.role &&
-      (operation === 2 || (operation === 1 && user.password.trim())) // Asegurarse de que la contraseña no esta vacia cuando se registra un nuevo usuario
-    ) {
-      let url, method;
-      const formData = new FormData();
-      if (user.idUser && operation === 2) {
-        formData.append('idUser', user.idUser);
-        formData.append('numIdentification', user.numIdentification);
-        formData.append('typeDoc', user.typeDoc);
-        formData.append('names', user.names.trim());
-        formData.append('lastNames', user.lastNames.trim());
-        formData.append('address', user.address.trim());
-        formData.append('phoneNumber', user.phoneNumber);
-        formData.append('email', user.email.trim());
-        formData.append('gender', user.gender);
-        formData.append('username', user.user_name.trim());
-        if (user.password) {  // Only append password if it's not empty
-          formData.append('password', user.password.trim());
-        }
-        formData.append('role', user.role);
-        formData.append('image', file);
-        url = URL + 'update/' + user.idUser;
-        method = 'PUT';
-      } else {
-        formData.append('numIdentification', user.numIdentification);
-        formData.append('typeDoc', user.typeDoc);
-        formData.append('names', user.names.trim());
-        formData.append('lastNames', user.lastNames.trim());
-        formData.append('address', user.address.trim());
-        formData.append('phoneNumber', user.phoneNumber);
-        formData.append('email', user.email.trim());
-        formData.append('gender', user.gender);
-        formData.append('username', user.user_name.trim());
+      (operation === 2 || (operation === 1 && user.password.trim())); // Asegurarse de que la contraseña no esté vacía al registrar un nuevo usuario
+
+    // Mostrar mensaje de error si algún campo requerido falta
+    if (!isValid) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+      return;
+    }
+
+    let url, method;
+    const formData = new FormData();
+
+    if (user.idUser && operation === 2) {
+      // Asegurarse de que los campos no estén vacíos al editar
+      formData.append('idUser', user.idUser);
+      formData.append('numIdentification', user.numIdentification);
+      formData.append('typeDoc', user.typeDoc);
+      formData.append('names', user.names.trim());
+      formData.append('lastNames', user.lastNames.trim());
+      formData.append('address', user.address.trim());
+      formData.append('phoneNumber', user.phoneNumber);
+      formData.append('email', user.email.trim());
+      formData.append('gender', user.gender);
+      formData.append('username', user.user_name.trim());
+      if (user.password.trim()) {  // Solo añadir la contraseña si no está vacía
         formData.append('password', user.password.trim());
-        formData.append('role', user.role);
-        formData.append('image', file);
-        url = URL + 'create';
-        method = 'POST';
       }
-      await Request_Service.sendRequest(method, formData, url, operation, toast, 'Usuario ', URL.concat('all'), setUsers);
-      setUserDialog(false);
-      setUser(emptyUser);
-    };
+      formData.append('role', user.role);
+      formData.append('image', file);
+      url = URL + 'update/' + user.idUser;
+      method = 'PUT';
+    } else {
+      // Verificar que los campos requeridos están presentes al crear
+      formData.append('numIdentification', user.numIdentification);
+      formData.append('typeDoc', user.typeDoc);
+      formData.append('names', user.names.trim());
+      formData.append('lastNames', user.lastNames.trim());
+      formData.append('address', user.address.trim());
+      formData.append('phoneNumber', user.phoneNumber);
+      formData.append('email', user.email.trim());
+      formData.append('gender', user.gender);
+      formData.append('username', user.user_name.trim());
+      formData.append('password', user.password.trim()); // Asegurarse de que la contraseña no esté vacía al crear un nuevo usuario
+      formData.append('role', user.role);
+      formData.append('image', file);
+      url = URL + 'create';
+      method = 'POST';
+    }
+
+    await Request_Service.sendRequest(method, formData, url, operation, toast, 'Usuario ', URL.concat('all'), setUsers);
+    setUserDialog(false);
+    setUser(emptyUser);
   };
 
   const confirmSave = () => {

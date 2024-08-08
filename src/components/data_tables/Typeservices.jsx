@@ -66,27 +66,40 @@ export default function TypeServices() {
   const saveTypeService = async () => {
     setSubmitted(true);
     setConfirmDialogVisible(false);
-    if (typeService.name && typeService.description && typeService.price) {
-      let url, method, parameters;
 
-      if (typeService.idTypeService && operation === 2) {
-        parameters = {
-          idTypeService: typeService.idTypeService,
-          name: typeService.name,
-          description: typeService.description,
-          price: typeService.price,
-        };
-        url = URL + 'update/' + typeService.idTypeService;
-        method = 'PUT';
-      } else {
-        parameters = {
-          name: typeService.name,
-          description: typeService.description,
-          price: typeService.price,
-        };
-        url = URL + 'create';
-        method = 'POST';
-      }
+    // Verificar si los campos requeridos están presentes y válidos
+    const isValid = typeService.name.trim() && typeService.description.trim() && typeService.price;
+
+    // Mostrar mensaje de error si algún campo requerido falta
+    if (!isValid) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+      return;
+    }
+
+    let url, method, parameters;
+
+    if (typeService.idTypeService && operation === 2) {
+      // Asegurarse de que los campos no estén vacíos al editar
+      parameters = {
+        idTypeService: typeService.idTypeService,
+        name: typeService.name.trim(),
+        description: typeService.description.trim(),
+        price: typeService.price,
+      };
+      url = URL + 'update/' + typeService.idTypeService;
+      method = 'PUT';
+    } else {
+      // Verificar que los campos requeridos están presentes al crear
+      parameters = {
+        name: typeService.name.trim(),
+        description: typeService.description.trim(),
+        price: typeService.price,
+      };
+      url = URL + 'create';
+      method = 'POST';
+    }
+
+    if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Tipo de Servicio ', URL.concat('all'), setTypeservices);
       setTypeServiceDialog(false);
       setTypeService(emptyTypeService);

@@ -42,9 +42,9 @@ export default function Genres() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-      // ROLES
-        const isAdmin = UserService.isAdmin();
-        const isInventoryManager = UserService.isInventoryManager();
+    // ROLES
+    const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
         Request_Service.getData(URL.concat('all'), setGenres);
@@ -96,28 +96,39 @@ export default function Genres() {
     const saveGenre = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-        if (
-            genre.name.trim() &&
-            genre.description.trim()) {
-            let url, method, parameters;
 
-            if (genre.idGenre && operation === 2) {
-                parameters = {
-                    idGenre: genre.idGenre,
-                    name: genre.name.trim(),
-                    description: genre.description.trim()
-                };
-                url = URL + 'update/' + genre.idGenre;
-                method = 'PUT';
-            } else {
-                parameters = {
-                    name: genre.name.trim(),
-                    description: genre.description.trim()
-                };
-                url = URL + 'create';
-                method = 'POST';
-            }
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Género ', URL.concat('all'), setGenres)
+        // Verificar si los campos requeridos están presentes y válidos
+        const isValid = genre.name.trim() && genre.description.trim();
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!isValid) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        let url, method, parameters;
+
+        if (genre.idGenre && operation === 2) {
+            // Asegurarse de que los campos no estén vacíos al editar
+            parameters = {
+                idGenre: genre.idGenre,
+                name: genre.name.trim(),
+                description: genre.description.trim()
+            };
+            url = URL + 'update/' + genre.idGenre;
+            method = 'PUT';
+        } else {
+            // Verificar que los campos requeridos están presentes al crear
+            parameters = {
+                name: genre.name.trim(),
+                description: genre.description.trim()
+            };
+            url = URL + 'create';
+            method = 'POST';
+        }
+
+        if (isValid) {
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Género ', URL.concat('all'), setGenres);
             setGenreDialog(false);
             setGenre(emptyGenre);
         }
@@ -223,7 +234,7 @@ export default function Genres() {
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
-        (isAdmin || isInventoryManager ) && { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
+        (isAdmin || isInventoryManager) && { body: actionBodyTemplateG, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA

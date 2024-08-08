@@ -151,7 +151,7 @@ export default function ProductInventory() {
         { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
         { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
         { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
-        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+        // { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
