@@ -69,6 +69,32 @@ class Request_Service {
             console.log(error);
         }
     }
+
+    static async sendRequestEnable(url, id, setData, toast, nameTable) {
+        const enableUrl = this.BASE_URL + url + 'enable/' + id;
+        const disabledUrl = url + 'disabled';
+        const token = localStorage.getItem('token'); // Retrieve the token from localstorage
+        await axios.put(enableUrl, {},
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                let type = response.data['status'];
+                let msg = response.data['data'];
+                if (type === 'success') {
+                    toast.current.show({ severity: 'success', summary: msg, detail: nameTable + ' Habilitado', life: 3000 });
+                    this.getData(disabledUrl, setData);
+                }
+                return response.data;
+            })
+            .catch((error) => {
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO Habilitado', life: 3000 });
+                console.log(error);
+            });
+
+        //setDeleteDataDialog(false);
+        //setTable(emptyData);
+    }
     
 
     static async getData(url, setData) {
