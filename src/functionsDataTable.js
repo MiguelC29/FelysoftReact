@@ -242,13 +242,13 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
     );
 }
 
-export const leftToolbarTemplate = (openNew, openDisabled, icon) => {
+export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled, icon) => {
     const isAdmin = UserService.isAdmin();
     return (
         <div className="flex flex-wrap gap-2">
             <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
             {isAdmin &&
-                <Button label="Registros Deshabilitados" icon={icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
+                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
             }
         </div>
     );
