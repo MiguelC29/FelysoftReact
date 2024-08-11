@@ -40,6 +40,7 @@ export default function Authors() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -49,8 +50,17 @@ export default function Authors() {
     const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setAuthors);
-    }, []);
+        fetchAuthors();
+    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+    const fetchAuthors = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setAuthors);
+        } catch (error) {
+            console.error("Fallo al recuperar productos:", error);
+        }
+    };
 
     const openNew = () => {
         setAuthor(emptyAuthor);
@@ -75,6 +85,10 @@ export default function Authors() {
         setTitle('Editar Autor');
         setOperation(2);
         setAuthorDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -171,12 +185,16 @@ export default function Authors() {
         Request_Service.deleteData(URL, author.idAuthor, setAuthors, toast, setDeleteAuthorDialog, setAuthor, emptyAuthor, 'Autor ', URL.concat('all'));
     };
 
+    const handleEnable = (author) => {
+        Request_Service.sendRequestEnable(URL, author.idAuthor, setAuthors, toast, 'Autor ');
+    }
+
     const onInputChange = (e, name) => {
         inputChange(e, name, author, setAuthor);
     };
 
     const actionBodyTemplateA = (rowData) => {
-        return actionBodyTemplate(rowData, editAuthor, confirmDeleteAuthor);
+        return actionBodyTemplate(rowData, editAuthor, confirmDeleteAuthor, onlyDisabled, handleEnable);
     };
 
     const asociationDialogFooter = (
@@ -244,6 +262,8 @@ export default function Authors() {
         (isAdmin || isInventoryManager) && { body: actionBodyTemplateA, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
+
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Autores') };
     const handleExportExcel = () => { exportExcel(authors, columns, 'Autores') };
@@ -254,7 +274,7 @@ export default function Authors() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 {(isAdmin || isInventoryManager) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Género', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, onlyDisabled, toggleDisabled, icon, 'Género', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
