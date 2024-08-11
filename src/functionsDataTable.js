@@ -65,22 +65,21 @@ export const sendRequestAsc = (method, parameters, url, toast) => {
             }
         })
         .catch((error) => {
-            let associationType = error.response.data.associationType;
             let entity1 = error.response.data.entity1;
             let entity2 = error.response.data.entity2;
             if (error.response.data.data === 'Asociación existente') {
-                toast.current.show({ 
-                    severity: 'info', 
-                    summary: 'Asociación Existente', 
-                    detail: `La asociación entre ${entity1} y ${entity2} ya existe.`, 
-                    life: 3000 
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Asociación Existente',
+                    detail: `La asociación entre ${entity1} y ${entity2} ya existe.`,
+                    life: 3000
                 });
             } else {
-                toast.current.show({ 
-                    severity: 'error', 
-                    summary: 'Error en la solicitud', 
-                    detail: 'Asociación fallida', 
-                    life: 3000 
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Error en la solicitud',
+                    detail: 'Asociación fallida',
+                    life: 3000
                 });
             }
             console.log(error);
@@ -134,13 +133,21 @@ export const headerInv = (nameTable, globalFilter) => (
     </div>
 );
 
-export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
+export const actionBodyTemplate = (rowData, editData, confirmDelete, onlyDisabled, enable) => {
     const isAdmin = UserService.isAdmin();
     return (
         <React.Fragment>
-            <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
-            { isAdmin &&
-                <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+            {
+                onlyDisabled ? (
+                    <Button icon="pi pi-check" className="mr-2 rounded" severity='success' onClick={() => enable(rowData)} />
+                ) : (
+                    <>
+                        <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
+                        {isAdmin &&
+                            <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDelete(rowData)} />
+                        }
+                    </>
+                )
             }
         </React.Fragment>
     );
@@ -149,7 +156,7 @@ export const actionBodyTemplate = (rowData, editData, confirmDelete) => {
 export const actionBodyTemplateInv = (rowData, updateStock, resetStock) => {
     return (
         <React.Fragment>
-            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} style={{ background: '#0d56df', borderColor: '#0d56df'}}/>
+            <Button icon="pi pi-plus" className="mr-2 rounded" onClick={() => updateStock(rowData)} style={{ background: '#0d56df', borderColor: '#0d56df' }} />
             <Button icon="pi pi-replay" className="rounded" severity="danger" onClick={() => resetStock(rowData)} />
         </React.Fragment>
     );
@@ -235,18 +242,27 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
     );
 }
 
-export const leftToolbarTemplate = (openNew) => {
+export const leftToolbarTemplate = (openNew, openDisabled, icon) => {
+    const isAdmin = UserService.isAdmin();
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073' , border:'none'}} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            {isAdmin &&
+                <Button label="Registros Deshabilitados" icon={icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
+            }
         </div>
     );
 };
-export const leftToolbarTemplateAsociation = (openNew, nameTable, openAsociation) => {
+
+export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisabled, icon, nameTable, openAsociation) => {
+    const isAdmin = UserService.isAdmin();
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073', border:'none' }} />
-            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" severity="info" onClick={openAsociation} style={{ background: '#0D9276' , border:'none'}} />
+            <Button label="Nuevo" icon="pi pi-plus" className="rounded" severity="success" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            {isAdmin &&
+                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
+            }
+            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" severity="info" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
         </div>
     );
 };
@@ -301,31 +317,31 @@ const exportColumns = (columns) => columns.map((col) => ({ title: col.header, da
 
 export const exportPdf = (columns, data, fileName) => {
     import('jspdf').then((jsPDF) => {
-      import('jspdf-autotable').then(() => {
-        const doc = new jsPDF.default('l', 'pt', 'letter'); // 'l' para orientación horizontal
-  
-        const formattedData = data.map((item) => {
-          return columns.map((col) => {
-            if (col.field) {
-              const fields = col.field.split('.');
-              let value = item;
-              for (const field of fields) {
-                value = value[field];
-                if (value === undefined) {
-                  return ''; // Manejar datos faltantes (opcional)
-                }
-              }
-              return value;
-            }
-            return ''; // Manejar campos no anidados
-          });
+        import('jspdf-autotable').then(() => {
+            const doc = new jsPDF.default('l', 'pt', 'letter'); // 'l' para orientación horizontal
+
+            const formattedData = data.map((item) => {
+                return columns.map((col) => {
+                    if (col.field) {
+                        const fields = col.field.split('.');
+                        let value = item;
+                        for (const field of fields) {
+                            value = value[field];
+                            if (value === undefined) {
+                                return ''; // Manejar datos faltantes (opcional)
+                            }
+                        }
+                        return value;
+                    }
+                    return ''; // Manejar campos no anidados
+                });
+            });
+
+            doc.autoTable(exportColumns(columns), formattedData);
+            doc.save(`${fileName}.pdf`);
         });
-  
-        doc.autoTable(exportColumns(columns), formattedData);
-        doc.save(`${fileName}.pdf`);
-      });
     });
-  };
+};
 
 export const exportExcel = (data, columns, fileName) => {
     import('xlsx').then((xlsx) => {
