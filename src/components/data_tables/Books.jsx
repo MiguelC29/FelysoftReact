@@ -43,6 +43,7 @@ export default function Books() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -52,10 +53,19 @@ export default function Books() {
     const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setBooks);
+        fetchBooks();
         getGenres();
         getAuthors();
-    }, []);
+    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+    
+    const fetchBooks = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setBooks);
+        } catch (error) {
+            console.error("Fallo al recuperar Libros:", error);
+        }
+    };
 
     const getGenres = () => {
         return Request_Service.getData('/genre/all', setGenres);
@@ -126,6 +136,10 @@ export default function Books() {
         setTitle('Editar Libro');
         setOperation(2);
         setBookDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -212,6 +226,10 @@ export default function Books() {
         Request_Service.deleteData(URL, book.idBook, setBooks, toast, setDeleteBookDialog, setBook, emptyBook, 'Libro ', URL.concat('all'));
     };
 
+    const handleEnable = (book) => {
+        Request_Service.sendRequestEnable(URL, book.idBook, setBooks, toast, 'Libro ');
+    }
+
     const onInputNumberChange = (e, title) => {
         inputNumberChange(e, title, book, setBook);
     };
@@ -235,7 +253,7 @@ export default function Books() {
     };
 
     const actionBodyTemplateB = (rowData) => {
-        return actionBodyTemplate(rowData, editBook, confirmDeleteBook);
+        return actionBodyTemplate(rowData, editBook, confirmDeleteBook, onlyDisabled, handleEnable);
     };
 
     const bookDialogFooter = (
@@ -300,6 +318,8 @@ export default function Books() {
         (isAdmin || isInventoryManager) && { body: actionBodyTemplateB, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
+
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, authors, 'Reporte_Libros') };
     const handleExportExcel = () => { exportExcel(authors, columns, 'Libros') };
@@ -311,7 +331,8 @@ export default function Books() {
             <div className="card" style={{ background: '#9bc1de' }}>
                 {
                     (isAdmin || isInventoryManager) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }}
+                     left={leftToolbarTemplate(openNew,onlyDisabled,toggleDisabled,icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
