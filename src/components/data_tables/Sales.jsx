@@ -142,6 +142,10 @@ export default function Sales() {
         Request_Service.deleteData(URL, sale.idSale, setSales, toast, setDeleteSaleDialog, setSale, emptySale, 'Venta ', URL.concat('all'));
     };
 
+    const handleEnable = (sale) => {
+        Request_Service.sendRequestEnable(URL, sale.idSale, setSales, toast, 'Venta ');
+    }
+
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, sale, setSale);
     };
@@ -151,7 +155,7 @@ export default function Sales() {
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editSale, confirmDeleteSale, onlyDisabled);
+        return actionBodyTemplate(rowData, editSale, confirmDeleteSale, onlyDisabled, handleEnable);
     };
 
     const saleDialogFooter = (
@@ -173,6 +177,7 @@ export default function Sales() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, sales, 'Reporte_Ventas') };
     const handleExportExcel = () => { exportExcel(sales, columns, 'Ventas') };
@@ -182,7 +187,7 @@ export default function Sales() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
