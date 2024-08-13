@@ -221,7 +221,7 @@ export default function Products() {
 
     const handleEnable = (product) => {
         Request_Service.sendRequestEnable(URL, product.idProduct, setProducts, toast, 'Producto ');
-    }
+    };
 
     const onInputChange = (e, name) => {
         inputChange(e, name, product, setProduct);
@@ -310,8 +310,6 @@ export default function Products() {
         { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
-    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
-
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns.slice(0, -2), products, 'Reporte_Productos') };
     const handleExportExcel = () => { exportExcel(products, columns.slice(0, -2), 'Productos') };
@@ -321,7 +319,7 @@ export default function Products() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
