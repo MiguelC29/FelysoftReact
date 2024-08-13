@@ -259,6 +259,10 @@ export default function Users() {
     }
   };
 
+  const roleTemplate = (rowData) => {
+    return Role[rowData.role];
+  };
+
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser, onlyDisabled, handleEnable);
   };
@@ -285,7 +289,7 @@ export default function Users() {
     { field: 'phoneNumber', header: 'Télefono', sortable: true, style: { minWidth: '10rem' } },
     { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
     /*username, password, image */
-    { field: 'role', header: 'Rol', sortable: true, style: { minWidth: '10rem' } },
+    { field: 'role', header: 'Rol', body: roleTemplate, sortable: true, style: { minWidth: '10rem' } },
     { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
     { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
