@@ -46,12 +46,12 @@ export default function Products() {
     const dt = useRef(null);
 
     useEffect(() => {
-        fetchAuthors();
+        fetchProducts();
         getCategories();
         getProviders();
     }, [onlyDisabled]); // Fetch data when onlyDisabled changes
 
-    const fetchAuthors = async () => {
+    const fetchProducts = async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setProducts);

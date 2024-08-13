@@ -254,8 +254,9 @@ export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled, icon) =
     );
 };
 
-export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisabled, icon, nameTable, openAsociation) => {
+export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisabled, nameTable, openAsociation) => {
     const isAdmin = UserService.isAdmin();
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     return (
         <div className="flex flex-wrap gap-2">
             <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />

@@ -35,6 +35,7 @@ export default function Categories() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -43,8 +44,17 @@ export default function Categories() {
     const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setCategories);
-    }, []);
+        fetchAuthors();
+    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+    const fetchAuthors = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setCategories);
+        } catch (error) {
+            console.error("Fallo al recuperar las categorias:", error);
+        }
+    };
 
     const openNew = () => {
         setCategory(emptyCategory);
@@ -69,6 +79,10 @@ export default function Categories() {
         setTitle('Editar Categoría');
         setOperation(2);
         setCategoryDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -159,12 +173,16 @@ export default function Categories() {
         Request_Service.deleteData(URL, category.idCategory, setCategories, toast, setDeleteCategoryDialog, setCategory, emptyCategory, 'Categoría ', URL.concat('all'));
     };
 
+    const handleEnable = (category) => {
+        Request_Service.sendRequestEnable(URL, category.idCategory, setCategories, toast, 'Categoría ');
+    };
+
     const onInputChange = (e, name) => {
         inputChange(e, name, category, setCategory);
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editCategory, confirmDeleteCategory);
+        return actionBodyTemplate(rowData, editCategory, confirmDeleteCategory, onlyDisabled, handleEnable);
     };
 
     const asociationDialogFooter = (
@@ -239,7 +257,7 @@ export default function Categories() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Proveedor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, onlyDisabled, toggleDisabled, 'Proveedor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
