@@ -45,8 +45,11 @@ export default function Users() {
   };
 
   const Role = {
-    ADMINISTRATOR: 'ADMINISTRATOR',
-    CUSTOMER: 'CUSTOMER'
+    ADMINISTRATOR: 'ADMINISTRADOR',
+    SALESPERSON: 'VENDEDOR',
+    FINANCIAL_MANAGER: 'ADMINISTRADOR FINANCIERO',
+    INVENTORY_MANAGER: 'GERENTE DE INVENTARIO',
+    CUSTOMER: 'CLIENTE',
   }
 
   const URL = '/user/';
@@ -63,13 +66,23 @@ export default function Users() {
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
+  const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
   const [title, setTitle] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    Request_Service.getData(URL.concat('all'), setUsers);
-  }, []);
+    fetchUsers();
+  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+  const fetchUsers = async () => {
+    try {
+      const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+      await Request_Service.getData(url, setUsers);
+    } catch (error) {
+      console.error("Fallo al recuperar usuarios:", error);
+    }
+  }
 
   // PUEDE QUE SE PUEDA DECLARAR GENERAL PARA RECIBLAR
   const handleFileUpload = (event) => {
@@ -109,6 +122,10 @@ export default function Users() {
     setTitle('Editar Usuario');
     setOperation(2);
     setUserDialog(true);
+  };
+
+  const toggleDisabled = () => {
+    setOnlyDisabled(!onlyDisabled);
   };
 
   const onPasswordChange = (e) => {
@@ -209,8 +226,11 @@ export default function Users() {
   };
 
   const deleteUser = () => {
-    // deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario');
     Request_Service.deleteData(URL, user.idUser, setUsers, toast, setDeleteUserDialog, setUser, emptyUser, 'Usuario ', URL.concat('all'));
+  };
+
+  const handleEnable = (user) => {
+    Request_Service.sendRequestEnable(URL, user.idUser, setUsers, toast, 'Usuario ');
   };
 
   const onInputChange = (e, name) => {
@@ -240,7 +260,7 @@ export default function Users() {
   };
 
   const actionBodyTemplateP = (rowData) => {
-    return actionBodyTemplate(rowData, editUser, confirmDeleteUser);
+    return actionBodyTemplate(rowData, editUser, confirmDeleteUser, onlyDisabled, handleEnable);
   };
 
   const userDialogFooter = (
@@ -296,7 +316,7 @@ export default function Users() {
     <div>
       <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de', maxWidth: '89em' }}>
-        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}

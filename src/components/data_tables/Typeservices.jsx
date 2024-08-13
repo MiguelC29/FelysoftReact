@@ -27,13 +27,23 @@ export default function TypeServices() {
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
+  const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
   const [title, setTitle] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    Request_Service.getData(URL.concat('all'), setTypeservices);
-  }, []);
+    fetchTypeServices();
+  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+  const fetchTypeServices = async () => {
+    try {
+      const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+      await Request_Service.getData(url, setTypeservices);
+    } catch (error) {
+      console.error("Fallo al recuperar tipos de servicio:", error);
+    }
+  }
 
   const openNew = () => {
     setTypeService(emptyTypeService);
@@ -48,6 +58,10 @@ export default function TypeServices() {
     setTitle('Editar Tipo de Servicio');
     setOperation(2);
     setTypeServiceDialog(true);
+  };
+
+  const toggleDisabled = () => {
+    setOnlyDisabled(!onlyDisabled);
   };
 
   const hideDialog = () => {
@@ -118,6 +132,10 @@ export default function TypeServices() {
     Request_Service.deleteData(URL, typeService.idTypeService, setTypeservices, toast, setDeleteTypeServiceDialog, setTypeService, emptyTypeService, 'Tipo de Servicio ', URL.concat('all'));
   };
 
+  const handleEnable = (typeService) => {
+    Request_Service.sendRequestEnable(URL, typeService.idTypeService, setTypeservices, toast, 'Tipo de Servicio ');
+  };
+
   const onInputChange = (e, name) => {
     inputChange(e, name, typeService, setTypeService);
   };
@@ -131,7 +149,7 @@ export default function TypeServices() {
   };
 
   const actionBodyTemplateP = (rowData) => {
-    return actionBodyTemplate(rowData, editTypeService, confirmDeleteTypeService);
+    return actionBodyTemplate(rowData, editTypeService, confirmDeleteTypeService, onlyDisabled, handleEnable);
   };
 
   const typeServiceDialogFooter = (
@@ -162,7 +180,7 @@ export default function TypeServices() {
     <div>
       <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
-        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}

@@ -27,8 +27,8 @@ export default function Products() {
 
     const URL = '/product/';
     const [product, setProduct] = useState(emptyProduct);
-    const [file, setFile] = useState(null);
     const [products, setProducts] = useState([]);
+    const [file, setFile] = useState(null);
     const [categories, setCategories] = useState([]);
     const [providers, setProviders] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);

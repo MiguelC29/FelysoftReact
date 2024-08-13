@@ -39,6 +39,7 @@ export default function Services() {
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
+  const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
   const [title, setTitle] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
@@ -48,9 +49,18 @@ export default function Services() {
   const isInventoryManager = UserService.isInventoryManager();
 
   useEffect(() => {
-    Request_Service.getData(URL.concat('all'), setServices);
+    fetchServices();
     Request_Service.getData('/typeservice/all', setTypeservices);
-  }, []);
+  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+  const fetchServices = async () => {
+    try {
+      const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+      await Request_Service.getData(url, setServices);
+    } catch (error) {
+      console.error("Fallo al recuperar servicios:", error);
+    }
+  }
 
   const formatCurrency = (value) => {
     return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
@@ -73,6 +83,10 @@ export default function Services() {
     setTitle('Editar Servicio');
     setOperation(2);
     setServiceDialog(true);
+  };
+
+  const toggleDisabled = () => {
+    setOnlyDisabled(!onlyDisabled);
   };
 
   const hideDialog = () => {
@@ -145,6 +159,10 @@ export default function Services() {
     Request_Service.deleteData(URL, service.idService, setServices, toast, setDeleteServiceDialog, setService, emptyService, 'Servicio ', URL.concat('all'));
   };
 
+  const handleEnable = (service) => {
+    Request_Service.sendRequestEnable(URL, service.idService, setServices, toast, 'Servicio ');
+  };
+
   const onInputNumberChange = (e, name) => {
     inputNumberChange(e, name, service, setService);
     calculateTotal();
@@ -163,7 +181,7 @@ export default function Services() {
   };
 
   const actionBodyTemplateP = (rowData) => {
-    return actionBodyTemplate(rowData, editService, confirmDeleteService);
+    return actionBodyTemplate(rowData, editService, confirmDeleteService, onlyDisabled, handleEnable);
   };
 
   const serviceDialogFooter = DialogFooter(hideDialog, confirmSave);
@@ -217,7 +235,7 @@ export default function Services() {
       <div className="card" style={{ background: '#9bc1de' }}>
         {
           (isAdmin || isInventoryManager) &&
-          <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+          <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
         }
 
         <CustomDataTable
