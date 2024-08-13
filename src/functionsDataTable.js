@@ -242,8 +242,9 @@ export const DialogDelete = (deleteDataDialog, nameTable, deleteDataDialogFooter
     );
 }
 
-export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled, icon) => {
+export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled) => {
     const isAdmin = UserService.isAdmin();
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     return (
         <div className="flex flex-wrap gap-2">
             <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
