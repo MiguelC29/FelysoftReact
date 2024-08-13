@@ -44,10 +44,10 @@ export default function Categories() {
     const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
-        fetchAuthors();
+        fetchCategories();
     }, [onlyDisabled]); // Fetch data when onlyDisabled changes
 
-    const fetchAuthors = async () => {
+    const fetchCategories = async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setCategories);

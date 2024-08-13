@@ -38,6 +38,7 @@ export default function Providers() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -46,8 +47,17 @@ export default function Providers() {
     const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setProviders);
-    }, []);
+        fetchProviders();
+    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+    const fetchProviders = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setProviders);
+        } catch (error) {
+            console.error("Fallo al recuperar los proveedores:", error);
+        }
+    };
 
     const openNew = () => {
         setProvider(emptyProvider);
@@ -72,6 +82,10 @@ export default function Providers() {
         setTitle('Editar Proveedor');
         setOperation(2);
         setProviderDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -171,6 +185,11 @@ export default function Providers() {
         Request_Service.deleteData(URL, provider.idProvider, setProviders, toast, setDeleteProviderDialog, setProvider, emptyProvider, 'Proveedor ', URL.concat('all'));
     };
 
+    const handleEnable = (provider) => {
+        Request_Service.sendRequestEnable(URL, provider.idProvider, setProviders, toast, 'Proveedor ');
+    };
+
+
     const onInputChange = (e, name) => {
         inputChange(e, name, provider, setProvider);
     };
@@ -180,7 +199,7 @@ export default function Providers() {
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editProvider, confirmDeleteProvider);
+        return actionBodyTemplate(rowData, editProvider, confirmDeleteProvider, onlyDisabled, handleEnable);
     };
 
     const asociationDialogFooter = (
@@ -258,7 +277,7 @@ export default function Providers() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Categoría', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, onlyDisabled, toggleDisabled, 'Categoría', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
