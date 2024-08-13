@@ -37,6 +37,7 @@ export default function Reserves() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false);
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -46,10 +47,19 @@ export default function Reserves() {
     const isSalesPerson = UserService.isSalesPerson();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setReserves);
+        fetchReserves();
         getBooks();
         getUsers();
-    }, []);
+    }, [onlyDisabled]);
+
+    const fetchReserves = async () =>{
+        try{
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setReserves);
+        }catch(error){
+            console.error("Fallo al recuperar Reservas:", error);
+        }
+    };
 
     const getBooks = () => {
         return Request_Service.getData('/book/all', setBooks);
@@ -83,6 +93,9 @@ export default function Reserves() {
         setOperation(2);
         setReserveDialog(true);
     };
+    const toggleDisabled = () =>{
+        setOnlyDisabled(!onlyDisabled);
+    }
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -163,6 +176,10 @@ export default function Reserves() {
         Request_Service.deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve, 'Reserva ', URL.concat('all'));
     };
 
+    const handleEnable =(reserve) =>{
+        Request_Service.sendRequestEnable(URL,reserve.idReserve,setReserves,toast,'Reserva ');
+    }
+
     const onInputNumberChange = (e, description) => {
         inputNumberChange(e, description, reserve, setReserve);
     };
@@ -176,7 +193,7 @@ export default function Reserves() {
     };
 
     const actionBodyTemplateR = (rowData) => {
-        return actionBodyTemplate(rowData, editReserve, confirmDeleteReserve);
+        return actionBodyTemplate(rowData, editReserve, confirmDeleteReserve,onlyDisabled,handleEnable);
     };
 
     const reserveDialogFooter = (
@@ -249,7 +266,7 @@ export default function Reserves() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 {(isAdmin || isSalesPerson) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew,onlyDisabled,toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}

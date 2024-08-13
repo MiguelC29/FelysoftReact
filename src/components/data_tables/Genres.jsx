@@ -11,6 +11,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 
+
 export default function Genres() {
     let emptyGenre = {
         idGenre: null,
@@ -38,6 +39,7 @@ export default function Genres() {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false);
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -47,8 +49,17 @@ export default function Genres() {
     const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setGenres);
-    }, []);
+        fetchGeres();
+    }, [onlyDisabled]);
+
+    const fetchGeres = async () =>{
+        try{
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setGenres);
+        }catch (error){
+            console.error("Fallo al recuperar los géneros:",error);
+        }
+    };
 
     const openNew = () => {
         setGenre(emptyGenre);
@@ -74,6 +85,9 @@ export default function Genres() {
         setOperation(2);
         setGenreDialog(true);
     };
+    const toggleDisabled = () =>{
+        setOnlyDisabled(!onlyDisabled);
+    }
 
     const hideDialog = () => {
         setSubmitted(false);
@@ -165,12 +179,16 @@ export default function Genres() {
         Request_Service.deleteData(URL, genre.idGenre, setGenres, toast, setDeleteGenreDialog, setGenre, emptyGenre, 'Género ', URL.concat('all'));
     };
 
+    const handleEnable =(genre) => {
+        Request_Service.sendRequestEnable(URL,genre.idGenre,setGenres,toast,'Genero ');
+    }
+
     const onInputChange = (e, name) => {
         inputChange(e, name, genre, setGenre);
     };
 
     const actionBodyTemplateG = (rowData) => {
-        return actionBodyTemplate(rowData, editGenre, confirmDeleteGenre);
+        return actionBodyTemplate(rowData, editGenre, confirmDeleteGenre, onlyDisabled,handleEnable);
     };
 
     const asociationDialogFooter = (
@@ -247,7 +265,7 @@ export default function Genres() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 {(isAdmin || isInventoryManager) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew, 'Autor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew,onlyDisabled, toggleDisabled,'Autor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
