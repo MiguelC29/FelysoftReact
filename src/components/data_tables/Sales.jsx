@@ -33,14 +33,27 @@ export default function Sales() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+    const [onlyDisabled, setOnlyDisabled] = useState(false);
 
     // Roles
     const isAdmin = UserService.isAdmin();
 
     useEffect(() => {
+        fetchSales();
         Request_Service.getData(URL.concat('all'), setSales);
         Request_Service.getData('/payment/all', setPayments);
-    }, []);
+    }, [onlyDisabled]);
+
+    
+
+    const fetchSales = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setSales);
+        } catch (error) {
+            console.error("Fallo al recuperar ventas:", error);
+        }
+    }
 
     const openNew = () => {
         setSale(emptySale);
@@ -57,6 +70,10 @@ export default function Sales() {
         setTitle('Editar Venta');
         setOperation(2);
         setSaleDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -134,7 +151,7 @@ export default function Sales() {
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editSale, confirmDeleteSale);
+        return actionBodyTemplate(rowData, editSale, confirmDeleteSale, onlyDisabled);
     };
 
     const saleDialogFooter = (
@@ -165,7 +182,7 @@ export default function Sales() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
