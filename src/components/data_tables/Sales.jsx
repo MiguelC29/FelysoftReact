@@ -40,7 +40,6 @@ export default function Sales() {
 
     useEffect(() => {
         fetchSales();
-        Request_Service.getData(URL.concat('all'), setSales);
         Request_Service.getData('/payment/all', setPayments);
     }, [onlyDisabled]);
 

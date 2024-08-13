@@ -50,7 +50,6 @@ export default function Expenses() {
 
     useEffect(() => {
         fetchExpenses();
-        Request_Service.getData(URL.concat('all'), setExpenses);
         Request_Service.getData('/purchase/all', setPurchases);
         Request_Service.getData('/payment/all', setPayments);
     }, [onlyDisabled]);
