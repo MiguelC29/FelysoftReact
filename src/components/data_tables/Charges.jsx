@@ -25,13 +25,23 @@ export default function Charges() {
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
+  const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
   const [title, setTitle] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    Request_Service.getData(URL.concat('all'), setCharges);
-  }, []);
+    fetchCharges();
+  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
+
+  const fetchCharges = async () => {
+    try {
+      const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+      await Request_Service.getData(url, setCharges);
+    } catch (error) {
+      console.error("Fallo al recuperar cargos:", error);
+    }
+  }
 
   const openNew = () => {
     setCharge(emptyCharge);
@@ -46,6 +56,10 @@ export default function Charges() {
     setTitle('Editar Cargo');
     setOperation(2);
     setChargeDialog(true);
+  };
+
+  const toggleDisabled = () => {
+    setOnlyDisabled(!onlyDisabled);
   };
 
   const hideDialog = () => {
@@ -114,12 +128,16 @@ export default function Charges() {
     Request_Service.deleteData(URL, charge.idCharge, setCharges, toast, setDeleteChargeDialog, setCharge, emptyCharge, 'Cargo ', URL.concat('all'));
   };
 
+  const handleEnable = (charge) => {
+    Request_Service.sendRequestEnable(URL, charge.idCharge, setCharges, toast, 'Cargo ');
+  };
+
   const onInputChange = (e, name) => {
     inputChange(e, name, charge, setCharge);
   };
 
   const actionBodyTemplateCharge = (rowData) => {
-    return actionBodyTemplate(rowData, editCharge, confirmDeleteCharge);
+    return actionBodyTemplate(rowData, editCharge, confirmDeleteCharge, onlyDisabled, handleEnable);
   };
 
   const chargeDialogFooter = DialogFooter(hideDialog, confirmSave);
@@ -143,7 +161,7 @@ export default function Charges() {
     <div>
       <Toast ref={toast} position="bottom-right" />
       <div className="card" style={{ background: '#9bc1de' }}>
-        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+        <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable
           dt={dt}
