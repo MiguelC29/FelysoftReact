@@ -58,7 +58,7 @@ export default function Authors() {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setAuthors);
         } catch (error) {
-            console.error("Fallo al recuperar productos:", error);
+            console.error("Fallo al recuperar autores:", error);
         }
     };
 
