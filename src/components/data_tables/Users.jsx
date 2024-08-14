@@ -319,7 +319,7 @@ export default function Users() {
   return (
     <div>
       <Toast ref={toast} position="bottom-right" />
-      <div className="card" style={{ background: '#9bc1de', maxWidth: '89em' }}>
+      <div className="card" style={{ background: '#9bc1de' }}>
         <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
         <CustomDataTable

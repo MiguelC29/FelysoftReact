@@ -47,10 +47,15 @@ function ProfilePage() {
                 <div className="perfil-usuario-header">
                     <div className="perfil-usuario-portada">
                         <div className="perfil-usuario-avatar">
+                            {profileInfo.image ?
                             <img id='imagen-perfil'
                                 src={`data:${profileInfo.imageType};base64,${profileInfo.image}`}
                                 alt={`Imagen usuario ${profileInfo.names}`}
-                            />
+                            /> : 
+                            <img id='imagen-perfil'
+                                src="https://st4.depositphotos.com/4329009/19956/v/450/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
+                                alt={`No cuenta con img de perfil`}
+                            />}
                             <button type="button" className="boton-avatar">
                                 <i className="far fa-image"></i>
                             </button>
