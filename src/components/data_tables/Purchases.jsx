@@ -52,13 +52,14 @@ export default function Purchases() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+    const [onlyDisabled, setOnlyDisabled] = useState(false);
 
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
     const isFinancialManager = UserService.isFinancialManager();
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setPurchases);
+        fetchPurchases();
         Request_Service.getData('/provider/all', setProviders);
         // Verifica si expensePurchase tiene datos y si contiene la descripción
         if (expensePurchase && expensePurchase.description) {
@@ -73,7 +74,16 @@ export default function Purchases() {
         if (expensePurchase && expensePurchase.payment && expensePurchase.payment.state) {
             setSelectedState(expensePurchase.payment.state); // Establece el estado basado en los datos recibidos
         }
-    }, [expensePurchase]);
+    },  [onlyDisabled]);
+
+    const fetchPurchases = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setPurchases);
+        } catch (error) {
+            console.error("Fallo al recuperar compras:", error);
+        }
+    }
 
     const openNew = () => {
         setPurchase(emptyPurchase);
@@ -94,6 +104,10 @@ export default function Purchases() {
         setTitle('Editar Compra');
         setOperation(2);
         setPurchaseDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -172,6 +186,10 @@ export default function Purchases() {
         Request_Service.deleteData(URL, purchase.idPurchase, setPurchases, toast, setDeletePurchaseDialog, setPurchase, emptyPurchase, 'Compra ', URL.concat('all'));
     };
 
+    const handleEnable = (purchase) => {
+        Request_Service.sendRequestEnable(URL, purchase.idPurchase, setPurchases, toast, 'Compra ');
+    }
+
     const onInputChange = (e, name) => {
         inputChange(e, name, purchase, setPurchase);
     };
@@ -185,7 +203,7 @@ export default function Purchases() {
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editPurchase, confirmDeletePurchase);
+        return actionBodyTemplate(rowData, editPurchase, confirmDeletePurchase, onlyDisabled, handleEnable  );
     };
 
     const purchaseDialogFooter = (
@@ -236,6 +254,8 @@ export default function Purchases() {
         value: key
     }));
 
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
+
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, purchases, 'Reporte_Compras') };
     const handleExportExcel = () => { exportExcel(purchases, columns, 'Compras') };
@@ -245,7 +265,7 @@ export default function Purchases() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew)} right={(isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={(isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
