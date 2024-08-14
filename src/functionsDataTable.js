@@ -247,7 +247,9 @@ export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled) => {
     const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            {!onlyDisabled &&
+                <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            }
             {isAdmin &&
                 <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
             }
@@ -260,11 +262,16 @@ export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisable
     const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            {!onlyDisabled &&
+            <>
+                <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+
+                <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
+            </>
+            }
             {isAdmin &&
                 <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
             }
-            <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
         </div>
     );
 };
