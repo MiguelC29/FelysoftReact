@@ -46,12 +46,22 @@ export default function Expenses() {
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
+    const [onlyDisabled, setOnlyDisabled] = useState(false);
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('all'), setExpenses);
+        fetchExpenses();
         Request_Service.getData('/purchase/all', setPurchases);
         Request_Service.getData('/payment/all', setPayments);
-    }, []);
+    }, [onlyDisabled]);
+
+    const fetchExpenses = async () => {
+        try {
+            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
+            await Request_Service.getData(url, setExpenses);
+        } catch (error) {
+            console.error("Fallo al recuperar gastos:", error);
+        }
+    }
 
     const openNew = () => {
         setExpense(emptyExpense);
@@ -70,6 +80,10 @@ export default function Expenses() {
         setTitle('Editar Gasto');
         setOperation(2);
         setExpenseDialog(true);
+    };
+
+    const toggleDisabled = () => {
+        setOnlyDisabled(!onlyDisabled);
     };
 
     const hideDialog = () => {
@@ -146,6 +160,10 @@ export default function Expenses() {
 
     };
 
+    const handleEnable = (expense) => {
+        Request_Service.sendRequestEnable(URL, expense.idExpense, setExpenses, toast, 'Gasto ');
+    }
+
     const onInputChange = (e, name) => {
         inputChange(e, name, expense, setExpense);
     };
@@ -165,7 +183,7 @@ export default function Expenses() {
     };
 
     const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editExpense, confirmDeleteExpense);
+        return actionBodyTemplate(rowData, editExpense, confirmDeleteExpense, onlyDisabled, handleEnable);
     };
 
     const expenseDialogFooter = (
@@ -214,6 +232,7 @@ export default function Expenses() {
         value: key
     }));
 
+    const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     // EXPORT DATA
     const handleExportPdf = () => { exportPdf(columns, expenses, 'Reporte_Gastos') };
     const handleExportExcel = () => { exportExcel(expenses, columns, 'Gastos') };
@@ -223,7 +242,7 @@ export default function Expenses() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
