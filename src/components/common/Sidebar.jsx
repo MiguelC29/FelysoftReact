@@ -140,10 +140,12 @@ export default function MiniDrawer({ children }) {
         const Swal = require('sweetalert2');
         Swal.fire({
             title: '¿Estás seguro que quieres salir?',
-            icon: 'info',
+            icon: 'warning',
             showCancelButton: true, // Muestra el botón de cancelar
             confirmButtonText: 'Confirmar',
             cancelButtonText: 'Cancelar',
+            confirmButtonColor: "#3085d6",
+            ñcancelButtonColor: "#d33",
         }).then((result) => {
             if (result.isConfirmed) {
                 logout(); // Llama a la función de logout para cerrar la sesión
