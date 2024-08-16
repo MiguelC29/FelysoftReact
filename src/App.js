@@ -46,6 +46,7 @@ export default function App() {
           <Routes>
             <Route exact path='/' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
             <Route exact path='/login' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
+            <Route exact path='/registro' element={<ProtectedRoute element={<RegistrationPage />} redirectTo="/perfil" />} />
             <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER', 'INVENTORY_MANAGER','SALESPERSON','FINANCIAL_MANAGER']} />} />
 
             {/* Rutas solo para administradores */}
@@ -74,8 +75,6 @@ export default function App() {
 
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
-
-            <Route path='/registro' element={<RegistrationPage />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
             <Route path='/unauthorized' element={<Error404 />} />
