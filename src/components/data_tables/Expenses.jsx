@@ -75,6 +75,7 @@ export default function Expenses() {
 
     const editExpense = (expense) => {
         setExpense({ ...expense });
+        setSelectedTypeExpense(expense.type);
         setSelectedPurchase(expense.purchase);
         setSelectedPayment(expense.payment);
         setTitle('Editar Gasto');

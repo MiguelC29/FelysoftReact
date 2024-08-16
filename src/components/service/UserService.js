@@ -30,19 +30,25 @@ class UserService {
                     if (response.data.error === "Usuario Existente") {
                         throw new Error("Usuario Existente");
                     } else {
-                        toast.current.show({ severity: 'success', summary: 'Registro usuario', detail: 'Usuario registrado. Inicie Sesión.', life: 3000 });
-                        // Navegar primero
-                        setTimeout(() => {
-                            setData();
+                        
+                        const Swal = require('sweetalert2');
+                        Swal.fire({
+                            title: "Exitoso!",
+                            text: "Usuario registrado. Inicie Sesión.",
+                            icon: "success"
 
-                            // Ejecutar setData después de la navegación
-                            setTimeout(() => {
-                                navigate('/login');
-                            }, 10); // Puedes ajustar el tiempo si es necesario
+                        })
+                            .then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    navigate('/login');
+                                    setData();
+                                }
+                            });
 
-                        }, 2300);
+
+                        return response.data;
                     }
-                    return response.data;
                 })
                 .catch((error) => {
                     if (error.message === "Usuario Existente") {
