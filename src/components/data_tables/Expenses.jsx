@@ -144,7 +144,6 @@ export default function Expenses() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Gasto ', URL.concat('all'), setExpenses);
             setExpenseDialog(false);
-            setExpense(emptyExpense);
         }
     };
 

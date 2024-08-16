@@ -123,7 +123,6 @@ export default function Details() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Detalle ', URL.concat('all'), setDetails);
             setDetailDialog(false);
-            setDetail(emptyDetail);
         }
     };
 

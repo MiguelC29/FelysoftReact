@@ -125,7 +125,6 @@ export default function Employees() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Empleado ', URL.concat('all'), setEmployees);
             setEmployeeDialog(false);
-            setEmployee(emptyEmployee);
         }
     };
 

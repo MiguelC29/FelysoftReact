@@ -210,7 +210,6 @@ export default function Books() {
         if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Libro ', URL.concat('all'), setBooks);
             setBookDialog(false);
-            setBook(emptyBook);
         }
     };
 

@@ -203,7 +203,6 @@ export default function Products() {
         if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Producto ', URL.concat('all'), setProducts);
             setProductDialog(false);
-            setProduct(emptyProduct);
         }
     };    
 

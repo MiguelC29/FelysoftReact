@@ -214,7 +214,6 @@ export default function Users() {
 
     await Request_Service.sendRequest(method, formData, url, operation, toast, 'Usuario ', URL.concat('all'), setUsers);
     setUserDialog(false);
-    setUser(emptyUser);
   };
 
   const confirmSave = () => {

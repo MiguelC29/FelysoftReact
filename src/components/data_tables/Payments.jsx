@@ -139,7 +139,6 @@ export default function Payments() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Pago ', URL.concat('all'), setPayments);
             setPaymentDialog(false);
-            setPayment(emptyPayment);
         }
     };
 

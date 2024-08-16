@@ -89,7 +89,7 @@ function RegistrationPage() {
                 role: "CUSTOMER"
             }
 
-            await UserService.register(parameters, toast, () => setUser(emptyUser), navigate)
+            await UserService.register(parameters, toast, navigate)
         } catch (error) {
             console.error('Error registrando usuario:', error)
             alert('Un error ocurrió mientras se registraba el usuario')

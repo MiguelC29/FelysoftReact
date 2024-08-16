@@ -236,7 +236,6 @@ export default function Purchases() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Compra ', URL.concat('all'), setPurchases);
             setPurchaseDialog(false);
-            setPurchase(emptyPurchase);
         }
     };
 

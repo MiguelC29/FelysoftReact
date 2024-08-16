@@ -160,7 +160,6 @@ export default function Reserves() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Reserva ', URL.concat('all'), setReserves);
             setReserveDialog(false);
-            setReserve(emptyReserve);
         }
     };
 

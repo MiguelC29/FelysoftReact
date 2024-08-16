@@ -23,7 +23,7 @@ class UserService {
         }
     }
 
-    static async register(parameters, toast, setData, navigate) {
+    static async register(parameters, toast, navigate) {
         try {
             await axios({ method: 'POST', url: `${UserService.BASE_URL}/auth/register`, data: parameters })
                 .then((response) => {
@@ -42,7 +42,6 @@ class UserService {
                                 /* Read more about isConfirmed, isDenied below */
                                 if (result.isConfirmed) {
                                     navigate('/login');
-                                    setData();
                                 }
                             });
 

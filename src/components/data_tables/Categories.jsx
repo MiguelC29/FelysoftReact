@@ -112,9 +112,6 @@ export default function Categories() {
             };
             await Request_Service.sendRequestAsociation(parameters, URL.concat('add-provider'), toast);
             setAsociationDialog(false);
-            setAsociation(emptyAsociation);
-            setSelectedCategory('');
-            setSelectedProvider('');
         }
     };
 
@@ -153,7 +150,6 @@ export default function Categories() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Categoría ', URL.concat('all'), setCategories);
             setCategoryDialog(false);
-            setCategory(emptyCategory);
         }
     };
 

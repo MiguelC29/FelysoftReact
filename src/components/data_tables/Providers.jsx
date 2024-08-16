@@ -68,6 +68,7 @@ export default function Providers() {
     };
 
     const openAsociation = () => {
+        setAsociation(emptyAsociation);
         setSelectedCategory('');
         setSelectedProvider('');
         setTitle('Registrar Asociación');
@@ -150,7 +151,6 @@ export default function Providers() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Proveedor ', URL.concat('all'), setProviders);
             setProviderDialog(false);
-            setProvider(emptyProvider);
         }
     };
 
@@ -163,9 +163,6 @@ export default function Providers() {
             };
             await Request_Service.sendRequestAsociation(parameters, '/category/add-provider', toast);
             setAsociationDialog(false);
-            setAsociation(emptyAsociation);
-            setSelectedCategory('');
-            setSelectedProvider('');
         }
     };
 
