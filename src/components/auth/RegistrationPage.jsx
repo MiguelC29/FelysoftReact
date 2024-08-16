@@ -10,6 +10,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import UserService from '../service/UserService';
 import { Button } from 'primereact/button';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from "../../img/logo.svg";
 
 function RegistrationPage() {
 
@@ -132,7 +133,11 @@ function RegistrationPage() {
 
     return (
         <div className='container auth-container bg-black mt-3 p-4 rounded-5'>
-            <h2 className='text-white text-center pt-2'>Registro Clientes</h2>
+            <div className='d-flex align-items-center'>
+                <img src={logo} className='me-3' alt="Logo" width="70px" />
+                <h2 className='text-white text-center flex-grow-1 pt-2'>Registro Clientes</h2>
+            </div>
+
             <Toast ref={toast} position="bottom-right" />
             <div className="formgrid grid mt-5">
                 <div className="field col">
