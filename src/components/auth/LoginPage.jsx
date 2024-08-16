@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { inputChange } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import UserService from "../service/UserService";
 
@@ -111,8 +111,14 @@ export const LoginPage = () => {
               </div>
               <div id="spinner" className="spinner"></div>
             </div>
-            <Button label='INICIAR SESIÓN' className='btn-login p-button text-decoration-none' onClick={handleSubmit} />
-            {errorVisible && <small className="p-error">{errorMessage(error)}</small>}
+            <div className="text-center">
+              <Button label='INICIAR SESIÓN' className='btn-login p-button text-decoration-none mb-1' onClick={handleSubmit} />
+              {errorVisible && <small className="p-error">{errorMessage(error)}</small>}
+              <br />
+              <div className="mt-3">
+                <span>¿Aún no tiene una cuenta?  </span><Link to="/registro" replace>Registrarse</Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
