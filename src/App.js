@@ -34,6 +34,9 @@ import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
+import SendEmail from './components/userspage/SendEmail';
+import { Email } from '@mui/icons-material';
+import EmailSender from './components/userspage/SendEmail';
 
 export default function App() {
 
@@ -72,6 +75,8 @@ export default function App() {
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito />} roles={['ADMINISTRATOR', 'SALESPERSON']} />} />
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
 
+
+            <Route path='/correo' element={<EmailSender />} />
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
             
