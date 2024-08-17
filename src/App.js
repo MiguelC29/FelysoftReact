@@ -35,6 +35,7 @@ import RoleProtectedRoute from './components/context/RoleProtectedRoute';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
 
+
 export default function App() {
 
   return (
@@ -78,6 +79,8 @@ export default function App() {
             {/* Redirigir cualquier ruta no encontrada a /login */}
             <Route path='/unauthorized' element={<Error404 />} />
             <Route path='*' element={<Navigate to="/unauthorized" replace />} />
+
+            <Route path='/registro' element={<RegistrationPage />} />
           </Routes>
         </div>
         {/* <Footer /> */}
