@@ -34,8 +34,6 @@ import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
-import SendEmail from './components/userspage/SendEmail';
-import { Email } from '@mui/icons-material';
 import EmailSender from './components/userspage/SendEmail';
 
 export default function App() {
