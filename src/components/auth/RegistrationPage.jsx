@@ -8,14 +8,10 @@ import { Dropdown } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
 import { FloatLabel } from 'primereact/floatlabel';
 import UserService from '../service/UserService';
-<<<<<<< HEAD
-import "../../css/registroUsuario.css"
-
-=======
 import { Button } from 'primereact/button';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../img/logo.svg";
->>>>>>> 280a9c0f08186519c10282bf3bf43bd133bb28a0
+
 
 function RegistrationPage() {
 
