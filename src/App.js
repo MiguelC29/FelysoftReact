@@ -75,6 +75,8 @@ export default function App() {
 
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
+
+            <Route path='/registro' element={<RegistrationPage />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
             <Route path='/unauthorized' element={<Error404 />} />
