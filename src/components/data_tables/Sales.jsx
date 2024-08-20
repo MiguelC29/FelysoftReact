@@ -43,7 +43,7 @@ export default function Sales() {
         Request_Service.getData('/payment/all', setPayments);
     }, [onlyDisabled]);
 
-    
+
 
     const fetchSales = async () => {
         try {
@@ -223,7 +223,10 @@ export default function Sales() {
                                 value={selectedPayment}
                                 onChange={(e) => {
                                     setSelectedPayment(e.value);
-                                    onInputNumberChange(e, 'payment');
+                                    setSale((prevSale) => ({
+                                        ...prevSale,
+                                        payment: e.value // Asegúrate de actualizar el campo 'payment' en 'sale'
+                                    }));
                                 }}
                                 options={payments}
                                 optionLabel="methodPayment"

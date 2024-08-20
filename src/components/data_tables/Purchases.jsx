@@ -13,6 +13,9 @@ import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 import { Button } from 'primereact/button';
 
+
+
+
 export default function Purchases() {
     let emptyPurchase = {
         idPurchase: null,
@@ -382,6 +385,51 @@ export default function Purchases() {
     const handleExportExcel = () => { exportExcel(purchases, columns, 'Compras') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
+    const [showProductInputs, setShowProductInputs] = useState(false);
+    const [showBookInputs, setShowBookInputs] = useState(false);
+
+    // Maneja el clic en el botón de Producto
+    const handleProductClick = () => {
+        setShowProductInputs(prevState => !prevState);
+        setShowBookInputs(false);
+    };
+
+    // Maneja el clic en el botón de Libro
+    const handleBookClick = () => {
+        setShowProductInputs(false);
+        setShowBookInputs(prevState => !prevState);
+    };
+
+    // Estado para los inputs de producto
+    const [productDetails, setProductDetails] = useState({
+        product: '',
+        quantity: 0,
+        price: 0
+    });
+
+    // Estado para los inputs de libro
+    const [bookDetails, setBookDetails] = useState({
+        book: '',
+        price: 0
+    });
+
+    // Maneja el cambio en los inputs de producto
+    const handleProductChanges = (e, field) => {
+        setProductDetails(prevDetails => ({
+            ...prevDetails,
+            [field]: e.value
+        }));
+    };
+
+    // Maneja el cambio en los inputs de libro
+    const handleBookChanges = (e, field) => {
+        setBookDetails(prevDetails => ({
+            ...prevDetails,
+            [field]: e.value
+        }));
+    };
+
+
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
@@ -493,113 +541,135 @@ export default function Purchases() {
                 </div>
                 {details.map((detail, index) => (
                     <div key={index} className="formgrid grid mt-5">
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">inventory_2</span>
-                                </span>
+                       <div style={{ padding: '20px' }}>
+                       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+
                                 <FloatLabel>
-                                    <Dropdown
-                                        id="product"
-                                        value={detail.product}
-                                        /*onChange={(e) => {
-                                            setSelectedProduct(e.value);
-                                            onInputNumberChange(e, 'product');
-                                            handleProductChange(e, index);
-                                        }}*/
-                                        onChange={(e) => {
-                                            const newDetails = [...details];
-                                            newDetails[index].product = e.target.value;
-                                            setDetails(newDetails);
-                                        }}
-                                        options={products}
-                                        optionLabel="name"
-                                        filter valueTemplate={selectedProductTemplate}
-                                        itemTemplate={productOptionTemplate}
-                                        placeholder="Seleccionar Producto"
-                                        emptyMessage="No hay datos"
-                                        emptyFilterMessage="No hay resultados encontrados"
-                                        required
-                                        disabled={detail.book !== ""}
-                                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
-                                    />
-                                    <label htmlFor="product" className="font-bold">Producto</label>
+                                    <button type="button" className="p-button p-component p-button-outlined" onClick={handleProductClick}>
+                                        Producto
+                                    </button>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}></div>
+                                    {showProductInputs && (
+                                        <div className="p-mt-2">
+                                            <label htmlFor="product" className="dropdown-label">Productos</label>
+                                            <Dropdown                              
+                                                id="product"
+                                                value={detail.product}
+                                                /*onChange={(e) => {
+                                                    setSelectedProduct(e.value);
+                                                    onInputNumberChange(e, 'product');
+                                                    handleProductChange(e, index);
+                                                }}*/
+                                                onChange={(e) => handleProductChanges(e, 'product')}
+                                                options={products}
+                                                optionLabel="name"
+                                                filter valueTemplate={selectedProductTemplate}
+                                                itemTemplate={productOptionTemplate}
+                                                placeholder="Seleccionar Producto"
+                                                emptyMessage="No hay datos"
+                                                emptyFilterMessage="No hay resultados encontrados"
+                                                required
+                                                disabled={detail.book !== ""}
+                                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
+                                            />
+                                             <div style={{ flex: 1 }}>
+                                                <div className="p-inputgroup flex-1">
+                                                    <span className="p-inputgroup-addon">
+                                                        <span class="material-symbols-outlined">production_quantity_limits</span>
+                                                    </span>
+                                                    <FloatLabel>
+                                                        <InputNumber
+                                                            id={`quantity-${index}`}
+                                                            value={detail.quantity}
+                                                            onValueChange={(e) => handleProductChanges(e, 'quantity')}
+                                                            mode="decimal"
+                                                            required
+                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.quantity })}`}
+                                                        />
+                                                        <label htmlFor={`quantity-${index}`} className="font-bold">Cantidad</label>
+                                                    </FloatLabel>
+                                                </div>
+                                                {submitted && !detail.quantity && <small className="p-error">Cantidad es requerida.</small>}
+                                            </div>
+
+                                            <div className="field col">
+                                                <div className="p-inputgroup flex-1">
+                                                    <span className="p-inputgroup-addon">
+                                                        <span class="material-symbols-outlined">monetization_on</span>
+                                                    </span>
+                                                    <FloatLabel>
+                                                        <InputNumber
+                                                            id={`price-${index}`}
+                                                            value={detail.price}
+                                                            onValueChange={(e) => handleProductChanges(e, 'price')}
+                                                            mode="currency"
+                                                            currency="COP"
+                                                            required
+                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.price })}`}
+                                                        />
+                                                        <label htmlFor={`price-${index}`} className="font-bold">Precio</label>
+                                                    </FloatLabel>
+                                                </div>
+                                                {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
+                                            </div>
+                                        </div>
+                                    )}
+                                </FloatLabel>
+
+
+                                <FloatLabel>
+                                    <button type="button" className="p-button p-component p-button-outlined" onClick={handleBookClick}>
+                                        Libro
+                                    </button>
+
+                                    {showBookInputs && (
+                                        <div>
+                                            <Dropdown
+                                                id="book"
+                                                value={detail.book}
+                                                onChange={(e) => handleBookChanges(e, 'book')}
+                                                options={books}
+                                                optionLabel="title"
+                                                placeholder="Seleccionar Libro"
+                                                filter valueTemplate={selectedBookTemplate}
+                                                itemTemplate={bookOptionTemplate}
+                                                emptyMessage="No hay datos"
+                                                emptyFilterMessage="No hay resultados encontrados"
+                                                required
+                                                disabled={detail.product !== ""}
+                                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
+                                            />
+                                            {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
+
+                                            <div className="field col">
+                                                <div className="p-inputgroup flex-1">
+                                                    <span className="p-inputgroup-addon">
+                                                        <span class="material-symbols-outlined">monetization_on</span>
+                                                    </span>
+                                                    <FloatLabel>
+                                                        <InputNumber
+                                                            id={`price-${index}`}
+                                                            value={detail.price}
+                                                            onValueChange={(e) => handleBookChanges(e, 'price')}
+                                                            mode="currency"
+                                                            currency="COP"
+                                                            required
+                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.price })}`}
+                                                        />
+                                                        <label htmlFor={`price-${index}`} className="font-bold">Precio</label>
+                                                    </FloatLabel>
+                                                </div>
+                                                {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
+                                            </div>
+                                        </div>
+
+                                    )}
                                 </FloatLabel>
                             </div>
-                            {submitted && !detail.product && !selectedProduct && <small className="p-error">Producto es requerido.</small>}
                         </div>
 
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">book</span>
-                                </span>
-                                <FloatLabel>
-                                    <Dropdown
-                                        id="book"
-                                        value={detail.book}
-                                        onChange={(e) => {
-                                            const newDetails = [...details];
-                                            newDetails[index].book = e.target.value;
-                                            setDetails(newDetails);
-                                        }}
-                                        options={books}
-                                        optionLabel="title"
-                                        placeholder="Seleccionar Libro"
-                                        filter valueTemplate={selectedBookTemplate}
-                                        itemTemplate={bookOptionTemplate}
-                                        emptyMessage="No hay datos"
-                                        emptyFilterMessage="No hay resultados encontrados"
-                                        required
-                                        disabled={detail.product !== ""}
-                                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
-                                    />
-                                    <label htmlFor="book" className="font-bold">Libro</label>
-                                </FloatLabel>
-                            </div>
-                            {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
-                        </div>
 
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">production_quantity_limits</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputNumber
-                                        id={`quantity-${index}`}
-                                        value={detail.quantity}
-                                        onValueChange={(e) => onDetailChange(e, index, 'quantity')}
-                                        mode="decimal"
-                                        required
-                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.quantity })}`}
-                                    />
-                                    <label htmlFor={`quantity-${index}`} className="font-bold">Cantidad</label>
-                                </FloatLabel>
-                            </div>
-                            {submitted && !detail.quantity && <small className="p-error">Cantidad es requerida.</small>}
-                        </div>
-
-                        <div className="field col">
-                            <div className="p-inputgroup flex-1">
-                                <span className="p-inputgroup-addon">
-                                    <span class="material-symbols-outlined">monetization_on</span>
-                                </span>
-                                <FloatLabel>
-                                    <InputNumber
-                                        id={`price-${index}`}
-                                        value={detail.price}
-                                        onValueChange={(e) => onDetailChange(e, index, 'price')}
-                                        mode="currency"
-                                        currency="COP"
-                                        required
-                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.price })}`}
-                                    />
-                                    <label htmlFor={`price-${index}`} className="font-bold">Precio</label>
-                                </FloatLabel>
-                            </div>
-                            {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
-                        </div>
 
                         <div className="field col">
                             <Button icon="pi pi-trash" className="p-button-rounded p-button-sm" severity='danger' onClick={() => removeDetail(index)} />
