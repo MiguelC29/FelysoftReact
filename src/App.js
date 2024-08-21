@@ -34,6 +34,7 @@ import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
+import ViewAsociationCateProv from './pages/ViewAsociationCateProv';
 
 export default function App() {
 
@@ -56,6 +57,7 @@ export default function App() {
             <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/categorias_proveedores' element={<RoleProtectedRoute element={<ViewAsociationCateProv />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
