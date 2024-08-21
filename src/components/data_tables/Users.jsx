@@ -13,6 +13,7 @@ import CustomDataTable from '../CustomDataTable';
 import { FileUpload } from 'primereact/fileupload';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Image } from 'primereact/image';
+import { Button } from 'primereact/button';
 
 export default function Users() {
 
@@ -61,6 +62,7 @@ export default function Users() {
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
+  const [userDetailDialog, setUserDetailDialog] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -124,6 +126,12 @@ export default function Users() {
     setUserDialog(true);
   };
 
+  const openDetail = (user) => {
+    setUser({ ...user }); // Inicializa la contraseña como vacía
+    setTitle('Datos Usuario');
+    setUserDetailDialog(true);
+  }
+
   const toggleDisabled = () => {
     setOnlyDisabled(!onlyDisabled);
   };
@@ -138,6 +146,7 @@ export default function Users() {
   const hideDialog = () => {
     setSubmitted(false);
     setUserDialog(false);
+    setUserDetailDialog(false);
   };
 
   const hideConfirmUserDialog = () => {
@@ -266,6 +275,11 @@ export default function Users() {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser, onlyDisabled, handleEnable);
   };
 
+  const detailsBodyTemplate = (rowData) => {
+    return <Button icon="pi pi-angle-right" className="p-button-rounded p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none' }}
+    />
+  }
+
   const userDialogFooter = (
     DialogFooter(hideDialog, confirmSave)
   );
@@ -279,18 +293,19 @@ export default function Users() {
   );
 
   const columns = [
+    { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
     { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
     { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
-    { field: 'gender', header: 'Género', body: genderTemplate, sortable: true, style: { minWidth: '5rem' } },
+    // { field: 'gender', header: 'Género', body: genderTemplate, sortable: true, style: { minWidth: '5rem' } },
     { field: 'names', header: 'Nombres', sortable: true, style: { minWidth: '16rem' } },
     { field: 'lastNames', header: 'Apellidos', sortable: true, style: { minWidth: '16rem' } },
-    { field: 'address', header: 'Dirección', sortable: true, style: { minWidth: '16rem' } },
+    // { field: 'address', header: 'Dirección', sortable: true, style: { minWidth: '16rem' } },
     { field: 'phoneNumber', header: 'Télefono', sortable: true, style: { minWidth: '10rem' } },
-    { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
+    // { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
     /*username, password, image */
     { field: 'role', header: 'Rol', body: roleTemplate, sortable: true, style: { minWidth: '10rem' } },
-    { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
-    { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
+    // { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
+    // { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
     { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
@@ -516,6 +531,140 @@ export default function Users() {
             {selectedImage && (
               <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
             )}
+          </div>
+        </div>
+      </Dialog>
+
+      {/* DIALOG DETAIL */}
+      <Dialog visible={userDetailDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+        {user.image && (
+          <img
+            src={`data:${user.typeImg};base64,${user.image}`}
+            alt={`Imagen usuario ${user.names}`}
+            className="shadow-2 border-round product-image block m-auto pb-3"
+            style={{ width: '120px', height: '120px' }}
+          />
+        )}
+        <div className="container mt-4">
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">id_card</span>
+                <div>
+                  <label htmlFor="names" className="font-bold d-block">Nombres</label>
+                  <p>{user.names}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">id_card</span>
+                <div>
+                  <label htmlFor="lastNames" className="font-bold d-block">Apellidos</label>
+                  <p>{user.lastNames}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">badge</span>
+                <div>
+                  <label htmlFor="typeDoc" className="font-bold d-block">Tipo de Identificación</label>
+                  <p>{user.typeDoc}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">badge</span>
+                <div>
+                  <label htmlFor="numIdentification" className="font-bold d-block">Número de Identificación</label>
+                  <p>{user.numIdentification}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">wc</span>
+                <div>
+                  <label htmlFor="gender" className="font-bold d-block">Género</label>
+                  <p>{user.gender}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">call</span>
+                <div>
+                  <label htmlFor="phoneNumber" className="font-bold d-block">Número de celular</label>
+                  <p>{user.phoneNumber}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">home</span>
+                <div>
+                  <label htmlFor="address" className="font-bold d-block">Dirección</label>
+                  <p className="mt-2">{user.address}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">mail</span>
+                <div>
+                  <label htmlFor="email" className="font-bold d-block">Correo Electrónico</label>
+                  <p>{user.email}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">person</span>
+                <div>
+                  <label htmlFor="user_name" className="font-bold d-block">Nombre de Usuario</label>
+                  <p>{user.user_name}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">admin_panel_settings</span>
+                <div>
+                  <label htmlFor="role" className="font-bold d-block">Rol</label>
+                  <p>{user.role}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">calendar_add_on</span>
+                <div>
+                  <label htmlFor="dateRegister" className="font-bold d-block">Fecha de Creación</label>
+                  <p>{formatDate(user.dateRegister)}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">edit_calendar</span>
+                <div>
+                  <label htmlFor="lastModification" className="font-bold d-block">Última modificación</label>
+                  <p>{formatDate(user.lastModification)}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Dialog>
