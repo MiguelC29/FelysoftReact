@@ -259,6 +259,7 @@ export default function Users() {
     }
   };
 
+  /*
   const genderTemplate = (rowData) => {
     if (rowData.gender === 'MASCULINO') {
       return 'M';
@@ -266,6 +267,7 @@ export default function Users() {
       return 'F';
     }
   };
+  */
 
   const roleTemplate = (rowData) => {
     return Role[rowData.role];
@@ -276,7 +278,7 @@ export default function Users() {
   };
 
   const detailsBodyTemplate = (rowData) => {
-    return <Button icon="pi pi-angle-right" className="p-button-rounded p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none' }}
+    return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
     />
   }
 
