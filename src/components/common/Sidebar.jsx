@@ -177,6 +177,12 @@ export default function MiniDrawer({ children }) {
             roles: ['ADMINISTRATOR', 'SALESPERSON'] // Roles permitidos
         },
         {
+            name: "Inicio",
+            icon: <Icon icon='home' />,
+            link: "/reserva",
+            roles: ['CUSTOMER'] 
+        },
+        {
             name: "Almacen",
             icon: <Icon icon='inventory_2' />,
             items: [
