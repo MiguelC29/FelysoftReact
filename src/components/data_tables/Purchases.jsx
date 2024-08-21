@@ -541,42 +541,63 @@ export default function Purchases() {
                 </div>
                 {details.map((detail, index) => (
                     <div key={index} className="formgrid grid mt-5">
-                       <div style={{ padding: '20px' }}>
-                       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-
+                        <div style={{ padding: '20px' }}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: '15px',
+                                alignItems: 'center'
+                            }}>
                                 <FloatLabel>
-                                    <button type="button" className="p-button p-component p-button-outlined" onClick={handleProductClick}>
+                                    <button
+                                        type="button"
+                                        className="p-button p-component p-button-outlined"
+                                        onClick={handleProductClick}
+                                        style={{
+                                            display: 'block',
+                                            width: 'auto',  // Ancho automático para evitar expansión no deseada
+                                            maxWidth: '200px',  // Ajusta el ancho máximo según sea necesario
+                                            marginBottom: '10px',  // Espacio debajo del botón
+                                            transition: 'none',  // Desactiva cualquier transición que pueda causar movimiento
+                                            outline: 'none',  // Elimina el borde de enfoque si es necesario
+                                            boxShadow: 'none'  // Elimina la sombra del botón si es necesario
+                                        }}
+                                    >
                                         Producto
                                     </button>
 
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}></div>
+
                                     {showProductInputs && (
-                                        <div className="p-mt-2">
-                                            <label htmlFor="product" className="dropdown-label">Productos</label>
-                                            <Dropdown                              
-                                                id="product"
-                                                value={detail.product}
-                                                /*onChange={(e) => {
-                                                    setSelectedProduct(e.value);
-                                                    onInputNumberChange(e, 'product');
-                                                    handleProductChange(e, index);
-                                                }}*/
-                                                onChange={(e) => handleProductChanges(e, 'product')}
-                                                options={products}
-                                                optionLabel="name"
-                                                filter valueTemplate={selectedProductTemplate}
-                                                itemTemplate={productOptionTemplate}
-                                                placeholder="Seleccionar Producto"
-                                                emptyMessage="No hay datos"
-                                                emptyFilterMessage="No hay resultados encontrados"
-                                                required
-                                                disabled={detail.book !== ""}
-                                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
-                                            />
-                                             <div style={{ flex: 1 }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            gap: '15px',
+                                            marginTop: '10px',
+                                            alignItems: 'center' // Alinea verticalmente los inputs
+                                        }}>
+                                            <div style={{ flex: 1 }}>
+                                                <Dropdown
+                                                    id="product"
+                                                    value={detail.product}
+                                                    onChange={(e) => handleProductChanges(e, 'product')}
+                                                    options={products}
+                                                    optionLabel="name"
+                                                    filter
+                                                    valueTemplate={selectedProductTemplate}
+                                                    itemTemplate={productOptionTemplate}
+                                                    placeholder="Seleccionar Producto"
+                                                    emptyMessage="No hay datos"
+                                                    emptyFilterMessage="No hay resultados encontrados"
+                                                    required
+                                                    disabled={detail.book !== ""}
+                                                    className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
+                                                />
+                                            </div>
+
+                                            <div style={{ flex: 1 }}>
                                                 <div className="p-inputgroup flex-1">
                                                     <span className="p-inputgroup-addon">
-                                                        <span class="material-symbols-outlined">production_quantity_limits</span>
+                                                        <span className="material-symbols-outlined">production_quantity_limits</span>
                                                     </span>
                                                     <FloatLabel>
                                                         <InputNumber
@@ -593,10 +614,10 @@ export default function Purchases() {
                                                 {submitted && !detail.quantity && <small className="p-error">Cantidad es requerida.</small>}
                                             </div>
 
-                                            <div className="field col">
+                                            <div style={{ flex: 1 }}>
                                                 <div className="p-inputgroup flex-1">
                                                     <span className="p-inputgroup-addon">
-                                                        <span class="material-symbols-outlined">monetization_on</span>
+                                                        <span className="material-symbols-outlined">monetization_on</span>
                                                     </span>
                                                     <FloatLabel>
                                                         <InputNumber
@@ -617,35 +638,57 @@ export default function Purchases() {
                                     )}
                                 </FloatLabel>
 
-
                                 <FloatLabel>
-                                    <button type="button" className="p-button p-component p-button-outlined" onClick={handleBookClick}>
+                                    <button
+                                        type="button"
+                                        className="p-button p-component p-button-outlined"
+                                        onClick={handleBookClick}
+                                        style={{
+                                            display: 'block',
+                                            width: 'auto',
+                                            maxWidth: '200px',
+                                            marginBottom: '10px',
+                                            transition: 'none',
+                                            outline: 'none',
+                                            boxShadow: 'none',
+                                            boxSizing: 'border-box'  // Asegura que el padding y el borde no cambien el tamaño
+                                        }}
+                                    >
                                         Libro
                                     </button>
 
-                                    {showBookInputs && (
-                                        <div>
-                                            <Dropdown
-                                                id="book"
-                                                value={detail.book}
-                                                onChange={(e) => handleBookChanges(e, 'book')}
-                                                options={books}
-                                                optionLabel="title"
-                                                placeholder="Seleccionar Libro"
-                                                filter valueTemplate={selectedBookTemplate}
-                                                itemTemplate={bookOptionTemplate}
-                                                emptyMessage="No hay datos"
-                                                emptyFilterMessage="No hay resultados encontrados"
-                                                required
-                                                disabled={detail.product !== ""}
-                                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
-                                            />
-                                            {submitted && !detail.book && !selectedBook && <small className="p-error">Libro es requerido.</small>}
 
-                                            <div className="field col">
+                                    {showBookInputs && (
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            gap: '15px',
+                                            marginTop: '10px',
+                                            alignItems: 'center' // Alinea verticalmente los inputs
+                                        }}>
+                                            <div style={{ flex: 1 }}>
+                                                <Dropdown
+                                                    id="book"
+                                                    value={detail.book}
+                                                    onChange={(e) => handleBookChanges(e, 'book')}
+                                                    options={books}
+                                                    optionLabel="title"
+                                                    placeholder="Seleccionar Libro"
+                                                    filter
+                                                    valueTemplate={selectedBookTemplate}
+                                                    itemTemplate={bookOptionTemplate}
+                                                    emptyMessage="No hay datos"
+                                                    emptyFilterMessage="No hay resultados encontrados"
+                                                    required
+                                                    disabled={detail.product !== ""}
+                                                    className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
+                                                />
+                                            </div>
+
+                                            <div style={{ flex: 1 }}>
                                                 <div className="p-inputgroup flex-1">
                                                     <span className="p-inputgroup-addon">
-                                                        <span class="material-symbols-outlined">monetization_on</span>
+                                                        <span className="material-symbols-outlined">monetization_on</span>
                                                     </span>
                                                     <FloatLabel>
                                                         <InputNumber
@@ -663,9 +706,9 @@ export default function Purchases() {
                                                 {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
                                             </div>
                                         </div>
-
                                     )}
                                 </FloatLabel>
+
                             </div>
                         </div>
 
