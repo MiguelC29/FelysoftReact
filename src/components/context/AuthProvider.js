@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
         checkTokenExpiration();
         // Intervalo para verificar la expiración del token cada cierto tiempo
-        const interval = setInterval(checkTokenExpiration, 20000); // 20 segundos
+        const interval = setInterval(checkTokenExpiration, 5000); // 5 segundos
         return () => clearInterval(interval);
     }, [isAuthenticated, hasShownSessionExpired]);
 
