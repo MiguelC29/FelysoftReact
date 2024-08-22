@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Request_Service from '../service/Request_Service';
-import { confirmDialogFooter, DialogFooter, exportCSV, exportExcel, exportPdf, header, rightToolbarTemplateExport } from '../../functionsDataTable';
+import { DialogDelete, confirmDialogFooter, DialogFooter, exportCSV, exportExcel, exportPdf, header, rightToolbarTemplateExport, deleteDialogFooter, confirmDelete } from '../../functionsDataTable';
 import AsociationDialog from '../AsociationDialog';
 import CustomDataTable from '../CustomDataTable';
 import { Toolbar } from 'primereact/toolbar';
@@ -15,17 +15,24 @@ export default function AsociationProviderCategory() {
         providerId: null
     }
 
+    const emptyAsociationName = {
+        categoryName: null,
+        providerName: null
+    }
+
     // ROLES
     const isAdmin = UserService.isAdmin();
 
     const URL = '/category/';
     const [listAsociation, setListAsociation] = useState(null);
     const [asociation, setAsociation] = useState(emptyAsociation);
+    const [asociationName, setAsociationName] = useState(emptyAsociationName);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [providers, setProviders] = useState([]);
     const [categories, setCategories] = useState([]);
     const [asociationDialog, setAsociationDialog] = useState(false);
+    const [deleteAsociationDialog, setDeleteAsociationDialog] = useState(false);
     const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -50,6 +57,10 @@ export default function AsociationProviderCategory() {
     const hideDialog = () => {
         setSubmitted(false);
         setAsociationDialog(false);
+    };
+
+    const hideDeleteAsociationDialog = () => {
+        setDeleteAsociationDialog(false);
     };
 
     const hideConfirmAsociationDialog = () => {
@@ -77,6 +88,21 @@ export default function AsociationProviderCategory() {
         setConfirmAscDialogVisible(true);
     };
 
+    const confirmDeleteAsociation = (rowData) => {        
+        // Establece la asociación con los valores de la fila seleccionada
+        setAsociationName({
+            categoryName: rowData[0],
+            providerName: rowData[1]
+        });
+        setDeleteAsociationDialog(true);
+    };
+
+    const deleteAsociation = () => {
+        if (asociationName.categoryName && asociationName.providerName) {
+            Request_Service.deleteAsociation(asociationName, setListAsociation, toast, setDeleteAsociationDialog, setAsociationName, emptyAsociationName, 'Asociación ', URL.concat('categoryProviderAssociations'))
+        }
+    };
+
     const asociationDialogFooter = (
         DialogFooter(hideDialog, confirmAsc)
     );
@@ -84,6 +110,14 @@ export default function AsociationProviderCategory() {
     const confirmAsociationDialogFooter = (
         confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
     );
+
+    const deleteAsociationDialogFooter = (
+        deleteDialogFooter(hideDeleteAsociationDialog, deleteAsociation)
+    );
+
+    const actionBodyTemplateP = (rowData) => {
+        return <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDeleteAsociation(rowData)} />
+    };
 
     const selectedCategoryTemplate = (option, props) => {
         if (option) {
@@ -126,6 +160,7 @@ export default function AsociationProviderCategory() {
     const columns = [
         { field: '0', header: 'Categoria', sortable: true, style: { minWidth: '12rem' } },
         { field: '1', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
+        (isAdmin && {body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' }})
     ];
 
     // EXPORT DATA
@@ -179,6 +214,8 @@ export default function AsociationProviderCategory() {
                     confirmAsociationDialogFooter={confirmAsociationDialogFooter}
                     hideConfirmAsociationDialog={hideConfirmAsociationDialog}
                 />
+
+                {DialogDelete(deleteAsociationDialog, 'Asociación', deleteAsociationDialogFooter, hideDeleteAsociationDialog, asociation, '', 'la asociación')}
             </div>
         </div>
   )

@@ -141,6 +141,31 @@ class Request_Service {
         setDeleteDataDialog(false);
         setTable(emptyData);
     }
+
+    static async deleteAsociation(parameters, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable, mainUrl) {
+        const deleteUrl = this.BASE_URL + '/category/deleteAssociation';
+        const token = localStorage.getItem('token'); // Retrieve the token from localstorage
+        await axios.put(deleteUrl, parameters,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                let type = response.data['status'];
+                let msg = response.data['data'];
+                if (type === 'success') {
+                    toast.current.show({ severity: 'success', summary: msg, detail: nameTable + ' Eliminado', life: 3000 });
+                    this.getData(mainUrl, setData);
+                }
+                return response.data;
+            })
+            .catch((error) => {
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: nameTable + ' NO Eliminado', life: 3000 });
+                console.log(error);
+            });
+
+        setDeleteDataDialog(false);
+        setTable(emptyData);
+    }
 }
 
 export default Request_Service
