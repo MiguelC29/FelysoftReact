@@ -142,8 +142,8 @@ class Request_Service {
         setTable(emptyData);
     }
 
-    static async deleteAsociation(parameters, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable, mainUrl) {
-        const deleteUrl = this.BASE_URL + '/category/deleteAssociation';
+    static async deleteAsociation(parameters, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable, mainUrl, urlEntity) {
+        const deleteUrl = this.BASE_URL + urlEntity + 'deleteAssociation';
         const token = localStorage.getItem('token'); // Retrieve the token from localstorage
         await axios.put(deleteUrl, parameters,
             {
