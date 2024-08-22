@@ -643,7 +643,7 @@ export default function Users() {
                 <span className="material-symbols-outlined me-2">admin_panel_settings</span>
                 <div>
                   <label htmlFor="role" className="font-bold d-block">Rol</label>
-                  <p>{user.role}</p>
+                  <p>{Role[user.role]}</p>
                 </div>
               </div>
             </div>
