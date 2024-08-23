@@ -80,7 +80,7 @@ const ContentWrapper = styled('div')(({ theme, open }) => ({
 }));
 
 export default function MiniDrawer({ children }) {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated } = useAuth();
     const isAdmin = UserService.isAdmin();
     const isCustomer = UserService.isCustomer();
     const isSalesPerson = UserService.isSalesPerson();
@@ -90,25 +90,6 @@ export default function MiniDrawer({ children }) {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
     const [expandedItem, setExpandedItem] = React.useState('');
-
-    const handleLogout = (e) => {
-        e.preventDefault(); // Prevenir la acción predeterminada del enlace
-        const Swal = require('sweetalert2');
-        Swal.fire({
-            title: '¿Estás seguro que quieres salir?',
-            icon: 'warning',
-            showCancelButton: true, // Muestra el botón de cancelar
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: "#3085d6",
-            ñcancelButtonColor: "#d33",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                logout(); // Llama a la función de logout para cerrar la sesión
-                navigate('/login'); // Redirige al usuario a la página de login o cualquier otra página
-            }
-        });
-    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -221,20 +202,7 @@ export default function MiniDrawer({ children }) {
             icon: <Icon icon='settings' />,
             link: "",
             roles: ['ADMINISTRATOR']
-        },
-        {
-            name: "Perfil",
-            icon: <Icon icon='person' />,
-            link: "/perfil",
-            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
-        },
-        {
-            name: "Cerrar sesión",
-            icon: <Icon icon='logout' />,
-            link: "/",
-            onClick: handleLogout,
-            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
-        },
+        }
     ];
 
     // SI NO ESTA AUTENTICADO NO SE MUESTRA EL SIDEBAR

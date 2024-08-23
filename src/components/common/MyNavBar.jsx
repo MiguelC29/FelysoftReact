@@ -14,7 +14,7 @@ import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
 import { useAuth } from '../context/AuthProvider';
 import { Divider, ListItemIcon } from '@mui/material';
-import { AccountCircleRounded, Logout, Notifications, NotificationsRounded, ShoppingCart } from '@mui/icons-material';
+import { AccountCircleRounded, Logout, NotificationsRounded, ShoppingCart } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -61,6 +61,42 @@ const Role = {
     INVENTORY_MANAGER: 'GERENTE DE INVENTARIO',
     CUSTOMER: 'CLIENTE',
 }
+
+// Estilo para el contenedor del menú de notificaciones
+const NotificationMenuItem = styled(MenuItem)({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+});
+
+// Estilo para los íconos y el tiempo en el menú de notificaciones
+const NotificationContent = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '13px',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginRight: '8px',
+});
+
+const NotificationText = styled('span')({
+    fontSize: '14px',
+    marginRight: '8px',
+});
+
+const NotificationIcon = styled('span')({
+    marginRight: '8px',
+});
+
+const NotificationTime = styled('span')({
+    marginLeft: 'auto',
+    color: 'grey',
+    fontSize: '12px',
+});
+
+const BadgeStyled = styled(Badge)(({ theme }) => ({
+    fontSize: '11px',
+}));
 
 export default function NavBar({ open, handleDrawerOpen, Icon }) {
     const isAdmin = UserService.isAdmin();
@@ -141,8 +177,8 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 <div className='d-flex align-items-end ms-auto'>
                     {(isAdmin || isSalesPerson) && (
                         <span className="material-symbols-outlined mr-4 p-overlay-badge" onClick={() => setCartVisible(true)}>
-                            <ShoppingCart fontSize='24px'/>
-                            <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info" />
+                            <ShoppingCart fontSize='24px' />
+                            <BadgeStyled value={getCartItemCount()} id='badge-shopping-car' severity="info" />
                         </span>
                     )}
                     <div className="datetime text-white" id="datetime">
@@ -155,7 +191,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 >
                     <span className="d-flex ms-auto material-symbols-outlined p-overlay-badge">
                         <NotificationsRounded fontSize='28px' />
-                        <Badge value={4} severity="info" /> {/* Número de notificaciones */}
+                        <BadgeStyled value={4} severity="info" /> {/* Número de notificaciones */}
                     </span>
                 </IconButton>
                 {isAuthenticated && profile && (
@@ -199,15 +235,35 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                     open={openNotificationMenu}
                     onClose={handleNotificationMenuClose}
                 >
-                    <MenuItem onClick={handleNotificationMenuClose}>
-                        <span>Stock bajo del Producto <strong>Oreo</strong></span>
-                    </MenuItem>
-                    <MenuItem onClick={handleNotificationMenuClose}>
-                        <span>El producto <strong>Oreo</strong> esta próximo a vencerse</span>
-                    </MenuItem>
-                    <MenuItem onClick={handleNotificationMenuClose}>
-                        <span>Stock bajo del Producto <strong>Gansito</strong></span>
-                    </MenuItem>
+                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                        <NotificationContent>
+                            <NotificationIcon className="material-symbols-outlined">
+                                trending_down
+                            </NotificationIcon>
+                            <NotificationText>Stock bajo del Producto <strong>Oreo</strong></NotificationText>
+                            <NotificationTime>3 mins</NotificationTime>
+                        </NotificationContent>
+                    </NotificationMenuItem>
+                    <Divider />
+                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                        <NotificationContent>
+                            <NotificationIcon className="material-symbols-outlined">
+                                event_busy
+                            </NotificationIcon>
+                            <NotificationText>El producto <strong>Oreo</strong> esta próximo a vencerse</NotificationText>
+                            <NotificationTime>12 hrs</NotificationTime>
+                        </NotificationContent>
+                    </NotificationMenuItem>
+                    <Divider />
+                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                        <NotificationContent>
+                            <NotificationIcon className="material-symbols-outlined">
+                                trending_down
+                            </NotificationIcon>
+                            <NotificationText>Stock bajo del Producto <strong>Gansito</strong></NotificationText>
+                            <NotificationTime>2 días</NotificationTime>
+                        </NotificationContent>
+                    </NotificationMenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>
