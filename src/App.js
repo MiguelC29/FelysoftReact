@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ViewCategories from './pages/ViewCategories';
 import ViewProducts from './pages/ViewProducts';
-// import ViewRoles from './pages/ViewRoles';
 import ViewUsers from './pages/ViewUsers';
 import ViewProfile from './pages/ViewProfile';
 import ViewProviders from './pages/ViewProviders';
@@ -34,6 +33,8 @@ import UpdateUser from './components/userspage/UpdateUser'
 import RoleProtectedRoute from './components/context/RoleProtectedRoute';
 import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
+import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
+import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
 
 export default function App() {
 
@@ -56,11 +57,13 @@ export default function App() {
             <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/categorias_proveedores' element={<RoleProtectedRoute element={<ViewAssociationCateProv />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/generos' element={<RoleProtectedRoute element={<ViewGenres />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/autores' element={<RoleProtectedRoute element={<ViewAuthors />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
+            <Route path='/generos_autores' element={<RoleProtectedRoute element={<ViewAssociationGenAutor />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
