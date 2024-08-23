@@ -143,7 +143,6 @@ export default function Services() {
     if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Servicio ', URL.concat('all'), setServices);
       setServiceDialog(false);
-      setService(emptyService);
     }
   };
 

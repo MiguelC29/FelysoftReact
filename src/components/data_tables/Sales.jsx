@@ -125,7 +125,6 @@ export default function Sales() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Venta ', URL.concat('all'), setSales);
             setSaleDialog(false);
-            setSale(emptySale);
         }
     };
 

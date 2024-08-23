@@ -112,7 +112,6 @@ export default function Charges() {
     if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Cargo ', URL.concat('all'), setCharges);
       setChargeDialog(false);
-      setCharge(emptyCharge);
     }
   };
 

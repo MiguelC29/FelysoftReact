@@ -23,16 +23,46 @@ class UserService {
         }
     }
 
-    static async register(userData, token) {
+    static async register(parameters, toast, navigate) {
         try {
+            await axios({ method: 'POST', url: `${UserService.BASE_URL}/auth/register`, data: parameters })
+                .then((response) => {
+                    if (response.data.error === "Usuario Existente") {
+                        throw new Error("Usuario Existente");
+                    } else {
+                        
+                        const Swal = require('sweetalert2');
+                        Swal.fire({
+                            title: "Exitoso!",
+                            text: "Usuario registrado. Inicie Sesión.",
+                            icon: "success"
 
-            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            )
-            return response.data;
+                        })
+                            .then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {
+                                    navigate('/login');
+                                }
+                            });
 
+
+                        return response.data;
+                    }
+                })
+                .catch((error) => {
+                    if (error.message === "Usuario Existente") {
+                        toast.current.show({ severity: 'error', summary: error.message, detail: "El usuario ya existe. Por favor inicie sesión", life: 3000 });
+                    } else {
+                        toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Usuario no Registrado', life: 3000 });
+                    }
+                    console.log(error);
+                });
+            /*const type = response.data['status'];
+            const msg = response.data['data'];
+            if (type === 'success') {
+                toast.current.show({ severity: 'success', summary: msg, detail: 'Usuario registrado', life: 3000 });
+                // this.getData(mainUrl, setData);
+            }*/
         } catch (err) {
             throw err;
         }
@@ -83,16 +113,16 @@ class UserService {
     static isTokenExpired() {
         const tokenExpiration = localStorage.getItem('tokenExpiration');
         if (!tokenExpiration) {
-          return true; // Si no hay fecha de expiración, considera el token como expirado
+            return true; // Si no hay fecha de expiración, considera el token como expirado
         }
         try {
-          // Convertir la fecha de expiración a un objeto Date
-          const expirationDate = new Date(tokenExpiration);
-          // Comparar la fecha actual con la fecha de expiración
-          return new Date() > expirationDate;
+            // Convertir la fecha de expiración a un objeto Date
+            const expirationDate = new Date(tokenExpiration);
+            // Comparar la fecha actual con la fecha de expiración
+            return new Date() > expirationDate;
         } catch (error) {
-          console.error("Invalid expiration date", error);
-          return true; // Si hay un error al parsear la fecha, considera el token como expirado
+            console.error("Invalid expiration date", error);
+            return true; // Si hay un error al parsear la fecha, considera el token como expirado
         }
     }
 

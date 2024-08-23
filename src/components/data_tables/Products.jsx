@@ -34,6 +34,7 @@ export default function Products() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [imageError, setImageError] = useState('');
     const [productDialog, setProductDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -93,13 +94,20 @@ export default function Products() {
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setSelectedImage(reader.result);
-        };
-
         if (file) {
+            // Validar el tipo de archivo
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg','image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
+                setSelectedImage(null); // Limpiar la vista previa
+                return;
+            }
+            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
             reader.readAsDataURL(file);
         }
     };
@@ -203,7 +211,6 @@ export default function Products() {
         if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Producto ', URL.concat('all'), setProducts);
             setProductDialog(false);
-            setProduct(emptyProduct);
         }
     };    
 
@@ -419,12 +426,16 @@ export default function Products() {
                             name="image"
                             chooseLabel="Seleccionar Imagen"
                             url="http://localhost:8086/api/product/create"
-                            accept="image/*"
-                            maxFileSize={2000000}
+                            accept=".png,.jpg,.jpeg,.webp"
+                            maxFileSize={3145728}
+                            sizeLimit="3145728"
                             onSelect={handleFileUpload}
                             required
                             className={`${classNames({ 'p-invalid': submitted && !product.image && !selectedImage })}`}
                         />
+                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {imageError && <small className="p-error">{imageError}</small>}
+                        {/*TODO: desplegar modal con información detallada de los productos*/}
                         {submitted && !product.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
                     </div>
                     <div className="field col">

@@ -21,6 +21,7 @@ import { useCart } from '../CartContext';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
+import Swal from 'sweetalert2';
 
 
 const drawerWidth = 240;
@@ -136,11 +137,22 @@ export default function MiniDrawer({ children }) {
 
     const handleLogout = (e) => {
         e.preventDefault(); // Prevenir la acción predeterminada del enlace
-        const confirmDelete = window.confirm('¿Seguro que quieres cerrar la sesión?')
-        if (confirmDelete) {
-            logout();
-        }
-    }
+        const Swal = require('sweetalert2');
+        Swal.fire({
+            title: '¿Estás seguro que quieres salir?',
+            icon: 'warning',
+            showCancelButton: true, // Muestra el botón de cancelar
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: "#3085d6",
+            ñcancelButtonColor: "#d33",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                logout(); // Llama a la función de logout para cerrar la sesión
+                window.location.href = '/login'; // Redirige al usuario a la página de login o cualquier otra página
+            }
+        });
+    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -188,9 +200,11 @@ export default function MiniDrawer({ children }) {
             items: [
                 { name: "Productos", icon: <IconSubItems />, link: "/productos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Categorías", icon: <IconSubItems />, link: "/categorias", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Categorías-Proveedores", icon: <IconSubItems />, link: "/categorias_proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Géneros-Autores", icon: <IconSubItems />, link: "/generos_autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Servicios", icon: <IconSubItems />, link: "/servicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON'] },
             ],

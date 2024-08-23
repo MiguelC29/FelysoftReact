@@ -116,7 +116,6 @@ export default function TypeServices() {
     if (isValid) {
       await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Tipo de Servicio ', URL.concat('all'), setTypeservices);
       setTypeServiceDialog(false);
-      setTypeService(emptyTypeService);
     }
   };
 

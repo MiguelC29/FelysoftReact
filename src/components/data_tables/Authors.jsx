@@ -71,6 +71,7 @@ export default function Authors() {
     };
 
     const openAsociation = () => {
+        setAsociation(emptyAsociation)
         setSelectedGenre('');
         setSelectedAuthor('');
         setTitle('Registrar Asociación');
@@ -150,7 +151,6 @@ export default function Authors() {
         if (isValid) {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Autor ', URL.concat('all'), setAuthors);
             setAuthorDialog(false);
-            setAuthor(emptyAuthor);
         }
     };
 
@@ -167,9 +167,6 @@ export default function Authors() {
             };
             await Request_Service.sendRequestAsociation(parameters, '/genre/add-author', toast);
             setAsociationDialog(false);
-            setAsociation(emptyAsociation);
-            setSelectedGenre('');
-            setSelectedAuthor('');
         }
     };
 
