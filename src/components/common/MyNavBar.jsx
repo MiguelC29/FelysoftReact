@@ -14,7 +14,7 @@ import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
 import { useAuth } from '../context/AuthProvider';
 import { Divider, ListItemIcon } from '@mui/material';
-import { AccountCircleRounded, Logout } from '@mui/icons-material';
+import { AccountCircleRounded, Logout, Notifications, NotificationsRounded, ShoppingCart } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -49,7 +49,7 @@ const ProfileImage = styled('img')({
     height: '50px',
     width: '50px',
     borderRadius: '50%',
-    border: '2px solid #fff', // Opcional: borde blanco alrededor de la imagen
+    border: '2px solid #18415c',
     cursor: 'pointer',
     marginLeft: '16px', // Espacio entre la imagen de perfil y el resto de los elementos
 });
@@ -70,6 +70,8 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
     const [cartVisible, setCartVisible] = React.useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const openMenu = Boolean(anchorEl);
+    const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // Estado para notificaciones
+    const openNotificationMenu = Boolean(notificationAnchorEl);
     const navigate = useNavigate();
     const { isAuthenticated, profile, logout } = useAuth(); // Usa el contexto de autenticación
 
@@ -85,8 +87,16 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
         setAnchorEl(event.currentTarget);
     };
 
+    const handleNotificationClick = (event) => {
+        setNotificationAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleNotificationMenuClose = () => {
+        setNotificationAnchorEl(null);
     };
 
     const handleLogout = (e) => {
@@ -130,15 +140,24 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 </Typography>}
                 <div className='d-flex align-items-end ms-auto'>
                     {(isAdmin || isSalesPerson) && (
-                        <span className="material-symbols-outlined mr-5 p-overlay-badge" onClick={() => setCartVisible(true)}>
-                            shopping_cart
-                            <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info"></Badge>
+                        <span className="material-symbols-outlined mr-4 p-overlay-badge" onClick={() => setCartVisible(true)}>
+                            <ShoppingCart fontSize='24px'/>
+                            <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info" />
                         </span>
                     )}
                     <div className="datetime text-white" id="datetime">
                         {dateTime.toLocaleString()}
                     </div>
                 </div>
+                <IconButton
+                    color="inherit"
+                    onClick={handleNotificationClick}
+                >
+                    <span className="d-flex ms-auto material-symbols-outlined p-overlay-badge">
+                        <NotificationsRounded fontSize='28px' />
+                        <Badge value={4} severity="info" /> {/* Número de notificaciones */}
+                    </span>
+                </IconButton>
                 {isAuthenticated && profile && (
                     <>
                         <ProfileImage
@@ -146,6 +165,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                             alt={`Imagen usuario ${profile.user.names}`}
                             onClick={handleProfileClick}
                         />
+                        {/* TODO: REVISAR QUE SI ACTUALIZO LA INFO DEL USUARIO NO SE REFLEJA EN EL PERFIL DEL NAVBAR */}
                         <Menu
                             anchorEl={anchorEl}
                             open={openMenu}
@@ -162,9 +182,10 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                                 </ListItemIcon>
                                 <Link to="/perfil" className="text-decoration-none">Perfil</Link>
                             </MenuItem>
+                            <Divider />
                             <MenuItem onClick={handleLogout}>
                                 <ListItemIcon>
-                                    <Logout fontSize="small" />
+                                    <Logout fontSize="medium" />
                                 </ListItemIcon>
                                 Cerrar sesión
                             </MenuItem>
@@ -172,6 +193,22 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                     </>
                 )}
                 <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
+                {/* Aquí puedes agregar el menú de notificaciones si lo necesitas */}
+                <Menu
+                    anchorEl={notificationAnchorEl}
+                    open={openNotificationMenu}
+                    onClose={handleNotificationMenuClose}
+                >
+                    <MenuItem onClick={handleNotificationMenuClose}>
+                        <span>Stock bajo del Producto <strong>Oreo</strong></span>
+                    </MenuItem>
+                    <MenuItem onClick={handleNotificationMenuClose}>
+                        <span>El producto <strong>Oreo</strong> esta próximo a vencerse</span>
+                    </MenuItem>
+                    <MenuItem onClick={handleNotificationMenuClose}>
+                        <span>Stock bajo del Producto <strong>Gansito</strong></span>
+                    </MenuItem>
+                </Menu>
             </Toolbar>
         </AppBar>
     );
