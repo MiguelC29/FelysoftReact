@@ -1,14 +1,14 @@
 import React from 'react'
 import MiniDrawer from '../components/common/Sidebar';
 import { Box } from '@mui/material';
-import AsociationProviderCategory from '../components/data_tables/AsociationProviderCategory';
+import AssociationProviderCategory from '../components/data_tables/AssociationProviderCategory';
 
-export default function ViewAsociationCateProv() {
+export default function ViewAssociationCateProv() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <AsociationProviderCategory />
+                    <AssociationProviderCategory />
                 </Box>
             </MiniDrawer>
         </div>

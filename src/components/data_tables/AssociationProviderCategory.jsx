@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Request_Service from '../service/Request_Service';
-import { DialogDelete, confirmDialogFooter, DialogFooter, exportCSV, exportExcel, exportPdf, header, rightToolbarTemplateExport, deleteDialogFooter, confirmDelete } from '../../functionsDataTable';
+import { DialogDelete, confirmDialogFooter, DialogFooter, exportCSV, exportExcel, exportPdf, header, rightToolbarTemplateExport, deleteDialogFooter } from '../../functionsDataTable';
 import AsociationDialog from '../AsociationDialog';
 import CustomDataTable from '../CustomDataTable';
 import { Toolbar } from 'primereact/toolbar';
@@ -8,14 +8,14 @@ import { Toast } from 'primereact/toast';
 import UserService from '../service/UserService';
 import { Button } from 'primereact/button';
 
-export default function AsociationProviderCategory() {
+export default function AssociationProviderCategory() {
 
-    const emptyAsociation = {
+    const emptyAssociation = {
         categoryId: null,
         providerId: null
     }
 
-    const emptyAsociationName = {
+    const emptyAssociationName = {
         categoryName: null,
         providerName: null
     }
@@ -24,15 +24,15 @@ export default function AsociationProviderCategory() {
     const isAdmin = UserService.isAdmin();
 
     const URL = '/category/';
-    const [listAsociation, setListAsociation] = useState(null);
-    const [asociation, setAsociation] = useState(emptyAsociation);
-    const [asociationName, setAsociationName] = useState(emptyAsociationName);
+    const [listAssociation, setListAssociation] = useState(null);
+    const [association, setAssociation] = useState(emptyAssociation);
+    const [associationName, setAssociationName] = useState(emptyAssociationName);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [providers, setProviders] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [asociationDialog, setAsociationDialog] = useState(false);
-    const [deleteAsociationDialog, setDeleteAsociationDialog] = useState(false);
+    const [associationDialog, setAssociationDialog] = useState(false);
+    const [deleteAssociationDialog, setDeleteAssociationDialog] = useState(false);
     const [confirmAscDialogVisible, setConfirmAscDialogVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -41,46 +41,48 @@ export default function AsociationProviderCategory() {
     const dt = useRef(null);
 
     useEffect(() => {
-        Request_Service.getData(URL.concat('categoryProviderAssociations'), setListAsociation);
+        Request_Service.getData(URL.concat('categoryProviderAssociations'), setListAssociation);
     }, []);
 
     const openAsociation = () => {
+        setAssociation(emptyAssociation);
         setSelectedCategory('');
         setSelectedProvider('');
         setTitle('Registrar Nueva Asociación');
         Request_Service.getData(URL.concat('all'), setCategories);
         Request_Service.getData('/provider/all', setProviders);
         setSubmitted(false);
-        setAsociationDialog(true);
+        setAssociationDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setAsociationDialog(false);
+        setAssociationDialog(false);
     };
 
-    const hideDeleteAsociationDialog = () => {
-        setDeleteAsociationDialog(false);
+    const hideDeleteAssociationDialog = () => {
+        setDeleteAssociationDialog(false);
     };
 
-    const hideConfirmAsociationDialog = () => {
+    const hideConfirmAssociationDialog = () => {
         setConfirmAscDialogVisible(false);
     };
 
-    const saveAsociation = async () => {
+    const saveAssociation = async () => {
         setSubmitted(true);
         setConfirmAscDialogVisible(false);
-        if (asociation.categoryId && asociation.providerId) {
+        if (association.categoryId && association.providerId) {
             let parameters = {
-                categoryId: asociation.categoryId.idCategory, providerId: asociation.providerId.idProvider,
+                categoryId: association.categoryId.idCategory,
+                providerId: association.providerId.idProvider,
             };
 
             await Request_Service.sendRequestAsociation(parameters, URL.concat('add-provider'), toast);
-            
+
             // Actualiza la lista de asociaciones después de guardar
-            Request_Service.getData(URL.concat('categoryProviderAssociations'), setListAsociation);
-            
-            setAsociationDialog(false);
+            Request_Service.getData(URL.concat('categoryProviderAssociations'), setListAssociation);
+
+            setAssociationDialog(false);
         }
     };
 
@@ -88,35 +90,35 @@ export default function AsociationProviderCategory() {
         setConfirmAscDialogVisible(true);
     };
 
-    const confirmDeleteAsociation = (rowData) => {        
+    const confirmDeleteAssociation = (rowData) => {
         // Establece la asociación con los valores de la fila seleccionada
-        setAsociationName({
+        setAssociationName({
             categoryName: rowData[0],
             providerName: rowData[1]
         });
-        setDeleteAsociationDialog(true);
+        setDeleteAssociationDialog(true);
     };
 
     const deleteAsociation = () => {
-        if (asociationName.categoryName && asociationName.providerName) {
-            Request_Service.deleteAsociation(asociationName, setListAsociation, toast, setDeleteAsociationDialog, setAsociationName, emptyAsociationName, 'Asociación ', URL.concat('categoryProviderAssociations'))
+        if (associationName.categoryName && associationName.providerName) {
+            Request_Service.deleteAsociation(associationName, setListAssociation, toast, setDeleteAssociationDialog, setAssociationName, emptyAssociationName, 'Asociación ', URL.concat('categoryProviderAssociations'), URL)
         }
     };
 
-    const asociationDialogFooter = (
+    const associationDialogFooter = (
         DialogFooter(hideDialog, confirmAsc)
     );
 
-    const confirmAsociationDialogFooter = (
-        confirmDialogFooter(hideConfirmAsociationDialog, saveAsociation)
+    const confirmAssociationDialogFooter = (
+        confirmDialogFooter(hideConfirmAssociationDialog, saveAssociation)
     );
 
-    const deleteAsociationDialogFooter = (
-        deleteDialogFooter(hideDeleteAsociationDialog, deleteAsociation)
+    const deleteAssociationDialogFooter = (
+        deleteDialogFooter(hideDeleteAssociationDialog, deleteAsociation)
     );
 
     const actionBodyTemplateP = (rowData) => {
-        return <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDeleteAsociation(rowData)} />
+        return <Button icon="pi pi-trash" className="rounded" severity="danger" onClick={() => confirmDeleteAssociation(rowData)} />
     };
 
     const selectedCategoryTemplate = (option, props) => {
@@ -160,23 +162,23 @@ export default function AsociationProviderCategory() {
     const columns = [
         { field: '0', header: 'Categoria', sortable: true, style: { minWidth: '12rem' } },
         { field: '1', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
-        (isAdmin && {body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' }})
+        (isAdmin && { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } })
     ];
 
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, listAsociation, 'Reporte_Asociaciones_Categorías_y_Proveedores') };
-    const handleExportExcel = () => { exportExcel(listAsociation, columns, 'Asociaciones_Categorías_y_Proveedores') };
+    const handleExportPdf = () => { exportPdf(columns, listAssociation, 'Reporte_Asociaciones_Categorías_y_Proveedores') };
+    const handleExportExcel = () => { exportExcel(listAssociation, columns, 'Asociaciones_Categorías_y_Proveedores') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
-  return (
-    <div>
+    return (
+        <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={<Button label={'Registrar Asociación'} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
-                    data={listAsociation}
+                    data={listAssociation}
                     dataKey="id"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Asociaciones"
                     globalFilter={globalFilter}
@@ -185,11 +187,11 @@ export default function AsociationProviderCategory() {
                 />
 
                 <AsociationDialog
-                    asociation={asociation}
-                    setAsociation={setAsociation}
-                    visible={asociationDialog}
+                    asociation={association}
+                    setAsociation={setAssociation}
+                    visible={associationDialog}
                     title={title}
-                    footer={asociationDialogFooter}
+                    footer={associationDialogFooter}
                     onHide={hideDialog}
                     labelId='category'
                     nameTable='Categoria'
@@ -201,8 +203,8 @@ export default function AsociationProviderCategory() {
                     idOnInputNumberTwo='providerId'
                     valueTemplate={selectedCategoryTemplate}
                     itemTemplate={categoryOptionTemplate}
-                    id={asociation.categoryId}
-                    id2={asociation.providerId}
+                    id={association.categoryId}
+                    id2={association.providerId}
                     selectedTwo={selectedProvider}
                     setSelected2={setSelectedProvider}
                     options={categories}
@@ -211,12 +213,12 @@ export default function AsociationProviderCategory() {
                     itemTemplateTwo={providerOptionTemplate}
                     filter submitted={submitted}
                     confirmDialogVisible={confirmAscDialogVisible}
-                    confirmAsociationDialogFooter={confirmAsociationDialogFooter}
-                    hideConfirmAsociationDialog={hideConfirmAsociationDialog}
+                    confirmAsociationDialogFooter={confirmAssociationDialogFooter}
+                    hideConfirmAsociationDialog={hideConfirmAssociationDialog}
                 />
 
-                {DialogDelete(deleteAsociationDialog, 'Asociación', deleteAsociationDialogFooter, hideDeleteAsociationDialog, asociation, '', 'la asociación')}
+                {DialogDelete(deleteAssociationDialog, 'Asociación', deleteAssociationDialogFooter, hideDeleteAssociationDialog, association, `${associationName.categoryName} y ${associationName.providerName}`, 'la asociación entre')}
             </div>
         </div>
-  )
+    )
 }
