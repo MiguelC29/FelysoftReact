@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
@@ -14,15 +12,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import logo from '../../img/logo.png';
 import { Link } from 'react-router-dom';
-import { Badge } from 'primereact/badge';
-import { useCart } from '../CartContext';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
-import CartModal from '../data_tables/CartModal';
-import Swal from 'sweetalert2';
-
+import NavBar from './MyNavBar';
 
 const drawerWidth = 240;
 
@@ -53,25 +46,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-    backgroundColor: '#19191a',
-    // zIndex: theme.zIndex.drawer,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -105,13 +79,6 @@ const ContentWrapper = styled('div')(({ theme, open }) => ({
     }),
 }));
 
-const LogoImage = styled('img')({
-    marginRight: '10px',
-    height: '40px',
-    width: '40px',
-    zIndex: 2000,
-});
-
 export default function MiniDrawer({ children }) {
     const { isAuthenticated, logout } = useAuth();
     const isAdmin = UserService.isAdmin();
@@ -122,18 +89,6 @@ export default function MiniDrawer({ children }) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [expandedItem, setExpandedItem] = React.useState('');
-    const [dateTime, setDateTime] = useState(new Date());
-    const { cartItems } = useCart();
-    const { getCartItemCount } = useCart();
-    const [cartVisible, setCartVisible] = React.useState(false);
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setDateTime(new Date());
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, []);
 
     const handleLogout = (e) => {
         e.preventDefault(); // Prevenir la acción predeterminada del enlace
@@ -315,36 +270,7 @@ export default function MiniDrawer({ children }) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <Icon icon={'menu'} textColor={'text-white'} />
-                    </IconButton>
-                    <LogoImage src={logo} alt="Logo FELYSOFT" />
-                    {!open && <Typography variant="h6" noWrap component="div">
-                        <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
-                    </Typography>}
-                    <div className='d-flex align-items-end ms-auto'>
-                        {(isAdmin || isSalesPerson) && (
-                            <span className="material-symbols-outlined mr-5 p-overlay-badge" onClick={() => setCartVisible(true)}>
-                                shopping_cart
-                                <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info"></Badge>
-                            </span>
-                        )}
-                        <div className="datetime text-white" id="datetime">{dateTime.toLocaleString()}</div>
-                    </div>
-                    <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
-                </Toolbar>
-            </AppBar>
+            <NavBar open={open} handleDrawerOpen={handleDrawerOpen} Icon={Icon} />
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader className='text-white' style={{ background: '#323232' }}>
                     <Typography variant="h6" noWrap component="div" className='mr-6'>
