@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(UserService.isAuthenticated());
     const [authError, setAuthError] = useState('');
     const [hasShownSessionExpired, setHasShownSessionExpired] = useState(false);
+    const [profile, setProfile] = useState(null); // Estado para el perfil del usuario
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,25 +34,47 @@ export const AuthProvider = ({ children }) => {
     }, [isAuthenticated, hasShownSessionExpired]);
 
     useEffect(() => {
-        // Limpiar el mensaje de error de autenticación al recargar la página
-        setAuthError('');
-        setHasShownSessionExpired(false);
-    }, []);
+        const fetchProfile = async () => {
+            if (isAuthenticated) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const profileData = await UserService.getYourProfile(token);
+                    setProfile(profileData);
+                } catch (err) {
+                    console.error('Error fetching profile:', err);
+                }
+            }
+        };
+
+        fetchProfile();
+    }, [isAuthenticated]); // Llama a la función cuando el estado de autenticación cambia
 
     const login = () => {
         setIsAuthenticated(true);
         setAuthError('');
         setHasShownSessionExpired(false);
+        // Después de iniciar sesión, obtén el perfil
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const profileData = await UserService.getYourProfile(token);
+                setProfile(profileData);
+            } catch (err) {
+                console.error('Error fetching profile:', err);
+            }
+        };
+        fetchProfile();
     };
 
     const logout = () => {
         UserService.logout();
         setIsAuthenticated(false);
+        setProfile(null); // Limpiar el perfil al cerrar sesión
         navigate('/login');
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, authError, setAuthError }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, authError, setAuthError, profile }}>
             {children}
         </AuthContext.Provider>
     );

@@ -12,7 +12,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
 import NavBar from './MyNavBar';
@@ -88,6 +88,7 @@ export default function MiniDrawer({ children }) {
     const isInventoryManager = UserService.isInventoryManager();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
     const [expandedItem, setExpandedItem] = React.useState('');
 
     const handleLogout = (e) => {
@@ -104,7 +105,7 @@ export default function MiniDrawer({ children }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 logout(); // Llama a la función de logout para cerrar la sesión
-                window.location.href = '/login'; // Redirige al usuario a la página de login o cualquier otra página
+                navigate('/login'); // Redirige al usuario a la página de login o cualquier otra página
             }
         });
     };
@@ -300,7 +301,7 @@ export default function MiniDrawer({ children }) {
                                             if (item.items) {
                                                 handleExpand(item.name);
                                             } else if (item.link) {
-                                                window.location.href = item.link; // Navegar a la URL del enlace
+                                                navigate(item.link); // Navegar a la URL del enlace
                                             }
                                         }
                                     }}
