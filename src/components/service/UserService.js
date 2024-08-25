@@ -30,7 +30,6 @@ class UserService {
                     if (response.data.error === "Usuario Existente") {
                         throw new Error("Usuario Existente");
                     } else {
-                        
                         const Swal = require('sweetalert2');
                         Swal.fire({
                             title: "Exitoso!",
@@ -39,7 +38,6 @@ class UserService {
 
                         })
                             .then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
                                 if (result.isConfirmed) {
                                     navigate('/login');
                                 }
@@ -57,12 +55,6 @@ class UserService {
                     }
                     console.log(error);
                 });
-            /*const type = response.data['status'];
-            const msg = response.data['data'];
-            if (type === 'success') {
-                toast.current.show({ severity: 'success', summary: msg, detail: 'Usuario registrado', life: 3000 });
-                // this.getData(mainUrl, setData);
-            }*/
         } catch (err) {
             throw err;
         }

@@ -286,7 +286,7 @@ export const inputChange = (e, name, data, setData) => {
 };
 
 export const inputNumberChange = (e, name, data, setData) => {
-    const val = e.value || 0;
+    const val = e.value;
     let _data = { ...data };
 
     _data[`${name}`] = val;
