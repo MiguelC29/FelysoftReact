@@ -18,7 +18,6 @@ import ViewServices from './pages/ViewServices';
 import ViewEmployees from './pages/ViewEmployees';
 import ViewCharges from './pages/ViewCharges';
 
-// import PasswordStrength from './components/PasswordStrength';
 import ViewBooks from './pages/ViewBooks';
 import ViewReserves from './pages/ViewReserves';
 import ViewAuthors from './pages/ViewAuthors';

@@ -90,6 +90,33 @@ class UserService {
         }
     }
 
+    static async changePassword(parameters, toast, handleLogout) {
+        const url = this.BASE_URL + '/auth/changePassword';
+        const token = localStorage.getItem('token'); // Retrieve the token from localstorage
+        try {
+            await axios({ method: 'PUT', url: url, data: parameters, headers: { Authorization: `Bearer ${token}` }  })
+                .then((response) => {
+                    if (response.data.statusCode === 400 && response.data.message === 'Contraseña actual incorrecta') {
+                        throw new Error("Contraseña incorrecta");
+                    } else {
+                        handleLogout();
+                        return response.data;
+                    }
+                })
+                .catch((error) => {
+                    if (error.message === "Contraseña incorrecta") {
+                        toast.current.show({ severity: 'error', summary: error.message, detail: "La contraseña ingresada no coincide con la actual.", life: 3000 });
+                    } else {
+                        console.error('Error cambiando la contraseña del usuario:', error);
+                        toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Ocurrió un error al cambiar la contraseña', life: 3000 });
+                    }
+                    console.log(error);
+                });
+        } catch (err) {
+            throw err;
+        }
+    }
+
     /* AUTHENTICATION CHECKER */
     static logout() {
         localStorage.removeItem('token');

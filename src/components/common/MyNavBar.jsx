@@ -108,7 +108,6 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
     const openMenu = Boolean(anchorEl);
     const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // Estado para notificaciones
     const openNotificationMenu = Boolean(notificationAnchorEl);
-    const navigate = useNavigate();
     const { isAuthenticated, profile, logout } = useAuth(); // Usa el contexto de autenticación
 
     useEffect(() => {
@@ -146,11 +145,10 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
             confirmButtonText: 'Confirmar',
             cancelButtonText: 'Cancelar',
             confirmButtonColor: "#3085d6",
-            ñcancelButtonColor: "#d33",
+            cancelButtonColor: "#d33",
         }).then((result) => {
             if (result.isConfirmed) {
                 logout(); // Llama a la función de logout para cerrar la sesión
-                navigate('/login');
             }
         });
     };
