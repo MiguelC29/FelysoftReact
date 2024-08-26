@@ -256,7 +256,7 @@ function RegistrationPage() {
                 <div className="field col">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span className="material-symbols-outlined">mail</span>
+                            <span className="material-symbols-outlined">alternate_email</span>
                         </span>
                         <FloatLabel>
                             <InputText id="confirmEmail" name='confirmEmail' value={user.confirmEmail} onChange={(e) => onInputChange(e, 'confirmEmail')} className={classNames({ 'p-invalid': submitted && !user.confirmEmail })} placeholder='Confirme el correo' maxLength={50} autoComplete="new-email" />
@@ -271,7 +271,7 @@ function RegistrationPage() {
                 <div className="field col">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span className="material-symbols-outlined">key</span>
+                            <span className="material-symbols-outlined">lock</span>
                         </span>
                         <FloatLabel>
                             <Password id="password" name='password' value={user.password} onChange={(e) => onInputChange(e, 'password')} toggleMask className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />

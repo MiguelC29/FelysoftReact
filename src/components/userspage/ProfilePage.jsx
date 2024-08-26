@@ -9,13 +9,10 @@ import { Toast } from 'primereact/toast'
 import { FloatLabel } from 'primereact/floatlabel'
 import { Password } from 'primereact/password'
 import { classNames } from 'primereact/utils'
-import { confirmDialog, confirmDialogFooter, DialogFooter, inputChange } from '../../functionsDataTable'
-import { useNavigate } from 'react-router-dom'
+import { confirmDialogFooter, confirmDialogPassword, DialogFooter, inputChange } from '../../functionsDataTable'
 import { useAuth } from '../context/AuthProvider'
 
 function ProfilePage() {
-    const navigate = useNavigate();
-
     const emptyUser = useState({
         oldPassword: '',
         newPassword: '',
@@ -136,13 +133,6 @@ function ProfilePage() {
         }
     };
 
-    const validateOldPassword = (oldPassword) => {
-        // METHOD TO VALIDATE IF THE USER ENTER THE ACTUAL PASSWORD CORRECTLY
-        console.log(profileInfo.password);
-
-        return oldPassword === profileInfo.password;
-    }
-
     const confirmSave = (e) => {
         e.preventDefault();
         setConfirmDialogVisible(true);
@@ -216,7 +206,7 @@ function ProfilePage() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span className="material-symbols-outlined">key</span>
+                                <span className="material-symbols-outlined">password</span>
                             </span>
                             <FloatLabel>
                                 <Password id="oldPassword" name='oldPassword' value={user.oldPassword} onChange={(e) => onInputChange(e, 'oldPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !user.oldPassword })} promptLabel='Ingrese la contraseña actual' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
@@ -230,7 +220,7 @@ function ProfilePage() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span className="material-symbols-outlined">key</span>
+                                <span className="material-symbols-outlined">lock</span>
                             </span>
                             <FloatLabel>
                                 <Password id="newPassword" name='newPassword' value={user.newPassword} onChange={(e) => onInputChange(e, 'newPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !user.newPassword })} promptLabel='Ingrese la nueva contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
@@ -256,7 +246,7 @@ function ProfilePage() {
                 </div>
             </Dialog >
 
-            {confirmDialog(confirmDialogVisible, 'Cambiar Contraseña', confirmPasswordDialogFooter, hideConfirmPasswordDialog, user, '')}
+            {confirmDialogPassword(confirmDialogVisible, confirmPasswordDialogFooter, hideConfirmPasswordDialog)}
         </>
     );
     /*
