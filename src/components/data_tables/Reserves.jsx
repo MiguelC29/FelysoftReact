@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import CustomDataTable from '../CustomDataTable';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
-import { InputMask } from 'primereact/inputmask';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
@@ -19,7 +18,7 @@ export default function Reserves() {
         dateReserve: '',
         description: '',
         deposit: null,
-        time: '',
+        time: null,
         book: '',
         user: ''
     };
@@ -52,11 +51,11 @@ export default function Reserves() {
         getUsers();
     }, [onlyDisabled]);
 
-    const fetchReserves = async () =>{
-        try{
+    const fetchReserves = async () => {
+        try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setReserves);
-        }catch(error){
+        } catch (error) {
             console.error("Fallo al recuperar Reservas:", error);
         }
     };
@@ -93,7 +92,7 @@ export default function Reserves() {
         setOperation(2);
         setReserveDialog(true);
     };
-    const toggleDisabled = () =>{
+    const toggleDisabled = () => {
         setOnlyDisabled(!onlyDisabled);
     }
 
@@ -175,8 +174,8 @@ export default function Reserves() {
         Request_Service.deleteData(URL, reserve.idReserve, setReserves, toast, setDeleteReserveDialog, setReserve, emptyReserve, 'Reserva ', URL.concat('all'));
     };
 
-    const handleEnable =(reserve) =>{
-        Request_Service.sendRequestEnable(URL,reserve.idReserve,setReserves,toast,'Reserva ');
+    const handleEnable = (reserve) => {
+        Request_Service.sendRequestEnable(URL, reserve.idReserve, setReserves, toast, 'Reserva ');
     }
 
     const onInputNumberChange = (e, description) => {
@@ -192,7 +191,7 @@ export default function Reserves() {
     };
 
     const actionBodyTemplateR = (rowData) => {
-        return actionBodyTemplate(rowData, editReserve, confirmDeleteReserve,onlyDisabled,handleEnable);
+        return actionBodyTemplate(rowData, editReserve, confirmDeleteReserve, onlyDisabled, handleEnable);
     };
 
     const reserveDialogFooter = (
@@ -249,7 +248,7 @@ export default function Reserves() {
         { field: 'dateReserve', header: 'Fecha de Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'deposit', header: 'Depósito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'time', header: 'Hora Reserva', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'time', header: 'Duración Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
         (isAdmin || isSalesPerson) && { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
@@ -265,7 +264,7 @@ export default function Reserves() {
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 {(isAdmin || isSalesPerson) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew,onlyDisabled,toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
@@ -290,11 +289,17 @@ export default function Reserves() {
                             <span class="material-symbols-outlined">schedule</span>
                         </span>
                         <FloatLabel>
-                            <InputMask id="time" value={reserve.time} mask="99:99:99" onChange={(e) => onInputChange(e, 'time')} required className={classNames({ 'p-invalid': submitted && !reserve.time })} />
-                            <label htmlFor="time" className="font-bold">Hora Reserva</label>
+                            <label htmlFor="time" className="font-bold">Duracion Reserva</label>
+                            <InputNumber
+                                id="time"
+                                value={reserve.time}
+                                onValueChange={(e) => onInputNumberChange(e, 'time')}
+                                required
+                                className={classNames({ 'p-invalid': submitted && !reserve.time })}
+                            />
                         </FloatLabel>
                     </div>
-                    {submitted && !reserve.time && <small className="p-error">Hora es requerida.</small>}
+                    {submitted && !reserve.time && <small className="p-error">Duración es requerida.</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">

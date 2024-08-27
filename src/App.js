@@ -78,7 +78,7 @@ export default function App() {
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito/>} roles={['ADMINISTRATOR', 'SALESPERSON','CUSTOMER']} />} />
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
 
-            <Route path='/reserva' element={<RoleProtectedRoute element={<ViewReserva />} roles={['CUSTOMER','ADMINISTRATOR']} />} />
+            <Route path='/reserva' element={<RoleProtectedRoute element={<ViewReserva />} roles={['CUSTOMER']} />} />
 
 
             <Route path='/correo' element={<EmailSender />} />
