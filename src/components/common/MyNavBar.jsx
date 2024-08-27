@@ -7,14 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import logo from '../../img/logo.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Badge } from 'primereact/badge';
 import { useCart } from '../CartContext';
 import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
 import { useAuth } from '../context/AuthProvider';
 import { Divider, ListItemIcon } from '@mui/material';
-import { AccountCircleRounded, Logout, NotificationsRounded, ShoppingCart } from '@mui/icons-material';
+import { AccountCircleRounded, Logout, NotificationsRounded, Settings, ShoppingCart } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -204,6 +204,12 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                             anchorEl={anchorEl}
                             open={openMenu}
                             onClose={handleMenuClose}
+                            sx={{
+                                '& .MuiPaper-root': {
+                                    width: '220px',
+                                    height: 'auto',
+                                },
+                            }}
                         >
                             <div className='text-center'>
                                 <strong>{profile.user.user_name}</strong>
@@ -215,6 +221,12 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                                     <AccountCircleRounded fontSize="medium" />
                                 </ListItemIcon>
                                 <Link to="/perfil" className="text-decoration-none">Perfil</Link>
+                            </MenuItem>
+                            <MenuItem onClick={handleMenuClose}>
+                                <ListItemIcon>
+                                    <Settings fontSize="medium" />
+                                </ListItemIcon>
+                                <Link to="" className="text-decoration-none">Configuración</Link>
                             </MenuItem>
                             <Divider />
                             <MenuItem onClick={handleLogout}>

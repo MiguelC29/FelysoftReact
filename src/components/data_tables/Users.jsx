@@ -435,7 +435,7 @@ export default function Users() {
                 <label htmlFor="gender" className="font-bold">Género</label>
               </FloatLabel>
             </div>
-            {submitted && !user.gender && !selectedGender && <small className="p-error">Tipo de Identificación es requerido.</small>}
+            {submitted && !user.gender && !selectedGender && <small className="p-error">Género es requerido.</small>}
           </div>
           <div className="field col">
             <div className="p-inputgroup flex-1">

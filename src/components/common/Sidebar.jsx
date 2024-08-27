@@ -196,12 +196,6 @@ export default function MiniDrawer({ children }) {
                 { name: "Empleados", icon: <IconSubItems />, link: "/empleados", roles: ['ADMINISTRATOR'] },
             ],
             roles: ['ADMINISTRATOR']
-        },
-        {
-            name: "Configuración",
-            icon: <Icon icon='settings' />,
-            link: "",
-            roles: ['ADMINISTRATOR']
         }
     ];
 
