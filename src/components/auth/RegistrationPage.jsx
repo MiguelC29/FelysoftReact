@@ -56,7 +56,7 @@ function RegistrationPage() {
     const validateIdentification = (numIdentification) => {
         // Convierte el valor a cadena para evitar errores de longitud
         const numIdentificationStr = numIdentification ? numIdentification.toString() : '';
-        return numIdentificationStr.length >= 8 && numIdentificationStr.length <= 10;
+        return numIdentificationStr.length === 8 || numIdentificationStr.length === 10;
     };
 
     const validatePhone = (phoneNumber) => {
@@ -136,7 +136,7 @@ function RegistrationPage() {
     }));
 
     return (
-        <div className='container auth-container bg-black mt-3 p-4 rounded-5'>
+        <div className='container auth-container mt-3 p-4 rounded-5' style={{backgroundColor: '#19191a'}}>
             <div className='d-flex align-items-center'>
                 <img src={logo} className='me-3' alt="Logo" width="70px" />
                 <h2 className='text-white text-center flex-grow-1 pt-2'>Registro Clientes</h2>
@@ -205,7 +205,7 @@ function RegistrationPage() {
                         </FloatLabel>
                     </div>
                     {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
-                    {user.numIdentification && !numIdValid && <small className="p-error">El número de identificación debe tener entre 8 y 10 dígitos.</small>}
+                    {user.numIdentification && !numIdValid && <small className="p-error">El número de identificación debe tener 8 o 10 dígitos.</small>}
                 </div>
             </div>
             <div className="formgrid grid mt-4">
