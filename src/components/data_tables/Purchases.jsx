@@ -230,7 +230,8 @@ export default function Purchases() {
                 description: purchase.description.trim(),
                 methodPayment: purchase.methodPayment,
                 state: purchase.state,
-                fkIdProvider: purchase.provider.idProvider
+                fkIdProvider: purchase.provider.idProvider,
+                details: details
             };
             url = URL + 'create';
             method = 'POST';
