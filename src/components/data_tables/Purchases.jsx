@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -13,14 +13,10 @@ import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 import { Button } from 'primereact/button';
 
-
-
-
 export default function Purchases() {
     let emptyPurchase = {
         idPurchase: null,
         total: null,
-        description: '',
         methodPayment: '',
         state: '',
         provider: '',
@@ -32,14 +28,7 @@ export default function Purchases() {
         unitPrice: null,
         book: '',
         product: '',
-        service: '',
     }
-
-    const initialDetail = {
-        product: "",
-        book: "",
-        // otros campos si es necesario
-    };
 
     const MethodPayment = {
         EFECTIVO: 'EFECTIVO',
@@ -58,7 +47,6 @@ export default function Purchases() {
     const [purchase, setPurchase] = useState(emptyPurchase);
     const [purchases, setPurchases] = useState([]);
     const [providers, setProviders] = useState([]);
-    const [expensePurchase, setExpensePurchase] = useState();
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
@@ -74,13 +62,14 @@ export default function Purchases() {
     const [onlyDisabled, setOnlyDisabled] = useState(false);
     // Estado para manejar detalles de compra
     const [detail, setDetail] = useState(emptyDetail);
-    const [details, setDetails] = useState([initialDetail]);
+    const [details, setDetails] = useState([emptyDetail]); // Empieza con un detalle vacío
     const [books, setBooks] = useState([]);
     const [products, setProducts] = useState([]);
-    const [services, setServices] = useState([]);
     const [selectedBook, setSelectedBook] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedService, setSelectedService] = useState(null);
+    const [showProductInputs, setShowProductInputs] = useState(false);
+    const [showBookInputs, setShowBookInputs] = useState(false);
+
 
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
@@ -91,21 +80,6 @@ export default function Purchases() {
         Request_Service.getData('/provider/all', setProviders);
         Request_Service.getData('/book/all', setBooks);
         Request_Service.getData('/product/all', setProducts);
-        Request_Service.getData('/service/all', setServices);
-
-        // Verifica si expensePurchase tiene datos y si contiene la descripción
-        if (expensePurchase && expensePurchase.description) {
-            setPurchase(prevPurchase => ({ ...prevPurchase, description: expensePurchase.description })); // Establece la descripción basada en los datos recibidos
-        }
-        // Verifica si expensePurchase tiene datos de pago y si contiene el método de pago
-        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.methodPayment) {
-            setSelectedMethodPayment(expensePurchase.payment.methodPayment); // Establece el método de pago basado en los datos recibidos
-        }
-        // Verifica si expensePurchase tiene datos de pago y si contiene el estado
-        //NO FUNCIONA
-        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.state) {
-            setSelectedState(expensePurchase.payment.state); // Establece el estado basado en los datos recibidos
-        }
     }, [onlyDisabled]);
 
     const fetchPurchases = async () => {
@@ -126,7 +100,6 @@ export default function Purchases() {
         setSelectedState('');
         setSelectedBook('');
         setSelectedProduct('');
-        setSelectedService('');
         setOperation(1);
         setSubmitted(false);
         setDetails([emptyDetail]); // Asegura que siempre haya al menos un detalle al abrir el modal
@@ -135,16 +108,15 @@ export default function Purchases() {
 
     const editPurchase = (purchase) => {
         setPurchase({ ...purchase });
-        // Obtener los datos de expensePurchase
-        Request_Service.getData(URL.concat('expensePurchase/', purchase.idPurchase), setExpensePurchase);
         setSelectedProvider(purchase.provider);
         setTitle('Editar Compra');
         setOperation(2);
         setPurchaseDialog(true);
     };
 
+    // Función para añadir un nuevo detalle
     const addDetail = () => {
-        setDetails([...details, initialDetail]);
+        setDetails([...details, { ...emptyDetail }]); // Añade un nuevo detalle vacío
     };
 
     const onDetailChange = (e, index, field) => {
@@ -153,24 +125,28 @@ export default function Purchases() {
         setDetails(newDetails);
     };
 
+    // Función para remover un detalle
     const removeDetail = (index) => {
         const newDetails = [...details];
         newDetails.splice(index, 1);
         setDetails(newDetails);
     };
 
+
     // Definir métodos para manejar el cambio de producto y libro
+    // Función para manejar el cambio de producto
     const handleProductChange = (e, index) => {
         const updatedDetails = [...details];
-        updatedDetails[index].selectedProduct = e.value;
-        updatedDetails[index].selectedBook = null; // Resetea el libro seleccionado
+        updatedDetails[index].product = e.value;
+        updatedDetails[index].book = ''; // Resetea el libro seleccionado
         setDetails(updatedDetails);
     };
 
+    // Función para manejar el cambio de libro
     const handleBookChange = (e, index) => {
         const updatedDetails = [...details];
-        updatedDetails[index].selectedBook = e.value;
-        updatedDetails[index].selectedProduct = null; // Resetea el producto seleccionado
+        updatedDetails[index].book = e.value;
+        updatedDetails[index].product = ''; // Resetea el producto seleccionado
         setDetails(updatedDetails);
     };
 
@@ -192,6 +168,7 @@ export default function Purchases() {
         setDeletePurchaseDialog(false);
     };
 
+    // Función para guardar la compra
     const savePurchase = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -199,7 +176,6 @@ export default function Purchases() {
         // Verificar si los campos requeridos están presentes y válidos
         const isValid = purchase.total &&
             purchase.provider &&
-            purchase.description.trim() &&
             purchase.methodPayment &&
             purchase.state;
 
@@ -216,10 +192,10 @@ export default function Purchases() {
             parameters = {
                 idPurchase: purchase.idPurchase,
                 total: purchase.total,
-                description: purchase.description.trim(),
                 methodPayment: purchase.methodPayment,
                 state: purchase.state,
-                fkIdProvider: purchase.provider.idProvider
+                fkIdProvider: purchase.provider.idProvider,
+                details: details
             };
             url = URL + 'update/' + purchase.idPurchase;
             method = 'PUT';
@@ -227,10 +203,10 @@ export default function Purchases() {
             // Verificar que los campos requeridos están presentes al crear
             parameters = {
                 total: purchase.total,
-                description: purchase.description.trim(),
                 methodPayment: purchase.methodPayment,
                 state: purchase.state,
-                fkIdProvider: purchase.provider.idProvider
+                fkIdProvider: purchase.provider.idProvider,
+                details: details
             };
             url = URL + 'create';
             method = 'POST';
@@ -258,10 +234,6 @@ export default function Purchases() {
     const handleEnable = (purchase) => {
         Request_Service.sendRequestEnable(URL, purchase.idPurchase, setPurchases, toast, 'Compra ');
     }
-
-    const onInputChange = (e, name) => {
-        inputChange(e, name, purchase, setPurchase);
-    };
 
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, purchase, setPurchase);
@@ -344,28 +316,9 @@ export default function Purchases() {
         );
     };
 
-    const selectedServiceTemplate = (option, props) => {
-        if (option) {
-            return (
-                <div className="flex align-items-center">
-                    <div>{option.typeService.name}</div>
-                </div>
-            );
-        }
-        return <span>{props.placeholder}</span>;
-    };
-
-    const serviceOptionTemplate = (option) => {
-        return (
-            <div className="flex align-items-center">
-                <div>{option.typeService.name}</div>
-            </div>
-        );
-    };
-
     const columns = [
         { field: 'date', header: 'Fecha', sortable: true, body: (rowData) => formatDate(rowData.date), style: { minWidth: '12rem' } },
-        { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
+        { field: 'total', header: 's', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
         (isAdmin || isInventoryManager) && { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
@@ -385,9 +338,6 @@ export default function Purchases() {
     const handleExportExcel = () => { exportExcel(purchases, columns, 'Compras') };
     const handleExportCsv = () => { exportCSV(false, dt) };
 
-    const [showProductInputs, setShowProductInputs] = useState(false);
-    const [showBookInputs, setShowBookInputs] = useState(false);
-
     // Maneja el clic en el botón de Producto
     const handleProductClick = () => {
         setShowProductInputs(prevState => !prevState);
@@ -404,13 +354,13 @@ export default function Purchases() {
     const [productDetails, setProductDetails] = useState({
         product: '',
         quantity: 0,
-        price: 0
+        unitPrice: 0
     });
 
     // Estado para los inputs de libro
     const [bookDetails, setBookDetails] = useState({
         book: '',
-        price: 0
+        unitPrice: 0
     });
 
     // Maneja el cambio en los inputs de producto
@@ -451,7 +401,7 @@ export default function Purchases() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">local_shipping</span>
+                            <span className="material-symbols-outlined">local_shipping</span>
                         </span>
                         <FloatLabel>
                             <Dropdown
@@ -475,23 +425,12 @@ export default function Purchases() {
                     </div>
                     {submitted && !purchase.state && !selectedState && <small className="p-error">Proveedor es requerido.</small>}
                 </div>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
-                        </span>
-                        <FloatLabel>
-                            <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !purchase.description })} />
-                            <label htmlFor="description" className="font-bold">Descripción</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
-                </div>
+
                 <div className="formgrid grid mt-5">
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">monetization_on</span>
+                                <span className="material-symbols-outlined">monetization_on</span>
                             </span>
                             <FloatLabel>
                                 <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.total })}`} />
@@ -503,7 +442,7 @@ export default function Purchases() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">currency_exchange</span>
+                                <span className="material-symbols-outlined">currency_exchange</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown
@@ -566,7 +505,6 @@ export default function Purchases() {
                                         Producto
                                     </button>
 
-
                                     {showProductInputs && (
                                         <div style={{
                                             display: 'flex',
@@ -579,8 +517,8 @@ export default function Purchases() {
                                                 <Dropdown
                                                     id="product"
                                                     value={detail.product}
-                                                    onChange={(e) => handleProductChanges(e, 'product')}
                                                     options={products}
+                                                    onChange={(e) => handleProductChange(e, index)}
                                                     optionLabel="name"
                                                     filter
                                                     valueTemplate={selectedProductTemplate}
@@ -670,10 +608,10 @@ export default function Purchases() {
                                                 <Dropdown
                                                     id="book"
                                                     value={detail.book}
-                                                    onChange={(e) => handleBookChanges(e, 'book')}
                                                     options={books}
-                                                    optionLabel="title"
+                                                    onChange={(e) => handleBookChange(e, index)}
                                                     placeholder="Seleccionar Libro"
+                                                    optionLabel="title"
                                                     filter
                                                     valueTemplate={selectedBookTemplate}
                                                     itemTemplate={bookOptionTemplate}
@@ -722,7 +660,7 @@ export default function Purchases() {
 
                 <div className="field mt-5">
                     <button type="button" className="p-button p-component p-button-outlined" onClick={addDetail}>
-                        <span class="material-symbols-outlined">add</span>
+                        <span className="material-symbols-outlined">add</span>
                         Agregar Detalle
                     </button>
                 </div>
