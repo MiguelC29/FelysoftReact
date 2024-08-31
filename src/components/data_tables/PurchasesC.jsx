@@ -27,8 +27,8 @@ export default function PurchasesC() {
         idDetail: null,
         quantity: null,
         unitPrice: null,
-        product: null,  
-        book: null,     
+        product: null,
+        book: null,
     };
 
     const MethodPayment = {
@@ -61,6 +61,7 @@ export default function PurchasesC() {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
+    const [isProductSelected, setIsProductSelected] = useState(null); // null, 'product', or 'book'
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -86,10 +87,6 @@ export default function PurchasesC() {
         return Request_Service.getData('/book/all', setBooks);
     }
 
-    const getProducts = () => {
-        return Request_Service.getData('/product/all', setProducts);
-    }
-
     const handleProductChange = (providerId) => {
         setSelectedProvider(providerId);
         if (providerId) {
@@ -105,8 +102,10 @@ export default function PurchasesC() {
         setSelectedProvider('');
         setSelectedMethodPayment('');
         setSelectedState('');
+        setIsProductSelected(null);
         setProducts([]);
         getProviders();
+        getBooks();
         setOperation(1);
         setSubmitted(false);
         setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
@@ -131,6 +130,9 @@ export default function PurchasesC() {
         updatedDetails[index].product = product;
         if (product) {
             updatedDetails[index].book = null;
+            if (isProductSelected === null) {
+                setIsProductSelected('product');
+            }
         }
         setDetails(updatedDetails);
     };
@@ -140,6 +142,9 @@ export default function PurchasesC() {
         updatedDetails[index].book = book;
         if (book) {
             updatedDetails[index].product = null;
+            if (isProductSelected === null) {
+                setIsProductSelected('book');
+            }
         }
         setDetails(updatedDetails);
     };
@@ -148,10 +153,10 @@ export default function PurchasesC() {
         const updatedDetails = [...details];
         if (field === 'product') {
             updatedDetails[index].product = value;
-            updatedDetails[index].book = null; 
+            updatedDetails[index].book = null;
         } else if (field === 'book') {
             updatedDetails[index].book = value;
-            updatedDetails[index].product = null; 
+            updatedDetails[index].product = null;
         } else {
             updatedDetails[index][field] = value;
         }
@@ -159,7 +164,7 @@ export default function PurchasesC() {
     };
 
     const addDetail = () => {
-        setDetails([...details, { ...emptyDetail }]); 
+        setDetails([...details, { ...emptyDetail }]);
     };
 
     const removeDetail = (index) => {
@@ -195,7 +200,7 @@ export default function PurchasesC() {
             purchase.methodPayment &&
             purchase.state &&
             details.length > 0 &&
-            details.every(detail => (detail.product || detail.book) && detail.quantity && detail.unitPrice);
+            details.every(detail => (detail.product && detail.quantity && detail.unitPrice) || (detail.book && detail.unitPrice));
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -208,7 +213,7 @@ export default function PurchasesC() {
             quantity: detail.quantity,
             unitPrice: detail.unitPrice,
             idProduct: detail.product ? detail.product.idProduct : null,
-            idBook: detail.book ? detail.book.id : null,
+            idBook: detail.book ? detail.book.idBook : null,
         }));
 
         let url, method, parameters;
@@ -425,7 +430,7 @@ export default function PurchasesC() {
                             label="Método de pago" errorMessage="Método de pago es requerido."
                         />
                     </div>
-                    
+
                     <FloatDropdownIcon
                         className="field mt-3"
                         icon='new_releases' field='state' required
@@ -442,59 +447,77 @@ export default function PurchasesC() {
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
                                 <div className="formgrid grid mt-3">
-                                    <div className="field col-3">
-                                        <div className="p-inputgroup flex-1">
-                                            <span className="p-inputgroup-addon">
-                                                <span class="material-symbols-outlined">inventory_2</span>
-                                            </span>
-                                            <FloatLabel>
-                                                <Dropdown
-                                                    id={`product-${index}`}
-                                                    value={detail.product}
-                                                    onChange={(e) => { handleProductSelection(index, e.value) }}
-                                                    options={products}
-                                                    optionLabel="name"
-                                                    placeholder="Seleccionar producto"
-                                                    emptyMessage="No hay datos"
-                                                    emptyFilterMessage="No hay resultados encontrados"
-                                                    required
-                                                    valueTemplate={selectedProductTemplate}
-                                                    itemTemplate={productOptionTemplate}
-                                                    className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.product && !detail.product })}`}
-                                                    disabled={!!detail.book && 'disabled'}
-                                                />
-                                                <label htmlFor={`product-${index}`} className="font-bold">Producto</label>
-                                            </FloatLabel>
+                                    {isProductSelected !== 'book' && (
+                                        <div className="field col-3">
+                                            <div className="p-inputgroup flex-1">
+                                                <span className="p-inputgroup-addon">
+                                                    <span class="material-symbols-outlined">inventory_2</span>
+                                                </span>
+                                                <FloatLabel>
+                                                    <Dropdown
+                                                        id={`product-${index}`}
+                                                        value={detail.product}
+                                                        onChange={(e) => { handleProductSelection(index, e.value) }}
+                                                        options={products}
+                                                        optionLabel="name"
+                                                        placeholder="Seleccionar producto"
+                                                        emptyMessage="No hay datos"
+                                                        emptyFilterMessage="No hay resultados encontrados"
+                                                        required
+                                                        valueTemplate={selectedProductTemplate}
+                                                        itemTemplate={productOptionTemplate}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.product && !detail.book })}`}
+                                                        disabled={(!selectedProvider || !!detail.book) && 'disabled'}
+                                                    //disabled={isProductSelected === 'book'}
+                                                    />
+                                                    <label htmlFor={`product-${index}`} className="font-bold">Producto</label>
+                                                </FloatLabel>
+                                            </div>
+                                            {submitted && !detail.product && !detail.book && <small className="p-error">Producto es requerido.</small>}
                                         </div>
-                                        {submitted && !detail.product && <small className="p-error">Producto es requerido.</small>}
-                                    </div>
+                                    )}
+                                    {isProductSelected !== 'product' && (
+                                        <div className="field col-3">
+                                            <div className="p-inputgroup flex-1">
+                                                <span className="p-inputgroup-addon">
+                                                    <span class="material-symbols-outlined">book</span>
+                                                </span>
+                                                <FloatLabel>
+                                                    <Dropdown
+                                                        id={`book-${index}`}
+                                                        value={detail.book}
+                                                        onChange={(e) => { handleBookSelection(index, e.value) }}
+                                                        options={books}
+                                                        optionLabel="title"
+                                                        placeholder="Seleccionar libro"
+                                                        emptyMessage="No hay datos"
+                                                        emptyFilterMessage="No hay resultados encontrados"
+                                                        required
+                                                        valueTemplate={selectedBookTemplate}
+                                                        itemTemplate={bookOptionTemplate}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.book && !detail.product })}`}
+                                                        disabled={(!selectedProvider || !!detail.product) && 'disabled'}
+                                                    />
+                                                    <label htmlFor={`book-${index}`} className="font-bold">Libro</label>
+                                                </FloatLabel>
+                                            </div>
+                                            {submitted && !detail.book && !detail.product && <small className="p-error">Libro es requerido.</small>}
+                                        </div>
+                                    )}
 
-                                    <FloatDropdownIcon
-                                        className="field col-3"
-                                        icon='book' field={`book-${index}`}
-                                        value={detail.book}
-                                        handleChange={(e) => handleBookSelection(index, e.value)}
-                                        options={books}
-                                        optionLabel="title"
-                                        placeholder="Seleccionar libro"
-                                        valueTemplate={selectedBookTemplate}
-                                        itemTemplate={bookOptionTemplate}
-                                        submitted={submitted} fieldForeign={detail.book}
-                                        label="Libro" errorMessage="Libro es requerido."
-                                        disabled={!!detail.product && 'disabled'} // Deshabilitar si hay un producto seleccionado
-                                    />
-
-                                    <FloatInputNumberIcon
-                                        className="field col-2"
-                                        icon='production_quantity_limits'
-                                        value={detail.quantity}
-                                        onInputNumberChange={(e) => handleDetailChange(index, 'quantity', e.value)}
-                                        field='quantity'
-                                        label='Cantidad'
-                                        maxLength={5} required
-                                        submitted={submitted}
-                                        errorMessage='Cantidad es requerida.'
-                                    />
+                                    {isProductSelected !== 'book' && (
+                                        <FloatInputNumberIcon
+                                            className="field col-2"
+                                            icon='production_quantity_limits'
+                                            value={detail.quantity}
+                                            onInputNumberChange={(e) => handleDetailChange(index, 'quantity', e.value)}
+                                            field='quantity'
+                                            label='Cantidad'
+                                            maxLength={5} required
+                                            submitted={submitted}
+                                            errorMessage='Cantidad es requerida.'
+                                        />
+                                    )}
 
                                     <FloatInputNumberMoneyIcon
                                         className="field col-2"
