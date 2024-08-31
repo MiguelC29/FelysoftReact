@@ -204,6 +204,7 @@ export default function MiniDrawer({ children }) {
                 { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Editoriales", icon: <IconSubItems />, link: "/editoriales", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Géneros-Autores", icon: <IconSubItems />, link: "/generos_autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Tipo de Servicio", icon: <IconSubItems />, link: "/tiposervicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Servicios", icon: <IconSubItems />, link: "/servicios", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'SALESPERSON'] },

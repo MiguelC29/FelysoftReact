@@ -20,12 +20,12 @@ export default function Books() {
         image: '',
         typeImg: '',
         title: '',
-        editorial: '',
         description: '',
         yearPublication: null,
         priceTime: null,
         genre: '',
-        author: ''
+        author: '',
+        editorial: '',
     };
 
     const URL = '/book/';
@@ -34,9 +34,11 @@ export default function Books() {
     const [books, setBooks] = useState([]);
     const [genres, setGenres] = useState([]);
     const [authors, setAuthors] = useState([]);
+    const [editorials, setEditorials] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [selectedEditorial, setSelectedEditorial] = useState(null);
     const [bookDialog, setBookDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteBookDialog, setDeleteBookDialog] = useState(false);
@@ -56,8 +58,9 @@ export default function Books() {
         fetchBooks();
         getGenres();
         getAuthors();
+        getEditorials();
     }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-    
+
     const fetchBooks = async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
@@ -73,6 +76,10 @@ export default function Books() {
 
     const getAuthors = () => {
         return Request_Service.getData('/author/all', setAuthors);
+    }
+
+    const getEditorials = () => {
+        return Request_Service.getData('/editorial/all', setEditorials);
     }
 
     const handleGenreChange = (genreId) => {
@@ -97,6 +104,17 @@ export default function Books() {
         }
     };
 
+    const handleEditorialChange = (editorialId) => {
+        setSelectedEditorial(editorialId);
+        if (editorialId) {
+            Request_Service.getData(`/editorial/${editorialId.idEditorial}`, setEditorials);
+        }
+        if (selectedEditorial) {
+            setSelectedEditorial('');
+            book.editorial = '';
+        }
+    };
+
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
@@ -116,10 +134,12 @@ export default function Books() {
         setTitle('Registrar Libro');
         setSelectedAuthor('');
         setSelectedGenre('');
+        setSelectedEditorial('');
         setSelectedImage('')
         setFile('');
         getGenres();
         getAuthors();
+        getEditorials();
         setOperation(1);
         setSubmitted(false);
         setBookDialog(true);
@@ -129,10 +149,12 @@ export default function Books() {
         setBook({ ...book });
         setSelectedAuthor(book.author);
         setSelectedGenre(book.genre);
+        setSelectedEditorial(book.editorial);
         setSelectedImage('')
         setFile('');
         getGenres();
         getAuthors();
+        getEditorials();
         setTitle('Editar Libro');
         setOperation(2);
         setBookDialog(true);
@@ -161,7 +183,7 @@ export default function Books() {
 
         // Verificar si todos los campos requeridos están presentes
         const isValid = book.title.trim() &&
-            book.editorial.trim() &&
+            book.editorial &&
             book.description.trim() &&
             book.yearPublication &&
             book.priceTime &&
@@ -182,7 +204,7 @@ export default function Books() {
             // Asegurarse de que los campos no estén vacíos al editar
             formData.append('idBook', book.idBook);
             formData.append('title', book.title.trim());
-            formData.append('editorial', book.editorial.trim());
+            formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
             formData.append('yearPublication', book.yearPublication);
             formData.append('priceTime', book.priceTime);
@@ -195,7 +217,7 @@ export default function Books() {
         } else {
             // Verificar que los campos requeridos están presentes al crear
             formData.append('title', book.title.trim());
-            formData.append('editorial', book.editorial.trim());
+            formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
             formData.append('yearPublication', book.yearPublication);
             formData.append('priceTime', book.priceTime);
@@ -305,9 +327,29 @@ export default function Books() {
         );
     };
 
+
+    const selectedEditorialTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+        return <span>{props.placeholder}</span>;
+    };
+
+    const editorialOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
     const columns = [
         { field: 'title', header: 'Título', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'editorial', header: 'Editorial', sortable: true, style: { minWidth: '12rem' } },
+        { field: 'editorial.name', header: 'Editorial', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'yearPublication', header: 'Año de Publicación', sortable: true, style: { minWidth: '10rem' } },
         { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
@@ -331,7 +373,7 @@ export default function Books() {
                 {
                     (isAdmin || isInventoryManager) &&
                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }}
-                     left={leftToolbarTemplate(openNew,onlyDisabled,toggleDisabled,icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                        left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
@@ -364,7 +406,8 @@ export default function Books() {
                             <span class="material-symbols-outlined">collections_bookmark</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="editorial" value={book.editorial} onChange={(e) => onInputChange(e, 'editorial')} required className={classNames({ 'p-invalid': submitted && !book.editorial })} />
+                            <Dropdown id="editorial" value={selectedEditorial} onChange={(e) => { handleEditorialChange(e.target.value); onInputNumberChange(e, 'editorial'); }} options={editorials} optionLabel="name" placeholder="Seleccionar Editorial"
+                                filter valueTemplate={selectedEditorialTemplate} itemTemplate={editorialOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
                             <label htmlFor="editorial" className="font-bold">Editorial</label>
                         </FloatLabel>
                     </div>

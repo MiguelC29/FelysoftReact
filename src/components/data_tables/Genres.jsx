@@ -49,10 +49,10 @@ export default function Genres() {
     const isInventoryManager = UserService.isInventoryManager();
 
     useEffect(() => {
-        fetchGeres();
+        fetchGenres();
     }, [onlyDisabled]);
 
-    const fetchGeres = async () =>{
+    const fetchGenres = async () =>{
         try{
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setGenres);

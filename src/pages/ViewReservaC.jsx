@@ -1,7 +1,7 @@
 import React from 'react'
 import MiniDrawer from '../components/common/Sidebar';
 import { Box } from '@mui/material'
-import Reservar from '../components/data_tables/Reservas'
+import Reservar from '../components/data_tables/ReservasC'
 
 export default function ViewReserva() {
     return (

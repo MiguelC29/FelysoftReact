@@ -23,6 +23,7 @@ import ViewBooks from './pages/ViewBooks';
 import ViewReserves from './pages/ViewReserves';
 import ViewAuthors from './pages/ViewAuthors';
 import ViewGenres from './pages/ViewGenres';
+import ViewEditorials from './pages/ViewEditorials';
 import { LoginPage } from './components/auth/LoginPage';
 import ViewBooksInventory from './pages/ViewBooksInventory';
 import ViewCarrito from './pages/ViewCarrito';
@@ -36,7 +37,7 @@ import Error404 from './components/common/Error404';
 import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
 import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
 import EmailSender from './components/userspage/SendEmail';
-import ViewReserva from './pages/ViewReserva';
+import ViewReserva from './pages/ViewReservaC';
 
 export default function App() {
 
@@ -64,6 +65,7 @@ export default function App() {
             <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/tiposervicios' element={<RoleProtectedRoute element={<ViewTypeservices />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/generos' element={<RoleProtectedRoute element={<ViewGenres />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
+            <Route path='/editoriales' element={<RoleProtectedRoute element={<ViewEditorials />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/autores' element={<RoleProtectedRoute element={<ViewAuthors />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/generos_autores' element={<RoleProtectedRoute element={<ViewAssociationGenAutor />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
