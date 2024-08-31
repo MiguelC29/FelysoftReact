@@ -12,7 +12,6 @@ import ViewExpenses from './pages/ViewExpenses';
 import ViewPurchases from './pages/ViewPurchases';
 import ViewSales from './pages/ViewSales';
 import ViewPayments from './pages/ViewPayments';
-import ViewDetails from './pages/ViewDetails';
 
 import ViewTypeservices from './pages/ViewTypeservices';
 import ViewServices from './pages/ViewServices';
@@ -65,7 +64,6 @@ export default function App() {
             <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
             <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/detalles' element={<RoleProtectedRoute element={<ViewDetails />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','FINANCIAL_MANAGER','SALESPERSON']} />} />
             <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} />
             <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
