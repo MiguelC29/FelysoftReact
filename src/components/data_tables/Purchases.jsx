@@ -1,44 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
-import { classNames } from 'primereact/utils';
+import Request_Service from '../service/Request_Service';
+import { actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, DialogDelete, DialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import { InputNumber } from 'primereact/inputnumber';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
 import CustomDataTable from '../CustomDataTable';
-import { InputText } from 'primereact/inputtext';
-import { FloatLabel } from 'primereact/floatlabel';
-import Request_Service from '../service/Request_Service';
-import UserService from '../service/UserService';
+import { Dialog } from 'primereact/dialog';
+import { FloatDropdownIcon, FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIcon } from '../Inputs';
 import { Button } from 'primereact/button';
-
-
-
+import { FloatLabel } from 'primereact/floatlabel';
+import { Dropdown } from 'primereact/dropdown';
+import { classNames } from 'primereact/utils';
 
 export default function Purchases() {
+
     let emptyPurchase = {
         idPurchase: null,
-        total: null,
-        description: '',
-        methodPayment: '',
-        state: '',
         provider: '',
-    }
+        details: [],
+        // payment
+        methodPayment: '',
+        total: null,
+        state: ''
+    };
 
     let emptyDetail = {
         idDetail: null,
         quantity: null,
         unitPrice: null,
-        book: '',
-        product: '',
-        service: '',
-    }
-
-    const initialDetail = {
-        product: "",
-        book: "",
-        // otros campos si es necesario
+        product: null,
+        book: null,
     };
 
     const MethodPayment = {
@@ -58,55 +48,29 @@ export default function Purchases() {
     const [purchase, setPurchase] = useState(emptyPurchase);
     const [purchases, setPurchases] = useState([]);
     const [providers, setProviders] = useState([]);
-    const [expensePurchase, setExpensePurchase] = useState();
+    const [details, setDetails] = useState([emptyDetail]); // Inicia con un detalle vacío
+    const [detailsList, setDetailsList] = useState([]);
+    const [books, setBooks] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
-    const [selectedProvider, setSelectedProvider] = useState(null);
     const [purchaseDialog, setPurchaseDialog] = useState(false);
+    const [purchaseDetailDialog, setPurchaseDetailDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
+    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
+    const [isProductSelected, setIsProductSelected] = useState(null); // null, 'product', or 'book'
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
-    const [onlyDisabled, setOnlyDisabled] = useState(false);
-    // Estado para manejar detalles de compra
-    const [detail, setDetail] = useState(emptyDetail);
-    const [details, setDetails] = useState([initialDetail]);
-    const [books, setBooks] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [services, setServices] = useState([]);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedService, setSelectedService] = useState(null);
-
-    const isAdmin = UserService.isAdmin();
-    const isInventoryManager = UserService.isInventoryManager();
-    const isFinancialManager = UserService.isFinancialManager();
 
     useEffect(() => {
         fetchPurchases();
-        Request_Service.getData('/provider/all', setProviders);
-        Request_Service.getData('/book/all', setBooks);
-        Request_Service.getData('/product/all', setProducts);
-        Request_Service.getData('/service/all', setServices);
-
-        // Verifica si expensePurchase tiene datos y si contiene la descripción
-        if (expensePurchase && expensePurchase.description) {
-            setPurchase(prevPurchase => ({ ...prevPurchase, description: expensePurchase.description })); // Establece la descripción basada en los datos recibidos
-        }
-        // Verifica si expensePurchase tiene datos de pago y si contiene el método de pago
-        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.methodPayment) {
-            setSelectedMethodPayment(expensePurchase.payment.methodPayment); // Establece el método de pago basado en los datos recibidos
-        }
-        // Verifica si expensePurchase tiene datos de pago y si contiene el estado
-        //NO FUNCIONA
-        if (expensePurchase && expensePurchase.payment && expensePurchase.payment.state) {
-            setSelectedState(expensePurchase.payment.state); // Establece el estado basado en los datos recibidos
-        }
-    }, [onlyDisabled]);
+    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
 
     const fetchPurchases = async () => {
         try {
@@ -117,60 +81,103 @@ export default function Purchases() {
         }
     }
 
+    const getProviders = () => {
+        return Request_Service.getData('/provider/all', setProviders);
+    }
+
+    const getBooks = () => {
+        return Request_Service.getData('/book/all', setBooks);
+    }
+
+    const handleProductChange = (providerId) => {
+        setSelectedProvider(providerId);
+        if (providerId) {
+            Request_Service.getData(`/product/productsByProvider/${providerId.idProvider}`, setProducts);
+        } else {
+            setProducts([]);
+        }
+    };
+
     const openNew = () => {
         setPurchase(emptyPurchase);
-        setDetail(emptyDetail);
         setTitle('Registrar Compra');
         setSelectedProvider('');
         setSelectedMethodPayment('');
         setSelectedState('');
-        setSelectedBook('');
-        setSelectedProduct('');
-        setSelectedService('');
+        setIsProductSelected(null);
+        setProducts([]);
+        getProviders();
+        getBooks();
         setOperation(1);
         setSubmitted(false);
-        setDetails([emptyDetail]); // Asegura que siempre haya al menos un detalle al abrir el modal
+        setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
         setPurchaseDialog(true);
     };
 
     const editPurchase = (purchase) => {
-        setPurchase({ ...purchase });
-        // Obtener los datos de expensePurchase
-        Request_Service.getData(URL.concat('expensePurchase/', purchase.idPurchase), setExpensePurchase);
-        setSelectedProvider(purchase.provider);
-        setTitle('Editar Compra');
+        /*setProduct({ ...product });
+        getCategories();
+        getProviders();
+        setSelectedCategory(product.category);
+        setSelectedProvider(product.provider);
+        setFile('');
+        setSelectedImage('');
+        setTitle('Editar Producto');
         setOperation(2);
-        setPurchaseDialog(true);
-    };
+        setProductDialog(true);*/
+    }
 
-    const addDetail = () => {
-        setDetails([...details, initialDetail]);
-    };
+    const openDetail = (purchase) => {
+        setPurchase({ ...purchase });
+        Request_Service.getData(`/detail/details/${purchase.idPurchase}`, setDetailsList);
+        setTitle('Datos Compra');
+        setPurchaseDetailDialog(true);
+    }
 
-    const onDetailChange = (e, index, field) => {
-        const newDetails = [...details];
-        newDetails[index][field] = e.value;
-        setDetails(newDetails);
-    };
-
-    const removeDetail = (index) => {
-        const newDetails = [...details];
-        newDetails.splice(index, 1);
-        setDetails(newDetails);
-    };
-
-    // Definir métodos para manejar el cambio de producto y libro
-    const handleProductChange = (e, index) => {
+    const handleProductSelection = (index, product) => {
         const updatedDetails = [...details];
-        updatedDetails[index].selectedProduct = e.value;
-        updatedDetails[index].selectedBook = null; // Resetea el libro seleccionado
+        updatedDetails[index].product = product;
+        if (product) {
+            updatedDetails[index].book = null;
+            if (isProductSelected === null) {
+                setIsProductSelected('product');
+            }
+        }
         setDetails(updatedDetails);
     };
 
-    const handleBookChange = (e, index) => {
+    const handleBookSelection = (index, book) => {
         const updatedDetails = [...details];
-        updatedDetails[index].selectedBook = e.value;
-        updatedDetails[index].selectedProduct = null; // Resetea el producto seleccionado
+        updatedDetails[index].book = book;
+        if (book) {
+            updatedDetails[index].product = null;
+            if (isProductSelected === null) {
+                setIsProductSelected('book');
+            }
+        }
+        setDetails(updatedDetails);
+    };
+
+    const handleDetailChange = (index, field, value) => {
+        const updatedDetails = [...details];
+        if (field === 'product') {
+            updatedDetails[index].product = value;
+            updatedDetails[index].book = null;
+        } else if (field === 'book') {
+            updatedDetails[index].book = value;
+            updatedDetails[index].product = null;
+        } else {
+            updatedDetails[index][field] = value;
+        }
+        setDetails(updatedDetails);
+    };
+
+    const addDetail = () => {
+        setDetails([...details, { ...emptyDetail }]);
+    };
+
+    const removeDetail = (index) => {
+        const updatedDetails = details.filter((_, i) => i !== index);
         setDetails(updatedDetails);
     };
 
@@ -181,7 +188,7 @@ export default function Purchases() {
     const hideDialog = () => {
         setSubmitted(false);
         setPurchaseDialog(false);
-        setDetails([]); // Limpia los detalles al cerrar el modal
+        setPurchaseDetailDialog(false);
     };
 
     const hideConfirmPurchaseDialog = () => {
@@ -197,41 +204,50 @@ export default function Purchases() {
         setConfirmDialogVisible(false);
 
         // Verificar si los campos requeridos están presentes y válidos
-        const isValid = purchase.total &&
+        const isValid =
+            purchase.total &&
             purchase.provider &&
-            purchase.description.trim() &&
             purchase.methodPayment &&
-            purchase.state;
+            purchase.state &&
+            details.length > 0 &&
+            details.every(detail => (detail.product && detail.quantity && detail.unitPrice) || (detail.book && detail.unitPrice));
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
             return;
-        }
+        };
+
+        const processedDetails = details.map(detail => ({
+            idDetail: detail.idDetail,
+            quantity: detail.quantity,
+            unitPrice: detail.unitPrice,
+            idProduct: detail.product ? detail.product.idProduct : null,
+            idBook: detail.book ? detail.book.idBook : null,
+        }));
 
         let url, method, parameters;
 
         if (purchase.idPurchase && operation === 2) {
-            // Asegurarse de que los campos no estén vacíos al editar
             parameters = {
                 idPurchase: purchase.idPurchase,
+                details: processedDetails,
+                fkIdProvider: purchase.provider.idProvider,
+                //payment
                 total: purchase.total,
-                description: purchase.description.trim(),
-                methodPayment: purchase.methodPayment,
                 state: purchase.state,
-                fkIdProvider: purchase.provider.idProvider
+                methodPayment: purchase.methodPayment
             };
             url = URL + 'update/' + purchase.idPurchase;
             method = 'PUT';
         } else {
-            // Verificar que los campos requeridos están presentes al crear
             parameters = {
-                total: purchase.total,
-                description: purchase.description.trim(),
-                methodPayment: purchase.methodPayment,
-                state: purchase.state,
+                details: processedDetails,
                 fkIdProvider: purchase.provider.idProvider,
-                details: details
+                //payment
+                total: purchase.total,
+                state: purchase.state,
+                methodPayment: purchase.methodPayment
             };
             url = URL + 'create';
             method = 'POST';
@@ -241,8 +257,9 @@ export default function Purchases() {
             await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Compra ', URL.concat('all'), setPurchases);
             setPurchaseDialog(false);
             setPurchase(emptyPurchase);
+            setDetails([emptyDetail]); // Resetea los detalles al guardar
         }
-    };
+    }
 
     const confirmSave = () => {
         setConfirmDialogVisible(true);
@@ -258,10 +275,6 @@ export default function Purchases() {
 
     const handleEnable = (purchase) => {
         Request_Service.sendRequestEnable(URL, purchase.idPurchase, setPurchases, toast, 'Compra ');
-    }
-
-    const onInputChange = (e, name) => {
-        inputChange(e, name, purchase, setPurchase);
     };
 
     const onInputNumberChange = (e, name) => {
@@ -272,9 +285,18 @@ export default function Purchases() {
         return formatCurrency(rowData.total);
     };
 
+    const dateTemplate = (rowData) => {
+        return formatDate(rowData.date);
+    }
+
     const actionBodyTemplateP = (rowData) => {
         return actionBodyTemplate(rowData, editPurchase, confirmDeletePurchase, onlyDisabled, handleEnable);
     };
+
+    const detailsBodyTemplate = (rowData) => {
+        return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
+        />
+    }
 
     const purchaseDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
@@ -307,25 +329,7 @@ export default function Purchases() {
         );
     };
 
-    const selectedBookTemplate = (option, props) => {
-        if (option) {
-            return (
-                <div className="flex align-items-center">
-                    <div>{option.title}</div>
-                </div>
-            );
-        }
-        return <span>{props.placeholder}</span>;
-    };
-
-    const bookOptionTemplate = (option) => {
-        return (
-            <div className="flex align-items-center">
-                <div>{option.title}</div>
-            </div>
-        );
-    };
-
+    // Template para mostrar el producto seleccionado
     const selectedProductTemplate = (option, props) => {
         if (option) {
             return (
@@ -337,6 +341,19 @@ export default function Purchases() {
         return <span>{props.placeholder}</span>;
     };
 
+    // Template para mostrar el libro seleccionado
+    const selectedBookTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.title}</div>
+                </div>
+            );
+        }
+        return <span>{props.placeholder}</span>;
+    };
+
+    // Template para opciones de productos
     const productOptionTemplate = (option) => {
         return (
             <div className="flex align-items-center">
@@ -345,97 +362,43 @@ export default function Purchases() {
         );
     };
 
-    const selectedServiceTemplate = (option, props) => {
-        if (option) {
-            return (
-                <div className="flex align-items-center">
-                    <div>{option.typeService.name}</div>
-                </div>
-            );
-        }
-        return <span>{props.placeholder}</span>;
-    };
-
-    const serviceOptionTemplate = (option) => {
+    // Template para opciones de libros
+    const bookOptionTemplate = (option) => {
         return (
             <div className="flex align-items-center">
-                <div>{option.typeService.name}</div>
+                <div>{option.title}</div>
             </div>
         );
     };
-
-    const columns = [
-        { field: 'date', header: 'Fecha', sortable: true, body: (rowData) => formatDate(rowData.date), style: { minWidth: '12rem' } },
-        { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '16rem' } },
-        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
-        (isAdmin || isInventoryManager) && { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
-    ];
-
-    const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
-        label: MethodPayment[key],
-        value: key
-    }));
 
     const stateOptions = Object.keys(State).map(key => ({
         label: State[key],
         value: key
     }));
 
+    const methodPaymentOptions = Object.keys(MethodPayment).map(key => ({
+        label: MethodPayment[key],
+        value: key
+    }));
+
+    const columns = [
+        { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
+        { field: 'date', header: 'Fecha', body: dateTemplate, sortable: true, style: { minWidth: '12rem' } },
+        { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
+        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } },
+        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+    ];
+
     // EXPORT DATA
-    const handleExportPdf = () => { exportPdf(columns, purchases, 'Reporte_Compras') };
-    const handleExportExcel = () => { exportExcel(purchases, columns, 'Compras') };
+    const handleExportPdf = () => { exportPdf(columns.slice(0, -2), purchases, 'Reporte_Compras') };
+    const handleExportExcel = () => { exportExcel(purchases, columns.slice(0, -2), 'Compras') };
     const handleExportCsv = () => { exportCSV(false, dt) };
-
-    const [showProductInputs, setShowProductInputs] = useState(false);
-    const [showBookInputs, setShowBookInputs] = useState(false);
-
-    // Maneja el clic en el botón de Producto
-    const handleProductClick = () => {
-        setShowProductInputs(prevState => !prevState);
-        setShowBookInputs(false);
-    };
-
-    // Maneja el clic en el botón de Libro
-    const handleBookClick = () => {
-        setShowProductInputs(false);
-        setShowBookInputs(prevState => !prevState);
-    };
-
-    // Estado para los inputs de producto
-    const [productDetails, setProductDetails] = useState({
-        product: '',
-        quantity: 0,
-        price: 0
-    });
-
-    // Estado para los inputs de libro
-    const [bookDetails, setBookDetails] = useState({
-        book: '',
-        price: 0
-    });
-
-    // Maneja el cambio en los inputs de producto
-    const handleProductChanges = (e, field) => {
-        setProductDetails(prevDetails => ({
-            ...prevDetails,
-            [field]: e.value
-        }));
-    };
-
-    // Maneja el cambio en los inputs de libro
-    const handleBookChanges = (e, field) => {
-        setBookDetails(prevDetails => ({
-            ...prevDetails,
-            [field]: e.value
-        }));
-    };
-
 
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={(isAdmin || isInventoryManager) && leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={(isAdmin || isFinancialManager) && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -446,291 +409,251 @@ export default function Purchases() {
                     header={header('Compras', setGlobalFilter)}
                     columns={columns}
                 />
-            </div>
 
-            <Dialog visible={purchaseDialog} style={{ width: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">local_shipping</span>
-                        </span>
-                        <FloatLabel>
-                            <Dropdown
-                                id="provider"
-                                value={selectedProvider}
-                                onChange={(e) => {
-                                    setSelectedProvider(e.value);
-                                    onInputNumberChange(e, 'provider');
-                                }}
-                                options={providers}
-                                optionLabel="name"
-                                placeholder="Seleccionar Proveedor"
-                                filter valueTemplate={selectedProviderTemplate}
-                                itemTemplate={providerOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                                required
-                                autoFocus
-                                className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !purchase.provider && !selectedProvider })}`}
-                            />
-                            <label htmlFor="provider" className="font-bold">Proveedor</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !purchase.state && !selectedState && <small className="p-error">Proveedor es requerido.</small>}
-                </div>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
-                        </span>
-                        <FloatLabel>
-                            <InputText id="description" maxLength={100} value={purchase.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !purchase.description })} />
-                            <label htmlFor="description" className="font-bold">Descripción</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !purchase.description && <small className="p-error">Descripcion es requerida.</small>}
-                </div>
-                <div className="formgrid grid mt-5">
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">monetization_on</span>
-                            </span>
-                            <FloatLabel>
-                                <InputNumber id="total" maxLength={10} value={purchase.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.total })}`} />
-                                <label htmlFor="total" className="font-bold">Total</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !purchase.total && <small className="p-error">Total de compra es requerido.</small>}
-                    </div>
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">currency_exchange</span>
-                            </span>
-                            <FloatLabel>
-                                <Dropdown
-                                    id="methodPayment"
-                                    value={selectedMethodPayment}
-                                    onChange={(e) => { setSelectedMethodPayment(e.value); onInputNumberChange(e, 'methodPayment'); }}
-                                    options={methodPaymentOptions}
-                                    placeholder="Seleccionar el método de pago"
-                                    emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                                    required
-                                    className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !purchase.methodPayment && !selectedMethodPayment })}`}
-                                />
-                                <label htmlFor="methodPayment" className="font-bold">Método de pago</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
-                    </div>
-                </div>
-                <div className="field mt-3">
-                    <FloatLabel>
-                        <Dropdown
-                            id="state"
-                            name='state'
-                            value={selectedState}
-                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
-                            options={stateOptions}
-                            placeholder="Seleccionar el estado"
-                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
+                <Dialog visible={purchaseDialog} style={{ width: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
+                    <FloatDropdownSearchIcon
+                        className="field mt-5"
+                        icon='local_shipping' field='provider' required autoFocus
+                        value={selectedProvider}
+                        handleChange={handleProductChange}
+                        onInputNumberChange={onInputNumberChange}
+                        options={providers} optionLabel="name"
+                        placeholder="Seleccionar proveedor"
+                        valueTemplate={selectedProviderTemplate}
+                        itemTemplate={providerOptionTemplate}
+                        submitted={submitted} fieldForeign={purchase.provider}
+                        label="Proveedor" errorMessage="Proveedor es requerido."
+                    />
+                    <div className="formgrid grid mt-5">
+                        <FloatInputNumberMoneyIcon
+                            className="field col"
+                            value={purchase.total}
+                            onInputNumberChange={onInputNumberChange} field='total'
+                            maxLength={10} required
+                            submitted={submitted}
+                            label='Total'
+                            errorMessage='Total de compra es requerido.'
                         />
-                        <label htmlFor="state" className="font-bold">Estado</label>
-                    </FloatLabel>
-                    {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
-                </div>
-                {details.map((detail, index) => (
-                    <div key={index} className="formgrid grid mt-5">
-                        <div style={{ padding: '20px' }}>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '15px',
-                                alignItems: 'center'
-                            }}>
-                                <FloatLabel>
-                                    <button
-                                        type="button"
-                                        className="p-button p-component p-button-outlined"
-                                        onClick={handleProductClick}
-                                        style={{
-                                            display: 'block',
-                                            width: 'auto',  // Ancho automático para evitar expansión no deseada
-                                            maxWidth: '200px',  // Ajusta el ancho máximo según sea necesario
-                                            marginBottom: '10px',  // Espacio debajo del botón
-                                            transition: 'none',  // Desactiva cualquier transición que pueda causar movimiento
-                                            outline: 'none',  // Elimina el borde de enfoque si es necesario
-                                            boxShadow: 'none'  // Elimina la sombra del botón si es necesario
-                                        }}
-                                    >
-                                        Producto
-                                    </button>
+                        <FloatDropdownIcon
+                            className="field col"
+                            icon='currency_exchange' field='methodPayment' required
+                            value={selectedMethodPayment}
+                            handleChange={setSelectedMethodPayment}
+                            onInputNumberChange={onInputNumberChange}
+                            options={methodPaymentOptions}
+                            placeholder="Seleccionar el método de pago"
+                            submitted={submitted} fieldForeign={purchase.methodPayment}
+                            label="Método de pago" errorMessage="Método de pago es requerido."
+                        />
+                    </div>
 
+                    <FloatDropdownIcon
+                        className="field mt-3"
+                        icon='new_releases' field='state' required
+                        value={selectedState}
+                        handleChange={setSelectedState}
+                        onInputNumberChange={onInputNumberChange}
+                        options={stateOptions}
+                        placeholder="Seleccionar el estado"
+                        submitted={submitted} fieldForeign={purchase.state}
+                        label="Estado" errorMessage="Estado es requerido."
+                    />
 
-                                    {showProductInputs && (
-                                        <div style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            gap: '15px',
-                                            marginTop: '10px',
-                                            alignItems: 'center' // Alinea verticalmente los inputs
-                                        }}>
-                                            <div style={{ flex: 1 }}>
-                                                <Dropdown
-                                                    id="product"
-                                                    value={detail.product}
-                                                    onChange={(e) => handleProductChanges(e, 'product')}
-                                                    options={products}
-                                                    optionLabel="name"
-                                                    filter
-                                                    valueTemplate={selectedProductTemplate}
-                                                    itemTemplate={productOptionTemplate}
-                                                    placeholder="Seleccionar Producto"
-                                                    emptyMessage="No hay datos"
-                                                    emptyFilterMessage="No hay resultados encontrados"
-                                                    required
-                                                    disabled={detail.book !== ""}
-                                                    className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.product && !selectedProduct })}`}
-                                                />
+                    <div className="formgrid grid mt-3">
+                        {details.map((detail, index) => (
+                            <div key={index} className="field col-12">
+                                <div className="formgrid grid mt-3">
+                                    {isProductSelected !== 'book' && (
+                                        <div className="field col-3">
+                                            <div className="p-inputgroup flex-1">
+                                                <span className="p-inputgroup-addon">
+                                                    <span class="material-symbols-outlined">inventory_2</span>
+                                                </span>
+                                                <FloatLabel>
+                                                    <Dropdown
+                                                        id={`product-${index}`}
+                                                        value={detail.product}
+                                                        onChange={(e) => { handleProductSelection(index, e.value) }}
+                                                        options={products}
+                                                        optionLabel="name"
+                                                        placeholder="Seleccionar producto"
+                                                        emptyMessage="No hay datos"
+                                                        emptyFilterMessage="No hay resultados encontrados"
+                                                        required
+                                                        valueTemplate={selectedProductTemplate}
+                                                        itemTemplate={productOptionTemplate}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.product && !detail.book })}`}
+                                                        disabled={(!selectedProvider || !!detail.book) && 'disabled'}
+                                                    //disabled={isProductSelected === 'book'}
+                                                    />
+                                                    <label htmlFor={`product-${index}`} className="font-bold">Producto</label>
+                                                </FloatLabel>
                                             </div>
-
-                                            <div style={{ flex: 1 }}>
-                                                <div className="p-inputgroup flex-1">
-                                                    <span className="p-inputgroup-addon">
-                                                        <span className="material-symbols-outlined">production_quantity_limits</span>
-                                                    </span>
-                                                    <FloatLabel>
-                                                        <InputNumber
-                                                            id={`quantity-${index}`}
-                                                            value={detail.quantity}
-                                                            onValueChange={(e) => handleProductChanges(e, 'quantity')}
-                                                            mode="decimal"
-                                                            required
-                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.quantity })}`}
-                                                        />
-                                                        <label htmlFor={`quantity-${index}`} className="font-bold">Cantidad</label>
-                                                    </FloatLabel>
-                                                </div>
-                                                {submitted && !detail.quantity && <small className="p-error">Cantidad es requerida.</small>}
-                                            </div>
-
-                                            <div style={{ flex: 1 }}>
-                                                <div className="p-inputgroup flex-1">
-                                                    <span className="p-inputgroup-addon">
-                                                        <span className="material-symbols-outlined">monetization_on</span>
-                                                    </span>
-                                                    <FloatLabel>
-                                                        <InputNumber
-                                                            id={`price-${index}`}
-                                                            value={detail.price}
-                                                            onValueChange={(e) => handleProductChanges(e, 'price')}
-                                                            mode="currency"
-                                                            currency="COP"
-                                                            required
-                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.price })}`}
-                                                        />
-                                                        <label htmlFor={`price-${index}`} className="font-bold">Precio</label>
-                                                    </FloatLabel>
-                                                </div>
-                                                {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
-                                            </div>
+                                            {submitted && !detail.product && !detail.book && <small className="p-error">Producto es requerido.</small>}
                                         </div>
                                     )}
-                                </FloatLabel>
-
-                                <FloatLabel>
-                                    <button
-                                        type="button"
-                                        className="p-button p-component p-button-outlined"
-                                        onClick={handleBookClick}
-                                        style={{
-                                            display: 'block',
-                                            width: 'auto',
-                                            maxWidth: '200px',
-                                            marginBottom: '10px',
-                                            transition: 'none',
-                                            outline: 'none',
-                                            boxShadow: 'none',
-                                            boxSizing: 'border-box'  // Asegura que el padding y el borde no cambien el tamaño
-                                        }}
-                                    >
-                                        Libro
-                                    </button>
-
-
-                                    {showBookInputs && (
-                                        <div style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            gap: '15px',
-                                            marginTop: '10px',
-                                            alignItems: 'center' // Alinea verticalmente los inputs
-                                        }}>
-                                            <div style={{ flex: 1 }}>
-                                                <Dropdown
-                                                    id="book"
-                                                    value={detail.book}
-                                                    onChange={(e) => handleBookChanges(e, 'book')}
-                                                    options={books}
-                                                    optionLabel="title"
-                                                    placeholder="Seleccionar Libro"
-                                                    filter
-                                                    valueTemplate={selectedBookTemplate}
-                                                    itemTemplate={bookOptionTemplate}
-                                                    emptyMessage="No hay datos"
-                                                    emptyFilterMessage="No hay resultados encontrados"
-                                                    required
-                                                    disabled={detail.product !== ""}
-                                                    className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !detail.book && !selectedBook })}`}
-                                                />
+                                    {isProductSelected !== 'product' && (
+                                        <div className="field col-3">
+                                            <div className="p-inputgroup flex-1">
+                                                <span className="p-inputgroup-addon">
+                                                    <span class="material-symbols-outlined">book</span>
+                                                </span>
+                                                <FloatLabel>
+                                                    <Dropdown
+                                                        id={`book-${index}`}
+                                                        value={detail.book}
+                                                        onChange={(e) => { handleBookSelection(index, e.value) }}
+                                                        options={books}
+                                                        optionLabel="title"
+                                                        placeholder="Seleccionar libro"
+                                                        emptyMessage="No hay datos"
+                                                        emptyFilterMessage="No hay resultados encontrados"
+                                                        required
+                                                        valueTemplate={selectedBookTemplate}
+                                                        itemTemplate={bookOptionTemplate}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.book && !detail.product })}`}
+                                                        disabled={(!selectedProvider || !!detail.product) && 'disabled'}
+                                                    />
+                                                    <label htmlFor={`book-${index}`} className="font-bold">Libro</label>
+                                                </FloatLabel>
                                             </div>
-
-                                            <div style={{ flex: 1 }}>
-                                                <div className="p-inputgroup flex-1">
-                                                    <span className="p-inputgroup-addon">
-                                                        <span className="material-symbols-outlined">monetization_on</span>
-                                                    </span>
-                                                    <FloatLabel>
-                                                        <InputNumber
-                                                            id={`price-${index}`}
-                                                            value={detail.price}
-                                                            onValueChange={(e) => handleBookChanges(e, 'price')}
-                                                            mode="currency"
-                                                            currency="COP"
-                                                            required
-                                                            className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.price })}`}
-                                                        />
-                                                        <label htmlFor={`price-${index}`} className="font-bold">Precio</label>
-                                                    </FloatLabel>
-                                                </div>
-                                                {submitted && !detail.price && <small className="p-error">Precio es requerido.</small>}
-                                            </div>
+                                            {submitted && !detail.book && !detail.product && <small className="p-error">Libro es requerido.</small>}
                                         </div>
                                     )}
-                                </FloatLabel>
 
+                                    {isProductSelected !== 'book' && (
+                                        <FloatInputNumberIcon
+                                            className="field col-2"
+                                            icon='production_quantity_limits'
+                                            value={detail.quantity}
+                                            onInputNumberChange={(e) => handleDetailChange(index, 'quantity', e.value)}
+                                            field='quantity'
+                                            label='Cantidad'
+                                            maxLength={5} required
+                                            submitted={submitted}
+                                            errorMessage='Cantidad es requerida.'
+                                        />
+                                    )}
+
+                                    <FloatInputNumberMoneyIcon
+                                        className="field col-2"
+                                        value={detail.unitPrice}
+                                        onInputNumberChange={(e) => handleDetailChange(index, 'unitPrice', e.value)}
+                                        field='unitPrice'
+                                        label='Precio Unitario'
+                                        required
+                                        submitted={submitted}
+                                        errorMessage='Precio unitario es requerido.'
+                                    />
+                                    <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
+                                </div>
+                            </div>
+                        ))
+                        }
+                    </div>
+                    <Button label="Agregar Detalle" icon="pi pi-plus" onClick={addDetail} className="p-button-sm" />
+
+                </Dialog>
+
+                {/* DIALOG DETAIL */}
+                <Dialog visible={purchaseDetailDialog} style={{ width: '50rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+                    <div className="container mt-4">
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">local_shipping</span>
+                                    <div>
+                                        <label htmlFor="provider" className="font-bold d-block">Proveedor</label>
+                                        <p>{(purchase.provider) && purchase.provider.name}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">monetization_on</span>
+                                    <div>
+                                        <label htmlFor="provider" className="font-bold d-block">Total</label>
+                                        <p>{(purchase.total) && priceBodyTemplate(purchase)}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-
-
-                        <div className="field col">
-                            <Button icon="pi pi-trash" className="p-button-rounded p-button-sm" severity='danger' onClick={() => removeDetail(index)} />
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">currency_exchange</span>
+                                    <div>
+                                        <label htmlFor="methodPayment" className="font-bold d-block">Método de pago</label>
+                                        <p>{(purchase.payment) && purchase.payment.methodPayment}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">new_releases</span>
+                                    <div>
+                                        <label htmlFor="state" className="font-bold d-block">Estado</label>
+                                        <p>{(purchase.payment) && purchase.payment.state}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
+                                    <div>
+                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
+                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 className='text-center'>Lista de Detalles</h4>
+                        {detailsList && (
+                            detailsList.map((detail, index) => (
+                                <div key={index} className="row mb-3">
+                                    <div className={(!detail.book) ? 'col-md-5' : 'col-md-6'}>
+                                        <div className="d-flex align-items-start">
+                                            <span className="material-symbols-outlined me-2">{(detail.product) ? 'inventory_2' : 'book'}</span>
+                                            <div>
+                                                <label htmlFor={(detail.product) ? 'product' : 'book'} className="font-bold d-block">{(detail.product) ? 'Producto' : 'Libro'}</label>
+                                                <p>{(detail.product) ? detail.product.name : detail.book.title}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {!detail.book &&
+                                        <div className="col-md-3">
+                                            <div className="d-flex align-items-start">
+                                                <span className="material-symbols-outlined me-2">production_quantity_limits</span>
+                                                <div>
+                                                    <label htmlFor="quantity" className="font-bold d-block">Cantidad</label>
+                                                    <p>{(detail.product) && detail.quantity}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div className={(!detail.book) ? 'col-md-4' : 'col-md-6'}>
+                                        <div className="d-flex align-items-start">
+                                            <span className="material-symbols-outlined me-2">monetization_on</span>
+                                            <div>
+                                                <label htmlFor="unitPrice" className="font-bold d-block">Precio Unitario</label>
+                                                <p>{(detail.unitPrice) && formatCurrency(detail.unitPrice)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
-                ))}
+                </Dialog>
+            </div>
 
-                <div className="field mt-5">
-                    <button type="button" className="p-button p-component p-button-outlined" onClick={addDetail}>
-                        <span class="material-symbols-outlined">add</span>
-                        Agregar Detalle
-                    </button>
-                </div>
-            </Dialog>
-
-            {DialogDelete(deletePurchaseDialog, 'Compra', deletePurchaseDialogFooter, hideDeletePurchaseDialog, purchase, 'compra', 'esta')}
-
+            {DialogDelete(deletePurchaseDialog, 'Compra', deletePurchaseDialogFooter, hideDeletePurchaseDialog, purchase, purchase.idPurchase, 'la compra')}
             {confirmDialog(confirmDialogVisible, 'Compra', confirmPurchaseDialogFooter, hideConfirmPurchaseDialog, purchase, operation)}
         </div>
     );

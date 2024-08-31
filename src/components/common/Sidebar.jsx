@@ -206,7 +206,7 @@ export default function MiniDrawer({ children }) {
             icon: <Icon icon='shopping_cart' />,
             items: [
                 { name: "Carrito", icon: <IconSubItems />, link: "/carrito", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
-                { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER'] },
+                // { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER'] },
                 { name: "Ventas", icon: <IconSubItems />, link: "/ventas", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
                 { name: "Pagos", icon: <IconSubItems />, link: "/pagos", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
             ],
