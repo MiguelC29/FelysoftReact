@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Request_Service from '../service/Request_Service';
 import { actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, DialogDelete, DialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
@@ -69,18 +69,18 @@ export default function Purchases() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-    useEffect(() => {
-        fetchPurchases();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchPurchases = async () => {
+    const fetchPurchases = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setPurchases);
         } catch (error) {
             console.error("Fallo al recuperar compras:", error);
         }
-    }
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchPurchases();
+    }, [onlyDisabled, fetchPurchases]); // Fetch data when onlyDisabled changes
 
     const getProviders = () => {
         return Request_Service.getData('/provider/all', setProviders);
@@ -523,7 +523,8 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedProductTemplate}
                                                         itemTemplate={productOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && (!detail.product && !detail.book) || errors[`product_${index}`] })}`}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': (submitted && (!detail.product && !detail.book)) || errors[`product_${index}`]
+                                                        })}`}
                                                         disabled={(!selectedProvider || !!detail.book) && 'disabled'}
                                                     />
                                                     <label htmlFor={`product-${index}`} className="font-bold">Producto</label>
@@ -552,7 +553,10 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedBookTemplate}
                                                         itemTemplate={bookOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && (!detail.book && !errors.book && !detail.product) || errors[`book_${index}`] })}`}
+                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                            'p-invalid': (submitted && (!detail.book && !errors.book && !detail.product)) || errors[`book_${index}`]
+                                                        })}`}
+                                                        
                                                         disabled={(!selectedProvider || !!detail.product) && 'disabled'}
                                                     />
                                                     <label htmlFor={`book-${index}`} className="font-bold">Libro</label>
