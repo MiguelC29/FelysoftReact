@@ -461,22 +461,29 @@ export default function Purchases() {
                         {submitted && !purchase.methodPayment && !selectedMethodPayment && <small className="p-error">Método de pago es requerido.</small>}
                     </div>
                 </div>
-                <div className="field mt-3">
-                    <FloatLabel>
-                        <Dropdown
-                            id="state"
-                            name='state'
-                            value={selectedState}
-                            onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
-                            options={stateOptions}
-                            placeholder="Seleccionar el estado"
-                            emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
-                            required
-                            className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
-                        />
-                        <label htmlFor="state" className="font-bold">Estado</label>
-                    </FloatLabel>
-                    {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
+                <div className="field col">
+                    <div className="p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <span class="material-symbols-outlined">
+                                new_releases
+                            </span>
+                        </span>
+                        <FloatLabel>
+                            <Dropdown
+                                id="state"
+                                name='state'
+                                value={selectedState}
+                                onChange={(e) => { setSelectedState(e.value); onInputNumberChange(e, 'state'); }}
+                                options={stateOptions}
+                                placeholder="Seleccionar el estado"
+                                emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados"
+                                required
+                                className={`w-full md:w rem ${classNames({ 'p-invalid': submitted && !purchase.state && !selectedState })}`}
+                            />
+                            <label htmlFor="state" className="font-bold">Estado</label>
+                        </FloatLabel>
+                        {submitted && !purchase.state && !selectedState && <small className="p-error">Estado es requerido.</small>}
+                    </div>
                 </div>
                 {details.map((detail, index) => (
                     <div key={index} className="formgrid grid mt-5">
