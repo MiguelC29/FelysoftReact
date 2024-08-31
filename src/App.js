@@ -7,11 +7,10 @@ import ViewProviders from './pages/ViewProviders';
 import ViewProductInventory from './pages/ViewProductInventory';
 
 //gastos e ingresos
-import ViewExpenses from './pages/ViewExpenses';
+// import ViewExpenses from './pages/ViewExpenses';
 import ViewPurchases from './pages/ViewPurchases';
 import ViewSales from './pages/ViewSales';
 import ViewPayments from './pages/ViewPayments';
-import ViewDetails from './pages/ViewDetails';
 
 import ViewTypeservices from './pages/ViewTypeservices';
 import ViewServices from './pages/ViewServices';
@@ -34,6 +33,7 @@ import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
 import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
 import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
+
 
 export default function App() {
 
@@ -67,20 +67,20 @@ export default function App() {
             <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
             <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/detalles' element={<RoleProtectedRoute element={<ViewDetails />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','FINANCIAL_MANAGER','SALESPERSON']} />} />
             <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
-            <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} />
+            {/* <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} /> */}
             <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito />} roles={['ADMINISTRATOR', 'SALESPERSON']} />} />
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
-
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
             
             {/* Redirigir cualquier ruta no encontrada a /login */}
             <Route path='/unauthorized' element={<Error404 />} />
             <Route path='*' element={<Navigate to="/unauthorized" replace />} />
+
+            <Route path='/registro' element={<RegistrationPage />} />
           </Routes>
         </div>
         {/* <Footer /> */}

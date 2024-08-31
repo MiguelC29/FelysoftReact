@@ -80,6 +80,28 @@ const BaseFloatDropdownSearch = (props) => {
                 emptyFilterMessage="No hay resultados encontrados"
                 required={props.required}
                 autoFocus={props.autoFocus}
+                disabled={props.disabled}
+                className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': props.submitted && !props.fieldForeign && !props.value })}`}
+            />
+            <label htmlFor={props.field} className="font-bold">{props.label}</label>
+        </FloatLabel>
+    );
+};
+
+const BaseFloatDropdown = (props) => {
+    return (
+        <FloatLabel>
+            <Dropdown
+                id={props.field}
+                value={props.value}
+                onChange={(e) => { props.handleChange(e.target.value); props.onInputNumberChange(e, props.field); }}
+                options={props.options}
+                optionLabel={props.optionLabel}
+                placeholder={props.placeholder}
+                emptyMessage="No hay datos"
+                emptyFilterMessage="No hay resultados encontrados"
+                required={props.required}
+                autoFocus={props.autoFocus}
                 className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': props.submitted && !props.fieldForeign && !props.value })}`}
             />
             <label htmlFor={props.field} className="font-bold">{props.label}</label>
@@ -144,6 +166,20 @@ export const FloatInputNumberMoneyIcon = (props) => {
                 <MoneyFloatInputNumber {...props} />
             </div>
             {props.submitted && !props.value && <small className="p-error">{props.errorMessage}</small>}
+        </div>
+    );
+};
+
+export const FloatDropdownIcon = (props) => {
+    return (
+        <div className={props.className}>
+            <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <span class="material-symbols-outlined">{props.icon}</span>
+                </span>
+                <BaseFloatDropdown {...props} />
+            </div>
+            {props.submitted && !props.fieldForeign && !props.value && <small className="p-error">{props.errorMessage}</small>}
         </div>
     );
 };

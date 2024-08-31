@@ -12,6 +12,7 @@ import { Button } from 'primereact/button';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../img/logo.svg";
 
+
 function RegistrationPage() {
 
     const navigate = useNavigate();
