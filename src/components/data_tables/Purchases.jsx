@@ -60,6 +60,7 @@ export default function Purchases() {
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [errors, setErrors] = useState({});
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
@@ -110,6 +111,7 @@ export default function Purchases() {
         getBooks();
         setOperation(1);
         setSubmitted(false);
+        setErrors({});
         setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
         setPurchaseDialog(true);
     };
@@ -199,6 +201,32 @@ export default function Purchases() {
         setDeletePurchaseDialog(false);
     };
 
+    const validateDetails = () => {
+        const productSet = new Set();
+        const bookSet = new Set();
+        let errors = {};
+
+        details.forEach((detail, index) => {
+            if (detail.product) {
+                if (productSet.has(detail.product.idProduct)) {
+                    errors[`product_${index}`] = `El producto en el detalle ${index + 1} se repite.`;
+                } else {
+                    productSet.add(detail.product.idProduct);
+                }
+            }
+
+            if (detail.book) {
+                if (bookSet.has(detail.book.idBook)) {
+                    errors[`book_${index}`] = `El libro en el detalle ${index + 1} se repite.`;
+                } else {
+                    bookSet.add(detail.book.idBook);
+                }
+            }
+        });
+
+        return errors;
+    };
+
     const savePurchase = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
@@ -217,6 +245,16 @@ export default function Purchases() {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
             return;
         };
+
+        // Validar los detalles
+        const validationErrors = validateDetails();
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            // Si hay errores de validación, no continuar con el guardado
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor corrija los detalles repetidos.', life: 3000 });
+            return;
+        }
 
         const processedDetails = details.map(detail => ({
             idDetail: detail.idDetail,
@@ -463,6 +501,9 @@ export default function Purchases() {
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
                                 <div className="formgrid grid mt-3">
+                                    <div className="col-1">
+                                        <strong>{index + 1}.</strong>
+                                    </div>
                                     {isProductSelected !== 'book' && (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
@@ -482,14 +523,14 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedProductTemplate}
                                                         itemTemplate={productOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.product && !detail.book })}`}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && (!detail.product && !detail.book) || errors[`product_${index}`] })}`}
                                                         disabled={(!selectedProvider || !!detail.book) && 'disabled'}
-                                                    //disabled={isProductSelected === 'book'}
                                                     />
                                                     <label htmlFor={`product-${index}`} className="font-bold">Producto</label>
                                                 </FloatLabel>
                                             </div>
                                             {submitted && !detail.product && !detail.book && <small className="p-error">Producto es requerido.</small>}
+                                            {errors[`product_${index}`] && <small className="p-error">{errors[`product_${index}`]}</small>}
                                         </div>
                                     )}
                                     {isProductSelected !== 'product' && (
@@ -511,13 +552,14 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedBookTemplate}
                                                         itemTemplate={bookOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && !detail.book && !detail.product })}`}
+                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': submitted && (!detail.book && !errors.book && !detail.product) || errors[`book_${index}`] })}`}
                                                         disabled={(!selectedProvider || !!detail.product) && 'disabled'}
                                                     />
                                                     <label htmlFor={`book-${index}`} className="font-bold">Libro</label>
                                                 </FloatLabel>
                                             </div>
                                             {submitted && !detail.book && !detail.product && <small className="p-error">Libro es requerido.</small>}
+                                            {errors[`book_${index}`] && <small className="p-error">{errors[`book_${index}`]}</small>}
                                         </div>
                                     )}
 

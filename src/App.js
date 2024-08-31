@@ -8,7 +8,7 @@ import ViewProviders from './pages/ViewProviders';
 import ViewProductInventory from './pages/ViewProductInventory';
 
 //gastos e ingresos
-import ViewExpenses from './pages/ViewExpenses';
+// import ViewExpenses from './pages/ViewExpenses';
 import ViewPurchases from './pages/ViewPurchases';
 import ViewSales from './pages/ViewSales';
 import ViewPayments from './pages/ViewPayments';
