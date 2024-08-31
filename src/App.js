@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ViewCategories from './pages/ViewCategories';
+import ViewBrands from './pages/ViewBrands';
 import ViewProducts from './pages/ViewProducts';
 import ViewUsers from './pages/ViewUsers';
 import ViewProfile from './pages/ViewProfile';
@@ -56,6 +57,7 @@ export default function App() {
             <Route path='/inventarioProductos' element={<RoleProtectedRoute element={<ViewProductInventory />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />
             <Route path='/productos' element={<RoleProtectedRoute element={<ViewProducts />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/categorias' element={<RoleProtectedRoute element={<ViewCategories />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
+            <Route path='/marcas' element={<RoleProtectedRoute element={<ViewBrands />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/categorias_proveedores' element={<RoleProtectedRoute element={<ViewAssociationCateProv />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/proveedores' element={<RoleProtectedRoute element={<ViewProviders />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/servicios' element={<RoleProtectedRoute element={<ViewServices />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER','SALESPERSON']} />} />

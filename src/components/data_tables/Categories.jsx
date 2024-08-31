@@ -277,7 +277,7 @@ export default function Categories() {
                     />
                 </Dialog>
 
-                {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'la categoria')}
+                {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'la categoría')}
 
                 {confirmDialog(confirmDialogVisible, 'Categoría', confirmCategoryDialogFooter, hideConfirmCategoryDialog, category, operation)}
 
