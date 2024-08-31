@@ -21,7 +21,6 @@ import { useCart } from '../CartContext';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
-import Swal from 'sweetalert2';
 
 
 const drawerWidth = 240;

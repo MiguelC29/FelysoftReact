@@ -49,12 +49,14 @@ export default function PurchasesC() {
     const [purchases, setPurchases] = useState([]);
     const [providers, setProviders] = useState([]);
     const [details, setDetails] = useState([emptyDetail]); // Inicia con un detalle vacío
+    const [detailsList, setDetailsList] = useState([]);
     const [books, setBooks] = useState([]);
     const [products, setProducts] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [purchaseDialog, setPurchaseDialog] = useState(false);
+    const [purchaseDetailDialog, setPurchaseDetailDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -125,6 +127,13 @@ export default function PurchasesC() {
         setProductDialog(true);*/
     }
 
+    const openDetail = (purchase) => {
+        setPurchase({ ...purchase });
+        Request_Service.getData(`/detail/details/${purchase.idPurchase}`, setDetailsList);
+        setTitle('Datos Compra');
+        setPurchaseDetailDialog(true);
+    }
+
     const handleProductSelection = (index, product) => {
         const updatedDetails = [...details];
         updatedDetails[index].product = product;
@@ -179,6 +188,7 @@ export default function PurchasesC() {
     const hideDialog = () => {
         setSubmitted(false);
         setPurchaseDialog(false);
+        setPurchaseDetailDialog(false);
     };
 
     const hideConfirmPurchaseDialog = () => {
@@ -283,6 +293,11 @@ export default function PurchasesC() {
         return actionBodyTemplate(rowData, editPurchase, confirmDeletePurchase, onlyDisabled, handleEnable);
     };
 
+    const detailsBodyTemplate = (rowData) => {
+        return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
+        />
+    }
+
     const purchaseDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
     );
@@ -367,6 +382,7 @@ export default function PurchasesC() {
     }));
 
     const columns = [
+        { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
         { field: 'date', header: 'Fecha', body: dateTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } },
@@ -532,10 +548,108 @@ export default function PurchasesC() {
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
                                 </div>
                             </div>
-                        ))}
+                        ))
+                        }
                     </div>
                     <Button label="Agregar Detalle" icon="pi pi-plus" onClick={addDetail} className="p-button-sm" />
 
+                </Dialog>
+
+                {/* DIALOG DETAIL */}
+                <Dialog visible={purchaseDetailDialog} style={{ width: '50rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+                    <div className="container mt-4">
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">local_shipping</span>
+                                    <div>
+                                        <label htmlFor="provider" className="font-bold d-block">Proveedor</label>
+                                        <p>{(purchase.provider) && purchase.provider.name}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">monetization_on</span>
+                                    <div>
+                                        <label htmlFor="provider" className="font-bold d-block">Total</label>
+                                        <p>{(purchase.total) && priceBodyTemplate(purchase)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">currency_exchange</span>
+                                    <div>
+                                        <label htmlFor="methodPayment" className="font-bold d-block">Método de pago</label>
+                                        <p>{(purchase.payment) && purchase.payment.methodPayment}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">new_releases</span>
+                                    <div>
+                                        <label htmlFor="state" className="font-bold d-block">Estado</label>
+                                        <p>{(purchase.payment) && purchase.payment.state}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-start">
+                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
+                                    <div>
+                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
+                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 className='text-center'>Lista de Detalles</h4>
+                        {detailsList && (
+                            detailsList.map((detail, index) => (
+                                <div key={index} className="row mb-3">
+                                    <div className={(!detail.book) ? 'col-md-5' : 'col-md-6'}>
+                                        <div className="d-flex align-items-start">
+                                            <span className="material-symbols-outlined me-2">{(detail.product) ? 'inventory_2' : 'book'}</span>
+                                            <div>
+                                                <label htmlFor={(detail.product) ? 'product' : 'book'} className="font-bold d-block">{(detail.product) ? 'Producto' : 'Libro'}</label>
+                                                <p>{(detail.product) ? detail.product.name : detail.book.title}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {!detail.book &&
+                                        <div className="col-md-3">
+                                            <div className="d-flex align-items-start">
+                                                <span className="material-symbols-outlined me-2">production_quantity_limits</span>
+                                                <div>
+                                                    <label htmlFor="quantity" className="font-bold d-block">Cantidad</label>
+                                                    <p>{(detail.product) && detail.quantity}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div className={(!detail.book) ? 'col-md-4' : 'col-md-6'}>
+                                        <div className="d-flex align-items-start">
+                                            <span className="material-symbols-outlined me-2">monetization_on</span>
+                                            <div>
+                                                <label htmlFor="unitPrice" className="font-bold d-block">Precio Unitario</label>
+                                                <p>{(detail.unitPrice) && formatCurrency(detail.unitPrice)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </Dialog>
             </div>
 
