@@ -1,29 +1,17 @@
-import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { DialogFooter, actionBodyTemplateInv, confirmDialogFooter, confirmDialogStock, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, headerInv, inputNumberChange, rightToolbarTemplateExport, sendRequestStock } from '../../functionsDataTable';
+import { exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, headerInv, rightToolbarTemplateExport } from '../../functionsDataTable';
 import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
-import { FloatInputNumber } from '../Inputs';
 import Request_Service from '../service/Request_Service';
 
 export default function ProductInventory() {
-    let emptyProductInv = {
-        idInventory: null,
-        stock: null
-    }
 
     const URL = '/inventory/';
     const [productsInv, setProductsInv] = useState([]);
-    const [productInv, setProductInv] = useState(emptyProductInv);
-    const [productsInvDialog, setProductsInvDialog] = useState(false);
-    const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [operation, setOperation] = useState();
-    const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -31,61 +19,8 @@ export default function ProductInventory() {
         Request_Service.getData(URL.concat('inventoryProducts'), setProductsInv);
     }, []);
 
-    function openUpdate(product) {
-        setProductInv({ ...product });
-        setTitle('Actualizar Stock');
-        setOperation(1);
-        setSubmitted(false);
-        setProductsInvDialog(true);
-    }
-
-    const openReset = (product) => {
-        setProductInv({ ...product });
-        setTitle('Reiniciar Stock');
-        setOperation(2);
-        setSubmitted(false);
-        setProductsInvDialog(true);
-    }
-
-    const hideDialog = () => {
-        setSubmitted(false);
-        setProductsInvDialog(false);
-    };
-
-    const hideConfirmProductsInvDialog = () => {
-        setConfirmDialogVisible(false);
-    };
-
-    const updateStock = () => {
-        setSubmitted(true);
-        setConfirmDialogVisible(false);
-        let url, method = 'PUT', parameters = { idInventory: productInv.idInventory, stock: productInv.stock };
-        if (productInv.idInventory && (productInv.stock || productInv.stock === 0)) {
-            if (operation === 1) {
-                url = URL.concat('updateStock/' + productInv.idInventory);
-            } else {
-                url = URL.concat('resetStock/' + productInv.idInventory);
-            }
-            sendRequestStock(method, parameters, url, setProductsInv, URL.concat('inventoryProducts'), toast);
-            setProductsInvDialog(false);
-            setProductInv(emptyProductInv);
-        }
-    }
-
-    const confirmSave = () => {
-        setConfirmDialogVisible(true);
-    };
-
-    const onInputNumberChange = (e, name) => {
-        inputNumberChange(e, name, productInv, setProductInv);
-    };
-
     const priceBodyTemplate = (rowData) => {
         return formatCurrency(rowData.product.salePrice);
-    };
-
-    const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplateInv(rowData, openUpdate, openReset);
     };
 
     const imageBodyTemplate = (rowData) => {
@@ -97,14 +32,6 @@ export default function ProductInventory() {
             return <p>No hay imagen</p>;
         }
     };
-
-    const productInvDialogFooter = (
-        DialogFooter(hideDialog, confirmSave)
-    );
-
-    const confirmProductDialogFooter = (
-        confirmDialogFooter(hideConfirmProductsInvDialog, updateStock)
-    );
 
     const statusBodyTemplate = (rowData) => {
         return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
@@ -151,7 +78,6 @@ export default function ProductInventory() {
         { field: 'product.provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '12rem' } },
         { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
         { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
-        // { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA
@@ -174,20 +100,6 @@ export default function ProductInventory() {
                     header={headerInv('Productos', setGlobalFilter)}
                     columns={columns}
                 />
-
-                <Dialog visible={productsInvDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productInvDialogFooter} onHide={hideDialog}>
-                    <FloatInputNumber
-                        className="field mt-4"
-                        value={(operation === 2) && productInv.stock}
-                        onInputNumberChange={onInputNumberChange} field='stock'
-                        maxLength={5} required autoFocus
-                        submitted={submitted}
-                        label='Stock actual'
-                        errorMessage='Stock es requerido.'
-                    />
-                </Dialog>
-
-                {confirmDialogStock(confirmDialogVisible, 'Stock', confirmProductDialogFooter, hideConfirmProductsInvDialog, productInv, operation)}
             </div>
         </div>
     );
