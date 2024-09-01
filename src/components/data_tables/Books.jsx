@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -51,21 +51,21 @@ export default function Books() {
     // ROLES
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
-
-    useEffect(() => {
-        fetchBooks();
-        getGenres();
-        getAuthors();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
     
-    const fetchBooks = async () => {
+    const fetchBooks = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setBooks);
         } catch (error) {
             console.error("Fallo al recuperar Libros:", error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchBooks();
+        getGenres();
+        getAuthors();
+    }, [onlyDisabled, fetchBooks]);
 
     const getGenres = () => {
         return Request_Service.getData('/genre/all', setGenres);

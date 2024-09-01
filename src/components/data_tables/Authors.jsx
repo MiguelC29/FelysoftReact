@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -49,18 +49,18 @@ export default function Authors() {
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
 
-    useEffect(() => {
-        fetchAuthors();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchAuthors = async () => {
+    const fetchAuthors = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setAuthors);
         } catch (error) {
             console.error("Fallo al recuperar autores:", error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchAuthors();
+    }, [onlyDisabled, fetchAuthors]);
 
     const openNew = () => {
         setAuthor(emptyAuthor);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import Request_Service from '../service/Request_Service';
 import { classNames } from 'primereact/utils';
@@ -75,18 +75,18 @@ export default function Users() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  useEffect(() => {
-    fetchUsers();
-  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
       await Request_Service.getData(url, setUsers);
     } catch (error) {
       console.error("Fallo al recuperar usuarios:", error);
     }
-  }
+  }, [onlyDisabled, URL]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [onlyDisabled, fetchUsers]);
 
   // PUEDE QUE SE PUEDA DECLARAR GENERAL PARA RECIBLAR
   const handleFileUpload = (event) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -30,18 +30,18 @@ export default function Charges() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  useEffect(() => {
-    fetchCharges();
-  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-  const fetchCharges = async () => {
+  const fetchCharges = useCallback(async () => {
     try {
       const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
       await Request_Service.getData(url, setCharges);
     } catch (error) {
       console.error("Fallo al recuperar cargos:", error);
     }
-  }
+  }, [onlyDisabled, URL]);
+
+  useEffect(() => {
+    fetchCharges();
+  }, [onlyDisabled, fetchCharges]);
 
   const openNew = () => {
     setCharge(emptyCharge);

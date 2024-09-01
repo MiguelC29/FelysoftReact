@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -48,19 +48,19 @@ export default function Services() {
   const isAdmin = UserService.isAdmin();
   const isInventoryManager = UserService.isInventoryManager();
 
-  useEffect(() => {
-    fetchServices();
-    Request_Service.getData('/typeservice/all', setTypeservices);
-  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     try {
       const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
       await Request_Service.getData(url, setServices);
     } catch (error) {
       console.error("Fallo al recuperar servicios:", error);
     }
-  }
+  }, [onlyDisabled, URL]);
+
+  useEffect(() => {
+    fetchServices();
+    Request_Service.getData('/typeservice/all', setTypeservices);
+  }, [onlyDisabled, fetchServices]);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });

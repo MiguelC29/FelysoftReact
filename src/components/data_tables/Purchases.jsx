@@ -80,7 +80,7 @@ export default function Purchases() {
 
     useEffect(() => {
         fetchPurchases();
-    }, [onlyDisabled, fetchPurchases]); // Fetch data when onlyDisabled changes
+    }, [onlyDisabled, fetchPurchases]);
 
     const getProviders = () => {
         return Request_Service.getData('/provider/all', setProviders);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -32,18 +32,18 @@ export default function Brands() {
     // ROLES
     const isAdmin = UserService.isAdmin();
 
-    useEffect(() => {
-        fetchBrands();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchBrands = async () => {
+    const fetchBrands = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setBrands);
         } catch (error) {
             console.error("Fallo al recuperar las categorias:", error);
         }
-    };
+    },  [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchBrands();
+    }, [onlyDisabled, fetchBrands]);
 
     const openNew = () => {
         setBrand(emptyBrand);

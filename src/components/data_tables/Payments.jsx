@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -52,18 +52,19 @@ export default function Payments() {
     // ROLES
     const isAdmin = UserService.isAdmin();
 
-    useEffect(() => {
-        fetchPayments();
-    }, [onlyDisabled]);
-
-    const fetchPayments = async () => {
+    const fetchPayments = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setPayments);
         } catch (error) {
             console.error("Fallo al recuperar pagos:", error);
         }
-    }
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchPayments();
+    }, [onlyDisabled, fetchPayments]);
+
     const openNew = () => {
         setPayment(emptyPayment);
         setTitle('Registrar Pago');

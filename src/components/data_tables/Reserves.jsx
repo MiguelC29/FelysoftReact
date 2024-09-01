@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -46,20 +46,20 @@ export default function Reserves() {
     const isAdmin = UserService.isAdmin();
     const isSalesPerson = UserService.isSalesPerson();
 
-    useEffect(() => {
-        fetchReserves();
-        getBooks();
-        getUsers();
-    }, [onlyDisabled]);
-
-    const fetchReserves = async () =>{
+    const fetchReserves = useCallback(async () => {
         try{
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setReserves);
         }catch(error){
             console.error("Fallo al recuperar Reservas:", error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchReserves();
+        getBooks();
+        getUsers();
+    }, [onlyDisabled, fetchReserves]);
 
     const getBooks = () => {
         return Request_Service.getData('/book/all', setBooks);
