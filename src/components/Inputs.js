@@ -69,7 +69,7 @@ const BaseFloatDropdownSearch = (props) => {
             <Dropdown
                 id={props.field}
                 value={props.value}
-                onChange={(e) => { props.handleChange(e.target.value); props.onInputNumberChange(e, props.field); }}
+                onChange={(e) => { props.onInputNumberChange(e, props.field); ((props.handleChange) && props.handleChange(e.target.value)); ((props.setSelected) && props.setSelected(e.value)); }}
                 options={props.options}
                 optionLabel={props.optionLabel}
                 placeholder={props.placeholder}
