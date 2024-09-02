@@ -82,6 +82,24 @@ export default function Purchases() {
         fetchPurchases();
     }, [onlyDisabled, fetchPurchases]);
 
+    const calculateTotal = useCallback(() => {
+        const total = details.reduce((acc, detail) => {
+            if (detail.quantity && detail.unitPrice) {
+                return acc + (detail.quantity * detail.unitPrice);
+            }
+            return acc;
+        }, 0);
+
+        setPurchase(prevPurchase => ({
+            ...prevPurchase,
+            total
+        }));
+    }, [details]);
+
+    useEffect(() => {
+        calculateTotal();
+    }, [details, calculateTotal]);
+
     const getProviders = () => {
         return Request_Service.getData('/provider/all', setProviders);
     }
@@ -465,12 +483,10 @@ export default function Purchases() {
                     <div className="formgrid grid mt-5">
                         <FloatInputNumberMoneyIcon
                             className="field col"
-                            value={purchase.total}
-                            onInputNumberChange={onInputNumberChange} field='total'
-                            maxLength={10} required
-                            submitted={submitted}
+                            value={purchase.total} field='total'
+                            required
                             label='Total'
-                            errorMessage='Total de compra es requerido.'
+                            disabled="disabled"
                         />
                         <FloatDropdownIcon
                             className="field col"
@@ -523,7 +539,8 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedProductTemplate}
                                                         itemTemplate={productOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': (submitted && (!detail.product && !detail.book)) || errors[`product_${index}`]
+                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                            'p-invalid': (submitted && (!detail.product && !detail.book)) || errors[`product_${index}`]
                                                         })}`}
                                                         disabled={(!selectedProvider || !!detail.book) && 'disabled'}
                                                     />
@@ -556,7 +573,7 @@ export default function Purchases() {
                                                         className={`w-full md:w-13rem rounded ${classNames({
                                                             'p-invalid': (submitted && (!detail.book && !errors.book && !detail.product)) || errors[`book_${index}`]
                                                         })}`}
-                                                        
+
                                                         disabled={(!selectedProvider || !!detail.product) && 'disabled'}
                                                     />
                                                     <label htmlFor={`book-${index}`} className="font-bold">Libro</label>

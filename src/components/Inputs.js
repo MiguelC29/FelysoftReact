@@ -54,6 +54,7 @@ const MoneyFloatInputNumber = (props) => {
                 maxLength={props.maxLength}
                 required={props.required}
                 autoFocus={props.autoFocus}
+                disabled={props.disabled}
                 placeholder={props.placeholder}
                 mode="decimal" currency="COP" locale="es-CO"
                 className={classNames({ 'p-invalid': props.submitted && !props.value })}
