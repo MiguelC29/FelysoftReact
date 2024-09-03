@@ -6,10 +6,15 @@ class UserService {
     static async login(email, password) {
         try {
             const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { email, password });
-            const { token, expirationTime, role } = response.data;
+            const { token, expirationTime, role } = response.data;            
 
             // Asegúrate de que expirationTime esté en formato ISO 8601
-            if (!expirationTime || isNaN(Date.parse(expirationTime))) {
+            if (!token || !expirationTime || !role) {
+                throw new Error(response.data.error || 'Invalid login credentials');
+            }
+
+            // Asegúrate de que expirationTime esté en formato ISO 8601
+            if (isNaN(Date.parse(expirationTime))) {
                 throw new Error('Invalid expiration date');
             }
 
@@ -33,9 +38,8 @@ class UserService {
                         const Swal = require('sweetalert2');
                         Swal.fire({
                             title: "Exitoso!",
-                            text: "Usuario registrado. Inicie Sesión.",
+                            text: "Registro exitoso. Por favor verifica tu correo electrónico para activar tu cuenta.",
                             icon: "success"
-
                         })
                             .then((result) => {
                                 if (result.isConfirmed) {
@@ -94,7 +98,7 @@ class UserService {
         const url = this.BASE_URL + '/auth/changePassword';
         const token = localStorage.getItem('token'); // Retrieve the token from localstorage
         try {
-            await axios({ method: 'PUT', url: url, data: parameters, headers: { Authorization: `Bearer ${token}` }  })
+            await axios({ method: 'PUT', url: url, data: parameters, headers: { Authorization: `Bearer ${token}` } })
                 .then((response) => {
                     if (response.data.statusCode === 400 && response.data.message === 'Contraseña actual incorrecta') {
                         throw new Error("Contraseña incorrecta");

@@ -34,6 +34,7 @@ import ProtectedRoute from './components/context/ProtectedRoute';
 import Error404 from './components/common/Error404';
 import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
 import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
+import VerifyPage from './components/auth/VerifyPage';
 
 
 export default function App() {
@@ -83,6 +84,7 @@ export default function App() {
             <Route path='*' element={<Navigate to="/unauthorized" replace />} />
 
             <Route path='/registro' element={<RegistrationPage />} />
+            <Route path="/activarCuenta" element={<VerifyPage />} />
           </Routes>
         </div>
         {/* <Footer /> */}

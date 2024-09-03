@@ -21,6 +21,7 @@ export const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login, authError, setAuthError } = useAuth(); // Usar el contexto de autenticación
+  const [shouldResetError, setShouldResetError] = useState(false);
 
   const handleSubmit = async () => {
     setSubmitted(true);
@@ -36,37 +37,43 @@ export const LoginPage = () => {
           navigate('/perfil', { replace: true }); // Aqui se coloca la pagina a la que queremos que navegue despues de loguearse
           setErrorVisible(false);
         } else {
-          console.log(userData)
+          //console.log(userData)
           setErrorVisible(true);
           setError(userData.error)
           setSubmitted(false);
         }
       } catch (error) {
-        console.log(error);
-        setError(error);
+        setError(error.message);
         setErrorVisible(true);
         setSubmitted(false);
+        setShouldResetError(true);
         setTimeout(() => {
-          setError('')
-        }, 5000) // 5 seg
+          if (shouldResetError) {
+            setError('');
+            setShouldResetError(false);
+          }
+        }, 5000);
       }
     }
   };
 
   const errorMessage = (error) => {
-    if (error === 'User not found') {
-      error = 'El usuario ingresado no existe';
-    } else if ('Bad credentials') {
-      error = "Credenciales incorrectas. \nEmail y/o Contraseña incorrectos.";
-    } else {
-      error = 'Error al iniciar sesión';
+    switch (error) {
+      case 'Usuario no encontrado':
+        return 'El usuario ingresado no existe';
+      case 'Cuenta no verificada':
+        return "Por favor verifique su email para activar su cuenta.";
+      case 'Credenciales incorrectas':
+        return "Contraseña incorrecta.";
+      default:
+        return error || 'Error al iniciar sesión'; // Mostrar directamente si no hay coincidencia
     }
-    return error;
   }
 
   const onInputChange = (e, name) => {
     inputChange(e, name, user, setUser);
     setErrorVisible(false);
+    setShouldResetError(false); // Evita que el error se resetee si el usuario cambia un campo
   };
 
   return (
