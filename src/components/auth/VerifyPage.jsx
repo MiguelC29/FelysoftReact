@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import UserService from '../service/UserService';
+import LoadingOverlay from "../common/LoadingOverlay";
 
 const VerifyPage = () => {
     const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const VerifyPage = () => {
         const token = queryParams.get('token');
 
         if (token) {
-            axios.get(`http://localhost:8086/api/auth/verify-account/${token}`)
+            UserService.verifyAccount(token)
                 .then(response => {
                     setLoading(false);
                     setSuccess("Cuenta activada correctamente.");
@@ -54,27 +55,30 @@ const VerifyPage = () => {
     }, [loading, error, success, navigate]);
 
     return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-            flexDirection="column"
-        >
-            {loading && (
-                <>
-                    <CircularProgress />
-                    <Typography variant="h6" mt={2} className='text-white'>
-                        Verificando...
+        <>
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100vh"
+                flexDirection="column"
+            >
+                {loading && (
+                    <>
+                        <CircularProgress />
+                        <Typography variant="h6" mt={2} className='text-white'>
+                            Verificando...
+                        </Typography>
+                    </>
+                )}
+                {!loading && !error && !success && (
+                    <Typography variant="h6">
+                        Esperando resultado...
                     </Typography>
-                </>
-            )}
-            {!loading && !error && !success && (
-                <Typography variant="h6">
-                    Esperando resultado...
-                </Typography>
-            )}
-        </Box>
+                )}
+            </Box>
+        </>
     );
 };
 
