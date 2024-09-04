@@ -56,6 +56,12 @@ export const ResetPassword = () => {
                     .then(response => {
                         setLoading(false); // Termina el cargando
 
+                        if(response.message === "Contraseña igual a la actual") {
+                            toast.current.show({ severity: 'error', summary: 'Error contraseña actual', detail: "La nueva contraseña no debe ser igual a la actual.", life: 3000 });
+                            setSubmitted(false);
+                            return;
+                        }
+
                         const Swal = require('sweetalert2');
                         Swal.fire({
                             title: "Restablecimiento Exitoso!",
