@@ -35,6 +35,7 @@ import Error404 from './components/common/Error404';
 import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
 import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
 import VerifyPage from './components/auth/VerifyPage';
+import { ResetPassword } from './components/auth/ResetPassword';
 
 
 export default function App() {
@@ -85,6 +86,7 @@ export default function App() {
 
             <Route path='/registro' element={<RegistrationPage />} />
             <Route path="/activarCuenta" element={<VerifyPage />} />
+            <Route path="/restablecerContraseña" element={<ResetPassword />} />
           </Routes>
         </div>
         {/* <Footer /> */}

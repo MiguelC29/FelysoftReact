@@ -28,17 +28,18 @@ class UserService {
         }
     }
 
-    static async register(parameters, toast, navigate) {
+    static async register(parameters, toast, navigate, setLoading) {
         try {
             await axios({ method: 'POST', url: `${UserService.BASE_URL}/auth/register`, data: parameters })
                 .then((response) => {
+                    setLoading(false); // Termina el cargando
                     if (response.data.error === "Usuario Existente") {
                         throw new Error("Usuario Existente");
                     } else {
                         const Swal = require('sweetalert2');
                         Swal.fire({
-                            title: "Exitoso!",
-                            text: "Registro exitoso. Por favor verifica tu correo electrónico para activar tu cuenta.",
+                            title: "Registro exitoso!",
+                            html: "Por favor verifica tu correo electrónico para activar tu cuenta.<br>Tienes 24 horas para activar tu cuenta.",
                             icon: "success"
                         })
                             .then((result) => {
@@ -47,11 +48,11 @@ class UserService {
                                 }
                             });
 
-
                         return response.data;
                     }
                 })
                 .catch((error) => {
+                    setLoading(false); // Termina el cargando
                     if (error.message === "Usuario Existente") {
                         toast.current.show({ severity: 'error', summary: error.message, detail: "El usuario ya existe. Por favor inicie sesión", life: 3000 });
                     } else {
@@ -133,6 +134,15 @@ class UserService {
     static async verifyUser(email) {
         try {
             const response = await axios.get(`${UserService.BASE_URL}/auth/verify-user/${email}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async resetPassword(token, parameters) {
+        try {
+            const response = await axios({ method: 'PUT', url: `${UserService.BASE_URL}/auth/resetPassword/${token}`, data: parameters })
             return response.data;
         } catch (err) {
             throw err;
