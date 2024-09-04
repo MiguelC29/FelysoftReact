@@ -1,13 +1,13 @@
 import React from 'react';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import "../../css/loadingOverlay.css";
+import { CircularProgress } from '@mui/material';
 
 const LoadingOverlay = ({ visible }) => {
     return (
         visible && (
             <div className="loading-overlay">
                 <div className="spinner-wrapper">
-                    <ProgressSpinner />
+                    <CircularProgress sx={{ color: 'white' }} />
                     <p>Cargando...</p>
                 </div>
             </div>

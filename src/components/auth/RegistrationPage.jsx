@@ -11,7 +11,7 @@ import UserService from '../service/UserService';
 import { Button } from 'primereact/button';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../img/logo.svg";
-
+import LoadingOverlay from "../common/LoadingOverlay";
 
 function RegistrationPage() {
 
@@ -43,6 +43,7 @@ function RegistrationPage() {
     const [emailValid, setEmailValid] = useState(true);
     const [numIdValid, setNumIdValid] = useState(true);
     const [phoneValid, setPhoneValid] = useState(true);
+    const [loading, setLoading] = useState(false); // Estado de carga
     const toast = useRef(null);
 
     const hideConfirmUserDialog = () => {
@@ -103,9 +104,10 @@ function RegistrationPage() {
                 user_name: user.user_name.trim(),
                 password: user.password.trim()
             }
-
-            await UserService.register(parameters, toast, navigate)
+            setLoading(true); // Muestra el overlay de carga
+            await UserService.register(parameters, toast, navigate, setLoading)
         } catch (error) {
+            setLoading(false); // Muestra el overlay de carga
             console.error('Error registrando usuario:', error)
             alert('Un error ocurrió mientras se registraba el usuario')
         }
@@ -142,7 +144,7 @@ function RegistrationPage() {
                 <img src={logo} className='me-3' alt="Logo" width="70px" />
                 <h2 className='text-white text-center flex-grow-1 pt-2'>Registro Clientes</h2>
             </div>
-
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Toast ref={toast} position="bottom-right" />
             <div className="formgrid grid mt-5">
                 <div className="field col">

@@ -122,7 +122,7 @@ export const LoginPage = () => {
           const Swal = require('sweetalert2');
           Swal.fire({
             title: "Verifique su correo!",
-            text: "Al correo ingresado, se le envio un mensaje para restablecer su contraseña.\nPor favor verifica tu correo electrónico.",
+            html: "Al correo se le envio un mensaje para restablecer su contraseña.<br>Por favor verifique su correo electrónico.",
             icon: "success"
           })
             .then((result) => {
@@ -190,7 +190,7 @@ export const LoginPage = () => {
                     onChange={(e) => onInputChange(e, 'password')}
                   />
                   <label htmlFor="password" className="input__label">
-                    Password
+                    Contraseña
                   </label>
                   {submitted && !user.password && <small className="p-error">Contraseña es requerido.</small>}
                 </div>
