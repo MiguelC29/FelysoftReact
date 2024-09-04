@@ -9,6 +9,7 @@ const VerifyPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [advert, setAdvert] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,6 +20,9 @@ const VerifyPage = () => {
             UserService.verifyAccount(token)
                 .then(response => {
                     setLoading(false);
+                    if (response.message === "La cuenta ya esta activada.") {
+                        setAdvert("La cuenta ya esta activa");
+                    }
                     setSuccess("Cuenta activada correctamente.");
                 })
                 .catch(error => {
@@ -42,6 +46,15 @@ const VerifyPage = () => {
             }).then(() => {
                 navigate('/login');
             });
+        } else if (advert) {
+            Swal.fire({
+                title: 'Cuenta activa',
+                text: advert,
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                navigate('/login');
+            });
         } else if (success) {
             Swal.fire({
                 title: 'Éxito',
@@ -52,7 +65,7 @@ const VerifyPage = () => {
                 navigate('/login');
             });
         }
-    }, [loading, error, success, navigate]);
+    }, [loading, error, success, advert, navigate]);
 
     return (
         <>
@@ -72,7 +85,7 @@ const VerifyPage = () => {
                         </Typography>
                     </>
                 )}
-                {!loading && !error && !success && (
+                {!loading && !error && !success && !advert && (
                     <Typography variant="h6">
                         Esperando resultado...
                     </Typography>
