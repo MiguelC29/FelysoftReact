@@ -27,9 +27,34 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
+        const checkUserEnabledStatus = async () => {
+            if (isAuthenticated) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const profileData = await UserService.getYourProfile(token);
+                    
+                    // Si el usuario está deshabilitado
+                    if (profileData.user.enabled === false) {
+                        setAuthError('Su cuenta ha sido deshabilitada.');
+                        logout();
+                    } else {
+                        setProfile(profileData);
+                    }
+                } catch (err) {
+                    console.error('Error fetching profile:', err);
+                }
+            }
+        };
+
         checkTokenExpiration();
-        // Intervalo para verificar la expiración del token cada cierto tiempo
-        const interval = setInterval(checkTokenExpiration, 5000); // 5 segundos
+        checkUserEnabledStatus();
+
+        // Verificar el estado del token y del usuario cada 5 segundos
+        const interval = setInterval(() => {
+            checkTokenExpiration();
+            checkUserEnabledStatus();
+        }, 5000);
+
         return () => clearInterval(interval);
     }, [isAuthenticated, hasShownSessionExpired]);
 

@@ -163,7 +163,6 @@ export const LoginPage = () => {
           <div className="content">
             <h2>Iniciar Sesión</h2>
             <div className="login-form" style={{ background: '#19191a' }} method='post'>
-              {authError && <small className="p-error">{authError}</small>}
               <div className="input__wrapper">
                 <input
                   id="email"
@@ -200,6 +199,7 @@ export const LoginPage = () => {
                 <Button label='INICIAR SESIÓN' className='btn-login p-button text-decoration-none mb-1' onClick={handleSubmit} />
                 {errorVisible && <small className="p-error">{errorMessage(error)}</small>}
                 <br />
+                {authError && <small className="p-error">{authError}</small>}
                 <div className="mt-3">
                   <span>¿Aún no tiene una cuenta?  </span><Link to="/registro" replace>Registrarse</Link>
                 </div>

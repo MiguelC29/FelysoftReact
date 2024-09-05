@@ -14,8 +14,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Image } from 'primereact/image';
 import { Button } from 'primereact/button';
-
-
+import { InputSwitch } from 'primereact/inputswitch';
 
 export default function Users() {
 
@@ -33,7 +32,8 @@ export default function Users() {
     email: '',
     user_name: '',
     password: '',
-    role: ''
+    role: '',
+    enabled: ''
   };
 
   const TypeDoc = {
@@ -227,12 +227,20 @@ export default function Users() {
     setUserDialog(false);
   };
 
+  const saveStateUser = (user) => {
+    Request_Service.changeStateUser(URL, user.idUser, setUsers, toast, setUser, emptyUser, URL.concat('all'));
+  };
+
   const confirmSave = () => {
     setConfirmDialogVisible(true);
   };
 
   const confirmDeleteUser = (user) => {
     confirmDelete(user, setUser, setDeleteUserDialog);
+  };
+
+  const confirmChange = (user) => {
+    saveStateUser(user);
   };
 
   const deleteUser = () => {
@@ -279,10 +287,19 @@ export default function Users() {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser, onlyDisabled, handleEnable);
   };
 
+  const actionEnabledBodyTemplate = (rowData) => {
+    return <InputSwitch checked={rowData.enabled} onClick={() => confirmChange(rowData)} />
+  };
+
   const detailsBodyTemplate = (rowData) => {
     return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
     />
   }
+
+  // Función para combinar tipo de documento y número de identificación
+  const combinedDocBodyTemplate = (rowData) => {
+    return `${rowData.typeDoc} ${rowData.numIdentification}`;
+  };
 
   const userDialogFooter = (
     DialogFooter(hideDialog, confirmSave)
@@ -298,8 +315,9 @@ export default function Users() {
 
   const columns = [
     { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
-    { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
-    { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
+    // { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
+    // { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
+    { field: combinedDocBodyTemplate, header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
     // { field: 'gender', header: 'Género', body: genderTemplate, sortable: true, style: { minWidth: '5rem' } },
     { field: 'names', header: 'Nombres', sortable: true, style: { minWidth: '16rem' } },
     { field: 'lastNames', header: 'Apellidos', sortable: true, style: { minWidth: '16rem' } },
@@ -311,6 +329,7 @@ export default function Users() {
     // { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     // { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
     { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
+    { body: actionEnabledBodyTemplate, exportable: false, style: { minWidth: '12rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
