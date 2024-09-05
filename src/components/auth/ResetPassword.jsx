@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import { Toast } from "primereact/toast";
 import LoadingOverlay from "../common/LoadingOverlay";
+import Swal from 'sweetalert2';
 
 export const ResetPassword = () => {
 
@@ -56,25 +57,33 @@ export const ResetPassword = () => {
                     .then(response => {
                         setLoading(false); // Termina el cargando
 
-                        if(response.message === "Contraseña igual a la actual") {
+                        if (response.message === "Contraseña igual a la actual") {
                             toast.current.show({ severity: 'error', summary: 'Error contraseña actual', detail: "La nueva contraseña no debe ser igual a la actual.", life: 3000 });
                             setSubmitted(false);
                             return;
-                        }
-
-                        const Swal = require('sweetalert2');
-                        Swal.fire({
-                            title: "Restablecimiento Exitoso!",
-                            html: "Su contraseña fue restablecida exitosamente.",
-                            icon: "success"
-                        })
-                            .then((result) => {
-                                if (result.isConfirmed) {
-                                    setUser(emptyUser);
-                                    setSubmitted(false);
-                                    navigate('/login');
-                                }
+                        } else if (response.statusCode === 500 || response.statusCode === 404) {
+                            Swal.fire({
+                                title: "Error",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                navigate('/login');
                             });
+                        } else {
+                            Swal.fire({
+                                title: "Restablecimiento Exitoso!",
+                                html: "Su contraseña fue restablecida exitosamente.",
+                                icon: "success"
+                            })
+                                .then((result) => {
+                                    if (result.isConfirmed) {
+                                        setUser(emptyUser);
+                                        setSubmitted(false);
+                                        navigate('/login');
+                                    }
+                                });
+                        }
                     })
                     .catch(error => {
                         setLoading(false); // Termina el cargando
@@ -93,7 +102,7 @@ export const ResetPassword = () => {
             setSubmitted(false);
         }
     };
-    
+
     const confirmUserDialogFooter = (
         confirmDialogFooter(hideConfirmResetPassDialog, handleSubmit)
     );

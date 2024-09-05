@@ -136,7 +136,7 @@ class UserService {
                     } else if (response.data.statusCode === 500 || response.data.statusCode === 404) {
                         title = "Error";
                         icon = "error";
-                        message = response.message;
+                        message = response.data.message;
                     } else {
                         title = "Éxito";
                         icon = "success";
