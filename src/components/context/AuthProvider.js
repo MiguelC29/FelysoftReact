@@ -33,20 +33,15 @@ export const AuthProvider = ({ children }) => {
                     const token = localStorage.getItem('token');
                     const profileData = await UserService.getYourProfile(token);
 
-                    // Verificar si el usuario está deshabilitado
+                    // Verificar si el usuario está deshabilitado o eliminado
                     if (profileData.user.enabled === false) {
-                        setAuthError('Su cuenta ha sido deshabilitada.');
-                        logout();
-                    } // Verificar si el usuario ha sido eliminado
-                    else if (profileData.user.eliminated === true) {
-                        setAuthError('Su cuenta ha sido eliminada.');
+                        setAuthError('Su cuenta ha sido deshabilitada o eliminada.');
                         logout();
                     } else {
                         setProfile(profileData);
                     }
                 } catch (err) {
                     console.error('Error al obtener el perfil del usuario:', err);
-                    // Manejar el caso donde no se puede obtener el perfil (podría ser por eliminación)
                     setAuthError('No se pudo verificar su cuenta. Es posible que haya sido eliminada.');
                     logout();
                 }
