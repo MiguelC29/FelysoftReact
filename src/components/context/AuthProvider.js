@@ -27,32 +27,39 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
-        const checkUserEnabledStatus = async () => {
+        const checkUserStatus = async () => {
             if (isAuthenticated) {
                 try {
                     const token = localStorage.getItem('token');
                     const profileData = await UserService.getYourProfile(token);
-                    
-                    // Si el usuario está deshabilitado
+
+                    // Verificar si el usuario está deshabilitado
                     if (profileData.user.enabled === false) {
                         setAuthError('Su cuenta ha sido deshabilitada.');
+                        logout();
+                    } // Verificar si el usuario ha sido eliminado
+                    else if (profileData.user.eliminated === true) {
+                        setAuthError('Su cuenta ha sido eliminada.');
                         logout();
                     } else {
                         setProfile(profileData);
                     }
                 } catch (err) {
-                    console.error('Error fetching profile:', err);
+                    console.error('Error al obtener el perfil del usuario:', err);
+                    // Manejar el caso donde no se puede obtener el perfil (podría ser por eliminación)
+                    setAuthError('No se pudo verificar su cuenta. Es posible que haya sido eliminada.');
+                    logout();
                 }
             }
         };
 
         checkTokenExpiration();
-        checkUserEnabledStatus();
+        checkUserStatus();
 
         // Verificar el estado del token y del usuario cada 5 segundos
         const interval = setInterval(() => {
             checkTokenExpiration();
-            checkUserEnabledStatus();
+            checkUserStatus();
         }, 5000);
 
         return () => clearInterval(interval);
