@@ -1,0 +1,56 @@
+.verify-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.verify-card {
+    width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.logoF {
+    width: 120px;
+    height: 120px;
+}
+
+.verify-card h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.verify-card p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.btn-verify .p-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-verify .p-button-primary {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.btn-verify .p-button-primary:hover {
+    background-color: #3e8e41;
+}

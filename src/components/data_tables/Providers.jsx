@@ -293,7 +293,7 @@ export default function Providers() {
                             icon='badge'
                             value={provider.nit}
                             onInputChange={onInputChange} field='nit'
-                            maxLength={11} required autoFocus
+                            maxLength={10} required autoFocus
                             submitted={submitted}
                             label='NIT'
                             errorMessage='NIT es requerido.'

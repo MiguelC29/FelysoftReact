@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 class UserService {
     static BASE_URL = "http://localhost:8086/api"
@@ -6,7 +7,7 @@ class UserService {
     static async login(email, password) {
         try {
             const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { email, password });
-            const { token, expirationTime, role } = response.data;            
+            const { token, expirationTime, role } = response.data;
 
             // Asegúrate de que expirationTime esté en formato ISO 8601
             if (!token || !expirationTime || !role) {
@@ -122,15 +123,58 @@ class UserService {
         }
     }
 
-    static async verifyAccount(token) {
+    static async verifyAccount(token, setLoading, navigate) {
         try {
-            const response = await axios.get(`${UserService.BASE_URL}/auth/verify-account/${token}`);
-            return response.data;
+            let title, message, icon;
+            await axios.get(`${UserService.BASE_URL}/auth/verify-account/${token}`)
+                .then((response) => {
+                    setLoading(false); // Termina el cargando
+                    if (response.data.message.includes("activada")) {
+                        title = "Cuenta activa";
+                        icon = "warning";
+                        message = "La cuenta ya está activa.";
+                    } else if (response.data.statusCode === 500 || response.data.statusCode === 404) {
+                        title = "Error";
+                        icon = "error";
+                        message = response.message;
+                    } else {
+                        title = "Éxito";
+                        icon = "success";
+                        message = "Cuenta activada correctamente.";
+                    }
+                    
+                    Swal.fire({
+                        title: title,
+                        text: message,
+                        icon: icon,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        navigate('/login');
+                    });
+
+                    return response.data;
+                })
+                .catch((error) => {
+                    setLoading(false); // Termina el cargando
+                    title = "Error";
+                    icon = "error";
+                    message = "Error al activar la cuenta. Intenta nuevamente.";
+
+                    Swal.fire({
+                        title: title,
+                        text: message,
+                        icon: icon,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        navigate('/login');
+                    });
+                    console.log(error);
+                });
         } catch (err) {
             throw err;
         }
     }
-    
+
     static async verifyUser(email) {
         try {
             const response = await axios.get(`${UserService.BASE_URL}/auth/verify-user/${email}`);
@@ -147,7 +191,7 @@ class UserService {
         } catch (err) {
             throw err;
         }
-    } 
+    }
 
     /* AUTHENTICATION CHECKER */
     static logout() {

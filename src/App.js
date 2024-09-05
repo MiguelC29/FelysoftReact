@@ -50,6 +50,9 @@ export default function App() {
             <Route exact path='/' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
             <Route exact path='/login' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
             <Route exact path='/registro' element={<ProtectedRoute element={<RegistrationPage />} redirectTo="/perfil" />} />
+            <Route path="/activarCuenta" element={<ProtectedRoute element={<VerifyPage />} redirectTo="/perfil" />} />
+            <Route path="/restablecerContraseña" element={<ProtectedRoute element={<ResetPassword />} redirectTo="/perfil" />} />
+
             <Route path='/perfil' element={<RoleProtectedRoute element={<ViewProfile />} roles={['ADMINISTRATOR', 'CUSTOMER', 'INVENTORY_MANAGER','SALESPERSON','FINANCIAL_MANAGER']} />} />
 
             {/* Rutas solo para administradores */}
@@ -85,8 +88,6 @@ export default function App() {
             <Route path='*' element={<Navigate to="/unauthorized" replace />} />
 
             <Route path='/registro' element={<RegistrationPage />} />
-            <Route path="/activarCuenta" element={<VerifyPage />} />
-            <Route path="/restablecerContraseña" element={<ResetPassword />} />
           </Routes>
         </div>
         {/* <Footer /> */}
