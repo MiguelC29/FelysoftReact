@@ -73,6 +73,8 @@ export const LoginPage = () => {
     switch (error) {
       case 'Usuario no encontrado':
         return 'El usuario ingresado no existe';
+      case 'Cuenta deshabilitada':
+        return "Su cuenta está deshabilitada. Contacte al administrador.";
       case 'Cuenta no verificada':
         return "Por favor verifique su email para activar su cuenta.";
       case 'Credenciales incorrectas':
