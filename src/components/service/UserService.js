@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from 'sweetalert2';
 
 class UserService {
-    static BASE_URL = "http://localhost:8086/api"
+    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
 
     static async login(email, password) {
         try {
