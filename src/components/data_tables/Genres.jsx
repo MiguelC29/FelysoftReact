@@ -11,7 +11,6 @@ import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 
-
 export default function Genres() {
     let emptyGenre = {
         idGenre: null,

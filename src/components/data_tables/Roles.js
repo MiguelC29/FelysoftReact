@@ -12,7 +12,7 @@ export default function Roles() {
         name: ''
     }
 
-    const URL = 'http://localhost:8086/api/role/';
+    const URL = 'https://felysoftspring-production.up.railway.app/api/role/';
     const [role, setRole] = useState(emptyRole);
     const [roles, setRoles] = useState([]);
     const [roleDialog, setRoleDialog] = useState(false);

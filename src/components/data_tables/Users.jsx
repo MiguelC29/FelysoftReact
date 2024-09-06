@@ -544,7 +544,7 @@ export default function Users() {
               name="image"
               mode="basic"
               chooseLabel="Seleccionar Imagen"
-              url="http://localhost:8086/api/user/create"
+              url="https://felysoftspring-production.up.railway.app/api/user/create"
               accept="image/*"
               maxFileSize={2000000}
               onSelect={handleFileUpload}

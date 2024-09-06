@@ -8,7 +8,6 @@ import { FloatInputText } from '../Inputs';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 
-
 export default function Brands() {
     const emptyBrand = {
         idBrand: null,

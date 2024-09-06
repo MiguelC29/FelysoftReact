@@ -444,7 +444,7 @@ export default function Books() {
                             mode="basic"
                             name="image"
                             chooseLabel="Seleccionar Imagen"
-                            url="http://localhost:8086/api/book/create"
+                            url="https://felysoftspring-production.up.railway.app/api/book/create"
                             accept="image/*"
                             maxFileSize={2000000}
                             onSelect={handleFileUpload}

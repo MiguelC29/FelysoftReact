@@ -458,7 +458,7 @@ export default function Products() {
                             mode="basic"
                             name="image"
                             chooseLabel="Seleccionar Imagen"
-                            url="http://localhost:8086/api/product/create"
+                            url="https://felysoftspring-production.up.railway.app/api/product/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
                             sizeLimit="3145728"
