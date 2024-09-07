@@ -56,7 +56,6 @@ function ProfilePage() {
     const URL = '/user/';
     const [user, setUser] = useState(emptyUser);
     const [userPassword, setUserPassword] = useState(emptyUserPassword);
-    const [profileInfo, setProfileInfo] = useState({});
     const [selectedGender, setSelectedGender] = useState(null);
     const [userDialog, setUserDialog] = useState(false);
     const [passwordDialog, setPasswordDialog] = useState(false);
@@ -74,7 +73,7 @@ function ProfilePage() {
         try {
             const token = localStorage.getItem('token'); // Retrieve the token from localStorage
             const response = await UserService.getYourProfile(token)
-            setProfileInfo(response.user) //user
+            setUser(response.user) //user
         } catch (error) {
             console.error('Error fetching profile information:', error);
         }
@@ -136,7 +135,7 @@ function ProfilePage() {
     };
 
     const description = (role) => {
-        return Role[role] || "USER";
+        return Role[role] || "USUARIO";
     };
 
     const handleSubmit = async () => {
@@ -252,10 +251,10 @@ function ProfilePage() {
                     <div className="perfil-usuario-header">
                         <div className="perfil-usuario-portada">
                             <div className="perfil-usuario-avatar">
-                                {profileInfo.image ?
+                                {user.image ?
                                     <img id='imagen-perfil'
-                                        src={`data:${profileInfo.imageType};base64,${profileInfo.image}`}
-                                        alt={`Imagen usuario ${profileInfo.names}`} /> :
+                                        src={`data:${user.imageType};base64,${user.image}`}
+                                        alt={`Imagen usuario ${user.names}`} /> :
                                     <img id='imagen-perfil'
                                         src="https://st4.depositphotos.com/4329009/19956/v/450/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
                                         alt={`No cuenta con img de perfil`} />}
@@ -270,27 +269,27 @@ function ProfilePage() {
                     </div>
                     <div className="perfil-usuario-body">
                         <div className="perfil-usuario-bio">
-                            <h3 className="titulo">{profileInfo.names} {profileInfo.lastNames} {profileInfo.gender && getGenderIcon(profileInfo.gender)}</h3>
+                            <h3 className="titulo">{user.names} {user.lastNames} {user.gender && getGenderIcon(user.gender)}</h3>
                             <p className="texto">
-                                <h3>{description(profileInfo.role)}</h3>
+                                <h3>{description(user.role.name)}</h3>
                             </p>
                         </div>
                         <div className="perfil-usuario-footer">
                             <ul className="lista-datos">
-                                <li><i className="icono fas fa-user"></i> Usuario: {profileInfo.user_name}</li>
-                                <li><i className="icono fas fa-solid fa-passport"></i> Tipo Documento: {profileInfo.typeDoc}</li>
-                                <li><i className="icono fas fa-phone"></i> Numero de Contacto: {profileInfo.phoneNumber}</li>
-                                {(profileInfo.address) && <li><i className="icono fas fa-map-marker-alt"></i> Dirección: {profileInfo.address}</li>}
+                                <li><i className="icono fas fa-user"></i> Usuario: {user.user_name}</li>
+                                <li><i className="icono fas fa-solid fa-passport"></i> Tipo Documento: {user.typeDoc}</li>
+                                <li><i className="icono fas fa-phone"></i> Numero de Contacto: {user.phoneNumber}</li>
+                                {(user.address) && <li><i className="icono fas fa-map-marker-alt"></i> Dirección: {user.address}</li>}
                             </ul>
                             <ul className="lista-datos">
-                                <li><i className="icono fas fa-envelope"></i> Correo Electrónico: {profileInfo.email}</li>
-                                <li><i className="icono fas fa-regular fa-address-card"></i> Identificación: {profileInfo.numIdentification}</li>
-                                <li><i className="icono fas fa-user-check"></i> Registro: {formatDate(profileInfo.dateRegister)} </li>
+                                <li><i className="icono fas fa-envelope"></i> Correo Electrónico: {user.email}</li>
+                                <li><i className="icono fas fa-regular fa-address-card"></i> Identificación: {user.numIdentification}</li>
+                                <li><i className="icono fas fa-user-check"></i> Registro: {formatDate(user.dateRegister)} </li>
                             </ul>
                         </div>
                     </div>
                     <div className='m-2'>
-                        <Button label="Actualizar Perfil" icon="pi pi-user-edit" className="rounded me-2" onClick={() => editUser(profileInfo)} style={{ background: '#0D9276', border: 'none' }} />
+                        <Button label="Actualizar Perfil" icon="pi pi-user-edit" className="rounded me-2" onClick={() => editUser(user)} style={{ background: '#0D9276', border: 'none' }} />
                         <Button label="Cambiar Contraseña" icon="pi pi-lock" className="rounded" onClick={openPassword} style={{ background: '#8f8c7e', border: 'none' }} />
                     </div>
                 </section>
@@ -455,7 +454,7 @@ function ProfilePage() {
                                 <span class="material-symbols-outlined me-2">admin_panel_settings</span>
                                 <div>
                                     <label htmlFor="role" className="font-bold d-block">Rol</label>
-                                    <p>{Role[user.role]}</p>
+                                    <p>{Role[user.role.name]}</p>
                                 </div>
                             </div>
                         </div>

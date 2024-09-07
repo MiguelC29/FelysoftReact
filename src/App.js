@@ -41,8 +41,6 @@ import { ResetPassword } from './components/auth/ResetPassword';
 export default function App() {
 
   return (
-    //     <Route path='/roles' element={<ViewRoles />} />
-    //     <Route path='/registroUsuario' element={<PasswordStrength />} />
       <div className="App">
         {/* <Navbar /> */}
         <div className="content">

@@ -1,16 +1,18 @@
 import axios from "axios";
 import Swal from 'sweetalert2';
+import { jwtDecode } from "jwt-decode";
 
 class UserService {
-    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    //static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    static BASE_URL = "http://localhost:8086/api"
 
     static async login(email, password) {
         try {
             const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { email, password });
-            const { token, expirationTime, role } = response.data;
+            const { token, expirationTime } = response.data;
 
             // Asegúrate de que expirationTime esté en formato ISO 8601
-            if (!token || !expirationTime || !role) {
+            if (!token || !expirationTime) {
                 throw new Error(response.data.error || 'Invalid login credentials');
             }
 
@@ -21,7 +23,6 @@ class UserService {
 
             localStorage.setItem('token', token);
             localStorage.setItem('tokenExpiration', expirationTime); // Usa el formato recibido
-            localStorage.setItem('role', role);
             return response.data;
 
         } catch (err) {
@@ -196,13 +197,29 @@ class UserService {
     /* AUTHENTICATION CHECKER */
     static logout() {
         localStorage.removeItem('token');
-        localStorage.removeItem('role');
         localStorage.removeItem('tokenExpiration');
     }
 
+    static getToken() {
+        return localStorage.getItem('token');
+    }
+
+    static getRole() {
+        const token = this.getToken();
+        if (!token) {
+            return null;
+        }
+        try {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.role; // Asumiendo que el rol está en el payload del token
+        } catch (error) {
+            console.error("Invalid token", error);
+            return null;
+        }
+    }
+
     static isAuthenticated() {
-        const token = localStorage.getItem('token');
-        return token && !this.isTokenExpired();
+        return this.getToken() && !this.isTokenExpired();
     }
 
     static isTokenExpired() {
@@ -222,28 +239,23 @@ class UserService {
     }
 
     static isAdmin() {
-        const role = localStorage.getItem('role')
-        return role === 'ADMINISTRATOR'
+        return this.getRole() === 'ADMINISTRATOR';
     }
 
     static isCustomer() {
-        const role = localStorage.getItem('role')
-        return role === 'CUSTOMER'
+        return this.getRole() === 'CUSTOMER';
     }
 
     static isSalesPerson() {
-        const role = localStorage.getItem('role')
-        return role === 'SALESPERSON'
+        return this.getRole() === 'SALESPERSON';
     }
 
     static isFinancialManager() {
-        const role = localStorage.getItem('role')
-        return role === 'FINANCIAL_MANAGER'
+        return this.getRole() === 'FINANCIAL_MANAGER';
     }
 
     static isInventoryManager() {
-        const role = localStorage.getItem('role')
-        return role === 'INVENTORY_MANAGER'
+        return this.getRole() === 'INVENTORY_MANAGER';
     }
 
     static adminOnly() {
