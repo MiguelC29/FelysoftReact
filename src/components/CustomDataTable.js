@@ -6,6 +6,7 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
     return (
         <div className='card'>
             <DataTable
+            // agregar key
                 ref={dt}
                 value={data}
                 dataKey={dataKey}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import Request_Service from '../service/Request_Service';
 import { classNames } from 'primereact/utils';
@@ -14,6 +14,8 @@ import { FileUpload } from 'primereact/fileupload';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Image } from 'primereact/image';
 import { Button } from 'primereact/button';
+import { InputSwitch } from 'primereact/inputswitch';
+import { FloatDropdownIcon } from '../Inputs';
 
 export default function Users() {
 
@@ -31,7 +33,8 @@ export default function Users() {
     email: '',
     user_name: '',
     password: '',
-    role: ''
+    role: '',
+    enabled: ''
   };
 
   const TypeDoc = {
@@ -56,6 +59,7 @@ export default function Users() {
   const URL = '/user/';
   const [user, setUser] = useState(emptyUser);
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [file, setFile] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedTypeId, setSelectedTypeId] = useState(null);
@@ -73,18 +77,29 @@ export default function Users() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  useEffect(() => {
-    fetchUsers();
-  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
       await Request_Service.getData(url, setUsers);
     } catch (error) {
       console.error("Fallo al recuperar usuarios:", error);
     }
+  }, [onlyDisabled, URL]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [onlyDisabled, fetchUsers]);
+
+  const getRoles = () => {
+    return Request_Service.getData('/role/all', setRoles);
   }
+
+  const translateRoles = (rolesList) => {
+    return rolesList.map(role => ({
+      ...role,  // Mantenemos todas las propiedades del rol (como idRole, permissions)
+      name: Role[role.name] || role.name  // Traducimos el nombre usando el objeto Role
+    }));
+  };
 
   // PUEDE QUE SE PUEDA DECLARAR GENERAL PARA RECIBLAR
   const handleFileUpload = (event) => {
@@ -103,6 +118,7 @@ export default function Users() {
 
   const openNew = () => {
     setUser(emptyUser);
+    getRoles();
     setTitle('Registrar Usuario');
     setSelectedGender('');
     setSelectedTypeId('');
@@ -116,6 +132,7 @@ export default function Users() {
 
   const editUser = (user) => {
     setUser({ ...user, password: '' }); // Inicializa la contraseña como vacía
+    getRoles();
     setSelectedGender(user.gender);
     setSelectedTypeId(user.typeDoc);
     setSelectedRole(user.role);
@@ -199,7 +216,7 @@ export default function Users() {
       if (user.password.trim()) {  // Solo añadir la contraseña si no está vacía
         formData.append('password', user.password.trim());
       }
-      formData.append('role', user.role);
+      formData.append('roleId', user.role.idRole);
       formData.append('image', file);
       url = URL + 'update/' + user.idUser;
       method = 'PUT';
@@ -215,7 +232,7 @@ export default function Users() {
       formData.append('gender', user.gender);
       formData.append('username', user.user_name.trim());
       formData.append('password', user.password.trim()); // Asegurarse de que la contraseña no esté vacía al crear un nuevo usuario
-      formData.append('role', user.role);
+      formData.append('roleId', user.role.idRole);
       formData.append('image', file);
       url = URL + 'create';
       method = 'POST';
@@ -225,12 +242,20 @@ export default function Users() {
     setUserDialog(false);
   };
 
+  const saveStateUser = (user) => {
+    Request_Service.changeStateUser(URL, user.idUser, setUsers, toast, setUser, emptyUser, URL.concat('all'));
+  };
+
   const confirmSave = () => {
     setConfirmDialogVisible(true);
   };
 
   const confirmDeleteUser = (user) => {
     confirmDelete(user, setUser, setDeleteUserDialog);
+  };
+
+  const confirmChange = (user) => {
+    saveStateUser(user);
   };
 
   const deleteUser = () => {
@@ -270,17 +295,26 @@ export default function Users() {
   */
 
   const roleTemplate = (rowData) => {
-    return Role[rowData.role];
+    return Role[rowData.role.name];
   };
 
   const actionBodyTemplateP = (rowData) => {
     return actionBodyTemplate(rowData, editUser, confirmDeleteUser, onlyDisabled, handleEnable);
   };
 
+  const actionEnabledBodyTemplate = (rowData) => {
+    return <InputSwitch checked={rowData.enabled} onClick={() => confirmChange(rowData)} />
+  };
+
   const detailsBodyTemplate = (rowData) => {
     return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
     />
   }
+
+  // Función para combinar tipo de documento y número de identificación
+  const combinedDocBodyTemplate = (rowData) => {
+    return `${rowData.typeDoc} ${rowData.numIdentification}`;
+  };
 
   const userDialogFooter = (
     DialogFooter(hideDialog, confirmSave)
@@ -294,10 +328,30 @@ export default function Users() {
     deleteDialogFooter(hideDeleteUserDialog, deleteUser)
   );
 
+  const selectedRoleTemplate = (option, props) => {
+    if (option) {
+      return (
+        <div className="flex align-items-center">
+          <div>{option.name}</div>
+        </div>
+      );
+    }
+    return <span>{props.placeholder}</span>;
+  };
+
+  const roleOptionTemplate = (option) => {
+    return (
+      <div className="flex align-items-center">
+        <div>{option.name}</div>
+      </div>
+    );
+  };
+
   const columns = [
     { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
-    { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
-    { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
+    // { field: 'typeDoc', header: 'Tipo Doc', sortable: true, style: { minWidth: '5rem' } },
+    // { field: 'numIdentification', header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
+    { field: combinedDocBodyTemplate, header: 'Identificación', sortable: true, style: { minWidth: '12rem' } },
     // { field: 'gender', header: 'Género', body: genderTemplate, sortable: true, style: { minWidth: '5rem' } },
     { field: 'names', header: 'Nombres', sortable: true, style: { minWidth: '16rem' } },
     { field: 'lastNames', header: 'Apellidos', sortable: true, style: { minWidth: '16rem' } },
@@ -305,10 +359,11 @@ export default function Users() {
     { field: 'phoneNumber', header: 'Télefono', sortable: true, style: { minWidth: '10rem' } },
     // { field: 'email', header: 'Correo Eletrónico', sortable: true, style: { minWidth: '10rem' } },
     /*username, password, image */
-    { field: 'role', header: 'Rol', body: roleTemplate, sortable: true, style: { minWidth: '10rem' } },
+    { field: 'role.name', header: 'Rol', body: roleTemplate, sortable: true, style: { minWidth: '10rem' } },
     // { field: 'dateRegister', header: 'Fecha de Creación', body: (rowData) => formatDate(rowData.dateRegister), sortable: true, style: { minWidth: '10rem' } },
     // { field: 'lastModification', header: 'Última Modificación', body: (rowData) => formatDate(rowData.lastModification), sortable: true, style: { minWidth: '10rem' } },
     { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
+    { body: actionEnabledBodyTemplate, exportable: false, style: { minWidth: '12rem' } },
     { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
   ];
 
@@ -319,11 +374,6 @@ export default function Users() {
 
   const genderOptions = Object.keys(Gender).map(key => ({
     label: Gender[key],
-    value: key
-  }));
-
-  const roleOptions = Object.keys(Role).map(key => ({
-    label: Role[key],
     value: key
   }));
 
@@ -355,7 +405,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">id_card</span>
+                <span className="material-symbols-outlined">id_card</span>
               </span>
               <FloatLabel>
                 <InputText id="names" name='names' value={user.names} onChange={(e) => onInputChange(e, 'names')} required autoFocus className={classNames({ 'p-invalid': submitted && !user.names })} maxLength={50} />
@@ -367,7 +417,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">id_card</span>
+                <span className="material-symbols-outlined">id_card</span>
               </span>
               <FloatLabel>
                 <InputText id="lastNames" name='lastNames' value={user.lastNames} onChange={(e) => onInputChange(e, 'lastNames')} required className={classNames({ 'p-invalid': submitted && !user.lastNames })} maxLength={60} />
@@ -381,7 +431,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">badge</span>
+                <span className="material-symbols-outlined">badge</span>
               </span>
               {/* TODO: FALTA VALIDAR QUE SE INGRESEN AÑOS VÁLIDOS, ES DECIR NO MAYORES AL ACTUAL */}
               <FloatLabel>
@@ -404,7 +454,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">badge</span>
+                <span className="material-symbols-outlined">badge</span>
               </span>
               <FloatLabel>
                 <InputNumber inputId="numIdentification" name='numIdentification' value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
@@ -418,7 +468,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">wc</span>
+                <span className="material-symbols-outlined">wc</span>
               </span>
               <FloatLabel>
                 <Dropdown
@@ -435,12 +485,12 @@ export default function Users() {
                 <label htmlFor="gender" className="font-bold">Género</label>
               </FloatLabel>
             </div>
-            {submitted && !user.gender && !selectedGender && <small className="p-error">Tipo de Identificación es requerido.</small>}
+            {submitted && !user.gender && !selectedGender && <small className="p-error">Género es requerido.</small>}
           </div>
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">call</span>
+                <span className="material-symbols-outlined">call</span>
               </span>
               <FloatLabel>
                 <InputNumber inputId="phoneNumber" name='phoneNumber' value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
@@ -454,7 +504,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">home</span>
+                <span className="material-symbols-outlined">home</span>
               </span>
               <FloatLabel>
                 <InputText id="address" name='address' value={user.address} onChange={(e) => onInputChange(e, 'address')} required className={classNames({ 'p-invalid': submitted && !user.address })} maxLength={50} />
@@ -466,7 +516,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">mail</span>
+                <span className="material-symbols-outlined">mail</span>
               </span>
               <FloatLabel>
                 <InputText id="email" name='email' value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} autoComplete="new-email" />
@@ -480,7 +530,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">person</span>
+                <span className="material-symbols-outlined">person</span>
               </span>
               <FloatLabel>
                 <InputText id="user_name" name='user_name' value={user.user_name} onChange={(e) => onInputChange(e, 'user_name')} required className={classNames({ 'p-invalid': submitted && !user.user_name })} autoComplete="new-username" />
@@ -492,7 +542,7 @@ export default function Users() {
           <div className="field col">
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
-                <span class="material-symbols-outlined">key</span>
+                <span className="material-symbols-outlined">key</span>
               </span>
               <FloatLabel>
                 <Password id="password" name='password' value={user.password} onChange={onPasswordChange} required toggleMask className={classNames({ 'p-invalid': submitted && operation !== 2 && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
@@ -502,18 +552,19 @@ export default function Users() {
             {submitted && operation !== 2 && !user.password && <small className="p-error">Contraseña es requerido.</small>}
           </div>
         </div>
-        <div className="field mt-4">
-          <div className="p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">admin_panel_settings</span>
-            </span>
-            <FloatLabel>
-              <Dropdown id="role" name='role' value={selectedRole} onChange={(e) => { setSelectedRole(e.value); onInputNumberChange(e, 'role'); }} options={roleOptions} placeholder="Seleccionar rol" emptyMessage="No hay datos" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !user.role && !selectedRole })}`} />
-              <label htmlFor="role" className="font-bold">Rol</label>
-            </FloatLabel>
-          </div>
-          {submitted && !user.role && !selectedRole && <small className="p-error">Rol es requerido.</small>}
-        </div>
+        <FloatDropdownIcon
+          className="field mt-4"
+          icon='admin_panel_settings' field='role' required
+          value={selectedRole}
+          onInputNumberChange={onInputNumberChange}
+          setSelected={setSelectedRole}
+          options={translateRoles(roles)} optionLabel="name"
+          placeholder="Seleccionar rol"
+          valueTemplate={selectedRoleTemplate}
+          itemTemplate={roleOptionTemplate}
+          submitted={submitted} fieldForeign={user.role}
+          label="Rol" errorMessage="Rol es requerido."
+        />
         <div className="formgrid grid">
           <div className="field col">
             <label htmlFor="image" className="font-bold">Foto del Usuario</label>
@@ -523,7 +574,7 @@ export default function Users() {
               name="image"
               mode="basic"
               chooseLabel="Seleccionar Imagen"
-              url="http://localhost:8086/api/user/create"
+              url="https://felysoftspring-production.up.railway.app/api/user/create"
               accept="image/*"
               maxFileSize={2000000}
               onSelect={handleFileUpload}
@@ -643,7 +694,7 @@ export default function Users() {
                 <span className="material-symbols-outlined me-2">admin_panel_settings</span>
                 <div>
                   <label htmlFor="role" className="font-bold d-block">Rol</label>
-                  <p>{Role[user.role]}</p>
+                  <p>{Role[user.role.name]}</p>
                 </div>
               </div>
             </div>

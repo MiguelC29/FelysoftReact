@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
@@ -14,15 +12,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import logo from '../../img/logo.png';
-import { Link } from 'react-router-dom';
-import { Badge } from 'primereact/badge';
-import { useCart } from '../CartContext';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
 import UserService from '../service/UserService';
-import CartModal from '../data_tables/CartModal';
-import Swal from 'sweetalert2';
-
+import NavBar from './MyNavBar';
 
 const drawerWidth = 240;
 
@@ -53,25 +46,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-    backgroundColor: '#19191a',
-    // zIndex: theme.zIndex.drawer,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -105,15 +79,8 @@ const ContentWrapper = styled('div')(({ theme, open }) => ({
     }),
 }));
 
-const LogoImage = styled('img')({
-    marginRight: '10px',
-    height: '40px',
-    width: '40px',
-    zIndex: 2000,
-});
-
 export default function MiniDrawer({ children }) {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated } = useAuth();
     const isAdmin = UserService.isAdmin();
     const isCustomer = UserService.isCustomer();
     const isSalesPerson = UserService.isSalesPerson();
@@ -121,38 +88,8 @@ export default function MiniDrawer({ children }) {
     const isInventoryManager = UserService.isInventoryManager();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
     const [expandedItem, setExpandedItem] = React.useState('');
-    const [dateTime, setDateTime] = useState(new Date());
-    const { cartItems } = useCart();
-    const { getCartItemCount } = useCart();
-    const [cartVisible, setCartVisible] = React.useState(false);
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setDateTime(new Date());
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, []);
-
-    const handleLogout = (e) => {
-        e.preventDefault(); // Prevenir la acción predeterminada del enlace
-        const Swal = require('sweetalert2');
-        Swal.fire({
-            title: '¿Estás seguro que quieres salir?',
-            icon: 'warning',
-            showCancelButton: true, // Muestra el botón de cancelar
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: "#3085d6",
-            ñcancelButtonColor: "#d33",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                logout(); // Llama a la función de logout para cerrar la sesión
-                window.location.href = '/login'; // Redirige al usuario a la página de login o cualquier otra página
-            }
-        });
-    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -201,6 +138,7 @@ export default function MiniDrawer({ children }) {
                 { name: "Productos", icon: <IconSubItems />, link: "/productos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Categorías", icon: <IconSubItems />, link: "/categorias", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Categorías-Proveedores", icon: <IconSubItems />, link: "/categorias_proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
+                { name: "Marcas", icon: <IconSubItems />, link: "/marcas", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Libros", icon: <IconSubItems />, link: "/libros", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Autores", icon: <IconSubItems />, link: "/autores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
                 { name: "Géneros", icon: <IconSubItems />, link: "/generos", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
@@ -216,7 +154,7 @@ export default function MiniDrawer({ children }) {
             icon: <Icon icon='shopping_cart' />,
             items: [
                 { name: "Carrito", icon: <IconSubItems />, link: "/carrito", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
-                { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER'] },
+                // { name: "Gastos", icon: <IconSubItems />, link: "/gastos", roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER'] },
                 { name: "Ventas", icon: <IconSubItems />, link: "/ventas", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
                 { name: "Pagos", icon: <IconSubItems />, link: "/pagos", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
             ],
@@ -228,7 +166,6 @@ export default function MiniDrawer({ children }) {
             items: [
                 { name: "Compras", icon: <IconSubItems />, link: "/compras", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER'] },
                 { name: "Proveedores", icon: <IconSubItems />, link: "/proveedores", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER'] },
-                { name: "Detalles", icon: <IconSubItems />, link: "/detalles", roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER', 'SALESPERSON'] },
             ],
             roles: ['ADMINISTRATOR', 'INVENTORY_MANAGER', 'FINANCIAL_MANAGER', 'SALESPERSON']
         },
@@ -266,26 +203,7 @@ export default function MiniDrawer({ children }) {
                 { name: "Empleados", icon: <IconSubItems />, link: "/empleados", roles: ['ADMINISTRATOR'] },
             ],
             roles: ['ADMINISTRATOR']
-        },
-        {
-            name: "Configuración",
-            icon: <Icon icon='settings' />,
-            link: "",
-            roles: ['ADMINISTRATOR']
-        },
-        {
-            name: "Perfil",
-            icon: <Icon icon='person' />,
-            link: "/perfil",
-            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
-        },
-        {
-            name: "Cerrar sesión",
-            icon: <Icon icon='logout' />,
-            link: "/",
-            onClick: handleLogout,
-            roles: ['ADMINISTRATOR', 'CUSTOMER', 'FINANCIAL_MANAGER', 'INVENTORY_MANAGER', 'SALESPERSON']
-        },
+        }
     ];
 
     // SI NO ESTA AUTENTICADO NO SE MUESTRA EL SIDEBAR
@@ -322,36 +240,7 @@ export default function MiniDrawer({ children }) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <Icon icon={'menu'} textColor={'text-white'} />
-                    </IconButton>
-                    <LogoImage src={logo} alt="Logo FELYSOFT" />
-                    {!open && <Typography variant="h6" noWrap component="div">
-                        <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
-                    </Typography>}
-                    <div className='d-flex align-items-end ms-auto'>
-                        {(isAdmin || isSalesPerson) && (
-                            <span className="material-symbols-outlined mr-5 p-overlay-badge" onClick={() => setCartVisible(true)}>
-                                shopping_cart
-                                <Badge value={getCartItemCount()} id='badge-shopping-car' severity="info"></Badge>
-                            </span>
-                        )}
-                        <div className="datetime text-white" id="datetime">{dateTime.toLocaleString()}</div>
-                    </div>
-                    <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
-                </Toolbar>
-            </AppBar>
+            <NavBar open={open} handleDrawerOpen={handleDrawerOpen} Icon={Icon} />
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader className='text-white' style={{ background: '#323232' }}>
                     <Typography variant="h6" noWrap component="div" className='mr-6'>
@@ -381,7 +270,7 @@ export default function MiniDrawer({ children }) {
                                             if (item.items) {
                                                 handleExpand(item.name);
                                             } else if (item.link) {
-                                                window.location.href = item.link; // Navegar a la URL del enlace
+                                                navigate(item.link); // Navegar a la URL del enlace
                                             }
                                         }
                                     }}

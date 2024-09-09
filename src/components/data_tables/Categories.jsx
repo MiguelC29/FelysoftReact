@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -43,18 +43,18 @@ export default function Categories() {
     // ROLES
     const isAdmin = UserService.isAdmin();
 
-    useEffect(() => {
-        fetchCategories();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setCategories);
         } catch (error) {
             console.error("Fallo al recuperar las categorias:", error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [onlyDisabled, fetchCategories]);
 
     const openNew = () => {
         setCategory(emptyCategory);
@@ -277,7 +277,7 @@ export default function Categories() {
                     />
                 </Dialog>
 
-                {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'la categoria')}
+                {DialogDelete(deleteCategoryDialog, 'Categoría', deleteCategoryDialogFooter, hideDeleteCategoryDialog, category, category.name, 'la categoría')}
 
                 {confirmDialog(confirmDialogVisible, 'Categoría', confirmCategoryDialogFooter, hideConfirmCategoryDialog, category, operation)}
 

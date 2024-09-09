@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -48,20 +48,20 @@ export default function Expenses() {
     const dt = useRef(null);
     const [onlyDisabled, setOnlyDisabled] = useState(false);
 
-    useEffect(() => {
-        fetchExpenses();
-        Request_Service.getData('/purchase/all', setPurchases);
-        Request_Service.getData('/payment/all', setPayments);
-    }, [onlyDisabled]);
-
-    const fetchExpenses = async () => {
+    const fetchExpenses = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setExpenses);
         } catch (error) {
             console.error("Fallo al recuperar gastos:", error);
         }
-    }
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchExpenses();
+        Request_Service.getData('/purchase/all', setPurchases);
+        Request_Service.getData('/payment/all', setPayments);
+    }, [onlyDisabled, fetchExpenses]);
 
     const openNew = () => {
         setExpense(emptyExpense);

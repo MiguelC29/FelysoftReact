@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -10,7 +10,6 @@ import AsociationDialog from '../AsociationDialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
-
 
 export default function Genres() {
     let emptyGenre = {
@@ -48,18 +47,18 @@ export default function Genres() {
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
 
-    useEffect(() => {
-        fetchGenres();
-    }, [onlyDisabled]);
-
-    const fetchGenres = async () =>{
+    const fetchGenres = useCallback(async () => {
         try{
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setGenres);
         }catch (error){
             console.error("Fallo al recuperar los géneros:",error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchGenres();
+    }, [onlyDisabled, fetchGeres]);
 
     const openNew = () => {
         setGenre(emptyGenre);

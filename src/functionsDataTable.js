@@ -139,7 +139,7 @@ export const actionBodyTemplate = (rowData, editData, confirmDelete, onlyDisable
         <React.Fragment>
             {
                 onlyDisabled ? (
-                    <Button icon="pi pi-check" className="mr-2 rounded" onClick={() => enable(rowData)} style={{ background: '#0D9276', border: 'none' }}/>
+                    <Button icon="pi pi-check" className="mr-2 rounded" onClick={() => enable(rowData)} style={{ background: '#0D9276', border: 'none' }} />
                 ) : (
                     <>
                         <Button icon="pi pi-pencil" className="mr-2 rounded" onClick={() => editData(rowData)} style={{ background: '#0d56df' }} />
@@ -192,6 +192,17 @@ export const confirmDialog = (confirmDialogVisible, nameTable, DataDialogFooter,
                         {`¿Está seguro de ${(op === 1) ? 'guardar' : 'actualizar'} los datos?`}
                     </span>
                 )}
+            </div>
+        </Dialog>
+    );
+}
+
+export const confirmDialogPassword = (confirmDialogVisible, DataDialogFooter, hideDataDialog) => {
+    return (
+        <Dialog visible={confirmDialogVisible} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Cambiar Contraseña" modal footer={DataDialogFooter} onHide={hideDataDialog}>
+            <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                <span>¿Está seguro de cambiar su contraseña?</span>
             </div>
         </Dialog>
     );
@@ -263,11 +274,11 @@ export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisable
     return (
         <div className="flex flex-wrap gap-2">
             {!onlyDisabled &&
-            <>
-                <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+                <>
+                    <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
 
-                <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
-            </>
+                    <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
+                </>
             }
             {isAdmin &&
                 <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
@@ -286,7 +297,7 @@ export const inputChange = (e, name, data, setData) => {
 };
 
 export const inputNumberChange = (e, name, data, setData) => {
-    const val = e.value || 0;
+    const val = e.value;
     let _data = { ...data };
 
     _data[`${name}`] = val;

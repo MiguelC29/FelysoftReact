@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -17,10 +17,10 @@ export default function Products() {
         image: '',
         typeImg: '',
         name: '',
-        brand: '',
         salePrice: null,
         expiryDate: '',
         stock: null,
+        brand: '',
         category: '',
         provider: ''
     };
@@ -31,8 +31,10 @@ export default function Products() {
     const [file, setFile] = useState(null);
     const [categories, setCategories] = useState([]);
     const [providers, setProviders] = useState([]);
+    const [brands, setBrands] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
+    const [selectedBrand, setSelectedBrand] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageError, setImageError] = useState('');
     const [productDialog, setProductDialog] = useState(false);
@@ -46,20 +48,18 @@ export default function Products() {
     const toast = useRef(null);
     const dt = useRef(null);
 
-    useEffect(() => {
-        fetchProducts();
-        getCategories();
-        getProviders();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setProducts);
         } catch (error) {
             console.error("Fallo al recuperar productos:", error);
         }
-    }
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [onlyDisabled, fetchProducts]);
 
     const getCategories = () => {
         return Request_Service.getData('/category/all', setCategories);
@@ -67,6 +67,10 @@ export default function Products() {
 
     const getProviders = () => {
         return Request_Service.getData('/provider/all', setProviders);
+    }
+
+    const getBrands = () => {
+        return Request_Service.getData('/brand/all', setBrands);
     }
 
     const handleCategoryChange = (categoryId) => {
@@ -96,7 +100,7 @@ export default function Products() {
         setFile(file);
         if (file) {
             // Validar el tipo de archivo
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg','image/webp'];
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
             if (!validImageTypes.includes(file.type)) {
                 setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
                 setSelectedImage(null); // Limpiar la vista previa
@@ -117,10 +121,12 @@ export default function Products() {
         setTitle('Registrar Producto');
         setSelectedCategory('');
         setSelectedProvider('');
+        setSelectedBrand('');
         setFile('');
         setSelectedImage('');
         getCategories();
         getProviders();
+        getBrands();
         setOperation(1);
         setSubmitted(false);
         setProductDialog(true);
@@ -130,8 +136,10 @@ export default function Products() {
         setProduct({ ...product });
         getCategories();
         getProviders();
+        getBrands();
         setSelectedCategory(product.category);
         setSelectedProvider(product.provider);
+        setSelectedBrand(product.brand);
         setFile('');
         setSelectedImage('');
         setTitle('Editar Producto');
@@ -159,32 +167,32 @@ export default function Products() {
     const saveProduct = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
-    
+
         // Verificar si todos los campos requeridos están presentes
-        const isValid = product.name.trim() && 
-                        product.brand.trim() &&
-                        product.expiryDate &&
-                        product.salePrice &&
-                        product.category &&
-                        product.provider &&
-                        (operation === 1 ? file : true);
-    
+        const isValid = product.name.trim() &&
+            product.expiryDate &&
+            product.salePrice &&
+            product.brand &&
+            product.category &&
+            product.provider &&
+            (operation === 1 ? file : true);
+
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
             return;
         }
-    
+
         let url, method;
         const formData = new FormData();
-    
+
         if (product.idProduct && operation === 2) {
             // Asegurarse de que los campos no estén vacíos al editar
             formData.append('idProduct', product.idProduct);
             formData.append('name', product.name.trim());
-            formData.append('brand', product.brand.trim());
             formData.append('expiryDate', product.expiryDate);
             formData.append('salePrice', product.salePrice);
+            formData.append('brand', product.brand.idBrand);
             formData.append('category', product.category.idCategory);
             formData.append('provider', product.provider.idProvider);
             if (file) {
@@ -196,9 +204,9 @@ export default function Products() {
             // Verificar que el stock inicial está presente solo al crear
             if (operation === 1 && product.stock) {
                 formData.append('name', product.name.trim());
-                formData.append('brand', product.brand.trim());
                 formData.append('expiryDate', product.expiryDate);
                 formData.append('salePrice', product.salePrice);
+                formData.append('brand', product.brand.idBrand);
                 formData.append('category', product.category.idCategory);
                 formData.append('provider', product.provider.idProvider);
                 formData.append('stockInicial', product.stock);
@@ -207,12 +215,12 @@ export default function Products() {
                 method = 'POST';
             }
         }
-    
+
         if (isValid) {
             await Request_Service.sendRequest(method, formData, url, operation, toast, 'Producto ', URL.concat('all'), setProducts);
             setProductDialog(false);
         }
-    };    
+    };
 
     const confirmSave = () => {
         setConfirmDialogVisible(true);
@@ -306,9 +314,28 @@ export default function Products() {
         );
     };
 
+    const selectedBrandTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+        return <span>{props.placeholder}</span>;
+    };
+
+    const brandOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
-        { field: 'brand', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'brand.name', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
         { field: 'category.name', header: 'Categoría', sortable: true, style: { minWidth: '10rem' } },
@@ -351,21 +378,27 @@ export default function Products() {
                     label='Nombre'
                     errorMessage='Nombre es requerido.'
                 />
-                <FloatInputTextIcon
+
+                <FloatDropdownSearchIcon
                     className="field mt-5"
-                    icon='shoppingmode'
-                    value={product.brand}
-                    onInputChange={onInputChange} field='brand'
-                    maxLength={30} required
-                    submitted={submitted}
-                    label='Marca'
-                    errorMessage='Marca es requerida.'
+                    icon='shoppingmode' field='brand' required
+                    value={selectedBrand}
+                    onInputNumberChange={onInputNumberChange}
+                    options={brands} optionLabel="name"
+                    setSelected={setSelectedBrand}
+                    placeholder="Seleccionar marca"
+                    valueTemplate={selectedBrandTemplate}
+                    itemTemplate={brandOptionTemplate}
+                    submitted={submitted} fieldForeign={product.brand}
+                    label="Marca" errorMessage="Marca es requerida."
                 />
+
                 <div className="field mt-3">
                     <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
+                
                 <div className="formgrid grid mt-5">
                     <FloatInputNumberMoneyIcon
                         className="field col"
@@ -425,7 +458,7 @@ export default function Products() {
                             mode="basic"
                             name="image"
                             chooseLabel="Seleccionar Imagen"
-                            url="http://localhost:8086/api/product/create"
+                            url="https://felysoftspring-production.up.railway.app/api/product/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
                             sizeLimit="3145728"

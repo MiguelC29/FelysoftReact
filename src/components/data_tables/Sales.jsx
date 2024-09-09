@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -38,21 +38,19 @@ export default function Sales() {
     // Roles
     const isAdmin = UserService.isAdmin();
 
-    useEffect(() => {
-        fetchSales();
-        Request_Service.getData('/payment/all', setPayments);
-    }, [onlyDisabled]);
-
-    
-
-    const fetchSales = async () => {
+    const fetchSales = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setSales);
         } catch (error) {
             console.error("Fallo al recuperar ventas:", error);
         }
-    }
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchSales();
+        Request_Service.getData('/payment/all', setPayments);
+    }, [onlyDisabled, fetchSales]);
 
     const openNew = () => {
         setSale(emptySale);
@@ -222,7 +220,10 @@ export default function Sales() {
                                 value={selectedPayment}
                                 onChange={(e) => {
                                     setSelectedPayment(e.value);
-                                    onInputNumberChange(e, 'payment');
+                                    setSale((prevSale) => ({
+                                        ...prevSale,
+                                        payment: e.value // Asegúrate de actualizar el campo 'payment' en 'sale'
+                                    }));
                                 }}
                                 options={payments}
                                 optionLabel="methodPayment"

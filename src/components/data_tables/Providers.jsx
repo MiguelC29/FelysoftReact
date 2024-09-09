@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, inputNumberChange, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -46,18 +46,18 @@ export default function Providers() {
     // ROLES
     const isAdmin = UserService.isAdmin();
 
-    useEffect(() => {
-        fetchProviders();
-    }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-    const fetchProviders = async () => {
+    const fetchProviders = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setProviders);
         } catch (error) {
             console.error("Fallo al recuperar los proveedores:", error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchProviders();
+    }, [onlyDisabled, fetchProviders]);
 
     const openNew = () => {
         setProvider(emptyProvider);
@@ -293,7 +293,7 @@ export default function Providers() {
                             icon='badge'
                             value={provider.nit}
                             onInputChange={onInputChange} field='nit'
-                            maxLength={11} required autoFocus
+                            maxLength={10} required autoFocus
                             submitted={submitted}
                             label='NIT'
                             errorMessage='NIT es requerido.'

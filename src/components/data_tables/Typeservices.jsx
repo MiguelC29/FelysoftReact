@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
@@ -32,18 +32,18 @@ export default function TypeServices() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  useEffect(() => {
-    fetchTypeServices();
-  }, [onlyDisabled]); // Fetch data when onlyDisabled changes
-
-  const fetchTypeServices = async () => {
+  const fetchTypeServices = useCallback(async () => {
     try {
       const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
       await Request_Service.getData(url, setTypeservices);
     } catch (error) {
       console.error("Fallo al recuperar tipos de servicio:", error);
     }
-  }
+  }, [onlyDisabled, URL]);
+
+  useEffect(() => {
+    fetchTypeServices();
+  }, [onlyDisabled, fetchTypeServices]);
 
   const openNew = () => {
     setTypeService(emptyTypeService);

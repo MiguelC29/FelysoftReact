@@ -54,6 +54,7 @@ const MoneyFloatInputNumber = (props) => {
                 maxLength={props.maxLength}
                 required={props.required}
                 autoFocus={props.autoFocus}
+                disabled={props.disabled}
                 placeholder={props.placeholder}
                 mode="decimal" currency="COP" locale="es-CO"
                 className={classNames({ 'p-invalid': props.submitted && !props.value })}
@@ -69,13 +70,35 @@ const BaseFloatDropdownSearch = (props) => {
             <Dropdown
                 id={props.field}
                 value={props.value}
-                onChange={(e) => { props.handleChange(e.target.value); props.onInputNumberChange(e, props.field); }}
+                onChange={(e) => { props.onInputNumberChange(e, props.field); ((props.handleChange) && props.handleChange(e.target.value)); ((props.setSelected) && props.setSelected(e.value)); }}
                 options={props.options}
                 optionLabel={props.optionLabel}
                 placeholder={props.placeholder}
                 filter
                 valueTemplate={props.valueTemplate}
                 itemTemplate={props.itemTemplate}
+                emptyMessage="No hay datos"
+                emptyFilterMessage="No hay resultados encontrados"
+                required={props.required}
+                autoFocus={props.autoFocus}
+                disabled={props.disabled}
+                className={`w-full md:w-13rem rounded ${classNames({ 'p-invalid': props.submitted && !props.fieldForeign && !props.value })}`}
+            />
+            <label htmlFor={props.field} className="font-bold">{props.label}</label>
+        </FloatLabel>
+    );
+};
+
+const BaseFloatDropdown = (props) => {
+    return (
+        <FloatLabel>
+            <Dropdown
+                id={props.field}
+                value={props.value}
+                onChange={(e) => { ((props.handleChange) && props.handleChange(e.target.value)); props.onInputNumberChange(e, props.field); ((props.setSelected) && props.setSelected(e.value));}}
+                options={props.options}
+                optionLabel={props.optionLabel}
+                placeholder={props.placeholder}
                 emptyMessage="No hay datos"
                 emptyFilterMessage="No hay resultados encontrados"
                 required={props.required}
@@ -144,6 +167,20 @@ export const FloatInputNumberMoneyIcon = (props) => {
                 <MoneyFloatInputNumber {...props} />
             </div>
             {props.submitted && !props.value && <small className="p-error">{props.errorMessage}</small>}
+        </div>
+    );
+};
+
+export const FloatDropdownIcon = (props) => {
+    return (
+        <div className={props.className}>
+            <div className="p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <span class="material-symbols-outlined">{props.icon}</span>
+                </span>
+                <BaseFloatDropdown {...props} />
+            </div>
+            {props.submitted && !props.fieldForeign && !props.value && <small className="p-error">{props.errorMessage}</small>}
         </div>
     );
 };

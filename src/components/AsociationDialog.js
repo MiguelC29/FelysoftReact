@@ -19,7 +19,21 @@ export default function AsociationDialog({ ...props}) {
                         {props.nameTable}
                     </label>
                     {/* mirar si tambien poner como props el optionLabel */}
-                    <Dropdown id={props.labelId} value={props.selectedOne} onChange={(e) => { props.setSelectedOne(e.value); onInputNumberChange(e, props.idOnInputNumberOne); }} options={props.options} optionLabel="name" placeholder={`Seleccionar ${props.nameTable}`} filter={props.filter} valueTemplate={props.valueTemplate} itemTemplate={props.itemTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id && !props.selectedOne })}`} />
+                    <Dropdown 
+                        id={props.labelId}
+                        value={props.selectedOne}
+                        onChange={(e) => { props.setSelectedOne(e.value); onInputNumberChange(e, props.idOnInputNumberOne); }}
+                        options={props.options}
+                        optionLabel="name"
+                        placeholder={`Seleccionar ${props.nameTable}`}
+                        filter={props.filter}
+                        valueTemplate={props.valueTemplate}
+                        itemTemplate={props.itemTemplate}
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
+                        required
+                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id && !props.selectedOne })}`}
+                    />
 
                     {props.submitted && !props.id && !props.selectedOne && <small className="p-error">{props.nameTable} es requerida.</small>}
                 </div>
@@ -28,7 +42,17 @@ export default function AsociationDialog({ ...props}) {
                         {props.nameTableTwo}
                     </label>
                     {/* mirar si tambien poner como props el optionLabel */}
-                    <Dropdown id={props.labelId2} value={props.selectedTwo} onChange={(e) => { props.setSelected2(e.value); onInputNumberChange(e, props.idOnInputNumberTwo); }} options={props.options2} optionLabel="name" placeholder={`Seleccionar ${props.nameTableTwo}`} filter={props.filter} valueTemplate={props.valueTemplateTwo} itemTemplate={props.itemTemplateTwo} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id2 && !props.selectedTwo })}`} />
+                    <Dropdown
+                        id={props.labelId2}
+                        value={props.selectedTwo}
+                        onChange={(e) => { props.setSelected2(e.value); onInputNumberChange(e, props.idOnInputNumberTwo); }}
+                        options={props.options2} optionLabel="name" placeholder={`Seleccionar ${props.nameTableTwo}`}
+                        filter={props.filter} valueTemplate={props.valueTemplateTwo} itemTemplate={props.itemTemplateTwo}
+                        emptyMessage="No hay datos"
+                        emptyFilterMessage="No hay resultados encontrados"
+                        required
+                        className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': props.submitted && !props.id2 && !props.selectedTwo })}`}
+                    />
 
                     {props.submitted && !props.id2 && !props.selectedTwo && <small className="p-error">{props.nameTableTwo} es requerida.</small>}
                 </div>
