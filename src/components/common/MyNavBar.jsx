@@ -213,7 +213,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         >
                             <div className='text-center'>
                                 <strong>{profile.user.user_name}</strong>
-                                <p>{Role[profile.user.role]}</p>
+                                <p>{Role[profile.user.role.name]}</p>
                             </div>
                             <Divider />
                             <MenuItem onClick={handleMenuClose}>

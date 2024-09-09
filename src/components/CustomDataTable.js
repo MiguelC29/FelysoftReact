@@ -6,12 +6,12 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
     return (
         <div className='card'>
             <DataTable
-            // agregar key
                 ref={dt}
                 value={data}
                 dataKey={dataKey}
                 paginator
                 rows={10}
+                removableSort //permite que se remueva el sortable
                 rowsPerPageOptions={[5, 10, 25]}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 currentPageReportTemplate={currentPageReportTemplate}
@@ -19,9 +19,9 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
                 header={header}
                 emptyMessage="No hay datos disponibles"
             >
-                {columns.map(column => (
+                {columns.map((column, index) => (
                     <Column
-                        key={column.field}
+                        key={`${column.field}-${index}`}
                         field={column.field}
                         header={column.header}
                         sortable={column.sortable}
