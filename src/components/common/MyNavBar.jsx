@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import logo from '../../img/logo.png';
 import { Link } from 'react-router-dom';
 import { Badge } from 'primereact/badge';
-import { useCart } from '../CartContext';
+import { useCart } from '../context/CartContext';
 import UserService from '../service/UserService';
 import CartModal from '../data_tables/CartModal';
 import { useAuth } from '../context/AuthProvider';
