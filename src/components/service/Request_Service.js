@@ -2,8 +2,8 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 
 class Request_Service {
-    //static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
-    static BASE_URL = "http://localhost:8086/api"
+    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    //static BASE_URL = "http://localhost:8086/api"
 
     static getToken() {
         return localStorage.getItem('token');
