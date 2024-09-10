@@ -623,7 +623,6 @@ export default function Purchases() {
                         }
                     </div>
                     <Button label="Agregar Detalle" icon="pi pi-plus" onClick={addDetail} className="p-button-sm" />
-
                 </Dialog>
 
                 {/* DIALOG DETAIL */}
