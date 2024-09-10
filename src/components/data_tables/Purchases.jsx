@@ -84,9 +84,17 @@ export default function Purchases() {
 
     const calculateTotal = useCallback(() => {
         const total = details.reduce((acc, detail) => {
-            if (detail.quantity && detail.unitPrice) {
-                return acc + (detail.quantity * detail.unitPrice);
+            if (detail.unitPrice) {
+                if (detail.product) {
+                    if (detail.quantity) {
+                        return acc + (detail.quantity * detail.unitPrice);
+                    }
+
+                } else if (detail.book) {
+                    return acc + (detail.unitPrice);
+                }
             }
+
             return acc;
         }, 0);
 
@@ -685,7 +693,8 @@ export default function Purchases() {
                                             <span className="material-symbols-outlined me-2">{(detail.product) ? 'inventory_2' : 'book'}</span>
                                             <div>
                                                 <label htmlFor={(detail.product) ? 'product' : 'book'} className="font-bold d-block">{(detail.product) ? 'Producto' : 'Libro'}</label>
-                                                <p>{(detail.product) ? detail.product.name : detail.book.title}</p>
+                                                <p>{(detail.product) && detail.product.name}</p>
+                                                <p>{(detail.book) && detail.book.title}</p>
                                             </div>
                                         </div>
                                     </div>
