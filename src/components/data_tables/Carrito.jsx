@@ -1,17 +1,15 @@
-import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useState } from 'react';
 import { formatCurrency } from '../../functionsDataTable';
-import { useCart } from '../CartContext';
 import Request_Service from '../service/Request_Service';
+import AddToCartButton from './AddToCartButton';
 
 export default function Carrito() {
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
-    const { addToCart } = useCart();
     const [globalFilter, setGlobalFilter] = useState('');
 
     useEffect(() => {
@@ -22,20 +20,16 @@ export default function Carrito() {
         switch (product.state) {
             case 'DISPONIBLE':
                 return '#0D9276';
-
             case 'BAJO':
                 return '#ff9209';
-
             case 'AGOTADO':
                 return '#e72929';
-
             default:
                 return null;
         }
     };
 
     const getSeverityStock = (product) => {
-
         if (product.stock < 1) {
             return '#e72929';
         } else if (product.stock < 6) {
@@ -49,19 +43,9 @@ export default function Carrito() {
         return formatCurrency(rowData).replace(/(\.00|,00)$/, '');
     };
 
-    const handleAddToCart = (product) => {
-        const item = {
-            id: product.id,
-            product: product.product,
-            quantity: 1
-        };
-        addToCart(item);
-    };   
-
     const listItem = (product, index) => {
         return (
-            // TODO: CAMBIAR DISEÑO
-            <div className="col-12" key={product.id}>
+            <div className="col-12" key={product.product.idProduct}>
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
                     <img className="w-9 sm:w-16rem xl:w-10rem block xl:block mx-auto" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
@@ -74,7 +58,6 @@ export default function Carrito() {
                                 </span>
                             </div>
                             <div className="flex align-items-center gap-3">
-                                {/* <b>Stock</b> */}
                                 <Tag value={product.stock} style={{ background: getSeverityStock(product) }}></Tag>
                             </div>
                             <div className="flex align-items-center gap-3">
@@ -83,8 +66,7 @@ export default function Carrito() {
                         </div>
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                            <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} onClick={() => handleAddToCart(product)} />
-                            {/* <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={addToCart} /> */}
+                            <AddToCartButton product={product.product} />
                         </div>
                     </div>
                 </div>
@@ -94,7 +76,7 @@ export default function Carrito() {
 
     const gridItem = (product) => {
         return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product.id}>
+            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product.product.idProduct}>
                 <div className="p-4 border-1 surface-border border-round">
                     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                         <div className="flex align-items-center gap-2">
@@ -112,7 +94,7 @@ export default function Carrito() {
                     </div>
                     <div className="flex align-items-center justify-content-between">
                         <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                        <Button label="Añadir al carrito" icon="pi pi-shopping-cart" className="rounded" style={{ background: 'rgb(14, 165, 233)', borderColor: 'rgb(14, 165, 233)' }} disabled={product.state === 'AGOTADO'} onClick={() => handleAddToCart(product)} />
+                        <AddToCartButton product={product.product} />
                     </div>
                 </div>
             </div>
@@ -123,7 +105,6 @@ export default function Carrito() {
         if (!product) {
             return;
         }
-
         if (layout === 'list') return listItem(product, index);
         else if (layout === 'grid') return gridItem(product);
     };
@@ -133,8 +114,7 @@ export default function Carrito() {
     };
 
     const filteredProducts = products.filter(product =>
-        // product.product.name.toLowerCase().includes(globalFilter.toLowerCase())
-        product.product.name.toLowerCase().includes(globalFilter.toLowerCase()) && (product.state !== 'AGOTADO' && product.stock !== 0) // SI EL PRODUCTO ESTA AGOTADO NO APARECE
+        product.product.name.toLowerCase().includes(globalFilter.toLowerCase()) && (product.state !== 'AGOTADO' && product.stock !== 0)
     );
 
     const header = () => {
@@ -142,7 +122,6 @@ export default function Carrito() {
             <>
                 <div className="flex justify-content-start">
                     <span className="p-input-icon-left">
-                        <i className="pi pi-search" />
                         <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar por nombre..." />
                     </span>
                 </div>
