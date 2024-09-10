@@ -15,6 +15,7 @@ import { InputText } from 'primereact/inputtext'
 import { InputNumber } from 'primereact/inputnumber'
 import { Dropdown } from 'primereact/dropdown'
 import Request_Service from '../service/Request_Service'
+import { Divider } from 'primereact/divider'
 
 function ProfilePage() {
     const emptyUserPassword = useState({
@@ -243,6 +244,19 @@ function ProfilePage() {
         value: key
     }));
 
+    const footer = (
+        <>
+            <Divider />
+            <p className="mt-2">Sugerencias</p>
+            <ul className="pl-2 ml-2 mt-0 line-height-3">
+                <li>Al menos una minúscula</li>
+                <li>Al menos una mayúscula</li>
+                <li>Al menos un número</li>
+                <li>Mínino 8 caracteres</li>
+            </ul>
+        </>
+    );
+
     return (
         <>
             <Toast ref={toast} position="bottom-right" />
@@ -302,7 +316,7 @@ function ProfilePage() {
                                 <span className="material-symbols-outlined">password</span>
                             </span>
                             <FloatLabel>
-                                <Password id="oldPassword" name='oldPassword' value={userPassword.oldPassword} onChange={(e) => onInputChangePassword(e, 'oldPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !userPassword.oldPassword })} promptLabel='Ingrese la contraseña actual' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
+                                <Password id="oldPassword" name='oldPassword' value={userPassword.oldPassword} onChange={(e) => onInputChangePassword(e, 'oldPassword')} className={classNames({ 'p-invalid': submitted && !userPassword.oldPassword })} promptLabel='Ingrese la contraseña actual' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
                                 <label htmlFor="oldPassword" className="font-bold">Ingrese su contraseña actual</label>
                             </FloatLabel>
                         </div>
@@ -316,7 +330,7 @@ function ProfilePage() {
                                 <span className="material-symbols-outlined">lock</span>
                             </span>
                             <FloatLabel>
-                                <Password id="newPassword" name='newPassword' value={userPassword.newPassword} onChange={(e) => onInputChangePassword(e, 'newPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !userPassword.newPassword })} promptLabel='Ingrese la nueva contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
+                                <Password id="newPassword" name='newPassword' value={userPassword.newPassword} onChange={(e) => onInputChange(e, 'newPassword')} className={classNames({ 'p-invalid': submitted && !userPassword.newPassword })} promptLabel='Ingrese la nueva contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" footer={footer} />
                                 <label htmlFor="oldPassword" className="font-bold">Nueva Contraseña</label>
                             </FloatLabel>
                         </div>
@@ -329,7 +343,7 @@ function ProfilePage() {
                                 <span className="material-symbols-outlined">key</span>
                             </span>
                             <FloatLabel>
-                                <Password id="confirmPassword" name='confirmPassword' value={userPassword.confirmPassword} onChange={(e) => onInputChangePassword(e, 'confirmPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !userPassword.confirmPassword })} placeholder='Confirme la contraseña' autoComplete="new-password" feedback={false} />
+                                <Password id="confirmPassword" name='confirmPassword' value={userPassword.confirmPassword} onChange={(e) => onInputChangePassword(e, 'confirmPassword')} className={classNames({ 'p-invalid': submitted && !userPassword.confirmPassword })} placeholder='Confirme la contraseña' autoComplete="new-password" feedback={false} />
                                 <label htmlFor="confirmPassword" className="font-bold">Confirmar Contraseña</label>
                             </FloatLabel>
                         </div>

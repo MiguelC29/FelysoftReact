@@ -12,6 +12,7 @@ import { Button } from 'primereact/button';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../img/logo.svg";
 import LoadingOverlay from "../common/LoadingOverlay";
+import { Divider } from 'primereact/divider';
 
 function RegistrationPage() {
 
@@ -137,6 +138,19 @@ function RegistrationPage() {
         label: TypeDoc[key],
         value: key
     }));
+
+    const footer = (
+        <>
+            <Divider />
+            <p className="mt-2">Sugerencias</p>
+            <ul className="pl-2 ml-2 mt-0 line-height-3">
+                <li>Al menos una minúscula</li>
+                <li>Al menos una mayúscula</li>
+                <li>Al menos un número</li>
+                <li>Mínino 8 caracteres</li>
+            </ul>
+        </>
+    );
 
     return (
         <div className='container auth-container mt-3 p-4 rounded-5' style={{backgroundColor: '#19191a'}}>
@@ -277,7 +291,7 @@ function RegistrationPage() {
                             <span className="material-symbols-outlined">lock</span>
                         </span>
                         <FloatLabel>
-                            <Password id="password" name='password' value={user.password} onChange={(e) => onInputChange(e, 'password')} toggleMask className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
+                            <Password id="password" name='password' value={user.password} onChange={(e) => onInputChange(e, 'password')} className={classNames({ 'p-invalid': submitted && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" footer={footer} />
                             <label htmlFor="password" className="font-bold">Contraseña</label>
                         </FloatLabel>
                     </div>
@@ -289,7 +303,7 @@ function RegistrationPage() {
                             <span className="material-symbols-outlined">key</span>
                         </span>
                         <FloatLabel>
-                            <Password id="confirmPassword" name='confirmPassword' value={user.confirmPassword} onChange={(e) => onInputChange(e, 'confirmPassword')} toggleMask className={classNames({ 'p-invalid': submitted && !user.confirmPassword })} placeholder='Confirme la contraseña' autoComplete="new-password" feedback={false} />
+                            <Password id="confirmPassword" name='confirmPassword' value={user.confirmPassword} onChange={(e) => onInputChange(e, 'confirmPassword')} className={classNames({ 'p-invalid': submitted && !user.confirmPassword })} placeholder='Confirme la contraseña' autoComplete="new-password" feedback={false} />
                             <label htmlFor="confirmPassword" className="font-bold">Confirmar Contraseña</label>
                         </FloatLabel>
                     </div>
