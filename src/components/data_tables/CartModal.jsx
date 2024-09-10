@@ -108,7 +108,7 @@ const CartModal = ({ visible, onHide }) => {
         method = 'POST';
 
         if (isValid) {
-            await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location, console.log("hola")
+            await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location, () => {}
             );
             setSaleDialog(false);
             setSale(emptySale);

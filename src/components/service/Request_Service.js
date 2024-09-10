@@ -114,22 +114,24 @@ class Request_Service {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then((response) => {
+                    console.log(response)
                     const type = response.data['status'];
                     const msg = response.data['data'];
                     if (type === 'success') {
                         toast.current.show({ severity: 'success', summary: msg, detail: 'Venta Creada', life: 3000 });
                         // Si ya estamos en la vista de carrito
-                    if (location.pathname === '/carrito') {
-                        // Aquí puedes actualizar el estado del carrito localmente
-                        updateCart();
-                    } else {
-                        navigate('/carrito');
-                    }
+                        if (location.pathname === '/carrito') {
+                            // Aquí puedes actualizar el estado del carrito localmente
+                            updateCart();
+                        } else {
+                            navigate('/carrito');
+                        }
                     }
                     return response.data;
                 })
                 .catch((error) => {
-                    if (error.response.data.data === 'No hay suficientes productos') {
+                    console.log(error.response['data'])
+                    if (error.response.data['data'] === 'No hay suficientes productos') {
                         toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Venta NO Creada, no hay suficiente stock', life: 3000 });
                     } else {
                         toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Venta NO Creada', life: 3000 });
