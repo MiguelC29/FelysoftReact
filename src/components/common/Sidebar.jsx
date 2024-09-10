@@ -132,6 +132,12 @@ export default function MiniDrawer({ children }) {
             roles: ['CUSTOMER'] 
         },
         {
+            name: "Sus Reservas",
+            icon: <Icon icon='save' />,
+            link: "/sus_reservas",
+            roles: ['CUSTOMER'] 
+        },
+        {
             name: "Almacen",
             icon: <Icon icon='inventory_2' />,
             items: [

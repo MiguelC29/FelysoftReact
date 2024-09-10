@@ -58,7 +58,7 @@ export default function Genres() {
 
     useEffect(() => {
         fetchGenres();
-    }, [onlyDisabled, fetchGeres]);
+    }, [onlyDisabled, fetchGenres]);
 
     const openNew = () => {
         setGenre(emptyGenre);

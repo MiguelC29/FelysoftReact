@@ -39,6 +39,7 @@ import VerifyPage from './components/auth/VerifyPage';
 import { ResetPassword } from './components/auth/ResetPassword';
 
 import ViewReserva from './pages/ViewReservaC';
+import ViewTheirReserves from './pages/ViewTheirReserves';
 
 export default function App() {
 
@@ -83,6 +84,7 @@ export default function App() {
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
 
             <Route path='/reserva' element={<RoleProtectedRoute element={<ViewReserva />} roles={['CUSTOMER']} />} />
+            <Route path='/sus_reservas' element={<RoleProtectedRoute element={<ViewTheirReserves />} roles={['CUSTOMER']} />} />
 
 
             <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />
