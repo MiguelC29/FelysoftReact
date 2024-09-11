@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Request_Service from '../service/Request_Service';
-import { actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, DialogDelete, DialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
+import { confirmDialog, confirmDialogFooter, DialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, formatDate, header, inputNumberChange, leftToolbarTemplatePurchase, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import CustomDataTable from '../CustomDataTable';
@@ -58,12 +58,9 @@ export default function Purchases() {
     const [purchaseDialog, setPurchaseDialog] = useState(false);
     const [purchaseDetailDialog, setPurchaseDetailDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
-    const [deletePurchaseDialog, setDeletePurchaseDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState({});
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [operation, setOperation] = useState();
-    const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [isProductSelected, setIsProductSelected] = useState(null); // null, 'product', or 'book'
     const [title, setTitle] = useState('');
     const toast = useRef(null);
@@ -71,16 +68,15 @@ export default function Purchases() {
 
     const fetchPurchases = useCallback(async () => {
         try {
-            const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
-            await Request_Service.getData(url, setPurchases);
+            await Request_Service.getData(`${URL}all`, setPurchases);
         } catch (error) {
             console.error("Fallo al recuperar compras:", error);
         }
-    }, [onlyDisabled, URL]);
+    }, []);
 
     useEffect(() => {
         fetchPurchases();
-    }, [onlyDisabled, fetchPurchases]);
+    }, [fetchPurchases]);
 
     const calculateTotal = useCallback(() => {
         const total = details.reduce((acc, detail) => {
@@ -135,29 +131,15 @@ export default function Purchases() {
         setProducts([]);
         getProviders();
         getBooks();
-        setOperation(1);
         setSubmitted(false);
         setErrors({});
         setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
         setPurchaseDialog(true);
     };
 
-    const editPurchase = (purchase) => {
-        /*setProduct({ ...product });
-        getCategories();
-        getProviders();
-        setSelectedCategory(product.category);
-        setSelectedProvider(product.provider);
-        setFile('');
-        setSelectedImage('');
-        setTitle('Editar Producto');
-        setOperation(2);
-        setProductDialog(true);*/
-    }
-
     const openDetail = (purchase) => {
         setPurchase({ ...purchase });
-        Request_Service.getData(`/detail/details/${purchase.idPurchase}`, setDetailsList);
+        Request_Service.getData(`/detail/purchaseDetails/${purchase.idPurchase}`, setDetailsList);
         setTitle('Datos Compra');
         setPurchaseDetailDialog(true);
     }
@@ -209,10 +191,6 @@ export default function Purchases() {
         setDetails(updatedDetails);
     };
 
-    const toggleDisabled = () => {
-        setOnlyDisabled(!onlyDisabled);
-    };
-
     const hideDialog = () => {
         setSubmitted(false);
         setPurchaseDialog(false);
@@ -221,10 +199,6 @@ export default function Purchases() {
 
     const hideConfirmPurchaseDialog = () => {
         setConfirmDialogVisible(false);
-    };
-
-    const hideDeletePurchaseDialog = () => {
-        setDeletePurchaseDialog(false);
     };
 
     const validateDetails = () => {
@@ -292,33 +266,19 @@ export default function Purchases() {
 
         let url, method, parameters;
 
-        if (purchase.idPurchase && operation === 2) {
-            parameters = {
-                idPurchase: purchase.idPurchase,
-                details: processedDetails,
-                fkIdProvider: purchase.provider.idProvider,
-                //payment
-                total: purchase.total,
-                state: purchase.state,
-                methodPayment: purchase.methodPayment
-            };
-            url = URL + 'update/' + purchase.idPurchase;
-            method = 'PUT';
-        } else {
-            parameters = {
-                details: processedDetails,
-                fkIdProvider: purchase.provider.idProvider,
-                //payment
-                total: purchase.total,
-                state: purchase.state,
-                methodPayment: purchase.methodPayment
-            };
-            url = URL + 'create';
-            method = 'POST';
-        }
+        parameters = {
+            details: processedDetails,
+            fkIdProvider: purchase.provider.idProvider,
+            //payment
+            total: purchase.total,
+            state: purchase.state,
+            methodPayment: purchase.methodPayment
+        };
+        url = URL + 'create';
+        method = 'POST';
 
         if (isValid) {
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Compra ', URL.concat('all'), setPurchases);
+            await Request_Service.sendRequest(method, parameters, url, 1, toast, 'Compra ', URL.concat('all'), setPurchases);
             setPurchaseDialog(false);
             setPurchase(emptyPurchase);
             setDetails([emptyDetail]); // Resetea los detalles al guardar
@@ -327,18 +287,6 @@ export default function Purchases() {
 
     const confirmSave = () => {
         setConfirmDialogVisible(true);
-    };
-
-    const confirmDeletePurchase = (purchase) => {
-        confirmDelete(purchase, setPurchase, setDeletePurchaseDialog);
-    };
-
-    const deletePurchase = () => {
-        Request_Service.deleteData(URL, purchase.idPurchase, setPurchases, toast, setDeletePurchaseDialog, setPurchase, emptyPurchase, 'Compra ', URL.concat('all'));
-    };
-
-    const handleEnable = (purchase) => {
-        Request_Service.sendRequestEnable(URL, purchase.idPurchase, setPurchases, toast, 'Compra ');
     };
 
     const onInputNumberChange = (e, name) => {
@@ -353,10 +301,6 @@ export default function Purchases() {
         return formatDate(rowData.date);
     }
 
-    const actionBodyTemplateP = (rowData) => {
-        return actionBodyTemplate(rowData, editPurchase, confirmDeletePurchase, onlyDisabled, handleEnable);
-    };
-
     const detailsBodyTemplate = (rowData) => {
         return <Button icon="pi pi-angle-right" className="p-button-text" onClick={() => openDetail(rowData)} style={{ background: 'none', border: 'none', padding: '0', boxShadow: 'none', color: '#183462' }}
         />
@@ -368,10 +312,6 @@ export default function Purchases() {
 
     const confirmPurchaseDialogFooter = (
         confirmDialogFooter(hideConfirmPurchaseDialog, savePurchase)
-    );
-
-    const deletePurchaseDialogFooter = (
-        deleteDialogFooter(hideDeletePurchaseDialog, deletePurchase)
     );
 
     const selectedProviderTemplate = (option, props) => {
@@ -449,8 +389,7 @@ export default function Purchases() {
         { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
         { field: 'date', header: 'Fecha', body: dateTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
-        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } },
-        // { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } }
     ];
 
     // EXPORT DATA
@@ -462,7 +401,7 @@ export default function Purchases() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplatePurchase(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -724,8 +663,7 @@ export default function Purchases() {
                 </Dialog>
             </div>
 
-            {DialogDelete(deletePurchaseDialog, 'Compra', deletePurchaseDialogFooter, hideDeletePurchaseDialog, purchase, purchase.idPurchase, 'la compra')}
-            {confirmDialog(confirmDialogVisible, 'Compra', confirmPurchaseDialogFooter, hideConfirmPurchaseDialog, purchase, operation)}
+            {confirmDialog(confirmDialogVisible, 'Compra', confirmPurchaseDialogFooter, hideConfirmPurchaseDialog, purchase, 1)}
         </div>
     );
 };
