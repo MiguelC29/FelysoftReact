@@ -450,7 +450,7 @@ export default function Purchases() {
         { field: 'date', header: 'Fecha', body: dateTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } },
-        { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
+        // { body: actionBodyTemplateP, exportable: false, style: { minWidth: '12rem' } },
     ];
 
     // EXPORT DATA

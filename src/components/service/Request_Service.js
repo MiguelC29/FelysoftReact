@@ -1,9 +1,8 @@
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 
 class Request_Service {
-    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
-    //static BASE_URL = "http://localhost:8086/api"
+    //static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    static BASE_URL = "http://localhost:8086/api"
 
     static getToken() {
         return localStorage.getItem('token');
@@ -131,7 +130,7 @@ class Request_Service {
         //setTable(emptyData);
     }
 
-    static async sendRequestSale(method, parameters, url, toast, navigate, location, updateCart) {
+    static async sendRequestSale(method, parameters, url, toast, navigate, location) {
         try {
             const token = this.getToken();
             await axios({
@@ -143,24 +142,32 @@ class Request_Service {
                     const type = response.data['status'];
                     const msg = response.data['data'];
                     if (type === 'success') {
-                        toast.current.show({ severity: 'success', summary: msg, detail: 'Venta Creada', life: 3000 });
-                        // Si ya estamos en la vista de carrito
-                        if (location.pathname === '/carrito') {
-                            // Aquí puedes actualizar el estado del carrito localmente
-                            updateCart();
+                        const toastMessage = {
+                            severity: 'success',
+                            summary: msg,
+                            detail: 'Venta Creada',
+                            life: 3000
+                        };
+
+                        if (location.pathname !== '/carrito') {
+                            // Pasamos los datos del toast a la ruta /carrito mediante navigate
+                            navigate('/carrito', { state: { toastMessage } });
                         } else {
-                            navigate('/carrito');
+                            // Mostrar el toast si ya estás en la vista de carrito
+                            if (!toast.current._lastMessage || toast.current._lastMessage !== toastMessage) {
+                                toast.current.show(toastMessage);
+                                toast.current._lastMessage = toastMessage; // Guardar el mensaje para evitar duplicados
+                            }
                         }
                     }
                     return response.data;
                 })
                 .catch((error) => {
-                    console.log(error.response['data'])
-                    if (error.response.data['data'] === 'No hay suficientes productos') {
-                        toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Venta NO Creada, no hay suficiente stock', life: 3000 });
-                    } else {
-                        toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Venta NO Creada', life: 3000 });
-                    }
+                    const errorMessage = error.response.data['data'] === 'No hay suficientes productos'
+                        ? 'Venta NO Creada, no hay suficiente stock'
+                        : 'Venta NO Creada';
+
+                    toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: errorMessage, life: 3000 });
                     console.log(error);
                 });
         } catch (err) {

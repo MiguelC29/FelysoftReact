@@ -7,9 +7,11 @@ import Request_Service from '../service/Request_Service';
 import { Toast } from 'primereact/toast';
 import { FloatDropdownIcon } from '../Inputs';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSale } from '../context/SaleContext';
 
 const CartModal = ({ visible, onHide }) => {
     const { cartItems, updateCartItemQuantity, clearCart, removeFromCart } = useCart();
+    const { setSaleConfirmed } = useSale();
 
     const getTotal = () => {
         return cartItems.reduce((total, item) => total + item.product.salePrice * item.quantity, 0);
@@ -83,12 +85,6 @@ const CartModal = ({ visible, onHide }) => {
             sale.methodPayment &&
             sale.state;
 
-        // Mostrar mensaje de error si algún campo requerido falta
-        if (!isValid) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
-            return;
-        };
-
         const processedDetails = cartItems.map(detail => ({
             idDetail: detail.id,
             quantity: detail.quantity,
@@ -108,12 +104,12 @@ const CartModal = ({ visible, onHide }) => {
         method = 'POST';
 
         if (isValid) {
-            await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location, () => {}
-            );
+            await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location);
             setSaleDialog(false);
             setSale(emptySale);
             onHide();
             clearCart();
+            setSaleConfirmed(true); // Al confirmar la venta, actualiza el estado
         }
     }
 

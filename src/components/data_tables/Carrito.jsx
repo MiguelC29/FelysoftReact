@@ -2,19 +2,46 @@ import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatCurrency } from '../../functionsDataTable';
 import Request_Service from '../service/Request_Service';
 import AddToCartButton from './AddToCartButton';
+import { useSale } from '../context/SaleContext';
+import { useLocation } from 'react-router-dom';
+import { Toast } from 'primereact/toast';
 
 export default function Carrito() {
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
     const [globalFilter, setGlobalFilter] = useState('');
+    const { saleConfirmed, setSaleConfirmed } = useSale();
+    const location = useLocation(); // Hook para acceder al state de la navegación
+    const toast = useRef(null);
 
     useEffect(() => {
+        fetchProducts();
+
+        // Escucha cuando la venta ha sido confirmada para actualizar los productos
+        if (saleConfirmed) {
+            fetchProducts();
+            setSaleConfirmed(false); // Resetea el estado de venta confirmada
+        }
+
+        // Comprobar si hay un mensaje de toast en el estado de navegación
+        if (location.state && location.state.toastMessage) {
+            const { toastMessage } = location.state;
+            if (toastMessage && !toast.current._lastMessage) {
+                toast.current.show(toastMessage);
+                toast.current._lastMessage = toastMessage;
+            }
+            // Limpiar el mensaje de toast en el estado de ubicación
+            location.state.toastMessage = null;
+        }
+    }, [saleConfirmed, setSaleConfirmed, location.state]);
+
+    const fetchProducts = () => {
         Request_Service.getData('/inventory/inventoryProducts', setProducts);
-    }, []);
+    };
 
     const getSeverity = (product) => {
         switch (product.state) {
@@ -134,6 +161,8 @@ export default function Carrito() {
 
     return (
         <div className="card">
+            <Toast ref={toast} position="bottom-right" />
+
             <DataView
                 value={filteredProducts}
                 layout={layout}
