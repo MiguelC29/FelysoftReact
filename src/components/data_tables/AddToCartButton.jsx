@@ -4,27 +4,34 @@ import { Button } from 'primereact/button';
 
 const AddToCartButton = ({ product }) => {
     const { cartItems, addToCart, updateCartItemQuantity, removeFromCart } = useCart();
-    const existingItem = cartItems.find(item => item.id === product.idProduct);
+    const existingItem = cartItems.find(item => item.id === product.product.idProduct);
+
+    // Verificar el stock disponible
+    const stockAvailable = product.stock; // Asegúrate de que `stock` esté disponible en `product`
 
     const handleAddToCart = () => {
         const item = {            
-            id: product.idProduct,
-            product: product,
+            id: product.product.idProduct,
+            product: product.product,
+            stock: stockAvailable,
             quantity: 1
         };
         addToCart(item);
     };
 
     const handleIncrease = () => {
-        updateCartItemQuantity(product.idProduct, existingItem.quantity + 1);
+        // Verificar que la cantidad total en el carrito no exceda el stock disponible
+        if (existingItem.quantity < stockAvailable) {
+            updateCartItemQuantity(product.product.idProduct, existingItem.quantity + 1);
+        }
     };
 
     const handleDecrease = () => {
         if (existingItem.quantity > 1) {
-            updateCartItemQuantity(product.idProduct, existingItem.quantity - 1);
+            updateCartItemQuantity(product.product.idProduct, existingItem.quantity - 1);
         } else {
             // Remover del carrito si la cantidad es 1 y se reduce
-            removeFromCart(product.idProduct);
+            removeFromCart(product.product.idProduct);
         }
     };
 
@@ -42,6 +49,7 @@ const AddToCartButton = ({ product }) => {
                         icon="pi pi-plus"
                         onClick={handleIncrease}
                         className="p-button-info"
+                        disabled={existingItem.quantity >= stockAvailable} // Deshabilitar si se alcanza el stock
                     />
                 </div>
             ) : (

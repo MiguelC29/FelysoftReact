@@ -17,13 +17,24 @@ const CartModal = ({ visible, onHide }) => {
         return cartItems.reduce((total, item) => total + item.product.salePrice * item.quantity, 0);
     };
 
-    const handleQuantityChange = (itemId, quantity) => {
-        if (quantity > 0) {
-            updateCartItemQuantity(itemId, quantity);
-        } else {
-            removeFromCart(itemId);
+    const handleQuantityChange = (itemId, newQuantity) => {
+        const item = cartItems.find(item => item.id === itemId);
+    
+        if (item) {
+            const stockAvailable = item.stock;
+    
+            // Verificar si la nueva cantidad es válida
+            if (newQuantity <= 0) {
+                removeFromCart(itemId);
+            } else if (newQuantity <= stockAvailable) {
+                updateCartItemQuantity(itemId, newQuantity);
+            }
+            /*
+            else {
+                toast.current.show({ severity: 'error', summary: 'Cantidad excede stock', detail: `Solo hay ${stockAvailable} unidades disponibles`, life: 3000 });
+            }*/
         }
-    };
+    };    
 
     let emptySale = {
         idSale: null,
@@ -181,6 +192,7 @@ const CartModal = ({ visible, onHide }) => {
                                                     onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                                     className="p-button-rounded p-button-text p-button-info"
                                                     aria-label="Incrementar"
+                                                    disabled={item.quantity >= item.stock} // Deshabilitar si se alcanza el stock
                                                 />
                                             </div>
                                         </td>
