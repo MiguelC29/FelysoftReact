@@ -11,7 +11,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import UserService from '../service/UserService';
 import { Toast } from 'primereact/toast';
 
-export default function Reservar() {
+export default function ReservesCus() {
     let emptyReserve = {
         idReserve: null,
         dateReserve: '',
