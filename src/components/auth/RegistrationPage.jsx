@@ -147,7 +147,7 @@ function RegistrationPage() {
                 <li>Al menos una minúscula</li>
                 <li>Al menos una mayúscula</li>
                 <li>Al menos un número</li>
-                <li>Mínino 8 caracteres</li>
+                <li>Mínimo 8 caracteres</li>
             </ul>
         </>
     );

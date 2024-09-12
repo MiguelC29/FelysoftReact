@@ -5,6 +5,7 @@ import CustomDataTable from '../CustomDataTable';
 import Request_Service from '../service/Request_Service';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { Tag } from 'primereact/tag';
 
 export default function TheirReserves() {
 
@@ -29,7 +30,7 @@ export default function TheirReserves() {
         fetchReserves();
     }, [fetchReserves]);
 
-    const cancelReserve = (reserve) => {
+    const cancelReserve = () => {
         Request_Service.cancelReserves(URL, reserve.idReserve, setReserves, toast, setReserve, URL.concat('reservesByUser'));
         setConfirmDialogVisible(false);
     };
@@ -40,8 +41,6 @@ export default function TheirReserves() {
     };
 
     const actionBodyTemplate = (rowData) => {
-        console.log(rowData);
-        
         return (
             (rowData.state === "RESERVADA") ?
             <Button label="Cancelar" icon="pi pi-times" className="p-button-danger rounded" onClick={() => handleCancel(rowData)} style={{ border: 'none' }} />
@@ -57,13 +56,30 @@ export default function TheirReserves() {
         return `${rowData.time} horas`;
     };
 
+    const statusBodyTemplate = (rowData) => {
+        return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
+    };
+
+    const getSeverity = (reserve) => {
+        switch (reserve.state) {
+            case 'FINALIZADA':
+                return '#0D9276';
+            case 'RESERVADA':
+                return 'rgb(14, 165, 233)';
+            case 'CANCELADA':
+                return '#e72929';
+            default:
+                return null;
+        }
+    };
+
     const columns = [
         { field: 'dateReserve', header: 'Fecha de Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'deposit', header: 'Depósito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'time', header: 'Duración Reserva (Horas)', body: timeBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'state', header: 'Estado', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
         { header: 'Acciones', body: actionBodyTemplate, exportable: false, style: { minWidth: '12rem' } }
     ];
 

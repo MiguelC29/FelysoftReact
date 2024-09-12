@@ -133,7 +133,7 @@ export default function MiniDrawer({ children }) {
         },
         {
             name: "Sus Reservas",
-            icon: <Icon icon='save' />,
+            icon: <Icon icon='collections_bookmark' />,
             link: "/sus_reservas",
             roles: ['CUSTOMER'] 
         },

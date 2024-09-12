@@ -205,7 +205,6 @@ export default function ReservesCus() {
         <>
             <div className="flex justify-content-start">
                 <span className="p-input-icon-left">
-                    <i className="pi pi-search" />
                     <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar libro..." />
                 </span>
             </div>
@@ -249,6 +248,7 @@ export default function ReservesCus() {
                                 value={reserve.time}
                                 onChange={(e) => onInputNumberChange(e, 'time')}
                                 required
+                                max="3"
                                 className={classNames({ 'p-invalid': submitted && (!reserve.time || !(reserve.time > 0 && reserve.time <= 3)) })}
                             />
                         </FloatLabel>

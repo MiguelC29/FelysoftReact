@@ -545,7 +545,7 @@ export default function Users() {
                 <span className="material-symbols-outlined">key</span>
               </span>
               <FloatLabel>
-                <Password id="password" name='password' value={user.password} onChange={onPasswordChange} required toggleMask className={classNames({ 'p-invalid': submitted && operation !== 2 && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
+                <Password id="password" name='password' value={user.password} onChange={onPasswordChange} required className={classNames({ 'p-invalid': submitted && operation !== 2 && !user.password })} promptLabel='Ingrese una contraseña' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
                 <label htmlFor="password" className="font-bold">Contraseña</label>
               </FloatLabel>
             </div>
