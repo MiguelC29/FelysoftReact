@@ -78,7 +78,7 @@ export default function App() {
             <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
             <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             {/* <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} /> */}
-            <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
+            <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','SALESPERSON', 'FINANCIAL_MANAGER']} />} />
             <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito/>} roles={['ADMINISTRATOR', 'SALESPERSON','CUSTOMER']} />} />
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
