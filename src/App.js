@@ -38,8 +38,8 @@ import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
 import VerifyPage from './components/auth/VerifyPage';
 import { ResetPassword } from './components/auth/ResetPassword';
 
-import ViewReserva from './pages/ViewReservaC';
 import ViewTheirReserves from './pages/ViewTheirReserves';
+import ViewReservesCus from './pages/ViewReservesCus';
 
 export default function App() {
 
@@ -83,7 +83,7 @@ export default function App() {
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito/>} roles={['ADMINISTRATOR', 'SALESPERSON','CUSTOMER']} />} />
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
 
-            <Route path='/reserva' element={<RoleProtectedRoute element={<ViewReserva />} roles={['CUSTOMER']} />} />
+            <Route path='/reservar' element={<RoleProtectedRoute element={<ViewReservesCus />} roles={['CUSTOMER']} />} />
             <Route path='/sus_reservas' element={<RoleProtectedRoute element={<ViewTheirReserves />} roles={['CUSTOMER']} />} />
 
 

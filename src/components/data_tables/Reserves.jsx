@@ -11,6 +11,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
+import { Tag } from 'primereact/tag';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -20,7 +21,8 @@ export default function Reserves() {
         deposit: null,
         time: null,
         book: '',
-        user: ''
+        user: '',
+        state: '',
     };
 
     const URL = '/reserve/';
@@ -46,7 +48,7 @@ export default function Reserves() {
     const isSalesPerson = UserService.isSalesPerson();
 
     const fetchReserves = useCallback(async () => {
-        try{
+        try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setReserves);
         } catch (error) {
@@ -66,10 +68,29 @@ export default function Reserves() {
 
     const getUsers = () => {
         return Request_Service.getData('/user/all', (data) => {
-            const customers = data.filter(user => user.role === 'CUSTOMER');
+            const customers = data.filter(user => user.role.name === 'CUSTOMER');
+            console.log(data);
+            
             setUsers(customers);
         });
     }
+
+    const statusBodyTemplate = (rowData) => {
+        return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
+    };
+
+    const getSeverity = (reserve) => {
+        switch (reserve.state) {
+            case 'FINALIZADA':
+                return '#0D9276';
+            case 'RESERVADA':
+                return 'rgb(14, 165, 233)';
+            case 'CANCELADA':
+                return '#e72929';
+            default:
+                return null;
+        }
+    };
 
     const openNew = () => {
         setReserve(emptyReserve);
@@ -248,9 +269,10 @@ export default function Reserves() {
         { field: 'dateReserve', header: 'Fecha de Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'deposit', header: 'Depósito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'time', header: 'Duración Reserva', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'time', header: 'Duración Reserva (Horas)', sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         (isAdmin || isSalesPerson) && { body: actionBodyTemplateR, exportable: false, style: { minWidth: '12rem' } },
     ];
 

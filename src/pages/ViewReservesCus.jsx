@@ -1,14 +1,14 @@
 import React from 'react'
 import MiniDrawer from '../components/common/Sidebar';
 import { Box } from '@mui/material'
-import Reservar from '../components/data_tables/ReservasC'
+import ReservesCus from '../components/data_tables/ReservesCus';
 
-export default function ViewReserva() {
+export default function ViewReservesCus() {
     return (
         <div>
             <MiniDrawer>
                 <Box sx={{ marginTop: 10, mx: 2 }}>
-                    <Reservar />
+                    <ReservesCus />
                 </Box>
             </MiniDrawer>
         </div>

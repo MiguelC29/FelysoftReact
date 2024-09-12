@@ -128,7 +128,7 @@ export default function MiniDrawer({ children }) {
         {
             name: "Inicio",
             icon: <Icon icon='home' />,
-            link: "/reserva",
+            link: "/reservar",
             roles: ['CUSTOMER'] 
         },
         {

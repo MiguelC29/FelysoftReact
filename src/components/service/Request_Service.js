@@ -220,6 +220,29 @@ class Request_Service {
             });
         setTable(emptyData);
     }
+
+    static async cancelReserves(url, id, setData, toast, setTable, mainUrl) {
+        const cancelUrl = this.BASE_URL + url + 'cancel/' + id;
+        const token = this.getToken();
+        await axios.put(cancelUrl, {},
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                let type = response.data['status'];
+                let msg = response.data['data'];
+                if (type === 'success') {
+                    toast.current.show({ severity: 'success', summary: 'Cancelación Exitosa', detail: msg, life: 3000 });
+                    this.getData(mainUrl, setData);
+                }
+                return response.data;
+            })
+            .catch((error) => {
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'No se pudo cancelar la reserva', life: 3000 });
+                console.log(error);
+            });
+        setTable();
+    }
 }
 
 export default Request_Service
