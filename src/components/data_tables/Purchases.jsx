@@ -593,11 +593,20 @@ export default function Purchases() {
                 </Dialog>
 
                 {/* DIALOG DETAIL */}
-                <Dialog visible={purchaseDetailDialog} style={{ width: '50rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+                <Dialog visible={purchaseDetailDialog} style={{ width: '65rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
                     <div className="container mt-4">
-                        <div className="row">
+                        <div className="row text-center">
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
+                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
+                                    <div>
+                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
+                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">local_shipping</span>
                                     <div>
                                         <label htmlFor="provider" className="font-bold d-block">Proveedor</label>
@@ -605,21 +614,11 @@ export default function Purchases() {
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
-                                    <span className="material-symbols-outlined me-2">monetization_on</span>
-                                    <div>
-                                        <label htmlFor="provider" className="font-bold d-block">Total</label>
-                                        <p>{(purchase.total) && priceBodyTemplate(purchase)}</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        <div className="row">
+                        <div className="row text-center">
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">currency_exchange</span>
                                     <div>
                                         <label htmlFor="methodPayment" className="font-bold d-block">Método de pago</label>
@@ -628,7 +627,7 @@ export default function Purchases() {
                                 </div>
                             </div>
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">new_releases</span>
                                     <div>
                                         <label htmlFor="state" className="font-bold d-block">Estado</label>
@@ -638,55 +637,37 @@ export default function Purchases() {
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
-                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
-                                    <div>
-                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
-                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <h4 className='text-center fw-semibold'>Lista de Detalles</h4>
+                        {/* Tabla de Detalles */}
+                        <div className="table-responsive">
+                            <table className="table table-bordered table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Producto / Libro</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {detailsList && detailsList.map((detail, index) => (
+                                        <tr key={index}>
+                                            <td>
+                                                {(detail.product && detail.product.name) || (detail.book && detail.book.title)}
+                                            </td>
+                                            <td>{(detail.product) ? detail.quantity : 1}</td>
+                                            <td>{detail.unitPrice && formatCurrency(detail.unitPrice)}</td>
+                                            <td>{(detail.product && detail.unitPrice && detail.quantity && formatCurrency(detail.unitPrice * detail.quantity)) || (detail.book && detail.unitPrice && formatCurrency(detail.unitPrice))}</td>
+                                        </tr>
+                                    ))}
+                                    {/* Total */}
+                                    <tr>
+                                        <td colSpan="3" className="text-end font-bold">Total:</td>
+                                        <td>{purchase.total && priceBodyTemplate(purchase)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <h4 className='text-center'>Lista de Detalles</h4>
-                        {detailsList && (
-                            detailsList.map((detail, index) => (
-                                <div key={index} className="row mb-3">
-                                    <div className={(!detail.book) ? 'col-md-5' : 'col-md-6'}>
-                                        <div className="d-flex align-items-start">
-                                            <span className="material-symbols-outlined me-2">{(detail.product) ? 'inventory_2' : 'book'}</span>
-                                            <div>
-                                                <label htmlFor={(detail.product) ? 'product' : 'book'} className="font-bold d-block">{(detail.product) ? 'Producto' : 'Libro'}</label>
-                                                <p>{(detail.product) && detail.product.name}</p>
-                                                <p>{(detail.book) && detail.book.title}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {!detail.book &&
-                                        <div className="col-md-3">
-                                            <div className="d-flex align-items-start">
-                                                <span className="material-symbols-outlined me-2">production_quantity_limits</span>
-                                                <div>
-                                                    <label htmlFor="quantity" className="font-bold d-block">Cantidad</label>
-                                                    <p>{(detail.product) && detail.quantity}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    <div className={(!detail.book) ? 'col-md-4' : 'col-md-6'}>
-                                        <div className="d-flex align-items-start">
-                                            <span className="material-symbols-outlined me-2">monetization_on</span>
-                                            <div>
-                                                <label htmlFor="unitPrice" className="font-bold d-block">Precio Unitario</label>
-                                                <p>{(detail.unitPrice) && formatCurrency(detail.unitPrice)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
                     </div>
                 </Dialog>
             </div>

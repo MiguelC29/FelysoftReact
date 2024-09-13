@@ -386,7 +386,7 @@ export default function Products() {
                 />
 
                 <FloatDropdownSearchIcon
-                    className="field mt-4"
+                    className="field mt-5"
                     icon='shoppingmode' field='brand' required
                     value={selectedBrand}
                     onInputNumberChange={onInputNumberChange}
@@ -420,33 +420,35 @@ export default function Products() {
                         />
                     )}
                     {/* Contenedor para el checkbox y el campo de stock */}
-                    <div className="field col">
-                        {/* Mostrar el campo de stock solo si el checkbox está desmarcado */}
-                        {!product.isNew && (
-                            <FloatInputNumberIcon
-                                className="field"
-                                icon='inventory'
-                                value={product.stock}
-                                onInputNumberChange={onInputNumberChange}
-                                field='stock'
-                                maxLength={5}
-                                required
-                                submitted={submitted}
-                                label='Stock Actual'
-                                errorMessage='Stock actual es requerido.'
-                            />
-                        )}
-                        <div className="field-checkbox">
-                            <Checkbox
-                                inputId="isNew"
-                                checked={product.isNew}
-                                onChange={onCheckboxChange}
-                            />
-                            <label htmlFor="isNew">¿Es un producto realmente nuevo?</label>
+                    {(operation === 1) && (
+                        <div className="field col">
+                            {/* Mostrar el campo de stock solo si el checkbox está desmarcado */}
+                            {!product.isNew && (
+                                <FloatInputNumberIcon
+                                    className="field"
+                                    icon='inventory'
+                                    value={product.stock}
+                                    onInputNumberChange={onInputNumberChange}
+                                    field='stock'
+                                    maxLength={5}
+                                    required
+                                    submitted={submitted}
+                                    label='Stock Actual'
+                                    errorMessage='Stock actual es requerido.'
+                                />
+                            )}
+                            <div className="field-checkbox">
+                                <Checkbox
+                                    inputId="isNew"
+                                    checked={product.isNew}
+                                    onChange={onCheckboxChange}
+                                />
+                                <label htmlFor="isNew">¿Es un producto realmente nuevo?</label>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-                <div className="formgrid grid mt-2">
+                <div className="formgrid grid mt-3">
                     <FloatDropdownSearchIcon
                         className="field col"
                         icon='stacks' field='category' required

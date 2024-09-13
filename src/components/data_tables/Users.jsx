@@ -94,6 +94,13 @@ export default function Users() {
     return Request_Service.getData('/role/all', setRoles);
   }
 
+  const translateRole = (role) => {
+    return {
+      ...role,  // Mantenemos todas las propiedades del rol (como idRole, permissions)
+      name: Role[role.name] || role.name  // Traducimos el nombre usando el objeto Role
+    };
+  };
+
   const translateRoles = (rolesList) => {
     return rolesList.map(role => ({
       ...role,  // Mantenemos todas las propiedades del rol (como idRole, permissions)
@@ -135,7 +142,7 @@ export default function Users() {
     getRoles();
     setSelectedGender(user.gender);
     setSelectedTypeId(user.typeDoc);
-    setSelectedRole(user.role);
+    setSelectedRole(translateRole(user.role));
     setFile('');
     setSelectedImage('');
     setTitle('Editar Usuario');
