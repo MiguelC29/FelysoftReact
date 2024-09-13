@@ -30,6 +30,7 @@ export const LoginPage = () => {
   const [emailValid, setEmailValid] = useState(true);
   const [email, setEmail] = useState('');
   const [resetPassDialog, setResetPassDialog] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false); // Estado para la visibilidad de la contraseña
   const [loading, setLoading] = useState(false); // Estado de carga
   const toast = useRef(null);
 
@@ -180,20 +181,36 @@ export const LoginPage = () => {
                   Email
                 </label>
                 {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
-                <div className="input__wrapper">
+                <div className="input__wrapper" style={{ position: 'relative' }}>
                   <input
                     id="password"
-                    type="password"
+                    type={passwordVisible ? "text" : "password"}
                     name="password"
                     placeholder="Password"
                     required
                     className={`input__field ${classNames({ 'p-invalid': submitted && !user.password })}`}
                     onChange={(e) => onInputChange(e, 'password')}
+                    style={{ paddingRight: '1rem' }} 
                   />
+                  <span
+                    className="material-symbols-outlined"
+                    onClick={() => setPasswordVisible(prevState => !(prevState))}
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      cursor: 'pointer',
+                      fontSize: '2rem', 
+                      color: 'gray' 
+                    }}
+                  >
+                    {passwordVisible ? 'visibility_off' : 'visibility'}
+                  </span>
                   <label htmlFor="password" className="input__label">
                     Contraseña
                   </label>
-                  {submitted && !user.password && <small className="p-error">Contraseña es requerido.</small>}
+                  {submitted && !user.password && <small className="p-error">Contraseña es requerida.</small>}
                 </div>
                 <div id="spinner" className="spinner"></div>
               </div>
