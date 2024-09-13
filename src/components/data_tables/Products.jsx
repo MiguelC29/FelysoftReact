@@ -432,8 +432,8 @@ export default function Products() {
                                 maxLength={5}
                                 required
                                 submitted={submitted}
-                                label='Stock Inicial'
-                                errorMessage='Stock inicial es requerido.'
+                                label='Stock Actual'
+                                errorMessage='Stock actual es requerido.'
                             />
                         )}
                         <div className="field-checkbox">

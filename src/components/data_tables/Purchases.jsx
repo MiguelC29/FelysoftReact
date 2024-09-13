@@ -27,6 +27,7 @@ export default function Purchases() {
         idDetail: null,
         quantity: null,
         unitPrice: null,
+        salePrice: null,
         product: null,
         book: null,
     };
@@ -152,6 +153,13 @@ export default function Purchases() {
             if (isProductSelected === null) {
                 setIsProductSelected('product');
             }
+
+            // Actualiza el salePrice con el valor del producto seleccionado
+            if (product) {
+                updatedDetails[index].salePrice = product.salePrice; // Asegúrate de que product.salePrice esté disponible
+            } else {
+                updatedDetails[index].salePrice = null; // Opcional: Limpia el salePrice si no hay producto
+            }
         }
         setDetails(updatedDetails);
     };
@@ -238,7 +246,7 @@ export default function Purchases() {
             purchase.methodPayment &&
             purchase.state &&
             details.length > 0 &&
-            details.every(detail => (detail.product && detail.quantity && detail.unitPrice) || (detail.book && detail.unitPrice));
+            details.every(detail => (detail.product && detail.quantity && detail.unitPrice && detail.salePrice) || (detail.book && detail.unitPrice));
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -260,6 +268,7 @@ export default function Purchases() {
             idDetail: detail.idDetail,
             quantity: detail.quantity,
             unitPrice: detail.unitPrice,
+            salePrice: detail.salePrice,
             idProduct: detail.product ? detail.product.idProduct : null,
             idBook: detail.book ? detail.book.idBook : null,
         }));
@@ -463,10 +472,11 @@ export default function Purchases() {
                     <div className="formgrid grid mt-3">
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
-                                <div className="formgrid grid mt-3">
+                                <div className="formgrid grid mt-3 align-items-center">
                                     <div className="col-1">
                                         <strong>{index + 1}.</strong>
                                     </div>
+                                    {/* Producto Dropdown */}
                                     {isProductSelected !== 'book' && (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
@@ -486,7 +496,7 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedProductTemplate}
                                                         itemTemplate={productOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                        className={`w-full md:w-10rem rounded ${classNames({
                                                             'p-invalid': (submitted && (!detail.product && !detail.book)) || errors[`product_${index}`]
                                                         })}`}
                                                         disabled={(!selectedProvider || !!detail.book) && 'disabled'}
@@ -498,6 +508,8 @@ export default function Purchases() {
                                             {errors[`product_${index}`] && <small className="p-error">{errors[`product_${index}`]}</small>}
                                         </div>
                                     )}
+
+                                    {/* Libro Dropdown */}
                                     {isProductSelected !== 'product' && (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
@@ -517,7 +529,7 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedBookTemplate}
                                                         itemTemplate={bookOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                        className={`w-full md:w-10rem rounded ${classNames({
                                                             'p-invalid': (submitted && (!detail.book && !errors.book && !detail.product)) || errors[`book_${index}`]
                                                         })}`}
 
@@ -531,6 +543,7 @@ export default function Purchases() {
                                         </div>
                                     )}
 
+                                    {/* Cantidad */}
                                     {isProductSelected !== 'book' && (
                                         <FloatInputNumberIcon
                                             className="field col-2"
@@ -545,6 +558,7 @@ export default function Purchases() {
                                         />
                                     )}
 
+                                    {/* Precio Unitario */}
                                     <FloatInputNumberMoneyIcon
                                         className="field col-2"
                                         value={detail.unitPrice}
@@ -555,6 +569,20 @@ export default function Purchases() {
                                         submitted={submitted}
                                         errorMessage='Precio unitario es requerido.'
                                     />
+
+                                    {/* Precio de Venta */}
+                                    {selectedProvider && isProductSelected === 'product' && (
+                                        <FloatInputNumberMoneyIcon
+                                            className="field col-2"
+                                            value={detail.salePrice}
+                                            onInputNumberChange={(e) => handleDetailChange(index, 'salePrice', e.value)}
+                                            field='salePrice'
+                                            label='Precio de Venta'
+                                            required
+                                            submitted={submitted}
+                                            errorMessage='Precio de venta es requerido.'
+                                        />)}
+                                    {/* Botón de eliminar */}
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
                                 </div>
                             </div>
