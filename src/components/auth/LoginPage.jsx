@@ -204,7 +204,7 @@ export const LoginPage = () => {
                       top: '50%',
                       transform: 'translateY(-50%)',
                       cursor: 'pointer',
-                      fontSize: '2rem', 
+                      fontSize: '1.5rem', 
                       color: 'gray' 
                     }}
                   >
