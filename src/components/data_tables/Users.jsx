@@ -398,7 +398,7 @@ export default function Users() {
         <CustomDataTable
           dt={dt}
           data={users}
-          dataKey="id"
+          dataKey="idUser"
           currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Usuarios"
           globalFilter={globalFilter}
           header={header('Usuarios', setGlobalFilter)}

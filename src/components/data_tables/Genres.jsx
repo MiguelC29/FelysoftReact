@@ -266,7 +266,7 @@ export default function Genres() {
                 <CustomDataTable
                     dt={dt}
                     data={genres}
-                    dataKey="id"
+                    dataKey="idGenre"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Géneros"
                     globalFilter={globalFilter}
                     header={header('Géneros', setGlobalFilter)}

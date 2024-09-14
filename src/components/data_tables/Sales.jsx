@@ -82,7 +82,7 @@ export default function Sales() {
                 <CustomDataTable
                     dt={dt}
                     data={sales}
-                    dataKey="id"
+                    dataKey="idSale"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Ventas"
                     globalFilter={globalFilter}
                     header={header('Ventas', setGlobalFilter)}

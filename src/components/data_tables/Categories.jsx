@@ -258,7 +258,7 @@ export default function Categories() {
                 <CustomDataTable
                     dt={dt}
                     data={categories}
-                    dataKey="id"
+                    dataKey="idCategory"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Categorías"
                     globalFilter={globalFilter}
                     header={header('Categorías', setGlobalFilter)}

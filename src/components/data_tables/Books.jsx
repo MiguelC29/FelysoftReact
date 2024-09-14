@@ -378,7 +378,7 @@ export default function Books() {
                 <CustomDataTable
                     dt={dt}
                     data={books}
-                    dataKey="id"
+                    dataKey="idBook"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Libros"
                     globalFilter={globalFilter}
                     header={header('Libros', setGlobalFilter)}

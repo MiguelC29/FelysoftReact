@@ -69,8 +69,6 @@ export default function Reserves() {
     const getUsers = () => {
         return Request_Service.getData('/user/all', (data) => {
             const customers = data.filter(user => user.role.name === 'CUSTOMER');
-            console.log(data);
-            
             setUsers(customers);
         });
     }
@@ -291,7 +289,7 @@ export default function Reserves() {
                 <CustomDataTable
                     dt={dt}
                     data={reserves}
-                    dataKey="id"
+                    dataKey="idReserve"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Reservas"
                     globalFilter={globalFilter}
                     header={header('Reservas', setGlobalFilter)}

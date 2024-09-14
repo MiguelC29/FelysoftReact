@@ -66,7 +66,7 @@ export default function BookInventory() {
                 <CustomDataTable
                     dt={dt}
                     data={booksInv}
-                    dataKey="id"
+                    dataKey="book.idBook"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Libros"
                     globalFilter={globalFilter}
                     header={headerInv('Libros', setGlobalFilter)}

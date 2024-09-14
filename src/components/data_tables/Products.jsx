@@ -364,7 +364,7 @@ export default function Products() {
                 <CustomDataTable
                     dt={dt}
                     data={products}
-                    dataKey="id"
+                    dataKey="idProduct"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={header('Productos', setGlobalFilter)}
@@ -487,7 +487,6 @@ export default function Products() {
                             url="https://felysoftspring-production.up.railway.app/api/product/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
-                            sizeLimit="3145728"
                             onSelect={handleFileUpload}
                             required
                             className={`${classNames({ 'p-invalid': submitted && !product.image && !selectedImage })}`}

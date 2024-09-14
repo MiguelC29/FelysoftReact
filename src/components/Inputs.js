@@ -116,7 +116,7 @@ export const FloatInputTextIcon = (props) => {
         <div className={props.className}>
             <div className="p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">
-                    <span class="material-symbols-outlined">{props.icon}</span>
+                    <span className="material-symbols-outlined">{props.icon}</span>
                 </span>
                 <BaseFloatInputText {...props} />
             </div>
@@ -148,7 +148,7 @@ export const FloatInputNumberIcon = (props) => {
         <div className={props.className}>
             <div className="p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">
-                    <span class="material-symbols-outlined">{props.icon}</span>
+                    <span className="material-symbols-outlined">{props.icon}</span>
                 </span>
                 <BaseFloatInputNumber {...props} />
             </div>
@@ -162,7 +162,7 @@ export const FloatInputNumberMoneyIcon = (props) => {
         <div className={props.className}>
             <div className="p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">
-                    <span class="material-symbols-outlined">monetization_on</span>
+                    <span className="material-symbols-outlined">monetization_on</span>
                 </span>
                 <MoneyFloatInputNumber {...props} />
             </div>
@@ -176,7 +176,7 @@ export const FloatDropdownIcon = (props) => {
         <div className={props.className}>
             <div className="p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">
-                    <span class="material-symbols-outlined">{props.icon}</span>
+                    <span className="material-symbols-outlined">{props.icon}</span>
                 </span>
                 <BaseFloatDropdown {...props} />
             </div>
@@ -191,7 +191,7 @@ export const FloatDropdownSearchIcon = (props) => {
         <div className={props.className}>
             <div className="p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">
-                    <span class="material-symbols-outlined">{props.icon}</span>
+                    <span className="material-symbols-outlined">{props.icon}</span>
                 </span>
                 <BaseFloatDropdownSearch {...props} />
             </div>

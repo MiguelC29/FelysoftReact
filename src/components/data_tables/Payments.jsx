@@ -217,7 +217,7 @@ export default function Payments() {
                 <CustomDataTable
                     dt={dt}
                     data={payments}
-                    dataKey="id"
+                    dataKey="idPayment"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Pagos"
                     globalFilter={globalFilter}
                     header={header('Pagos', setGlobalFilter)}

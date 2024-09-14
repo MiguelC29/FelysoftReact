@@ -169,7 +169,7 @@ export default function Brands() {
                 <CustomDataTable
                     dt={dt}
                     data={brands}
-                    dataKey="id"
+                    dataKey="idBrand"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Marcas"
                     globalFilter={globalFilter}
                     header={header('Marcas', setGlobalFilter)}

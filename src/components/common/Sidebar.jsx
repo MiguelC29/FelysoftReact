@@ -200,14 +200,9 @@ export default function MiniDrawer({ children }) {
             roles: ['ADMINISTRATOR', 'FINANCIAL_MANAGER']
         },
         {
-            name: "Personas",
+            name: "Usuarios",
             icon: <Icon icon='group' />,
-            items: [
-                { name: "Usuarios", icon: <IconSubItems />, link: "/usuarios", roles: ['ADMINISTRATOR'] },
-                // { name: "Roles", icon: <IconSubItems />, link: "/roles", roles: ['ADMINISTRATOR'] },
-                { name: "Cargos", icon: <IconSubItems />, link: "/cargos", roles: ['ADMINISTRATOR'] },
-                { name: "Empleados", icon: <IconSubItems />, link: "/empleados", roles: ['ADMINISTRATOR'] },
-            ],
+            link: "/usuarios",
             roles: ['ADMINISTRATOR']
         }
     ];
@@ -260,7 +255,7 @@ export default function MiniDrawer({ children }) {
                 <List className='mt-4'>
                     {filteredMenuItems.map((item, index) => (
                         <React.Fragment key={index}>
-                            <ListItem disablePadding component={CustomLink} to={item.link}>
+                            <ListItem key={index} disablePadding component={CustomLink} to={item.link}>
                                 <ListItemButton
                                     sx={{
                                         minHeight: 48,
@@ -282,9 +277,7 @@ export default function MiniDrawer({ children }) {
                                     }}
                                 // href={item.link}
                                 >
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
+                                    <ListItemIcon>{item.icon}</ListItemIcon>
                                     <ListItemText primary={item.name} />
                                     {item.items && item.items.length > 0 && open && (
                                         <IconButton
@@ -308,12 +301,10 @@ export default function MiniDrawer({ children }) {
                                                     px: 2.5,
                                                     marginLeft: 0.1,
                                                 }}
-                                                component="a"
-                                                href={subItem.link}
+                                                // component="a"
+                                                // href={subItem.link}
                                             >
-                                                <ListItemIcon>
-                                                    {subItem.icon}
-                                                </ListItemIcon>
+                                                <ListItemIcon>{subItem.icon}</ListItemIcon>
                                                 <ListItemText primary={subItem.name} />
                                             </ListItemButton>
                                         </ListItem>

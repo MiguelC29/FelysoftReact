@@ -415,7 +415,7 @@ export default function Purchases() {
                 <CustomDataTable
                     dt={dt}
                     data={purchases}
-                    dataKey="id"
+                    dataKey="idPurchase"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Compras"
                     globalFilter={globalFilter}
                     header={header('Compras', setGlobalFilter)}

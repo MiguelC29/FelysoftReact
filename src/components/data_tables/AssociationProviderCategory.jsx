@@ -179,7 +179,7 @@ export default function AssociationProviderCategory() {
                 <CustomDataTable
                     dt={dt}
                     data={listAssociation}
-                    dataKey="id"
+                    dataKey="category.idCategory"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Asociaciones"
                     globalFilter={globalFilter}
                     header={header('Asociaciones entre Categorías y Proveedores', setGlobalFilter)}

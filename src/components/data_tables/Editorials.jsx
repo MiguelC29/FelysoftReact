@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplate, leftToolbarTemplateAsociation, rightToolbarTemplateExport } from '../../functionsDataTable';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -37,18 +37,18 @@ export default function Editorials() {
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
 
-    useEffect(() => {
-        fetchEditorials();
-    }, [onlyDisabled]);
-
-    const fetchEditorials = async () =>{
+    const fetchEditorials = useCallback(async () => {
         try{
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
             await Request_Service.getData(url, setEditorials);
         }catch (error){
             console.error("Fallo al recuperar las Editoriales:",error);
         }
-    };
+    }, [onlyDisabled, URL]);
+
+    useEffect(() => {
+        fetchEditorials();
+    }, [onlyDisabled, fetchEditorials]);
 
     const openNew = () => {
         setEditorial(emptyEditorial);
@@ -178,7 +178,7 @@ export default function Editorials() {
                 <CustomDataTable
                     dt={dt}
                     data={editorials}
-                    dataKey="id"
+                    dataKey="idEditorial"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Géneros"
                     globalFilter={globalFilter}
                     header={header('Editoriales', setGlobalFilter)}

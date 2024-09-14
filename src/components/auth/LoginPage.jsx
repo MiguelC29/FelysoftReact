@@ -1,6 +1,6 @@
 import "../../css/inicioSesion.css"
 import logo from "../../img/logo.svg";
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DialogFooter, inputChange } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
@@ -33,7 +33,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false); // Estado de carga
   const toast = useRef(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setSubmitted(true);
     setAuthError('');
     if (user.email && user.password) {
@@ -67,7 +67,23 @@ export const LoginPage = () => {
         }, 5000);
       }
     }
-  };
+  }, [login, navigate, setAuthError, shouldResetError, user.email, user.password]);
+
+  // Agrega un event listener para el evento de tecla
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        handleSubmit();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Limpia el event listener cuando el componente se desmonte
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleSubmit]);
 
   const errorMessage = (error) => {
     switch (error) {

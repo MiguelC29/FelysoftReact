@@ -274,7 +274,7 @@ export default function Authors() {
                 <CustomDataTable
                     dt={dt}
                     data={authors}
-                    dataKey="id"
+                    dataKey="idAuthor"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Autores"
                     globalFilter={globalFilter}
                     header={header('Autores', setGlobalFilter)}

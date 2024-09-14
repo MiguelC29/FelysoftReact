@@ -240,7 +240,7 @@ export default function Services() {
         <CustomDataTable
           dt={dt}
           data={services}
-          dataKey="id"
+          dataKey="idService"
           currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Servicios"
           globalFilter={globalFilter}
           header={header('Servicios', setGlobalFilter)}
