@@ -283,7 +283,7 @@ export default function Services() {
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">monetization_on</span>
+              <span className="material-symbols-outlined">monetization_on</span>
             </span>
             <FloatLabel>
               <label htmlFor="priceAdditional" className="font-bold">Precio Adicional</label>
@@ -323,7 +323,7 @@ export default function Services() {
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">monetization_on</span>
+              <span className="material-symbols-outlined">monetization_on</span>
             </span>
             <FloatLabel>
               <InputText id="total" value={service.total} readOnly className={`w-full md:w-16rm ${classNames({ 'p-invalid': submitted && !service.total })}`} />

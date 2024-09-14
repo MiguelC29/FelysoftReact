@@ -104,17 +104,6 @@ export default function Books() {
         }
     };
 
-    const handleEditorialChange = (editorialId) => {
-        setSelectedEditorial(editorialId);
-        if (editorialId) {
-            Request_Service.getData(`/editorial/${editorialId.idEditorial}`, setEditorials);
-        }
-        if (selectedEditorial) {
-            setSelectedEditorial('');
-            book.editorial = '';
-        }
-    };
-
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
@@ -391,7 +380,7 @@ export default function Books() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">title</span>
+                            <span className="material-symbols-outlined">title</span>
                         </span>
                         <FloatLabel>
                             <InputText id="title" value={book.title} onChange={(e) => onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': submitted && !book.title })} />
@@ -403,10 +392,10 @@ export default function Books() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">collections_bookmark</span>
+                            <span className="material-symbols-outlined">collections_bookmark</span>
                         </span>
                         <FloatLabel>
-                            <Dropdown id="editorial" value={selectedEditorial} onChange={(e) => { handleEditorialChange(e.target.value); onInputNumberChange(e, 'editorial'); }} options={editorials} optionLabel="name" placeholder="Seleccionar Editorial"
+                            <Dropdown id="editorial" value={selectedEditorial} onChange={(e) => { setSelectedEditorial(e.value); onInputNumberChange(e, 'editorial'); }} options={editorials} optionLabel="name" placeholder="Seleccionar Editorial"
                                 filter valueTemplate={selectedEditorialTemplate} itemTemplate={editorialOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !book.genre && !selectedGenre })}`} />
                             <label htmlFor="editorial" className="font-bold">Editorial</label>
                         </FloatLabel>
@@ -416,7 +405,7 @@ export default function Books() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
+                            <span className="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
                             <InputText id="description" value={book.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !book.description })} />
@@ -429,7 +418,7 @@ export default function Books() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">today</span>
+                                <span className="material-symbols-outlined">today</span>
                             </span>
                             <FloatLabel>
                                 <InputNumber id="yearPublication" value={book.yearPublication} onValueChange={(e) => onInputNumberChange(e, 'yearPublication')} placeholder="yyyy" required maxLength="4" minLength="4" className={classNames({ 'p-invalid': submitted && !book.yearPublication })} useGrouping={false} />
@@ -441,7 +430,7 @@ export default function Books() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">monetization_on</span>
+                                <span className="material-symbols-outlined">monetization_on</span>
                             </span>
                             <FloatLabel>
                                 <InputNumber id="priceTime" value={book.priceTime} onValueChange={(e) => onInputNumberChange(e, 'priceTime')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !book.priceTime })} />
@@ -455,7 +444,7 @@ export default function Books() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">book_3</span>
+                                <span className="material-symbols-outlined">book_3</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown id="genre" value={selectedGenre} onChange={(e) => { handleGenreChange(e.target.value); onInputNumberChange(e, 'genre'); }} options={genres} optionLabel="name" placeholder="Seleccionar Género"
@@ -468,7 +457,7 @@ export default function Books() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">stylus_note</span>
+                                <span className="material-symbols-outlined">stylus_note</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown id="author" value={selectedAuthor} onChange={(e) => { handleAuthorChange(e.target.value); onInputNumberChange(e, 'author'); }} options={authors} optionLabel="name" placeholder="Seleccionar Author"

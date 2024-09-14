@@ -21,14 +21,14 @@ export default function Users() {
 
   let emptyUser = {
     idUser: '',
-    numIdentification: '',
+    numIdentification: null,
     image: '',
     typeImg: '',
     typeDoc: '',
     names: '',
     lastNames: '',
     address: '',
-    phoneNumber: '',
+    phoneNumber: null,
     gender: '',
     email: '',
     user_name: '',
@@ -70,6 +70,9 @@ export default function Users() {
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [emailValid, setEmailValid] = useState(true);
+  const [numIdValid, setNumIdValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [operation, setOperation] = useState();
   const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
@@ -121,6 +124,22 @@ export default function Users() {
     if (file) {
       reader.readAsDataURL(file);
     }
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateIdentification = (numIdentification) => {
+    // Convierte el valor a cadena para evitar errores de longitud
+    const numIdentificationStr = numIdentification ? numIdentification.toString() : '';
+    return numIdentificationStr.length === 8 || numIdentificationStr.length === 10;
+  };
+
+  const validatePhone = (phoneNumber) => {
+    const phoneNumberStr = phoneNumber ? phoneNumber.toString() : '';
+    return phoneNumberStr.length === 10;
   };
 
   const openNew = () => {
@@ -202,6 +221,10 @@ export default function Users() {
     // Mostrar mensaje de error si algún campo requerido falta
     if (!isValid) {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+      return;
+    };
+
+    if (!validateIdentification(user.numIdentification) || !validatePhone(user.phoneNumber) || !validateEmail(user.email)) {
       return;
     }
 
@@ -464,11 +487,15 @@ export default function Users() {
                 <span className="material-symbols-outlined">badge</span>
               </span>
               <FloatLabel>
-                <InputNumber inputId="numIdentification" name='numIdentification' value={user.numIdentification} onValueChange={(e) => onInputNumberChange(e, 'numIdentification')} useGrouping={false} required className={classNames({ 'p-invalid': submitted && !user.numIdentification })} maxLength={10} />
+                <InputNumber inputId="numIdentification" name='numIdentification' value={user.numIdentification} onChange={(e) => {
+                  onInputNumberChange(e, 'numIdentification');
+                  setNumIdValid(validateIdentification(e.value));
+                }} useGrouping={false} required className={classNames({ 'p-invalid': submitted && (!user.numIdentification || !numIdValid) })} />
                 <label htmlFor="numIdentification" className="font-bold">Número de Identificación</label>
               </FloatLabel>
             </div>
             {submitted && !user.numIdentification && <small className="p-error">Número de identificación es requerido.</small>}
+            {user.numIdentification && !numIdValid && <small className="p-error">El número de identificación debe tener 8 o 10 dígitos.</small>}
           </div>
         </div>
         <div className="formgrid grid mt-4">
@@ -500,11 +527,17 @@ export default function Users() {
                 <span className="material-symbols-outlined">call</span>
               </span>
               <FloatLabel>
-                <InputNumber inputId="phoneNumber" name='phoneNumber' value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
+                <InputNumber inputId="phoneNumber" name='phoneNumber' value={user.phoneNumber} onChange={(e) => {
+                  onInputNumberChange(e, 'phoneNumber');
+                  setPhoneValid(validatePhone(e.value));
+                }}
+                  useGrouping={false} required className={classNames({ 'p-invalid': submitted && (!user.phoneNumber || !phoneValid) })}
+                />
                 <label htmlFor="phoneNumber" className="font-bold block mb-2">Número de celular</label>
               </FloatLabel>
             </div>
             {submitted && !user.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
+            {user.phoneNumber && !phoneValid && <small className="p-error">El número de celular debe tener 10 dígitos.</small>}
           </div>
         </div>
         <div className="formgrid grid mt-4">
@@ -526,11 +559,15 @@ export default function Users() {
                 <span className="material-symbols-outlined">mail</span>
               </span>
               <FloatLabel>
-                <InputText id="email" name='email' value={user.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} autoComplete="new-email" />
+                <InputText id="email" name='email' value={user.email} onChange={(e) => {
+                  onInputChange(e, 'email');
+                  setEmailValid(validateEmail(e.target.value));
+                }} required className={classNames({ 'p-invalid': submitted && (!user.email || !emailValid) })} placeholder='mi_correo@micorreo.com' maxLength={50} autoComplete="new-email" />
                 <label htmlFor="email" className="font-bold">Correo Eletrónico</label>
               </FloatLabel>
             </div>
             {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
+            {user.email && !emailValid && <small className="p-error">Correo Eletrónico no es válido.</small>}
           </div>
         </div>
         <div className="formgrid grid mt-4">

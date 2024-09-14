@@ -306,7 +306,7 @@ export default function Reserves() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">schedule</span>
+                            <span className="material-symbols-outlined">schedule</span>
                         </span>
                         <FloatLabel>
                             <label htmlFor="time" className="font-bold">Duracion Reserva</label>
@@ -324,7 +324,7 @@ export default function Reserves() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
+                            <span className="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
                             <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
@@ -336,7 +336,7 @@ export default function Reserves() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
+                            <span className="material-symbols-outlined">monetization_on</span>
                         </span>
                         <FloatLabel>
                             <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
@@ -349,7 +349,7 @@ export default function Reserves() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">book</span>
+                                <span className="material-symbols-outlined">book</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown id="book" value={selectedBook} onChange={(e) => { setSelectedBook(e.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
@@ -362,7 +362,7 @@ export default function Reserves() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">person</span>
+                                <span className="material-symbols-outlined">person</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown id="user" value={selectedUser} onChange={(e) => { setSelectedUser(e.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="names" placeholder="Seleccionar Usuario"

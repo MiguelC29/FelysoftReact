@@ -481,7 +481,7 @@ export default function Purchases() {
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
-                                                    <span class="material-symbols-outlined">inventory_2</span>
+                                                    <span className="material-symbols-outlined">inventory_2</span>
                                                 </span>
                                                 <FloatLabel>
                                                     <Dropdown
@@ -514,7 +514,7 @@ export default function Purchases() {
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
-                                                    <span class="material-symbols-outlined">book</span>
+                                                    <span className="material-symbols-outlined">book</span>
                                                 </span>
                                                 <FloatLabel>
                                                     <Dropdown

@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../img/logo.svg";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { Divider } from 'primereact/divider';
+import useEnterKey from '../../useEnterKey';
 
 function RegistrationPage() {
 
@@ -121,9 +122,6 @@ function RegistrationPage() {
 
     const onInputChange = (e, name) => {
         inputChange(e, name, user, setUser);
-        if (name === 'email') {
-            setEmailValid(validateEmail(e.target.value));
-        }
     };
 
     const onInputNumberChange = (e, name) => {
@@ -152,8 +150,11 @@ function RegistrationPage() {
         </>
     );
 
+    useEnterKey(confirmSave); // FUNCION QUE SE ACCIONA CUANDO EL USUARIO DA AL ENTER
+    useEnterKey(handleSubmit, confirmDialogVisible); // Solo se activa cuando el diálogo está visible
+
     return (
-        <div className='container auth-container mt-3 p-4 rounded-5' style={{backgroundColor: '#19191a'}}>
+        <div className='container auth-container mt-3 p-4 rounded-5' style={{ backgroundColor: '#19191a' }}>
             <div className='d-flex align-items-center'>
                 <img src={logo} className='me-3' alt="Logo" width="70px" />
                 <h2 className='text-white text-center flex-grow-1 pt-2'>Registro Clientes</h2>
@@ -215,9 +216,9 @@ function RegistrationPage() {
                         </span>
                         <FloatLabel>
                             <InputNumber inputId="numIdentification" name='numIdentification' value={user.numIdentification} onChange={(e) => {
-                                setNumIdValid(validateIdentification(e.value));
                                 onInputNumberChange(e, 'numIdentification');
-                            }} useGrouping={false} className={classNames({ 'p-invalid': submitted && !user.numIdentification })} />
+                                setNumIdValid(validateIdentification(e.value));
+                            }} useGrouping={false} className={classNames({ 'p-invalid': submitted && (!user.numIdentification || !numIdValid) })} />
                             <label htmlFor="numIdentification" className="font-bold">Número de Identificación</label>
                         </FloatLabel>
                     </div>
@@ -263,12 +264,15 @@ function RegistrationPage() {
                             <span className="material-symbols-outlined">mail</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="email" name='email' value={user.email} onChange={(e) => onInputChange(e, 'email')} className={classNames({ 'p-invalid': submitted && !user.email })} placeholder='mi_correo@micorreo.com' maxLength={50} autoComplete="new-email" />
+                            <InputText id="email" name='email' value={user.email} onChange={(e) => {
+                                onInputChange(e, 'email');
+                                setEmailValid(validateEmail(e.target.value));
+                            }} className={classNames({ 'p-invalid': submitted && (!user.email || !emailValid) })} placeholder='mi_correo@micorreo.com' maxLength={50} autoComplete="new-email" />
                             <label htmlFor="email" className="font-bold">Correo Eletrónico</label>
                         </FloatLabel>
                     </div>
                     {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
-                    {submitted && user.email && !emailValid && <small className="p-error">Correo Eletrónico no es válido.</small>}
+                    {user.email && !emailValid && <small className="p-error">Correo Eletrónico no es válido.</small>}
                 </div>
                 <div className="field col">
                     <div className="p-inputgroup flex-1">

@@ -196,7 +196,7 @@ export default function TypeServices() {
         <div className="field mt-4">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">title</span>
+              <span className="material-symbols-outlined">title</span>
             </span>
             <FloatLabel>
               <InputText id="name" value={typeService.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !typeService.name })} />
@@ -208,7 +208,7 @@ export default function TypeServices() {
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">description</span>
+              <span className="material-symbols-outlined">description</span>
             </span>
             <FloatLabel>
               <InputText id="description" value={typeService.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !typeService.description })} />
@@ -220,7 +220,7 @@ export default function TypeServices() {
         <div className="field mt-5">
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
-              <span class="material-symbols-outlined">monetization_on</span>
+              <span className="material-symbols-outlined">monetization_on</span>
             </span>
             <FloatLabel>
               <InputNumber

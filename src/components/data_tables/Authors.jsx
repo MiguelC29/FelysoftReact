@@ -286,7 +286,7 @@ export default function Authors() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">badge</span>
+                            <span className="material-symbols-outlined">badge</span>
                         </span>
                         <FloatLabel>
                             <InputText id="name" value={author.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !author.name })} />
@@ -298,7 +298,7 @@ export default function Authors() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">pin_drop</span>
+                            <span className="material-symbols-outlined">pin_drop</span>
                         </span>
                         <FloatLabel>
                             <InputText id="natioality" value={author.nationality} onChange={(e) => onInputChange(e, 'nationality')} required className={classNames({ 'p-invalid': submitted && !author.nationality })} />
@@ -315,7 +315,7 @@ export default function Authors() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">person_book</span>
+                            <span className="material-symbols-outlined">person_book</span>
                         </span>
                         <FloatLabel>
                             <InputText id="biography" value={author.biography} onChange={(e) => onInputChange(e, 'biography')} required className={classNames({ 'p-invalid': submitted && !author.biography })} />

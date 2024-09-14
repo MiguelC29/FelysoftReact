@@ -1,6 +1,6 @@
 import "../../css/inicioSesion.css"
 import logo from "../../img/logo.svg";
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { DialogFooter, inputChange } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
@@ -12,6 +12,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import LoadingOverlay from "../common/LoadingOverlay";
+import useEnterKey from "../../useEnterKey";
 
 export const LoginPage = () => {
 
@@ -68,22 +69,6 @@ export const LoginPage = () => {
       }
     }
   }, [login, navigate, setAuthError, shouldResetError, user.email, user.password]);
-
-  // Agrega un event listener para el evento de tecla
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter') {
-        handleSubmit();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    // Limpia el event listener cuando el componente se desmonte
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleSubmit]);
 
   const errorMessage = (error) => {
     switch (error) {
@@ -168,6 +153,8 @@ export const LoginPage = () => {
     setErrorVisible(false);
     setShouldResetError(false); // Evita que el error se resetee si el usuario cambia un campo
   };
+
+  useEnterKey(handleSubmit); // FUNCION QUE SE ACCIONA CUANDO EL USUARIO DA AL ENTER
 
   return (
     <>

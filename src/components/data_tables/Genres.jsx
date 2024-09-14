@@ -278,7 +278,7 @@ export default function Genres() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">badge</span>
+                            <span className="material-symbols-outlined">badge</span>
                         </span>
                         <FloatLabel>
                             <InputText id="name" value={genre.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !genre.name })} />
@@ -290,7 +290,7 @@ export default function Genres() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
+                            <span className="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
                             <InputText id="description" value={genre.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !genre.description })} />
