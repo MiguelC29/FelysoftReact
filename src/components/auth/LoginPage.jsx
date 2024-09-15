@@ -1,6 +1,6 @@
 import "../../css/inicioSesion.css"
 import logo from "../../img/logo.svg";
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { DialogFooter, inputChange } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
@@ -12,6 +12,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import LoadingOverlay from "../common/LoadingOverlay";
+import useEnterKey from "../../useEnterKey";
 
 export const LoginPage = () => {
 
@@ -34,7 +35,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false); // Estado de carga
   const toast = useRef(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setSubmitted(true);
     setAuthError('');
     if (user.email && user.password) {
@@ -68,7 +69,7 @@ export const LoginPage = () => {
         }, 5000);
       }
     }
-  };
+  }, [login, navigate, setAuthError, shouldResetError, user.email, user.password]);
 
   const errorMessage = (error) => {
     switch (error) {
@@ -154,6 +155,8 @@ export const LoginPage = () => {
     setShouldResetError(false); // Evita que el error se resetee si el usuario cambia un campo
   };
 
+  useEnterKey(handleSubmit); // FUNCION QUE SE ACCIONA CUANDO EL USUARIO DA AL ENTER
+
   return (
     <>
       <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
@@ -201,7 +204,7 @@ export const LoginPage = () => {
                       top: '50%',
                       transform: 'translateY(-50%)',
                       cursor: 'pointer',
-                      fontSize: '2rem', 
+                      fontSize: '1.5rem', 
                       color: 'gray' 
                     }}
                   >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
@@ -10,6 +10,7 @@ import CustomDataTable from '../CustomDataTable';
 import { Image } from 'primereact/image';
 import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIcon, FloatInputTextIcon } from '../Inputs';
 import Request_Service from '../service/Request_Service';
+import { Checkbox } from 'primereact/checkbox';
 
 export default function Products() {
     let emptyProduct = {
@@ -22,7 +23,9 @@ export default function Products() {
         stock: null,
         brand: '',
         category: '',
-        provider: ''
+        provider: '',
+        isNew: true // Agregar el campo para controlar si el producto es nuevo
+
     };
 
     const URL = '/product/';
@@ -171,11 +174,13 @@ export default function Products() {
         // Verificar si todos los campos requeridos están presentes
         const isValid = product.name.trim() &&
             product.expiryDate &&
-            product.salePrice &&
             product.brand &&
             product.category &&
             product.provider &&
-            (operation === 1 ? file : true);
+            (operation === 1 ? file : true) &&
+            // Si el producto NO es nuevo, el precio de venta y el stock son obligatorios
+            (!product.isNew ? product.salePrice && product.stock : true);
+
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -202,14 +207,16 @@ export default function Products() {
             method = 'PUT';
         } else {
             // Verificar que el stock inicial está presente solo al crear
-            if (operation === 1 && product.stock) {
+            if (operation === 1) {
                 formData.append('name', product.name.trim());
                 formData.append('expiryDate', product.expiryDate);
-                formData.append('salePrice', product.salePrice);
+                formData.append('salePrice', (!product.isNew && product.salePrice) ? product.salePrice : 0);
                 formData.append('brand', product.brand.idBrand);
                 formData.append('category', product.category.idCategory);
                 formData.append('provider', product.provider.idProvider);
-                formData.append('stockInicial', product.stock);
+                if (!product.isNew && product.stock) {
+                    formData.append('stockInicial', product.stock); // Solo agregar stock si no es un producto nuevo
+                }
                 formData.append('image', file);
                 url = URL + 'create';
                 method = 'POST';
@@ -246,6 +253,10 @@ export default function Products() {
         inputNumberChange(e, name, product, setProduct);
     };
 
+    const onCheckboxChange = (e) => {
+        setProduct({ ...product, isNew: e.checked });
+    };
+
     const imageBodyTemplate = (rowData) => {
         const imageData = rowData.image;
         const imageType = rowData.imageType;
@@ -254,10 +265,6 @@ export default function Products() {
         } else {
             return <p>No hay imagen</p>;
         }
-    };
-
-    const priceBodyTemplate = (rowData) => {
-        return formatCurrency(rowData.salePrice);
     };
 
     const actionBodyTemplateP = (rowData) => {
@@ -336,7 +343,6 @@ export default function Products() {
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'brand.name', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
         { field: 'category.name', header: 'Categoría', sortable: true, style: { minWidth: '10rem' } },
         { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '10rem' } },
@@ -358,7 +364,7 @@ export default function Products() {
                 <CustomDataTable
                     dt={dt}
                     data={products}
-                    dataKey="id"
+                    dataKey="idProduct"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={header('Productos', setGlobalFilter)}
@@ -393,34 +399,54 @@ export default function Products() {
                     label="Marca" errorMessage="Marca es requerida."
                 />
 
-                <div className="field mt-3">
+                <div className="field mt-4">
                     <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
                     <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
-                
+
+
                 <div className="formgrid grid mt-5">
-                    <FloatInputNumberMoneyIcon
-                        className="field col"
-                        value={product.salePrice}
-                        onInputNumberChange={onInputNumberChange} field='salePrice'
-                        maxLength={9} required
-                        submitted={submitted}
-                        label='Precio de venta'
-                        errorMessage='Precio de venta es requerido.'
-                    />
-                    {(operation === 1) &&
-                        <FloatInputNumberIcon
+                    {/* Solo mostrar el campo de precio de venta si el producto no es nuevo */}
+                    {!product.isNew && (
+                        <FloatInputNumberMoneyIcon
                             className="field col"
-                            icon='inventory'
-                            value={product.stock}
-                            onInputNumberChange={onInputNumberChange} field='stock'
-                            maxLength={5} required
+                            value={product.salePrice}
+                            onInputNumberChange={onInputNumberChange} field='salePrice'
+                            maxLength={9} required
                             submitted={submitted}
-                            label='Stock Inicial'
-                            errorMessage='Stock inicial es requerido.'
+                            label='Precio de venta'
+                            errorMessage='Precio de venta es requerido.'
                         />
-                    }
+                    )}
+                    {/* Contenedor para el checkbox y el campo de stock */}
+                    {(operation === 1) && (
+                        <div className="field col">
+                            {/* Mostrar el campo de stock solo si el checkbox está desmarcado */}
+                            {!product.isNew && (
+                                <FloatInputNumberIcon
+                                    className="field"
+                                    icon='inventory'
+                                    value={product.stock}
+                                    onInputNumberChange={onInputNumberChange}
+                                    field='stock'
+                                    maxLength={5}
+                                    required
+                                    submitted={submitted}
+                                    label='Stock Actual'
+                                    errorMessage='Stock actual es requerido.'
+                                />
+                            )}
+                            <div className="field-checkbox">
+                                <Checkbox
+                                    inputId="isNew"
+                                    checked={product.isNew}
+                                    onChange={onCheckboxChange}
+                                />
+                                <label htmlFor="isNew">¿Es un producto realmente nuevo?</label>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="formgrid grid mt-3">
                     <FloatDropdownSearchIcon
@@ -461,7 +487,6 @@ export default function Products() {
                             url="https://felysoftspring-production.up.railway.app/api/product/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
-                            sizeLimit="3145728"
                             onSelect={handleFileUpload}
                             required
                             className={`${classNames({ 'p-invalid': submitted && !product.image && !selectedImage })}`}

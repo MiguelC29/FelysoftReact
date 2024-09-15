@@ -27,6 +27,7 @@ export default function Purchases() {
         idDetail: null,
         quantity: null,
         unitPrice: null,
+        salePrice: null,
         product: null,
         book: null,
     };
@@ -152,6 +153,13 @@ export default function Purchases() {
             if (isProductSelected === null) {
                 setIsProductSelected('product');
             }
+
+            // Actualiza el salePrice con el valor del producto seleccionado
+            if (product) {
+                updatedDetails[index].salePrice = product.salePrice; // Asegúrate de que product.salePrice esté disponible
+            } else {
+                updatedDetails[index].salePrice = null; // Opcional: Limpia el salePrice si no hay producto
+            }
         }
         setDetails(updatedDetails);
     };
@@ -238,7 +246,7 @@ export default function Purchases() {
             purchase.methodPayment &&
             purchase.state &&
             details.length > 0 &&
-            details.every(detail => (detail.product && detail.quantity && detail.unitPrice) || (detail.book && detail.unitPrice));
+            details.every(detail => (detail.product && detail.quantity && detail.unitPrice && detail.salePrice) || (detail.book && detail.unitPrice));
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -260,6 +268,7 @@ export default function Purchases() {
             idDetail: detail.idDetail,
             quantity: detail.quantity,
             unitPrice: detail.unitPrice,
+            salePrice: detail.salePrice,
             idProduct: detail.product ? detail.product.idProduct : null,
             idBook: detail.book ? detail.book.idBook : null,
         }));
@@ -406,7 +415,7 @@ export default function Purchases() {
                 <CustomDataTable
                     dt={dt}
                     data={purchases}
-                    dataKey="id"
+                    dataKey="idPurchase"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Compras"
                     globalFilter={globalFilter}
                     header={header('Compras', setGlobalFilter)}
@@ -463,15 +472,16 @@ export default function Purchases() {
                     <div className="formgrid grid mt-3">
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
-                                <div className="formgrid grid mt-3">
+                                <div className="formgrid grid mt-3 align-items-center">
                                     <div className="col-1">
                                         <strong>{index + 1}.</strong>
                                     </div>
+                                    {/* Producto Dropdown */}
                                     {isProductSelected !== 'book' && (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
-                                                    <span class="material-symbols-outlined">inventory_2</span>
+                                                    <span className="material-symbols-outlined">inventory_2</span>
                                                 </span>
                                                 <FloatLabel>
                                                     <Dropdown
@@ -486,7 +496,7 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedProductTemplate}
                                                         itemTemplate={productOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                        className={`w-full md:w-10rem rounded ${classNames({
                                                             'p-invalid': (submitted && (!detail.product && !detail.book)) || errors[`product_${index}`]
                                                         })}`}
                                                         disabled={(!selectedProvider || !!detail.book) && 'disabled'}
@@ -498,11 +508,13 @@ export default function Purchases() {
                                             {errors[`product_${index}`] && <small className="p-error">{errors[`product_${index}`]}</small>}
                                         </div>
                                     )}
+
+                                    {/* Libro Dropdown */}
                                     {isProductSelected !== 'product' && (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
-                                                    <span class="material-symbols-outlined">book</span>
+                                                    <span className="material-symbols-outlined">book</span>
                                                 </span>
                                                 <FloatLabel>
                                                     <Dropdown
@@ -517,7 +529,7 @@ export default function Purchases() {
                                                         required
                                                         valueTemplate={selectedBookTemplate}
                                                         itemTemplate={bookOptionTemplate}
-                                                        className={`w-full md:w-13rem rounded ${classNames({
+                                                        className={`w-full md:w-10rem rounded ${classNames({
                                                             'p-invalid': (submitted && (!detail.book && !errors.book && !detail.product)) || errors[`book_${index}`]
                                                         })}`}
 
@@ -531,6 +543,7 @@ export default function Purchases() {
                                         </div>
                                     )}
 
+                                    {/* Cantidad */}
                                     {isProductSelected !== 'book' && (
                                         <FloatInputNumberIcon
                                             className="field col-2"
@@ -545,6 +558,7 @@ export default function Purchases() {
                                         />
                                     )}
 
+                                    {/* Precio Unitario */}
                                     <FloatInputNumberMoneyIcon
                                         className="field col-2"
                                         value={detail.unitPrice}
@@ -555,6 +569,20 @@ export default function Purchases() {
                                         submitted={submitted}
                                         errorMessage='Precio unitario es requerido.'
                                     />
+
+                                    {/* Precio de Venta */}
+                                    {selectedProvider && isProductSelected === 'product' && (
+                                        <FloatInputNumberMoneyIcon
+                                            className="field col-2"
+                                            value={detail.salePrice}
+                                            onInputNumberChange={(e) => handleDetailChange(index, 'salePrice', e.value)}
+                                            field='salePrice'
+                                            label='Precio de Venta'
+                                            required
+                                            submitted={submitted}
+                                            errorMessage='Precio de venta es requerido.'
+                                        />)}
+                                    {/* Botón de eliminar */}
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
                                 </div>
                             </div>
@@ -565,11 +593,20 @@ export default function Purchases() {
                 </Dialog>
 
                 {/* DIALOG DETAIL */}
-                <Dialog visible={purchaseDetailDialog} style={{ width: '50rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+                <Dialog visible={purchaseDetailDialog} style={{ width: '65rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
                     <div className="container mt-4">
-                        <div className="row">
+                        <div className="row text-center">
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
+                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
+                                    <div>
+                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
+                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">local_shipping</span>
                                     <div>
                                         <label htmlFor="provider" className="font-bold d-block">Proveedor</label>
@@ -577,21 +614,11 @@ export default function Purchases() {
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
-                                    <span className="material-symbols-outlined me-2">monetization_on</span>
-                                    <div>
-                                        <label htmlFor="provider" className="font-bold d-block">Total</label>
-                                        <p>{(purchase.total) && priceBodyTemplate(purchase)}</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        <div className="row">
+                        <div className="row text-center">
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">currency_exchange</span>
                                     <div>
                                         <label htmlFor="methodPayment" className="font-bold d-block">Método de pago</label>
@@ -600,7 +627,7 @@ export default function Purchases() {
                                 </div>
                             </div>
                             <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
+                                <div className="d-flex align-items-center justify-content-center">
                                     <span className="material-symbols-outlined me-2">new_releases</span>
                                     <div>
                                         <label htmlFor="state" className="font-bold d-block">Estado</label>
@@ -610,55 +637,37 @@ export default function Purchases() {
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <div className="d-flex align-items-start">
-                                    <span className="material-symbols-outlined me-2">calendar_clock</span>
-                                    <div>
-                                        <label htmlFor="date" className="font-bold d-block">Fecha</label>
-                                        <p>{(purchase.payment) && dateTemplate(purchase.payment)}</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <h4 className='text-center fw-semibold'>Lista de Detalles</h4>
+                        {/* Tabla de Detalles */}
+                        <div className="table-responsive">
+                            <table className="table table-bordered table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Producto / Libro</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {detailsList && detailsList.map((detail, index) => (
+                                        <tr key={index}>
+                                            <td>
+                                                {(detail.product && detail.product.name) || (detail.book && detail.book.title)}
+                                            </td>
+                                            <td>{(detail.product) ? detail.quantity : 1}</td>
+                                            <td>{detail.unitPrice && formatCurrency(detail.unitPrice)}</td>
+                                            <td>{(detail.product && detail.unitPrice && detail.quantity && formatCurrency(detail.unitPrice * detail.quantity)) || (detail.book && detail.unitPrice && formatCurrency(detail.unitPrice))}</td>
+                                        </tr>
+                                    ))}
+                                    {/* Total */}
+                                    <tr>
+                                        <td colSpan="3" className="text-end font-bold">Total:</td>
+                                        <td>{purchase.total && priceBodyTemplate(purchase)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <h4 className='text-center'>Lista de Detalles</h4>
-                        {detailsList && (
-                            detailsList.map((detail, index) => (
-                                <div key={index} className="row mb-3">
-                                    <div className={(!detail.book) ? 'col-md-5' : 'col-md-6'}>
-                                        <div className="d-flex align-items-start">
-                                            <span className="material-symbols-outlined me-2">{(detail.product) ? 'inventory_2' : 'book'}</span>
-                                            <div>
-                                                <label htmlFor={(detail.product) ? 'product' : 'book'} className="font-bold d-block">{(detail.product) ? 'Producto' : 'Libro'}</label>
-                                                <p>{(detail.product) && detail.product.name}</p>
-                                                <p>{(detail.book) && detail.book.title}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {!detail.book &&
-                                        <div className="col-md-3">
-                                            <div className="d-flex align-items-start">
-                                                <span className="material-symbols-outlined me-2">production_quantity_limits</span>
-                                                <div>
-                                                    <label htmlFor="quantity" className="font-bold d-block">Cantidad</label>
-                                                    <p>{(detail.product) && detail.quantity}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    <div className={(!detail.book) ? 'col-md-4' : 'col-md-6'}>
-                                        <div className="d-flex align-items-start">
-                                            <span className="material-symbols-outlined me-2">monetization_on</span>
-                                            <div>
-                                                <label htmlFor="unitPrice" className="font-bold d-block">Precio Unitario</label>
-                                                <p>{(detail.unitPrice) && formatCurrency(detail.unitPrice)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
                     </div>
                 </Dialog>
             </div>

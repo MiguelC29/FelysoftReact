@@ -179,7 +179,7 @@ export default function AssociationAuthorGenre() {
                 <CustomDataTable
                     dt={dt}
                     data={listAssociation}
-                    dataKey="id"
+                    dataKey="author.idAuthor"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Asociaciones"
                     globalFilter={globalFilter}
                     header={header('Asociaciones entre Géneros y Autores', setGlobalFilter)}

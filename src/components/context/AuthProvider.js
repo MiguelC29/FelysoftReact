@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import UserService from '../service/UserService';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,6 +10,13 @@ export const AuthProvider = ({ children }) => {
     const [hasShownSessionExpired, setHasShownSessionExpired] = useState(false);
     const [profile, setProfile] = useState(null); // Estado para el perfil del usuario
     const navigate = useNavigate();
+
+    const logout = useCallback(() => {
+        UserService.logout();
+        setIsAuthenticated(false);
+        setProfile(null); // Limpiar el perfil al cerrar sesión
+        navigate('/login');
+    }, [navigate]);
 
     useEffect(() => {
         const checkTokenExpiration = () => {
@@ -58,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [isAuthenticated, hasShownSessionExpired]);
+    }, [isAuthenticated, hasShownSessionExpired, logout]);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -91,13 +98,6 @@ export const AuthProvider = ({ children }) => {
             }
         };
         fetchProfile();
-    };
-
-    const logout = () => {
-        UserService.logout();
-        setIsAuthenticated(false);
-        setProfile(null); // Limpiar el perfil al cerrar sesión
-        navigate('/login');
     };
 
     return (

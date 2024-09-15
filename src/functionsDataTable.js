@@ -178,7 +178,7 @@ export const deleteDialogFooter = (hideDeleteDialog, deleteData) => (
 export const confirmDialogFooter = (hideDeleteDialog, saveData) => (
     <React.Fragment>
         <Button label="Cancelar" icon="pi pi-times" className='dialog-btn-cancel mr-2 rounded' severity="danger" outlined onClick={hideDeleteDialog} />
-        <Button label="Confirmar" icon="pi pi-check" className='dialog-btn-confirm rounded' severity="info" onClick={saveData} />
+        <Button label="Confirmar" icon="pi pi-check" className='dialog-btn-confirm rounded' severity="info" onClick={saveData} autoFocus />
     </React.Fragment>
 );
 
@@ -314,7 +314,7 @@ export const inputNumberChange = (e, name, data, setData) => {
 };
 
 export const formatCurrency = (value) => {
-    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+    return value.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 };
 
 export const formatDate = (dateString) => {

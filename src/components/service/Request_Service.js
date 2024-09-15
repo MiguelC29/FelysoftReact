@@ -1,8 +1,8 @@
 import axios from "axios";
 
 class Request_Service {
-    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
-    //static BASE_URL = "http://localhost:8086/api"
+    //static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    static BASE_URL = "http://localhost:8086/api"
 
     static getToken() {
         return localStorage.getItem('token');
@@ -188,7 +188,7 @@ class Request_Service {
                     return response.data;
                 })
         } catch (error) {
-            console.error('Error fetching users: ', error);
+            console.error('Error fetching data: ', error);
         }
     }
 

@@ -284,9 +284,9 @@ function ProfilePage() {
                     <div className="perfil-usuario-body">
                         <div className="perfil-usuario-bio">
                             <h3 className="titulo">{user.names} {user.lastNames} {user.gender && getGenderIcon(user.gender)}</h3>
-                            <p className="texto">
+                            <div className="texto">
                                 <h3>{description(user.role.name)}</h3>
-                            </p>
+                            </div>
                         </div>
                         <div className="perfil-usuario-footer">
                             <ul className="lista-datos">

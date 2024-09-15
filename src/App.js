@@ -7,16 +7,13 @@ import ViewProfile from './pages/ViewProfile';
 import ViewProviders from './pages/ViewProviders';
 import ViewProductInventory from './pages/ViewProductInventory';
 
-//gastos e ingresos
-// import ViewExpenses from './pages/ViewExpenses';
+//ingresos
 import ViewPurchases from './pages/ViewPurchases';
 import ViewSales from './pages/ViewSales';
 import ViewPayments from './pages/ViewPayments';
 
 import ViewTypeservices from './pages/ViewTypeservices';
 import ViewServices from './pages/ViewServices';
-import ViewEmployees from './pages/ViewEmployees';
-import ViewCharges from './pages/ViewCharges';
 
 import ViewBooks from './pages/ViewBooks';
 import ViewReserves from './pages/ViewReserves';
@@ -74,10 +71,7 @@ export default function App() {
             <Route path='/generos_autores' element={<RoleProtectedRoute element={<ViewAssociationGenAutor />} roles={['ADMINISTRATOR', 'INVENTORY_MANAGER']} />} />
             <Route path='/libros' element={<RoleProtectedRoute element={<ViewBooks />} roles={['ADMINISTRATOR','INVENTORY_MANAGER']} />} />
             <Route path='/inventarioLibros' element={<RoleProtectedRoute element={<ViewBooksInventory />} roles={['ADMINISTRATOR','INVENTORY_MANAGER','SALESPERSON','CUSTOMER']} />} />
-            <Route path='/cargos' element={<RoleProtectedRoute element={<ViewCharges />} roles={['ADMINISTRATOR']} />} />
-            <Route path='/empleados' element={<RoleProtectedRoute element={<ViewEmployees />} roles={['ADMINISTRATOR']} />} />
             <Route path='/pagos' element={<RoleProtectedRoute element={<ViewPayments />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
-            {/* <Route path='/gastos' element={<RoleProtectedRoute element={<ViewExpenses />} roles={['ADMINISTRATOR','FINANCIAL_MANAGER']} />} /> */}
             <Route path='/ventas' element={<RoleProtectedRoute element={<ViewSales />} roles={['ADMINISTRATOR','SALESPERSON', 'FINANCIAL_MANAGER']} />} />
             <Route path='/reservas' element={<RoleProtectedRoute element={<ViewReserves />} roles={['ADMINISTRATOR','SALESPERSON']} />} />
             <Route path='/carrito' element={<RoleProtectedRoute element={<ViewCarrito/>} roles={['ADMINISTRATOR', 'SALESPERSON','CUSTOMER']} />} />

@@ -217,7 +217,7 @@ export default function Payments() {
                 <CustomDataTable
                     dt={dt}
                     data={payments}
-                    dataKey="id"
+                    dataKey="idPayment"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Pagos"
                     globalFilter={globalFilter}
                     header={header('Pagos', setGlobalFilter)}
@@ -229,7 +229,7 @@ export default function Payments() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">currency_exchange</span>
+                            <span className="material-symbols-outlined">currency_exchange</span>
                         </span>
                         <FloatLabel>
                             <Dropdown
@@ -250,7 +250,7 @@ export default function Payments() {
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
+                            <span className="material-symbols-outlined">monetization_on</span>
                         </span>
                         <FloatLabel>
                             <InputNumber id="total" maxLength={10} value={payment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !payment.total })} />

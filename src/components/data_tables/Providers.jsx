@@ -279,7 +279,7 @@ export default function Providers() {
                 <CustomDataTable
                     dt={dt}
                     data={providers}
-                    dataKey="id"
+                    dataKey="idProvider"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Proveedores"
                     globalFilter={globalFilter}
                     header={header('Proveedores', setGlobalFilter)}

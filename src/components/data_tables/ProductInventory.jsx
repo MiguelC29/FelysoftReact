@@ -94,7 +94,7 @@ export default function ProductInventory() {
                 <CustomDataTable
                     dt={dt}
                     data={productsInv}
-                    dataKey="id"
+                    dataKey="product.idProduct"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Productos"
                     globalFilter={globalFilter}
                     header={headerInv('Productos', setGlobalFilter)}

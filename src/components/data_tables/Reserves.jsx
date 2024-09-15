@@ -350,7 +350,7 @@ export default function Reserves() {
                 <CustomDataTable
                     dt={dt}
                     data={reserves}
-                    dataKey="id"
+                    dataKey="idReserve"
                     currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} Reservas"
                     globalFilter={globalFilter}
                     header={header('Reservas', setGlobalFilter)}
@@ -399,7 +399,7 @@ export default function Reserves() {
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">description</span>
+                            <span className="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
                             <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required  maxLength={105} className={classNames({ 'p-invalid': submitted && !reserve.description })} />
@@ -419,7 +419,7 @@ export default function Reserves() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">book</span>
+                                <span className="material-symbols-outlined">book</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown
@@ -445,7 +445,7 @@ export default function Reserves() {
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
                             <span className="p-inputgroup-addon">
-                                <span class="material-symbols-outlined">person</span>
+                                <span className="material-symbols-outlined">person</span>
                             </span>
                             <FloatLabel>
                                 <Dropdown id="user" value={selectedUser} onChange={(e) => { setSelectedUser(e.value); onInputNumberChange(e, 'user'); }} options={users} optionLabel="names" placeholder="Seleccionar Usuario"
