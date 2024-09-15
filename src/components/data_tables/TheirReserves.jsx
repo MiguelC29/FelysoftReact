@@ -6,6 +6,7 @@ import Request_Service from '../service/Request_Service';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
+import { Alert } from 'react-bootstrap';
 
 export default function TheirReserves() {
 
@@ -53,7 +54,7 @@ export default function TheirReserves() {
     };
 
     const timeBodyTemplate = (rowData) => {
-        return `${rowData.time} horas`;
+        return `${rowData.time} ${rowData.time === 1 ? 'hora' : 'horas'}`;
     };
 
     const statusBodyTemplate = (rowData) => {
@@ -94,6 +95,9 @@ export default function TheirReserves() {
 
     return (
         <div>
+             <Alert variant="success">
+                Recuerda: Puedes ir el día de tú Reserva de 9:40 am a 4:00 pm.
+            </Alert>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <CustomDataTable

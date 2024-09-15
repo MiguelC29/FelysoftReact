@@ -12,6 +12,10 @@ import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 import { Tag } from 'primereact/tag';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { addDays } from 'date-fns';
+import { FloatInputNumberMoneyIcon } from '../Inputs';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -70,10 +74,50 @@ export default function Reserves() {
         return Request_Service.getData('/user/all', (data) => {
             const customers = data.filter(user => user.role.name === 'CUSTOMER');
             console.log(data);
-            
+
             setUsers(customers);
         });
     }
+
+    //Constante de los dias que van a estar habilitados y los dias de hoy
+    const today = new Date();
+    const daysLater = addDays(today, 6);
+
+    //Convierte un objeto Date en una cadena con el formato yyyy-MM-dd
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        //padStart para asegurar que el mes y el día siempre tengan dos dígitos.
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const parseDate = (dateString) => {
+        // Función para convertir el formato yyyy-MM-dd a un objeto Date
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    const selectedDate = reserve.dateReserve ? parseDate(reserve.dateReserve) : null;
+
+    const filterDate = (date) => {
+        const day = date.getDay();
+        return day !== 0 && day !== 6;
+    };
+
+    const isDateValid = (date) => {
+        return filterDate(date) && date <= daysLater;
+    };
+
+    const onDateChange = (date) => {
+        if (date) {
+            const formattedDate = formatDate(date);
+            setReserve((prevState) => ({ ...prevState, dateReserve: formattedDate }));
+        } else {
+            setReserve((prevState) => ({ ...prevState, dateReserve: '' }));
+        }
+    };
+
 
     const statusBodyTemplate = (rowData) => {
         return <Tag value={rowData.state} style={{ background: getSeverity(rowData) }}></Tag>;
@@ -125,6 +169,11 @@ export default function Reserves() {
     const hideConfirmReserveDialog = () => {
         setConfirmDialogVisible(false);
     };
+
+    const timeBodyTemplate = (rowData) => {
+        return `${rowData.time} ${rowData.time === 1 ? 'hora' : 'horas'}`;
+    };
+
 
     const hideDeleteReserveDialog = () => {
         setDeleteReserveDialog(false);
@@ -246,6 +295,16 @@ export default function Reserves() {
         );
     };
 
+    const onBookChange = (e) => {
+        const book = e.value;
+        setSelectedBook(book);
+        setReserve(prevReserve => ({
+            ...prevReserve,
+            book: book,
+            deposit: book ? prevReserve.time * book.priceTime : null
+        }));
+    };
+
     const selectedUserTemplate = (option, props) => {
         if (option) {
             return (
@@ -269,7 +328,7 @@ export default function Reserves() {
         { field: 'dateReserve', header: 'Fecha de Reserva', sortable: true, style: { minWidth: '10rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'deposit', header: 'Depósito', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
-        { field: 'time', header: 'Duración Reserva (Horas)', sortable: true, style: { minWidth: '10rem' } },
+        { field: 'time', header: 'Duración Reserva (Horas)', body: timeBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
         { field: 'book.title', header: 'Libro', sortable: true, style: { minWidth: '10rem' } },
         { field: 'user.names', header: 'Usuario', sortable: true, style: { minWidth: '10rem' } },
         { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
@@ -302,26 +361,40 @@ export default function Reserves() {
             <Dialog visible={reserveDialog} style={{ width: '40rem' }} header={title} modal className="p-fluid" footer={reserveDialogFooter} onHide={hideDialog}>
                 <div className="field">
                     <label htmlFor="dateReserve" className="font-bold">Fecha de Reserva</label>
-                    <InputText id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} type="date" required autoFocus className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={onDateChange}
+                        filterDate={isDateValid} // Aplicar el filtro de días válidos
+                        minDate={today} // Fecha mínima es hoy
+                        maxDate={daysLater}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="Selecciona una fecha"
+                        className={`p-inputtext p-component ${submitted && !reserve.dateReserve ? 'p-invalid' : ''}`}
+                    />
                     {submitted && !reserve.dateReserve && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">schedule</span>
+                            <span class="material-symbols-outlined">hourglass_top</span>
                         </span>
                         <FloatLabel>
                             <label htmlFor="time" className="font-bold">Duracion Reserva</label>
                             <InputNumber
                                 id="time"
                                 value={reserve.time}
-                                onValueChange={(e) => onInputNumberChange(e, 'time')}
+                                onChange={(e) => onInputNumberChange(e, 'time')}
                                 required
-                                className={classNames({ 'p-invalid': submitted && !reserve.time })}
+                                min={1}
+                                max={3}
+                                showButtons
+                                onKeyDown={(e)=>e.preventDefault()}
+                                className={classNames({ 'p-invalid': submitted && (!reserve.time || !(reserve.time > 0 && reserve.time <= 3)) })}
                             />
                         </FloatLabel>
                     </div>
-                    {submitted && !reserve.time && <small className="p-error">Duración es requerida.</small>}
+                    {submitted && !reserve.time && <small className="p-error">Duración en horas es requerida.</small>}
+                    {reserve.time && !(reserve.time > 0 && reserve.time <= 3) && <small className="p-error">Duración de la reserva permitida es de 1 a 3 horas maximo</small>}
                 </div>
                 <div className="field mt-5">
                     <div className="p-inputgroup flex-1">
@@ -329,24 +402,19 @@ export default function Reserves() {
                             <span class="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
+                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required  maxLength={105} className={classNames({ 'p-invalid': submitted && !reserve.description })} />
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
                     {submitted && !reserve.description && <small className="p-error">Descripción es requerida.</small>}
                 </div>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
-                        </span>
-                        <FloatLabel>
-                            <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
-                            <label htmlFor="deposit" className="font-bold">Depósito</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !reserve.deposit && <small className="p-error">Depósito es requerido.</small>}
-                </div>
+                <FloatInputNumberMoneyIcon
+                    className="field mt-5"
+                    value={reserve.deposit} field='deposit'
+                    required
+                    label='Saldo a Pagar'
+                    disabled="disabled"
+                />
                 <div className="formgrid grid mt-5">
                     <div className="field col">
                         <div className="p-inputgroup flex-1">
@@ -354,8 +422,21 @@ export default function Reserves() {
                                 <span class="material-symbols-outlined">book</span>
                             </span>
                             <FloatLabel>
-                                <Dropdown id="book" value={selectedBook} onChange={(e) => { setSelectedBook(e.value); onInputNumberChange(e, 'book'); }} options={books} optionLabel="name" placeholder="Seleccionar Libro"
-                                    filter valueTemplate={selectedBookTemplate} itemTemplate={bookOptionTemplate} emptyMessage="No hay datos" emptyFilterMessage="No hay resultados encontrados" required className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`} />
+                                <Dropdown
+                                    id="book"
+                                    value={selectedBook}
+                                    onChange={onBookChange}
+                                    options={books}
+                                    optionLabel="title"
+                                    placeholder="Seleccionar Libro"
+                                    filter
+                                    valueTemplate={selectedBookTemplate}
+                                    itemTemplate={bookOptionTemplate}
+                                    emptyMessage="No hay datos"
+                                    emptyFilterMessage="No hay resultados encontrados"
+                                    required
+                                    className={`w-full md:w-16.5rem ${classNames({ 'p-invalid': submitted && !reserve.book && !selectedBook })}`}
+                                />
                                 <label htmlFor="book" className="font-bold">Libro</label>
                             </FloatLabel>
                         </div>

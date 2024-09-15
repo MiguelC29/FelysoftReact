@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { InputText } from 'primereact/inputtext';
@@ -10,6 +10,10 @@ import { confirmDialog, confirmDialogFooter, DialogFooter, formatCurrency, input
 import { FloatLabel } from 'primereact/floatlabel';
 import UserService from '../service/UserService';
 import { Toast } from 'primereact/toast';
+import { addDays } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import { Alert } from 'react-bootstrap';
+import { FloatInputNumberMoneyIcon } from '../Inputs';
 
 export default function ReservesCus() {
     let emptyReserve = {
@@ -48,6 +52,44 @@ export default function ReservesCus() {
             setReserve(prevReserve => ({ ...prevReserve, user: response.user })); // Asignar usuario al estado reserve
         } catch (error) {
             console.error('Error fetching profile information:', error);
+        }
+    };
+
+    const today = new Date();
+    const daysLater = addDays(today, 6);
+
+    //Convierte un objeto Date en una cadena con el formato yyyy-MM-dd
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        //padStart para asegurar que el mes y el día siempre tengan dos dígitos.
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const parseDate = (dateString) => {
+        // Función para convertir el formato yyyy-MM-dd a un objeto Date
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    const selectedDate = reserve.dateReserve ? parseDate(reserve.dateReserve) : null;
+
+    const filterDate = (date) => {
+        const day = date.getDay();
+        return day !== 0 && day !== 6;
+    };
+
+    const isDateValid = (date) => {
+        return filterDate(date) && date <= daysLater;
+    };
+
+    const onDateChange = (date) => {
+        if (date) {
+            const formattedDate = formatDate(date);
+            setReserve((prevState) => ({ ...prevState, dateReserve: formattedDate }));
+        } else {
+            setReserve((prevState) => ({ ...prevState, dateReserve: '' }));
         }
     };
 
@@ -134,13 +176,20 @@ export default function ReservesCus() {
     };
 
     const onInputNumberChange = (e, name) => {
-        /*const { value } = e;
-        setReserve(prevReserve => ({
-            ...prevReserve,
-            [description]: value
-        }));*/
         inputNumberChange(e, name, reserve, setReserve);
     };
+
+    const calculateTotal = useCallback(() => {
+        const deposit = reserve.time * reserve.book.priceTime;
+        setReserve(prevReserve => ({
+            ...prevReserve,
+            deposit
+        }));
+    }, [reserve.time,reserve.book.priceTime]);
+
+    useEffect(() => {
+        calculateTotal();
+    }, [calculateTotal]);
 
     const listItem = (book, index) => (
         <div className="col-12" key={book.id}>
@@ -217,6 +266,9 @@ export default function ReservesCus() {
     return (
         <div className="card">
             <Toast ref={toast} position="bottom-right" />
+            <Alert variant="primary">
+                Solo puedes reservar un libro máximo por 3 horas.
+            </Alert>
             <DataView
                 value={filteredBooks}
                 layout={layout}
@@ -233,7 +285,16 @@ export default function ReservesCus() {
             <Dialog visible={reserveDialog} style={{ width: '40rem' }} header="Reservar Libro" modal className="p-fluid" footer={reserveDialogFooter} onHide={hideDialog}>
                 <div className="field">
                     <label htmlFor="dateReserve" className="font-bold">Fecha de Reserva</label>
-                    <InputText id="dateReserve" value={reserve.dateReserve} onChange={(e) => onInputChange(e, 'dateReserve')} type="date" required autoFocus className={classNames({ 'p-invalid': submitted && !reserve.dateReserve })} />
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={onDateChange}
+                        filterDate={isDateValid}
+                        minDate={today}
+                        maxDate={daysLater}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="Selecciona una fecha"
+                        className={`p-inputtext p-component ${submitted && !reserve.dateReserve ? 'p-invalid' : ''}`}
+                    />
                     {submitted && !reserve.dateReserve && <small className="p-error">Fecha de Reserva es requerida.</small>}
                 </div>
                 <div className="field mt-5">
@@ -248,7 +309,10 @@ export default function ReservesCus() {
                                 value={reserve.time}
                                 onChange={(e) => onInputNumberChange(e, 'time')}
                                 required
-                                max="3"
+                                min={1}
+                                max={3}
+                                showButtons
+                                onKeyDown={(e)=>e.preventDefault()}
                                 className={classNames({ 'p-invalid': submitted && (!reserve.time || !(reserve.time > 0 && reserve.time <= 3)) })}
                             />
                         </FloatLabel>
@@ -262,24 +326,20 @@ export default function ReservesCus() {
                             <span class="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required className={classNames({ 'p-invalid': submitted && !reserve.description })} />
+                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required maxLength={105} className={classNames({ 'p-invalid': submitted && !reserve.description })} />
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>
                     {submitted && !reserve.description && <small className="p-error">Descripción es requerida.</small>}
                 </div>
-                <div className="field mt-5">
-                    <div className="p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <span class="material-symbols-outlined">monetization_on</span>
-                        </span>
-                        <FloatLabel>
-                            <InputNumber id="deposit" value={reserve.deposit} onValueChange={(e) => onInputNumberChange(e, 'deposit')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !reserve.deposit })} />
-                            <label htmlFor="deposit" className="font-bold">Depósito</label>
-                        </FloatLabel>
-                    </div>
-                    {submitted && !reserve.deposit && <small className="p-error">Depósito es requerido.</small>}
-                </div>
+
+                <FloatInputNumberMoneyIcon
+                    className="field mt-5"
+                    value={reserve.deposit} field='deposit'
+                    required
+                    label='Saldo a Pagar'
+                    disabled="disabled"
+                />
                 <div className="row">
                     <div className="col-md-6 mb-3 ms-2">
                         <div className="d-flex align-items-start">

@@ -194,7 +194,6 @@ export default function MiniDrawer({ children }) {
             icon: <Icon icon='event_available' />,
             items: [
                 { name: "Reservas Libros", icon: <IconSubItems />, link: "/reservas", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
-                { name: "Reserva Servicios", icon: <IconSubItems />, link: "", roles: ['ADMINISTRATOR', 'SALESPERSON'] },
             ],
             roles: ['ADMINISTRATOR', 'SALESPERSON']
         },
