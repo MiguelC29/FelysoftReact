@@ -28,6 +28,9 @@ class Request_Service {
                     if (error.response.data.data === 'Datos Desahibilitados') {
                         toast.current.show({ severity: 'error', summary: 'Datos Desahibilitados', detail: error.response.data.detail, life: 3000 });
                     }
+                    else if (error.response.data.data === 'El producto ya existe') {
+                        toast.current.show({ severity: 'error', summary: 'Producto Existente', detail: error.response.data.data, life: 3000 });
+                    }
                     else if (error.response.data.error_message === 'Tipo Imagen Incorrecto') {
                         toast.current.show({ severity: 'error', summary: 'Imagen Incorrecta', detail: error.response.data.data, life: 3000 });
                     }
