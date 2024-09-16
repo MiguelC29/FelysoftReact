@@ -179,7 +179,8 @@ export default function Products() {
             product.provider &&
             (operation === 1 ? file : true) &&
             // Si el producto NO es nuevo, el precio de venta y el stock son obligatorios
-            (!product.isNew ? product.salePrice && product.stock : true);
+            ((operation === 1 && !product.isNew) ? product.salePrice && product.stock : true) &&
+            (operation === 2 && product.salePrice);
 
 
         // Mostrar mensaje de error si algún campo requerido falta

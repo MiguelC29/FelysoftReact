@@ -59,7 +59,7 @@ export default function ProductInventory() {
 
     const getSeverityStock = (product) => {
 
-        if (product.stock < 1) {
+        if (product.stock <= 0) {
             return '#e72929';
         } else if (product.stock < 6) {
             return '#ff9209';
@@ -71,6 +71,7 @@ export default function ProductInventory() {
     const columns = [
         { field: 'product.image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
         { field: 'product.name', header: 'Producto', sortable: true, style: { minWidth: '5rem' } },
+        { field: 'product.brand.name', header: 'Marca', sortable: true, style: { minWidth: '8rem' } },
         { field: 'product.salePrice', header: 'Precio de Venta', body: priceBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'stock', header: 'Stock', body: stockBodyTemplate, sortable: true, style: { minWidth: '6rem' } },
         { field: 'state', header: 'Estado', body: statusBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
