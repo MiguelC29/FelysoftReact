@@ -1,0 +1,335 @@
+/* Importar los temas de PrimeReact */
+@import 'primereact/resources/themes/saga-blue/theme.css';
+/* Puedes elegir otro tema de PrimeReact */
+@import 'primereact/resources/primereact.min.css';
+
+/* Importar los íconos de PrimeIcons */
+@import 'primeicons/primeicons.css';
+
+.home-landing {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Reem Kufi", sans-serif !important;
+}
+
+.secondary-button {
+  padding: 1rem 2.5rem;
+  background-color: rgb(25, 87, 168);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary-button svg {
+  margin-left: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.secondary-button:hover {
+  color: #484848;
+  background-color: rgb(221, 221, 221);
+}
+
+
+.header-container {
+  display: flex;
+  align-items: center;
+  /* Alinea verticalmente */
+  justify-content: space-between;
+  /* Espacio entre el logo y el título */
+  padding: 0 2rem;
+  /* Ajusta el relleno según sea necesario */
+  position: relative;
+}
+
+.App {
+  min-height: 100vh;
+  width: 97vw;
+  max-width: 1900px;
+  margin: 0rem 1rem;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #f6f6f6 ;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 90px;
+}
+
+.primary-button {
+  padding: 0.9rem 1.75rem;
+  background-color: rgb(25, 87, 168);
+  color: #f6f6f6;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 600;                      
+  transition: 0.2s;
+}
+
+.primary-button:hover {
+  color: #484848;
+  background-color: rgb(234, 234, 234);
+}
+
+.navbar-cart-icon {
+  font-size: 1.15rem;
+}
+
+.primary-subheading {
+  font-weight: 700;
+  color: #fe9e0d;
+  font-size: 1.15rem;
+}
+
+.watch-video-button {
+  margin-left: 2rem;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-radius: 5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #484848;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watch-video-button svg {
+  font-size: 3rem;
+  margin-right: 1rem;
+}
+
+.footer-wrapper {
+  margin: 6rem 0rem;
+  display: flex;
+  margin-top: 10rem;
+}
+
+.footer-logo-container {
+  max-width: 110px;
+}
+
+.work-section-info {
+  width: 290px;
+  min-height: 350px;
+  background-color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 1rem;
+  color: #505050;
+  margin: 1rem 2rem;
+}
+
+.work-section-info h2 {
+  margin: 1rem 0rem;
+}
+
+.work-section-bottom {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.work-section-info p {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .header-container {
+    justify-content: center;
+    /* Centra el contenido en pantallas medianas */
+  }
+
+  .felysoft {
+    font-size: 30px;
+    /* Ajusta el tamaño de la fuente si es necesario */
+  }
+
+  .navbar-links-container a {
+    margin-right: 1rem;
+    font-size: 1rem;
+  }
+
+  .primary-button {
+    font-size: 1rem;
+  }
+
+}
+
+@media (max-width: 800px) {
+  .header-container {
+    flex-direction: column;
+    /* Cambia a columna en pantallas más pequeñas */
+    align-items: center;
+    /* Centra el contenido horizontalmente */
+    text-align: center;
+    /* Centra el texto */
+  }
+
+  .felysoft {
+    font-size: 30px;
+    /* Ajusta el tamaño de la fuente si es necesario */
+    margin-top: 1rem;
+    /* Añade espacio entre el logo y el título */
+  }
+
+  .navbar-links-container {
+    display: none;
+  }
+
+  .navbar-menu-container {
+    display: flex;
+  }
+
+  .home-bannerImage-container {
+    max-width: 450px;
+  }
+
+  .home-banner-container,
+  .about-section-container {
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-section-container {
+    flex-direction: column;
+  }
+
+  .home-image-section,
+  .about-section-image-container {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .primary-text {
+    text-align: center;
+    max-width: 80%;
+  }
+
+  .home-text-section,
+  .about-section-text-container {
+    justify-content: center;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  .secondary-button {
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+  }
+
+  .about-section-container {
+    margin-top: 5rem !important;
+  }
+
+  .about-buttons-container {
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .primary-subheading {
+    text-align: center;
+  }
+
+  .watch-video-button {
+    margin-left: 0rem !important;
+    margin-top: 1rem;
+    font-size: 1rem !important;
+  }
+
+  .watch-video-button svg {
+    margin-right: 0.5rem !important;
+  }
+
+  .about-section-image-container {
+    margin-right: 0rem !important;
+  }
+
+  .work-section-wrapper {
+    margin-top: 5rem !important;
+  }
+
+  .work-section-bottom {
+    margin-top: 1rem !important;
+  }
+
+  .contact-form-container {
+    padding: 0.5rem !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem !important;
+  }
+
+  .contact-form-container input {
+    font-size: 1rem !important;
+    max-width: 100%;
+    padding: 0.5rem 1rem !important;
+    margin-bottom: 0.8rem !important;
+    text-align: center;
+  }
+
+  .footer-wrapper {
+    flex-direction: column;
+  }
+
+  .footer-section-two {
+    flex-direction: column;
+    margin-top: 2rem;
+  }
+
+  .footer-section-columns {
+    margin: 1rem 0rem;
+  }
+
+  .App {
+    max-width: 95vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .felysoft {
+    font-size: 30px;
+    /* Tamaño de fuente más pequeño para pantallas más pequeñas */
+  }
+
+  .home-bannerImage-container,
+  .about-background-image-container {
+    display: none;
+  }
+}

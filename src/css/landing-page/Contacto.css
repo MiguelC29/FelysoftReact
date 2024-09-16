@@ -1,0 +1,134 @@
+.contact-page-wrapper h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    margin-top: -60px;
+}
+
+.primary-heading-contacto{
+    text-align: center;
+    max-width: 700px;
+    /* Ajusta según sea necesario */
+    width: 100%;
+    font-size: 40px;
+    font-weight: bold;
+    word-spacing: 5px;
+    margin: 0 auto;
+    /* Centra el título horizontalmente */
+}
+
+.primary-text-contacto{
+    text-align: center;
+    max-width: 700px;
+    /* Ajusta según sea necesario */
+    width: 100%;
+    top: 20px;
+    font-size: 20px;
+    word-spacing: 5px;
+    line-height: 1.3;
+    margin: 0 auto;
+    /* Centra el título horizontalmente */
+}
+
+.contact-page-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 6rem 0rem;
+}
+
+.input-email {
+    background-color: white;
+    max-width: 500px;
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.input-email input {
+    flex: 1;
+    height: 20px;
+    border: none;
+    outline: none;
+    font-size: 17px;    
+}
+
+.preguntas {
+    background-color: white;
+    max-width: 500px;
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px;
+    border-radius: 10px;
+    position: relative; /* Asegura que el contenedor tenga una posición relativa para el posicionamiento absoluto del placeholder */
+}
+
+.preguntas input {
+    width: 100%;
+    height: 100px; /* Ajusta la altura según tus necesidades */
+    border: none;
+    outline: none;
+    font-size: 17px;
+    padding: 20px 10px; /* Añade padding para asegurar que el texto no se superponga al placeholder */
+    box-sizing: border-box;
+    position: relative; /* Asegura que el texto se posicione dentro del contenedor del input */
+}
+
+
+
+
+
+
+
+
+.secondary-button-contacto {
+    margin-top: 10px; /* Espacio entre el input y el botón */
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; /* Cambia el color de fondo del botón */
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
+.secondary-button-contacto {
+    padding: 14px; /* Ajusta el tamaño del botón */
+    background-color: rgb(25, 87, 168);
+    outline: none; /* Sin contorno */
+    border: none; /* Sin borde */
+    border-radius: 10px;
+    font-size: 1.1rem; /* Tamaño de la fuente del texto */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    font-weight: 600; /* Grosor de la fuente */
+    color: white; /* Color del texto */
+    transition: 0.2s; /* Transición para el efecto hover */
+    display: flex; /* Flexbox para alinear ícono y texto */
+    align-items: center; /* Alinea verticalmente el ícono y el texto */
+    justify-content: center; /* Centra el contenido horizontalmente */
+}
+
+
+.secondary-button-contacto:hover {
+    color: #484848; /* Color del texto al pasar sobre el botón */
+    background-color: rgb(221, 221, 221); /* Color de fondo al pasar sobre el botón */
+}
+

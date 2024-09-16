@@ -1,0 +1,134 @@
+.page-wrapper-atencion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    margin-top: -20px;
+}
+
+.primary-heading-atencion {
+    text-align: center;
+    max-width: 700px;
+    /* Ajusta según sea necesario */
+    width: 100%;
+    font-size: 40px;
+    font-weight: bold;
+    word-spacing: 5px;
+    line-height: 1.1;
+    margin: 0 auto;
+    /* Centra el título horizontalmente */
+}
+
+.info-sections-atencion {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    top: 20px;
+}
+
+.footer-section-horario-container {
+    position: relative;
+    display: flex;
+    font-size: 18px;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    left: 180px;
+    color: #4c4c4c;
+    margin-top: 10px;
+    /* Baja los horarios ajustando este valor */
+}
+
+.footer-section-horario {
+    margin-left: -280px;
+    /* Reduce el espacio entre los elementos */
+}
+
+.footer-section-columns-horario,
+.footer-section-horario {
+    flex: 1;
+    text-align: left;
+    /* Ajusta según el diseño */
+}
+
+.horarios {
+    font-size: 1.2rem;
+    /* Ajusta el tamaño de fuente según sea necesario */
+    margin-top: 30px;
+    /* Añade espacio arriba y abajo */
+    color: #4c4c4c;
+    /* Ajusta el color según el diseño */
+    text-align: center;
+    /* Centra el texto dentro del elemento */
+    justify-content: space-between;
+    margin-left: -20px;
+}
+
+.footer-section-two {
+    font-size: 18px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    margin-top: 10px;
+    line-height: 10px;
+    margin-left: 100px;
+}
+
+.footer-section-labels,
+.footer-section-values {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-section-labels span,
+.footer-section-values span {
+    margin: 0.5rem 0;
+    color: #6a6a6a;
+}
+
+.contacto-section {
+    text-align: left;
+}
+
+.footer-section-values {
+    margin-left: -10px;
+    /* Reduce el espacio entre los elementos */
+}
+
+/* Icons */
+.span-terms {
+    line-height: 27px;
+    display: flex;
+    flex-direction: column;
+    /* Apila los elementos verticalmente */
+    justify-content: center;
+    align-items: center;
+    margin-top: 70px;
+    word-spacing: 5px;
+}
+
+.span-terms span {
+    margin: -3px 0;
+    /* Ajusta el margen superior e inferior para reducir el espacio */
+}
+
+.footer-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px; /* Ajusta este valor para subir los íconos */
+    margin-bottom: 20px;
+}
+
+.footer-icons svg {
+    font-size: 1.5rem;
+    margin-right: 1.25rem;
+    color: #585858;
+}
+
+.footer-icons svg:last-child {
+    margin-right: 0;
+}

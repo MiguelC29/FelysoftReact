@@ -36,6 +36,7 @@ import ViewAssociationCateProv from './pages/ViewAssociationCateProv';
 import ViewAssociationGenAutor from './pages/ViewAssociationGenAutor';
 import VerifyPage from './components/auth/VerifyPage';
 import { ResetPassword } from './components/auth/ResetPassword';
+import LandingPage from './components/landing-page/LandingPage';
 
 
 export default function App() {
@@ -45,7 +46,7 @@ export default function App() {
         {/* <Navbar /> */}
         <div className="content">
           <Routes>
-            <Route exact path='/' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
+            <Route exact path='/' element={<ProtectedRoute element={<LandingPage />} redirectTo="/perfil" />} />
             <Route exact path='/login' element={<ProtectedRoute element={<LoginPage />} redirectTo="/perfil" />} />
             <Route exact path='/registro' element={<ProtectedRoute element={<RegistrationPage />} redirectTo="/perfil" />} />
             <Route path="/activarCuenta" element={<ProtectedRoute element={<VerifyPage />} redirectTo="/perfil" />} />

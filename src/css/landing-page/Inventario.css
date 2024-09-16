@@ -1,0 +1,81 @@
+.home-banner-container {
+    display: flex; /* Usar flexbox para distribuir el espacio */
+    padding-top: 1rem;
+    position: relative;
+    width: 100%; /* Asegúrate de que el contenedor principal ocupe todo el ancho disponible */
+    height: 500px; /* Ajusta la altura según tus necesidades */
+}
+
+.home-bannerImage-container img {
+    width: 1000px !important;
+    height: 1000px !important;
+    transform: rotate(-1deg); /* Rotar la imagen en 10 grados */
+}
+
+.home-bannerImage-container {
+    position: absolute;
+    top: -330px;
+    right: 100px;
+    z-index: -2;
+    max-width: 700px;
+}
+
+.home-text-section {
+    max-width: 35%;
+    width: 35%;
+    position: absolute;
+    margin-top: 20px; /* Ajusta el valor según lo necesites */
+    right: 1300px;
+
+}
+
+.primary-heading-inventario {
+    line-height: 1.2;
+    position: relative;
+    text-align: center; /* Centra el texto */
+    width: 100%; /* Define un ancho específico */
+    font-size: 50px; /* Aumenta el tamaño de la fuente */
+    font-weight: bold; /* Asegura que el texto sea más grueso */
+    left: 200px;
+    top: 40px;
+}
+
+.primary-text-inventario{
+    position: relative;
+    text-align: center; /* Centra el texto */
+    width: 100%; /* Define un ancho específico */
+    font-size: 26px; /* Aumenta el tamaño de la fuente */
+    left: 210px;
+    top: 40px;
+
+}
+
+.secondary-button-inventario {
+    position: relative;
+    margin-bottom: -100px; /* Espacio debajo del botón para separar del título */
+    left: 420px;
+    top: 50px;
+}
+
+.home-image-section {
+    top: 30px;
+    position: absolute;
+    max-width: 55%;
+    width: 100%; /* Ancho específico */
+    height: 100%; /* Altura específica */
+    overflow: hidden;
+    flex: 1;
+    margin-left: 830px; /* Ajusta el margen para mover el contenedor a la derecha */
+    /* O usa transform para un movimiento más preciso */
+    /* transform: translateX(50px); */
+}
+
+.home-image-section img {
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Ajusta la imagen para cubrir el contenedor sin recortar de manera desigual */
+}
