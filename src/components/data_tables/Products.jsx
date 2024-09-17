@@ -177,11 +177,10 @@ export default function Products() {
             product.brand &&
             product.category &&
             product.provider &&
-            (operation === 1 ? file : true);
-            // Si el producto NO es nuevo, el precio de venta y el stock son obligatorios
-            //((operation === 1 && !product.isNew) ? product.salePrice && product.stock : true) &&
-            //(operation === 2 && product.salePrice);
-
+            // Si la operación es de registro (1), el archivo es obligatorio
+            (operation === 1 ? file : true) &&
+            // Si el producto NO es nuevo y la operación es 1 (registro), entonces el stock y el precio de venta son obligatorios
+            (operation === 1 && !product.isNew ? (product.stock && product.salePrice) : true);
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -406,22 +405,21 @@ export default function Products() {
                     {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
                 </div>
 
-
-                <div className="formgrid grid mt-5">
-                    {/* Solo mostrar el campo de precio de venta si el producto no es nuevo */}
-                    {!product.isNew && (
-                        <FloatInputNumberMoneyIcon
-                            className="field col"
-                            value={product.salePrice}
-                            onInputNumberChange={onInputNumberChange} field='salePrice'
-                            maxLength={9} required
-                            submitted={submitted}
-                            label='Precio de venta'
-                            errorMessage='Precio de venta es requerido.'
-                        />
-                    )}
-                    {/* Contenedor para el checkbox y el campo de stock */}
-                    {(operation === 1) && (
+                {(operation === 1) && (
+                    <div className="formgrid grid mt-5">
+                        {/* Solo mostrar el campo de precio de venta si el producto no es nuevo */}
+                        {!product.isNew && (
+                            <FloatInputNumberMoneyIcon
+                                className="field col"
+                                value={product.salePrice}
+                                onInputNumberChange={onInputNumberChange} field='salePrice'
+                                maxLength={9} required
+                                submitted={submitted}
+                                label='Precio de venta'
+                                errorMessage='Precio de venta es requerido.'
+                            />
+                        )}
+                        {/* Contenedor para el checkbox y el campo de stock */}
                         <div className="field col">
                             {/* Mostrar el campo de stock solo si el checkbox está desmarcado */}
                             {!product.isNew && (
@@ -447,9 +445,9 @@ export default function Products() {
                                 <label htmlFor="isNew">¿Es un producto realmente nuevo?</label>
                             </div>
                         </div>
-                    )}
-                </div>
-                <div className="formgrid grid mt-3">
+                    </div>
+                )}
+                <div className={`formgrid grid ${(operation === 1) ? 'mt-3' : 'mt-5'}`}>
                     <FloatDropdownSearchIcon
                         className="field col"
                         icon='stacks' field='category' required
