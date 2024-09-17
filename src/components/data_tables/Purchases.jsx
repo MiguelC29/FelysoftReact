@@ -16,6 +16,7 @@ export default function Purchases() {
     let emptyPurchase = {
         idPurchase: null,
         provider: '',
+        editorial: '',
         details: [],
         // payment
         methodPayment: '',
@@ -53,16 +54,18 @@ export default function Purchases() {
     const [detailsList, setDetailsList] = useState([]);
     const [books, setBooks] = useState([]);
     const [products, setProducts] = useState([]);
+    const [editorials, setEditorials] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState(null);
+    const [selectedEditorial, setSelectedEditorial] = useState(null);
     const [selectedMethodPayment, setSelectedMethodPayment] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
     const [purchaseDialog, setPurchaseDialog] = useState(false);
     const [purchaseDetailDialog, setPurchaseDetailDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [isProduct, setIsProduct] = useState(true); // true para productos, false para libros
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErrors] = useState({});
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [isProductSelected, setIsProductSelected] = useState(null); // null, 'product', or 'book'
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -109,8 +112,8 @@ export default function Purchases() {
         return Request_Service.getData('/provider/all', setProviders);
     }
 
-    const getBooks = () => {
-        return Request_Service.getData('/book/all', setBooks);
+    const getEditorials = () => {
+        return Request_Service.getData('/editorial/all', setEditorials);
     }
 
     const handleProductChange = (providerId) => {
@@ -122,37 +125,20 @@ export default function Purchases() {
         }
     };
 
-    const openNew = () => {
-        setPurchase(emptyPurchase);
-        setTitle('Registrar Compra');
-        setSelectedProvider('');
-        setSelectedMethodPayment('');
-        setSelectedState('');
-        setIsProductSelected(null);
-        setProducts([]);
-        getProviders();
-        getBooks();
-        setSubmitted(false);
-        setErrors({});
-        setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
-        setPurchaseDialog(true);
+    const handleEditorialChange = (editorialId) => {
+        setSelectedEditorial(editorialId);
+        if (editorialId) {
+            Request_Service.getData(`/book/booksByEditorial/${editorialId.idEditorial}`, setBooks);
+        } else {
+            setProducts([]);
+        }
     };
-
-    const openDetail = (purchase) => {
-        setPurchase({ ...purchase });
-        Request_Service.getData(`/detail/purchaseDetails/${purchase.idPurchase}`, setDetailsList);
-        setTitle('Datos Compra');
-        setPurchaseDetailDialog(true);
-    }
 
     const handleProductSelection = (index, product) => {
         const updatedDetails = [...details];
         updatedDetails[index].product = product;
         if (product) {
             updatedDetails[index].book = null;
-            if (isProductSelected === null) {
-                setIsProductSelected('product');
-            }
 
             // Actualiza el salePrice con el valor del producto seleccionado
             if (product) {
@@ -169,12 +155,38 @@ export default function Purchases() {
         updatedDetails[index].book = book;
         if (book) {
             updatedDetails[index].product = null;
-            if (isProductSelected === null) {
-                setIsProductSelected('book');
-            }
         }
         setDetails(updatedDetails);
     };
+
+    const openNew = (isProduct) => {
+        setPurchase(emptyPurchase);
+        setTitle('Registrar Compra');
+        setSelectedProvider('');
+        setSelectedMethodPayment('');
+        setSelectedState('');
+        setSelectedEditorial('');
+        setProducts([]);
+        setSubmitted(false);
+        setErrors({});
+        setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
+        setPurchaseDialog(true);
+    
+        if (isProduct) {
+            // Si es un producto, cargar proveedores y productos
+            getProviders();
+        } else {
+            // Si es un libro, cargar libros y editoriales
+            getEditorials();
+        }
+    };
+
+    const openDetail = (purchase) => {
+        setPurchase({ ...purchase });
+        Request_Service.getData(`/detail/purchaseDetails/${purchase.idPurchase}`, setDetailsList);
+        setTitle('Datos Compra');
+        setPurchaseDetailDialog(true);
+    }
 
     const handleDetailChange = (index, field, value) => {
         const updatedDetails = [...details];
@@ -242,11 +254,10 @@ export default function Purchases() {
         // Verificar si los campos requeridos están presentes y válidos
         const isValid =
             purchase.total &&
-            purchase.provider &&
             purchase.methodPayment &&
             purchase.state &&
             details.length > 0 &&
-            details.every(detail => (detail.product && detail.quantity && detail.unitPrice && detail.salePrice) || (detail.book && detail.unitPrice));
+            details.every(detail => (detail.product && purchase.provider && detail.quantity && detail.unitPrice && detail.salePrice) || (detail.book && purchase.editorial && detail.unitPrice && detail.salePrice));
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
@@ -278,6 +289,7 @@ export default function Purchases() {
         parameters = {
             details: processedDetails,
             fkIdProvider: purchase.provider.idProvider,
+            fkIdEditorial: purchase.editorial.idEditorial,
             //payment
             total: purchase.total,
             state: purchase.state,
@@ -342,6 +354,25 @@ export default function Purchases() {
         );
     };
 
+    const selectedEditorialTemplate = (option, props) => {
+        if (option) {
+            return (
+                <div className="flex align-items-center">
+                    <div>{option.name}</div>
+                </div>
+            );
+        }
+        return <span>{props.placeholder}</span>;
+    };
+
+    const editorialOptionTemplate = (option) => {
+        return (
+            <div className="flex align-items-center">
+                <div>{option.name}</div>
+            </div>
+        );
+    };
+
     // Template para mostrar el producto seleccionado
     const selectedProductTemplate = (option, props) => {
         if (option) {
@@ -398,7 +429,8 @@ export default function Purchases() {
         { body: detailsBodyTemplate, exportable: false, style: { minWidth: '1rem' } },
         { field: 'date', header: 'Fecha', body: dateTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'total', header: 'Total', body: priceBodyTemplate, sortable: true, style: { minWidth: '10rem' } },
-        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } }
+        { field: 'provider.name', header: 'Proveedor', sortable: true, style: { minWidth: '8rem' } },
+        { field: 'editorial.name', header: 'Editorial', sortable: true, style: { minWidth: '8rem' } }
     ];
 
     // EXPORT DATA
@@ -410,7 +442,7 @@ export default function Purchases() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplatePurchase(openNew)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplatePurchase(openNew, setIsProduct)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -423,19 +455,34 @@ export default function Purchases() {
                 />
 
                 <Dialog visible={purchaseDialog} style={{ width: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
-                    <FloatDropdownSearchIcon
-                        className="field mt-5"
-                        icon='local_shipping' field='provider' required autoFocus
-                        value={selectedProvider}
-                        handleChange={handleProductChange}
-                        onInputNumberChange={onInputNumberChange}
-                        options={providers} optionLabel="name"
-                        placeholder="Seleccionar proveedor"
-                        valueTemplate={selectedProviderTemplate}
-                        itemTemplate={providerOptionTemplate}
-                        submitted={submitted} fieldForeign={purchase.provider}
-                        label="Proveedor" errorMessage="Proveedor es requerido."
-                    />
+                    {isProduct ?
+                        <FloatDropdownSearchIcon
+                            className="field mt-5"
+                            icon='local_shipping' field='provider' required autoFocus
+                            value={selectedProvider}
+                            handleChange={handleProductChange}
+                            onInputNumberChange={onInputNumberChange}
+                            options={providers} optionLabel="name"
+                            placeholder="Seleccionar proveedor"
+                            valueTemplate={selectedProviderTemplate}
+                            itemTemplate={providerOptionTemplate}
+                            submitted={submitted} fieldForeign={purchase.provider}
+                            label="Proveedor" errorMessage="Proveedor es requerido."
+                        /> :
+                        <FloatDropdownSearchIcon
+                            className="field mt-5"
+                            icon='local_shipping' field='editorial' required autoFocus
+                            value={selectedEditorial}
+                            handleChange={handleEditorialChange}
+                            onInputNumberChange={onInputNumberChange}
+                            options={editorials} optionLabel="name"
+                            placeholder="Seleccionar editorial"
+                            valueTemplate={selectedEditorialTemplate}
+                            itemTemplate={editorialOptionTemplate}
+                            submitted={submitted} fieldForeign={purchase.editorial}
+                            label="Editorial" errorMessage="Editorial es requerida."
+                        />
+                    }
                     <div className="formgrid grid mt-5">
                         <FloatInputNumberMoneyIcon
                             className="field col"
@@ -477,7 +524,7 @@ export default function Purchases() {
                                         <strong>{index + 1}.</strong>
                                     </div>
                                     {/* Producto Dropdown */}
-                                    {isProductSelected !== 'book' && (
+                                    {isProduct ? (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
@@ -507,10 +554,7 @@ export default function Purchases() {
                                             {submitted && !detail.product && !detail.book && <small className="p-error">Producto es requerido.</small>}
                                             {errors[`product_${index}`] && <small className="p-error">{errors[`product_${index}`]}</small>}
                                         </div>
-                                    )}
-
-                                    {/* Libro Dropdown */}
-                                    {isProductSelected !== 'product' && (
+                                    ) : (
                                         <div className="field col-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
@@ -533,7 +577,7 @@ export default function Purchases() {
                                                             'p-invalid': (submitted && (!detail.book && !errors.book && !detail.product)) || errors[`book_${index}`]
                                                         })}`}
 
-                                                        disabled={(!selectedProvider || !!detail.product) && 'disabled'}
+                                                        disabled={(!selectedEditorial || !!detail.product) && 'disabled'}
                                                     />
                                                     <label htmlFor={`book-${index}`} className="font-bold">Libro</label>
                                                 </FloatLabel>
@@ -544,7 +588,7 @@ export default function Purchases() {
                                     )}
 
                                     {/* Cantidad */}
-                                    {isProductSelected !== 'book' && (
+                                    {isProduct && (
                                         <FloatInputNumberIcon
                                             className="field col-2"
                                             icon='production_quantity_limits'
@@ -560,28 +604,27 @@ export default function Purchases() {
 
                                     {/* Precio Unitario */}
                                     <FloatInputNumberMoneyIcon
-                                        className="field col-2"
+                                        className="field col-3"
                                         value={detail.unitPrice}
                                         onInputNumberChange={(e) => handleDetailChange(index, 'unitPrice', e.value)}
                                         field='unitPrice'
-                                        label='Precio Unitario'
+                                        label='Precio de Compra'
                                         required
                                         submitted={submitted}
-                                        errorMessage='Precio unitario es requerido.'
+                                        errorMessage='Precio de compra es requerido.'
                                     />
 
                                     {/* Precio de Venta */}
-                                    {selectedProvider && isProductSelected === 'product' && (
-                                        <FloatInputNumberMoneyIcon
-                                            className="field col-2"
-                                            value={detail.salePrice}
-                                            onInputNumberChange={(e) => handleDetailChange(index, 'salePrice', e.value)}
-                                            field='salePrice'
-                                            label='Precio de Venta'
-                                            required
-                                            submitted={submitted}
-                                            errorMessage='Precio de venta es requerido.'
-                                        />)}
+                                    <FloatInputNumberMoneyIcon
+                                        className="field col-3"
+                                        value={detail.salePrice}
+                                        onInputNumberChange={(e) => handleDetailChange(index, 'salePrice', e.value)}
+                                        field='salePrice'
+                                        label={isProduct ? 'Precio de Venta' : 'Precio por Hora'}
+                                        required
+                                        submitted={submitted}
+                                        errorMessage={`Precio ${isProduct ? 'de venta' : 'por hora'} es requerido.`}
+                                    />
                                     {/* Botón de eliminar */}
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
                                 </div>
@@ -645,7 +688,7 @@ export default function Purchases() {
                                     <tr>
                                         <th>Producto / Libro</th>
                                         <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
+                                        <th>Precio de Compra</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
