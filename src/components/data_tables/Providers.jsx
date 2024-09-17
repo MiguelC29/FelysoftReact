@@ -39,6 +39,9 @@ export default function Providers() {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
+    const [nitValid, setNitValid] = useState(true);
+    const [emailValid, setEmailValid] = useState(true);
+    const [phoneValid, setPhoneValid] = useState(true);
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -120,6 +123,10 @@ export default function Providers() {
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        if (!validateNit(provider.nit) || !validatePhone(provider.phoneNumber) || !validateEmail(provider.email)) {
             return;
         }
 
@@ -257,6 +264,38 @@ export default function Providers() {
         );
     };
 
+    const handleNITChange = (e) => {
+        let nit = e.target.value.replace(/[^0-9]/g, '');  // Solo permite números
+        if (nit.length > 8) {
+            // Inserta el guion antes del último dígito si el NIT tiene más de 8 dígitos
+            nit = nit.slice(0, nit.length - 1) + '-' + nit.slice(nit.length - 1);
+        }
+        // Limitar la longitud total a 12 caracteres (10 dígitos + 1 guion + 1 dígito final)
+        if (nit.length > 12) {
+            nit = nit.slice(0, 12);
+        }
+
+        setNitValid(validateNit(e.target.value));
+
+        onInputChange({ target: { value: nit } }, 'nit');  // Actualiza el NIT en el estado
+    };
+
+    const validateNit = (nit) => {
+        // Convierte el valor a cadena para evitar errores de longitud
+        const nitStr = nit ? nit.toString() : '';
+        return nitStr.length >= 9 && nitStr.length <= 12;
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePhone = (phoneNumber) => {
+        const phoneNumberStr = phoneNumber ? phoneNumber.toString() : '';
+        return phoneNumberStr.length === 10;
+    };
+
     const columns = [
         { field: 'nit', header: 'Nit', sortable: true, style: { minWidth: '12rem' } },
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
@@ -293,10 +332,13 @@ export default function Providers() {
                             icon='badge'
                             value={provider.nit}
                             onInputChange={onInputChange} field='nit'
-                            maxLength={10} required autoFocus
+                            handle={handleNITChange}
+                            maxLength={12} required autoFocus
                             submitted={submitted}
                             label='NIT'
                             errorMessage='NIT es requerido.'
+                            valid={nitValid}
+                            validMessage='El nit debe tener de 9 a 12 dígitos.'
                         />
                         <FloatInputTextIcon
                             className="field col"
@@ -315,21 +357,27 @@ export default function Providers() {
                             icon='call'
                             value={provider.phoneNumber}
                             onInputNumberChange={onInputNumberChange} field='phoneNumber'
+                            onChange={(e) => setPhoneValid(validatePhone(e.value))}
                             useGrouping={false}
                             maxLength={10} required
                             submitted={submitted}
                             label='Número de celular'
                             errorMessage='Número de celular es requerido.'
+                            small={provider.phoneNumber && !phoneValid}
+                            smallMessage='El número de celular debe tener 10 dígitos.'
                         />
                         <FloatInputTextIcon
                             className="field col"
                             icon='mail'
                             value={provider.email}
                             onInputChange={onInputChange} field='email'
+                            handle={(e) => setEmailValid(validateEmail(e.target.value))}
                             maxLength={50} required placeholder='mi_correo@micorreo.com'
                             submitted={submitted}
                             label='Correo Eletrónico'
                             errorMessage='Correo Eletrónico es requerido.'
+                            valid={emailValid}
+                            validMessage='Correo Eletrónico no es válido.'
                         />
                     </div>
                 </Dialog>
