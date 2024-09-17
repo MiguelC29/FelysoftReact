@@ -268,10 +268,11 @@ export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled) => {
     );
 };
 
-export const leftToolbarTemplatePurchase = (openNew) => {
+export const leftToolbarTemplatePurchase = (openNew, setIsProduct) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+            <Button label="Productos" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(true); openNew(true);}} style={{ background: '#265073', border: 'none' }} />
+            <Button label="Libros" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(false); openNew(false);}} style={{ background: '#265073', border: 'none' }} />
         </div>
     );
 };
