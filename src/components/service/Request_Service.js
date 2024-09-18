@@ -275,6 +275,26 @@ class Request_Service {
         setTable(emptyData);
     }
 
+    static async updateProfileImage(id, parameters, toast) {
+        const changeImgUrl = this.BASE_URL + '/user/updateImageProfile/' + id;
+        const token = this.getToken();
+        await axios.put(changeImgUrl, parameters,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                let type = response.data['status'];
+                if (type === 'success') {
+                    toast.current.show({ severity: 'success', summary: 'Cambio imagen usuario', detail: 'Imagen de perfil actualizada', life: 3000 });
+                }
+                return response.data;
+            })
+            .catch((error) => {
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'No se pudo actualizar la imagen de perfil', life: 3000 });
+                console.error('Error actualizando imagen de perfil:', error);
+            });
+    }
+
     static async cancelReserves(url, id, setData, toast, setTable, mainUrl) {
         const cancelUrl = this.BASE_URL + url + 'cancel/' + id;
         const token = this.getToken();
