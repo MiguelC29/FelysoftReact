@@ -191,6 +191,10 @@ export default function Products() {
             return;
         }
 
+        if (imageError) {
+            return;
+        }
+
         let url, method;
         const formData = new FormData();
 

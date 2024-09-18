@@ -54,6 +54,8 @@ function ProfilePage() {
         INVENTORY_MANAGER: 'GERENTE DE INVENTARIO',
         CUSTOMER: 'CLIENTE',
     }
+    // Renderizar el fondo desde localStorage
+    const backgroundImage = localStorage.getItem('backgroundImage');
 
     const URL = '/user/';
     const [user, setUser] = useState(emptyUser);
@@ -66,6 +68,7 @@ function ProfilePage() {
     const [confirmDialogPasswordVisible, setConfirmDialogPasswordVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [file, setFile] = useState(null);
+    const [imageError, setImageError] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const toast = useRef(null);
     const { logout } = useAuth();
@@ -87,13 +90,20 @@ function ProfilePage() {
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setSelectedImage(reader.result);
-        };
-
         if (file) {
+            // Validar el tipo de archivo
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
+                setSelectedImage(null); // Limpiar la vista previa
+                return;
+            }
+            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
             reader.readAsDataURL(file);
         }
     };
@@ -165,6 +175,22 @@ function ProfilePage() {
         return Role[role] || "USUARIO";
     };
 
+    const handleBackgroundChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                localStorage.setItem('backgroundImage', base64String); // Guardar en localStorage
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    // Esta función simula el clic en el input de tipo file cuando se hace clic en el botón
+    const handleClick = () => {
+        document.getElementById('input-banner').click();
+    };
+
     const handleSubmit = async () => {
         try {
             setSubmitted(true);
@@ -207,9 +233,12 @@ function ProfilePage() {
             return;
         }
 
+        if (imageError) {
+            return;
+        }
+
         const formData = new FormData();
-        console.log(user.idUser);
-        
+
         if (user.idUser) {
             formData.append('idUser', user.idUser);
             formData.append('image', file);
@@ -314,7 +343,7 @@ function ProfilePage() {
             <div className='profile-page-container'>
                 <section className="seccion-perfil-usuario">
                     <div className="perfil-usuario-header">
-                        <div className="perfil-usuario-portada">
+                        <div className="perfil-usuario-portada" style={{ backgroundImage: `url(${backgroundImage})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '300px' }}>
                             <div className="perfil-usuario-avatar">
                                 {user.image ?
                                     <img id='imagen-perfil'
@@ -327,9 +356,17 @@ function ProfilePage() {
                                     <i className="far fa-image"></i>
                                 </button>
                             </div>
-                            <button type="button" className="boton-portada">
+                            <button type="button" className="boton-portada" onClick={handleClick}>
                                 <i className="far fa-image"></i> Cambiar fondo
                             </button>
+                            {/* Input de tipo file oculto */}
+                            <input
+                                type="file"
+                                id="input-banner"
+                                style={{ display: 'none' }}
+                                accept="image/*"
+                                onChange={handleBackgroundChange}
+                            />
                         </div>
                     </div>
                     <div className="perfil-usuario-body">
@@ -543,6 +580,10 @@ function ProfilePage() {
                             maxFileSize={2000000}
                             onSelect={handleFileUpload}
                         />
+                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {imageError && <small className="p-error">{imageError}</small>}
+                        {/*TODO: desplegar modal con información detallada de los productos*/}
+                        {submitted && !file && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
                     </div>
                     <div className="field col">
                         {selectedImage && (
