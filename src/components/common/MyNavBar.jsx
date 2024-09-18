@@ -100,6 +100,7 @@ const BadgeStyled = styled(Badge)(({ theme }) => ({
 
 export default function NavBar({ open, handleDrawerOpen, Icon }) {
     const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
     const isSalesPerson = UserService.isSalesPerson();
     const [dateTime, setDateTime] = useState(new Date());
     const { getCartItemCount } = useCart();
@@ -183,6 +184,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         {dateTime.toLocaleString()}
                     </div>
                 </div>
+                {(isAdmin || isInventoryManager) && (
                 <IconButton
                     color="inherit"
                     onClick={handleNotificationClick}
@@ -192,6 +194,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         <BadgeStyled value={4} severity="info" /> {/* Número de notificaciones */}
                     </span>
                 </IconButton>
+                )}
                 {isAuthenticated && profile && (
                     <>
                         <ProfileImage
@@ -250,6 +253,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 )}
                 <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
                 {/* Aquí puedes agregar el menú de notificaciones si lo necesitas */}
+                {(isAdmin || isInventoryManager) && (
                 <Menu
                     anchorEl={notificationAnchorEl}
                     open={openNotificationMenu}
@@ -285,6 +289,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         </NotificationContent>
                     </NotificationMenuItem>
                 </Menu>
+                )}
             </Toolbar>
         </AppBar>
     );
