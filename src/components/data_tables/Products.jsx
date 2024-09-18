@@ -454,6 +454,7 @@ export default function Products() {
                                 value={product.salePrice}
                                 onInputNumberChange={onInputNumberChange} field='salePrice'
                                 maxLength={9} required
+                                min={50}
                                 submitted={submitted}
                                 label='Precio de venta'
                                 errorMessage='Precio de venta es requerido.'

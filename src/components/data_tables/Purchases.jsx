@@ -171,7 +171,7 @@ export default function Purchases() {
         setErrors({});
         setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
         setPurchaseDialog(true);
-    
+
         if (isProduct) {
             // Si es un producto, cargar proveedores y productos
             getProviders();
@@ -650,7 +650,7 @@ export default function Purchases() {
                             </div>
                             <div className="col-md-6 mb-3">
                                 <div className="d-flex align-items-center justify-content-center">
-                                    <span className="material-symbols-outlined me-2">{(purchase.provider) ? 'local_shipping' :'collections_bookmark'}</span>
+                                    <span className="material-symbols-outlined me-2">{(purchase.provider) ? 'local_shipping' : 'collections_bookmark'}</span>
                                     <div>
                                         <label htmlFor="provider" className="font-bold d-block">{(purchase.provider) ? 'Proveedor' : 'Editorial'}</label>
                                         <p>{(purchase.provider) ? purchase.provider.name : purchase.editorial.name}</p>

@@ -51,9 +51,9 @@ const MoneyFloatInputNumber = (props) => {
             <InputNumber
                 id={props.field}
                 value={props.value}
-                onValueChange={(e) => props.onInputNumberChange(e, props.field)}
+                onValueChange={((e) => props.onInputNumberChange(e, props.field))}
                 useGrouping={props.useGrouping}
-                min={50}
+                min={props.min}
                 maxLength={props.maxLength}
                 required={props.required}
                 autoFocus={props.autoFocus}
