@@ -67,8 +67,9 @@ export default function Reserves() {
     }, [onlyDisabled, fetchReserves]);
 
     const getBooks = () => {
-        return Request_Service.getData('/book/all', setBooks);
+        return Request_Service.getData('/book/inInventory', setBooks);
     }
+
 
     const getUsers = () => {
         return Request_Service.getData('/user/all', (data) => {
@@ -388,7 +389,7 @@ export default function Reserves() {
                                 min={1}
                                 max={3}
                                 showButtons
-                                onKeyDown={(e)=>e.preventDefault()}
+                                onKeyDown={(e) => e.preventDefault()}
                                 className={classNames({ 'p-invalid': submitted && (!reserve.time || !(reserve.time > 0 && reserve.time <= 3)) })}
                             />
                         </FloatLabel>
@@ -402,7 +403,7 @@ export default function Reserves() {
                             <span className="material-symbols-outlined">description</span>
                         </span>
                         <FloatLabel>
-                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required  maxLength={105} className={classNames({ 'p-invalid': submitted && !reserve.description })} />
+                            <InputText id="description" value={reserve.description} onChange={(e) => onInputChange(e, 'description')} required maxLength={105} className={classNames({ 'p-invalid': submitted && !reserve.description })} />
                             <label htmlFor="description" className="font-bold">Descripción</label>
                         </FloatLabel>
                     </div>

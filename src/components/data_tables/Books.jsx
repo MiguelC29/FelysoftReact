@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, formatCurrency, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
+import { DialogDelete, DialogFooter, actionBodyTemplate, confirmDelete, confirmDialog, confirmDialogFooter, deleteDialogFooter, exportCSV, exportExcel, exportPdf, header, inputChange, inputNumberChange, leftToolbarTemplate, rightToolbarTemplateExport } from '../../functionsDataTable';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -175,7 +175,7 @@ export default function Books() {
             book.editorial &&
             book.description.trim() &&
             book.yearPublication &&
-            book.priceTime &&
+            //book.priceTime &&
             book.genre &&
             book.author &&
             ((operation === 1) ? file : book.image);
@@ -196,7 +196,7 @@ export default function Books() {
             formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
             formData.append('yearPublication', book.yearPublication);
-            formData.append('priceTime', book.priceTime);
+            //formData.append('priceTime', book.priceTime);
             formData.append('genre', book.genre.idGenre);
             formData.append('author', book.author.idAuthor);
             formData.append('image', file);
@@ -209,7 +209,7 @@ export default function Books() {
             formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
             formData.append('yearPublication', book.yearPublication);
-            formData.append('priceTime', book.priceTime);
+            //formData.append('priceTime', book.priceTime);
             formData.append('genre', book.genre.idGenre);
             formData.append('author', book.author.idAuthor);
             formData.append('image', file);
@@ -258,9 +258,6 @@ export default function Books() {
         }
     };
 
-    const priceBodyTemplate = (rowData) => {
-        return formatCurrency(rowData.priceTime);
-    };
 
     const actionBodyTemplateB = (rowData) => {
         return actionBodyTemplate(rowData, editBook, confirmDeleteBook, onlyDisabled, handleEnable);
@@ -341,7 +338,6 @@ export default function Books() {
         { field: 'editorial.name', header: 'Editorial', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
         { field: 'yearPublication', header: 'Año de Publicación', sortable: true, style: { minWidth: '10rem' } },
-        { field: 'priceTime', header: 'Precio Tiempo', body: priceBodyTemplate, sortable: true, style: { minWidth: '8rem' } },
         { field: 'genre.name', header: 'Género', sortable: true, style: { minWidth: '10rem' } },
         { field: 'author.name', header: 'Autor', sortable: true, style: { minWidth: '10rem' } },
         { field: 'image', header: 'Imagen', body: imageBodyTemplate, exportable: false, style: { minWidth: '8rem' } },
@@ -426,18 +422,6 @@ export default function Books() {
                             </FloatLabel>
                         </div>
                         {submitted && !book.yearPublication && <small className="p-error">Año de Publicación es requerida.</small>}
-                    </div>
-                    <div className="field col">
-                        <div className="p-inputgroup flex-1">
-                            <span className="p-inputgroup-addon">
-                                <span className="material-symbols-outlined">monetization_on</span>
-                            </span>
-                            <FloatLabel>
-                                <InputNumber id="priceTime" value={book.priceTime} onValueChange={(e) => onInputNumberChange(e, 'priceTime')} mode="decimal" currency="COP" locale="es-CO" required className={classNames({ 'p-invalid': submitted && !book.priceTime })} />
-                                <label htmlFor="priceTime" className="font-bold">Precio de venta</label>
-                            </FloatLabel>
-                        </div>
-                        {submitted && !book.priceTime && <small className="p-error">Precio Tiempo es requerido.</small>}
                     </div>
                 </div>
                 <div className="formgrid grid mt-3">
