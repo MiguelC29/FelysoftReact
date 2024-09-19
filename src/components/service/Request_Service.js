@@ -297,7 +297,7 @@ class Request_Service {
             });
     }
 
-    static async cancelReserves(url, id, setData, toast, setTable, mainUrl) {
+    static async cancelReserves(url, id, setData, toast, setTable, mainUrl, setLoading) {
         const cancelUrl = this.BASE_URL + url + 'cancel/' + id;
         const token = this.getToken();
         await axios.put(cancelUrl, {},
@@ -305,6 +305,7 @@ class Request_Service {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then((response) => {
+                setLoading(false);
                 let type = response.data['status'];
                 let msg = response.data['data'];
                 if (type === 'success') {
@@ -314,6 +315,7 @@ class Request_Service {
                 return response.data;
             })
             .catch((error) => {
+                setLoading(false);
                 toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'No se pudo cancelar la reserva', life: 3000 });
                 console.log(error);
             });

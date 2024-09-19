@@ -7,6 +7,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { Alert } from 'react-bootstrap';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 export default function TheirReserves() {
 
@@ -15,6 +16,7 @@ export default function TheirReserves() {
     const [reserve, setReserve] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [loading, setLoading] = useState(false); // Estado de carga
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -32,7 +34,8 @@ export default function TheirReserves() {
     }, [fetchReserves]);
 
     const cancelReserve = () => {
-        Request_Service.cancelReserves(URL, reserve.idReserve, setReserves, toast, setReserve, URL.concat('reservesByUser'));
+        setLoading(true);
+        Request_Service.cancelReserves(URL, reserve.idReserve, setReserves, toast, setReserve, URL.concat('reservesByUser'), setLoading);
         setConfirmDialogVisible(false);
     };
 
@@ -98,6 +101,7 @@ export default function TheirReserves() {
              <Alert variant="success">
                 Recuerda: Puedes ir el día de tú Reserva de 9:40 am a 4:00 pm.
             </Alert>
+            <LoadingOverlay visible={loading} />
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
                 <CustomDataTable

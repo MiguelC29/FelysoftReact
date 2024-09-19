@@ -147,9 +147,9 @@ export default function ReservesCus() {
         };
 
         if (isValid) {
+            setReserveDialog(false);
             setLoading(true);
             await Request_Service.sendRequestReserve('POST', parameters, url, toast, '/inventory/invBooksNoReserved', setBooks, setLoading);
-            setReserveDialog(false);
         }
     };
 
@@ -268,8 +268,8 @@ export default function ReservesCus() {
 
     return (
         <div className="card">
+         <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Toast ref={toast} position="bottom-right" />
-            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Alert variant="primary">
                 Solo puedes reservar un libro máximo por 3 horas.
             </Alert>
