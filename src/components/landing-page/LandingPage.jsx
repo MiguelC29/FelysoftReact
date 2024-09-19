@@ -17,8 +17,8 @@ export default function LandingPage() {
       <Reservas />
       <Servicios />
       <Desarrolladores />
-      <Contacto />
       <Faqs />
+      <Contacto />
       <AtencionCliente />
     </div>
   )

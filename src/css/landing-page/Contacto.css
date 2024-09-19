@@ -85,12 +85,6 @@
 }
 
 
-
-
-
-
-
-
 .secondary-button-contacto {
     margin-top: 10px; /* Espacio entre el input y el botón */
     padding: 10px 20px;
@@ -104,11 +98,6 @@
     align-items: center;
     justify-content: center;
 }
-
-
-
-
-
 
 .secondary-button-contacto {
     padding: 14px; /* Ajusta el tamaño del botón */
@@ -125,7 +114,6 @@
     align-items: center; /* Alinea verticalmente el ícono y el texto */
     justify-content: center; /* Centra el contenido horizontalmente */
 }
-
 
 .secondary-button-contacto:hover {
     color: #484848; /* Color del texto al pasar sobre el botón */

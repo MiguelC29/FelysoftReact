@@ -68,7 +68,6 @@ export default function Faqs() {
         <div>
             <h1 className='text-center'>Preguntas Frecuentes</h1>
             <div className="faq-tabs">
-                {/* Pestañas para seleccionar el módulo */}
                 <div className="tabs">
                     {Object.keys(faqsData).map((tab) => (
                         <button
@@ -81,9 +80,8 @@ export default function Faqs() {
                     ))}
                 </div>
 
-                {/* Contenido de las FAQs según el módulo seleccionado */}
                 <div className="tab-content">
-                    <FaqSection faqs={faqsData[activeTab]} />
+                    <FaqSection faqs={faqsData[activeTab]} activeTab={activeTab} />
                 </div>
             </div>
         </div>

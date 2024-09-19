@@ -34,17 +34,19 @@
     background-color: #f1f1f1;
 }
 
-.faq-title::after {
-    content: "+";
+.faq-icon {
+    margin-left: 10px;
     font-size: 1.5em;
     color: #555;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* Transiciones para transformar y opacidad */
 }
 
-.faq-content.open .faq-title::after {
-    content: "-";
+.faq-title.open .faq-icon {
     transform: rotate(180deg);
+    /* Rotación del ícono al abrir */
 }
+
 
 .faq-content {
     max-height: 0;
@@ -101,7 +103,7 @@
 }
 
 .tab-button.active {
-    background-color: #007bff;
+    background-color: rgb(25, 87, 168);
     color: white;
 }
 
