@@ -171,7 +171,7 @@ export default function Purchases() {
         setErrors({});
         setDetails([{ ...emptyDetail }]); // Inicializa con un detalle vacío
         setPurchaseDialog(true);
-    
+
         if (isProduct) {
             // Si es un producto, cargar proveedores y productos
             getProviders();
@@ -471,7 +471,7 @@ export default function Purchases() {
                         /> :
                         <FloatDropdownSearchIcon
                             className="field mt-5"
-                            icon='local_shipping' field='editorial' required autoFocus
+                            icon='collections_bookmark' field='editorial' required autoFocus
                             value={selectedEditorial}
                             handleChange={handleEditorialChange}
                             onInputNumberChange={onInputNumberChange}
@@ -520,7 +520,7 @@ export default function Purchases() {
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
                                 <div className="formgrid grid mt-3 align-items-center">
-                                    <div className="col-1">
+                                    <div className="col-05">
                                         <strong>{index + 1}.</strong>
                                     </div>
                                     {/* Producto Dropdown */}
@@ -650,10 +650,10 @@ export default function Purchases() {
                             </div>
                             <div className="col-md-6 mb-3">
                                 <div className="d-flex align-items-center justify-content-center">
-                                    <span className="material-symbols-outlined me-2">local_shipping</span>
+                                    <span className="material-symbols-outlined me-2">{(purchase.provider) ? 'local_shipping' : 'collections_bookmark'}</span>
                                     <div>
-                                        <label htmlFor="provider" className="font-bold d-block">Proveedor</label>
-                                        <p>{(purchase.provider) && purchase.provider.name}</p>
+                                        <label htmlFor="provider" className="font-bold d-block">{(purchase.provider) ? 'Proveedor' : 'Editorial'}</label>
+                                        <p>{(purchase.provider) ? purchase.provider.name : purchase.editorial.name}</p>
                                     </div>
                                 </div>
                             </div>
@@ -686,7 +686,7 @@ export default function Purchases() {
                             <table className="table table-bordered table-hover text-center">
                                 <thead>
                                     <tr>
-                                        <th>Producto / Libro</th>
+                                        <th>{purchase.provider ? 'Producto' : 'Libro'}</th>
                                         <th>Cantidad</th>
                                         <th>Precio de Compra</th>
                                         <th>Subtotal</th>

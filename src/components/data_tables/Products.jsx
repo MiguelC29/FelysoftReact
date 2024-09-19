@@ -47,6 +47,7 @@ export default function Products() {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
+    const [expiryDateError, setExpiryDateError] = useState(''); // Estado para el error de la fecha
     const [title, setTitle] = useState('');
     const toast = useRef(null);
     const dt = useRef(null);
@@ -133,6 +134,7 @@ export default function Products() {
         setOperation(1);
         setSubmitted(false);
         setProductDialog(true);
+        setExpiryDateError('');
     };
 
     const editProduct = (product) => {
@@ -148,6 +150,7 @@ export default function Products() {
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
+        setExpiryDateError('');
     };
 
     const toggleDisabled = () => {
@@ -177,15 +180,18 @@ export default function Products() {
             product.brand &&
             product.category &&
             product.provider &&
-            (operation === 1 ? file : true);
-            // Si el producto NO es nuevo, el precio de venta y el stock son obligatorios
-            //((operation === 1 && !product.isNew) ? product.salePrice && product.stock : true) &&
-            //(operation === 2 && product.salePrice);
-
+            // Si la operación es de registro (1), el archivo es obligatorio
+            (operation === 1 ? file : true) &&
+            // Si el producto NO es nuevo y la operación es 1 (registro), entonces el stock y el precio de venta son obligatorios
+            (operation === 1 && !product.isNew ? (product.stock && product.salePrice) : true);
 
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        if (imageError) {
             return;
         }
 
@@ -341,6 +347,27 @@ export default function Products() {
         );
     };
 
+    // Función para obtener la fecha actual + 7 días en formato 'YYYY-MM-DD'
+    const getMinExpiryDate = () => {
+        const today = new Date();
+        today.setDate(today.getDate() + 7); // Sumar 7 días
+        return today.toISOString().split('T')[0]; // Convertir a 'YYYY-MM-DD'
+    };
+
+    const handleDateValidation = (e) => {
+        const inputDate = e.target.value; // Obtener la fecha ingresada
+        const minDate = getMinExpiryDate(); // Obtener la fecha mínima (hoy + 7 días)
+
+        // Validar si la fecha ingresada es válida
+        if (inputDate && inputDate < minDate) {
+            // Si la fecha es anterior a la mínima, mostrar error o resetear
+            setExpiryDateError('La fecha debe ser al menos una semana después de hoy.'); // Establecer el error
+            onInputChange({ target: { value: '' } }, 'expiryDate'); // Resetear el campo si la fecha no es válida
+        } else {
+            setExpiryDateError(''); // Limpiar el error si la fecha es válida
+        }
+    };
+
     const columns = [
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'brand.name', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
@@ -402,41 +429,61 @@ export default function Products() {
 
                 <div className="field mt-4">
                     <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
-                    <InputText id="expiryDate" value={product.expiryDate} onChange={(e) => onInputChange(e, 'expiryDate')} type="date" required className={classNames({ 'p-invalid': submitted && !product.expiryDate })} />
-                    {submitted && !product.expiryDate && <small className="p-error">Fecha de vencimiento es requerida.</small>}
+                    <InputText
+                        id="expiryDate"
+                        value={product.expiryDate}
+                        onChange={(e) => onInputChange(e, 'expiryDate')} // Cambiar el valor sin validación inmediata
+                        onBlur={(e) => handleDateValidation(e)} // Validación cuando se pierde el foco
+                        type="date"
+                        min={getMinExpiryDate()} // Definir la fecha mínima en el calendario
+                        required
+                        className={classNames({ 'p-invalid': submitted && !product.expiryDate })}
+                    />
+                    {submitted && !product.expiryDate && (
+                        <small className="p-error">Fecha de vencimiento es requerida.</small>
+                    )}
+                    <br/>
+                    {/* Mostrar mensaje de error personalizado */}
+                    {expiryDateError && (
+                        <small className="p-error">{expiryDateError}</small>
+                    )}
                 </div>
 
-
-                <div className="formgrid grid mt-5">
-                    {/* Solo mostrar el campo de precio de venta si el producto no es nuevo */}
-                    {!product.isNew && (
-                        <FloatInputNumberMoneyIcon
-                            className="field col"
-                            value={product.salePrice}
-                            onInputNumberChange={onInputNumberChange} field='salePrice'
-                            maxLength={9} required
-                            submitted={submitted}
-                            label='Precio de venta'
-                            errorMessage='Precio de venta es requerido.'
-                        />
-                    )}
-                    {/* Contenedor para el checkbox y el campo de stock */}
-                    {(operation === 1) && (
+                {(operation === 1) && (
+                    <div className="formgrid grid mt-5">
+                        {/* Solo mostrar el campo de precio de venta si el producto no es nuevo */}
+                        {!product.isNew && (
+                            <FloatInputNumberMoneyIcon
+                                className="field col"
+                                value={product.salePrice}
+                                onInputNumberChange={onInputNumberChange} field='salePrice'
+                                maxLength={9} required
+                                min={50}
+                                submitted={submitted}
+                                label='Precio de venta'
+                                errorMessage='Precio de venta es requerido.'
+                            />
+                        )}
+                        {/* Contenedor para el checkbox y el campo de stock */}
                         <div className="field col">
                             {/* Mostrar el campo de stock solo si el checkbox está desmarcado */}
                             {!product.isNew && (
-                                <FloatInputNumberIcon
-                                    className="field"
-                                    icon='inventory'
-                                    value={product.stock}
-                                    onInputNumberChange={onInputNumberChange}
-                                    field='stock'
-                                    maxLength={5}
-                                    required
-                                    submitted={submitted}
-                                    label='Stock Actual'
-                                    errorMessage='Stock actual es requerido.'
-                                />
+                                <>
+                                    <FloatInputNumberIcon
+                                        className="field"
+                                        icon='inventory'
+                                        value={product.stock}
+                                        onInputNumberChange={onInputNumberChange}
+                                        field='stock'
+                                        maxLength={5}
+                                        required
+                                        submitted={submitted}
+                                        label='Stock Actual'
+                                        errorMessage='Stock actual es requerido.'
+                                        small={!product.stock}
+                                        smallMessage='El stock debe ser mayor a 0'
+                                    />
+                                </>
                             )}
                             <div className="field-checkbox">
                                 <Checkbox
@@ -447,9 +494,9 @@ export default function Products() {
                                 <label htmlFor="isNew">¿Es un producto realmente nuevo?</label>
                             </div>
                         </div>
-                    )}
-                </div>
-                <div className="formgrid grid mt-3">
+                    </div>
+                )}
+                <div className={`formgrid grid ${(operation === 1) ? 'mt-3' : 'mt-5'}`}>
                     <FloatDropdownSearchIcon
                         className="field col"
                         icon='stacks' field='category' required

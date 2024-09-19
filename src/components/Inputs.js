@@ -12,7 +12,7 @@ const BaseFloatInputText = (props) => {
             <InputText
                 id={props.field}
                 value={props.value}
-                onChange={(e) => props.onInputChange(e, props.field)}
+                onChange={(e) => { props.onInputChange(e, props.field); (props.handle && props.handle(e))}}
                 required={props.required}
                 autoFocus={props.autoFocus}
                 placeholder={props.placeholder}
@@ -30,8 +30,10 @@ const BaseFloatInputNumber = (props) => {
             <InputNumber
                 id={props.field}
                 value={props.value}
+                onChange={(props.onChange) && props.onChange}
                 onValueChange={(e) => props.onInputNumberChange(e, props.field)}
                 useGrouping={props.useGrouping}
+                min={1}
                 maxLength={props.maxLength}
                 required={props.required}
                 autoFocus={props.autoFocus}
@@ -49,8 +51,9 @@ const MoneyFloatInputNumber = (props) => {
             <InputNumber
                 id={props.field}
                 value={props.value}
-                onValueChange={(e) => props.onInputNumberChange(e, props.field)}
+                onValueChange={((e) => props.onInputNumberChange(e, props.field))}
                 useGrouping={props.useGrouping}
+                min={props.min}
                 maxLength={props.maxLength}
                 required={props.required}
                 autoFocus={props.autoFocus}
@@ -121,6 +124,7 @@ export const FloatInputTextIcon = (props) => {
                 <BaseFloatInputText {...props} />
             </div>
             {props.submitted && !props.value && <small className="p-error">{props.errorMessage}</small>}
+            {(props.value && !props.valid && <small className="p-error">{props.validMessage}</small>)}
         </div>
     );
 };
@@ -153,6 +157,7 @@ export const FloatInputNumberIcon = (props) => {
                 <BaseFloatInputNumber {...props} />
             </div>
             {props.submitted && !props.value && <small className="p-error">{props.errorMessage}</small>}
+            {props.small && <small className="p-error">{props.smallMessage}</small>}
         </div>
     );
 };

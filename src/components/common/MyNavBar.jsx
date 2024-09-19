@@ -100,6 +100,7 @@ const BadgeStyled = styled(Badge)(({ theme }) => ({
 
 export default function NavBar({ open, handleDrawerOpen, Icon }) {
     const isAdmin = UserService.isAdmin();
+    const isInventoryManager = UserService.isInventoryManager();
     const isSalesPerson = UserService.isSalesPerson();
     const [dateTime, setDateTime] = useState(new Date());
     const { getCartItemCount } = useCart();
@@ -170,7 +171,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 </IconButton>
                 <LogoImage src={logo} alt="Logo FELYSOFT" />
                 {!open && <Typography variant="h6" noWrap component="div">
-                    <Link to={'/inventarioProductos'} className='text-white text-decoration-none'>FELYSOFT</Link>
+                    <span className='text-white text-decoration-none'>FELYSOFT</span>
                 </Typography>}
                 <div className='d-flex align-items-end ms-auto'>
                     {(isAdmin || isSalesPerson) && (
@@ -183,6 +184,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         {dateTime.toLocaleString()}
                     </div>
                 </div>
+                {(isAdmin || isInventoryManager) && (
                 <IconButton
                     color="inherit"
                     onClick={handleNotificationClick}
@@ -192,6 +194,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         <BadgeStyled value={4} severity="info" /> {/* Número de notificaciones */}
                     </span>
                 </IconButton>
+                )}
                 {isAuthenticated && profile && (
                     <>
                         <ProfileImage
@@ -208,38 +211,49 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                                 '& .MuiPaper-root': {
                                     width: '220px',
                                     height: 'auto',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                                    padding: '10px',
                                 },
                             }}
                         >
-                            <div className='text-center'>
-                                <strong>{profile.user.user_name}</strong>
-                                <p>{Role[profile.user.role.name]}</p>
+                            <div className='profile-header' style={{ padding: '10px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <ProfileImage
+                                    src={(profile.user.image ? `data:${profile.user.imageType};base64,${profile.user.image}` : 'https://st4.depositphotos.com/4329009/19956/v/450/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg')}
+                                    alt={`Imagen usuario ${profile.user.names}`}
+                                    sx={{ width: 60, height: 60, borderRadius: '50%' }}
+                                />
+                                <div style={{ marginTop: '8px' }}>
+                                    <strong>{profile.user.user_name}</strong>
+                                    <p style={{ margin: 0, color: 'gray' }}>{Role[profile.user.role.name]}</p>
+                                </div>
                             </div>
                             <Divider />
                             <MenuItem onClick={handleMenuClose}>
                                 <ListItemIcon>
                                     <AccountCircleRounded fontSize="medium" />
                                 </ListItemIcon>
-                                <Link to="/perfil" className="text-decoration-none">Perfil</Link>
+                                <Link to="/perfil" className="text-decoration-none" style={{ marginLeft: '10px' }}>Perfil</Link>
                             </MenuItem>
                             <MenuItem onClick={handleMenuClose}>
                                 <ListItemIcon>
                                     <Settings fontSize="medium" />
                                 </ListItemIcon>
-                                <Link to="" className="text-decoration-none">Configuración</Link>
+                                <Link to="" className="text-decoration-none" style={{ marginLeft: '10px' }}>Configuración</Link>
                             </MenuItem>
                             <Divider />
                             <MenuItem onClick={handleLogout}>
                                 <ListItemIcon>
                                     <Logout fontSize="medium" />
                                 </ListItemIcon>
-                                Cerrar sesión
+                                <span style={{ marginLeft: '10px' }}>Cerrar sesión</span>
                             </MenuItem>
                         </Menu>
                     </>
                 )}
                 <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
                 {/* Aquí puedes agregar el menú de notificaciones si lo necesitas */}
+                {(isAdmin || isInventoryManager) && (
                 <Menu
                     anchorEl={notificationAnchorEl}
                     open={openNotificationMenu}
@@ -275,6 +289,7 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                         </NotificationContent>
                     </NotificationMenuItem>
                 </Menu>
+                )}
             </Toolbar>
         </AppBar>
     );

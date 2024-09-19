@@ -16,6 +16,7 @@ import { InputNumber } from 'primereact/inputnumber'
 import { Dropdown } from 'primereact/dropdown'
 import Request_Service from '../service/Request_Service'
 import { Divider } from 'primereact/divider'
+import { FileUpload } from 'primereact/fileupload'
 
 function ProfilePage() {
     const emptyUserPassword = useState({
@@ -53,6 +54,8 @@ function ProfilePage() {
         INVENTORY_MANAGER: 'GERENTE DE INVENTARIO',
         CUSTOMER: 'CLIENTE',
     }
+    // Renderizar el fondo desde localStorage
+    const backgroundImage = localStorage.getItem('backgroundImage');
 
     const URL = '/user/';
     const [user, setUser] = useState(emptyUser);
@@ -60,9 +63,13 @@ function ProfilePage() {
     const [selectedGender, setSelectedGender] = useState(null);
     const [userDialog, setUserDialog] = useState(false);
     const [passwordDialog, setPasswordDialog] = useState(false);
+    const [imageDialog, setImageDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [confirmDialogPasswordVisible, setConfirmDialogPasswordVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [file, setFile] = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [selectedImage, setSelectedImage] = useState(null);
     const toast = useRef(null);
     const { logout } = useAuth();
 
@@ -77,6 +84,27 @@ function ProfilePage() {
             setUser(response.user) //user
         } catch (error) {
             console.error('Error fetching profile information:', error);
+        }
+    };
+
+    const handleFileUpload = (event) => {
+        const file = event.files[0];
+        setFile(file);
+        if (file) {
+            // Validar el tipo de archivo
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
+                setSelectedImage(null); // Limpiar la vista previa
+                return;
+            }
+            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -100,6 +128,13 @@ function ProfilePage() {
         setPasswordDialog(true);
     };
 
+    const openImage = () => {
+        setFile('');
+        setSelectedImage('');
+        setSubmitted(false);
+        setImageDialog(true);
+    }
+
     const editUser = (user) => {
         setUser({ ...user });
         setSelectedGender(user.gender);
@@ -110,6 +145,7 @@ function ProfilePage() {
         setSubmitted(false);
         setUserDialog(false);
         setPasswordDialog(false);
+        setImageDialog(false);
     };
 
     const hideConfirmPasswordDialog = () => {
@@ -137,6 +173,22 @@ function ProfilePage() {
 
     const description = (role) => {
         return Role[role] || "USUARIO";
+    };
+
+    const handleBackgroundChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                localStorage.setItem('backgroundImage', base64String); // Guardar en localStorage
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    // Esta función simula el clic en el input de tipo file cuando se hace clic en el botón
+    const handleClick = () => {
+        document.getElementById('input-banner').click();
     };
 
     const handleSubmit = async () => {
@@ -170,6 +222,30 @@ function ProfilePage() {
             console.error('Error cambiando constraseña usuario:', error)
             alert('Un error ocurrió mientras se cambiaba la contraseña usuario')
         }
+    };
+
+    const updateProfileImage = async () => {
+        setSubmitted(true);
+
+        // Mostrar mensaje de error si algún campo requerido falta
+        if (!file) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        if (imageError) {
+            return;
+        }
+
+        const formData = new FormData();
+
+        if (user.idUser) {
+            formData.append('idUser', user.idUser);
+            formData.append('image', file);
+            await Request_Service.updateProfileImage(user.idUser, formData, toast);
+            fetchProfileInfo(); // Refrescar la información del perfil después de la actualización
+        }
+        setImageDialog(false);
     };
 
     const saveUser = async () => {
@@ -239,6 +315,10 @@ function ProfilePage() {
         DialogFooter(hideDialog, confirmChangePassword)
     );
 
+    const dialogFooterImage = (
+        DialogFooter(hideDialog, updateProfileImage)
+    );
+
     const genderOptions = Object.keys(Gender).map(key => ({
         label: Gender[key],
         value: key
@@ -263,7 +343,7 @@ function ProfilePage() {
             <div className='profile-page-container'>
                 <section className="seccion-perfil-usuario">
                     <div className="perfil-usuario-header">
-                        <div className="perfil-usuario-portada">
+                        <div className="perfil-usuario-portada" style={{ backgroundImage: `url(${backgroundImage})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '300px' }}>
                             <div className="perfil-usuario-avatar">
                                 {user.image ?
                                     <img id='imagen-perfil'
@@ -272,13 +352,21 @@ function ProfilePage() {
                                     <img id='imagen-perfil'
                                         src="https://st4.depositphotos.com/4329009/19956/v/450/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
                                         alt={`No cuenta con img de perfil`} />}
-                                <button type="button" className="boton-avatar">
+                                <button type="button" className="boton-avatar" onClick={openImage}>
                                     <i className="far fa-image"></i>
                                 </button>
                             </div>
-                            <button type="button" className="boton-portada">
+                            <button type="button" className="boton-portada" onClick={handleClick}>
                                 <i className="far fa-image"></i> Cambiar fondo
                             </button>
+                            {/* Input de tipo file oculto */}
+                            <input
+                                type="file"
+                                id="input-banner"
+                                style={{ display: 'none' }}
+                                accept="image/*"
+                                onChange={handleBackgroundChange}
+                            />
                         </div>
                     </div>
                     <div className="perfil-usuario-body">
@@ -475,6 +563,35 @@ function ProfilePage() {
                     </div>
                 </div>
             </Dialog >
+
+            <Dialog visible={imageDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Cambiar foto de perfil" modal className="p-fluid" footer={dialogFooterImage} onHide={hideDialog}>
+                {user.image && <img src={`data:${user.typeImg};base64,${user.image}`} alt={`Imagen usuario ${user.names}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+                <div className="formgrid grid">
+                    <div className="field col">
+                        <label htmlFor="image" className="font-bold">Foto del Usuario</label>
+                        {/* TODO: validar o permitir solo ciertos tipos de img - restringir a solo subir archivos de img */}
+                        <FileUpload
+                            id='image'
+                            name="image"
+                            mode="basic"
+                            chooseLabel="Seleccionar Imagen"
+                            url="https://felysoftspring-production.up.railway.app/api/user/updateImageProfile"
+                            accept="image/*"
+                            maxFileSize={2000000}
+                            onSelect={handleFileUpload}
+                        />
+                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {imageError && <small className="p-error">{imageError}</small>}
+                        {/*TODO: desplegar modal con información detallada de los productos*/}
+                        {submitted && !file && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
+                    </div>
+                    <div className="field col">
+                        {selectedImage && (
+                            <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />
+                        )}
+                    </div>
+                </div>
+            </Dialog>
 
             {confirmDialogPassword(confirmDialogPasswordVisible, confirmPasswordDialogFooter, hideConfirmPasswordDialog)}
 

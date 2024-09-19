@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import { FloatDropdownIcon } from '../Inputs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSale } from '../context/SaleContext';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 const CartModal = ({ visible, onHide }) => {
     const { cartItems, updateCartItemQuantity, clearCart, removeFromCart } = useCart();
@@ -19,10 +20,10 @@ const CartModal = ({ visible, onHide }) => {
 
     const handleQuantityChange = (itemId, newQuantity) => {
         const item = cartItems.find(item => item.id === itemId);
-    
+
         if (item) {
             const stockAvailable = item.stock;
-    
+
             // Verificar si la nueva cantidad es válida
             if (newQuantity <= 0) {
                 removeFromCart(itemId);
@@ -34,7 +35,7 @@ const CartModal = ({ visible, onHide }) => {
                 toast.current.show({ severity: 'error', summary: 'Cantidad excede stock', detail: `Solo hay ${stockAvailable} unidades disponibles`, life: 3000 });
             }*/
         }
-    };    
+    };
 
     let emptySale = {
         idSale: null,
@@ -67,6 +68,7 @@ const CartModal = ({ visible, onHide }) => {
     const [saleDialog, setSaleDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false); // Estado de carga
     const toast = useRef(null);
 
     const openNew = () => {
@@ -87,46 +89,53 @@ const CartModal = ({ visible, onHide }) => {
     };
 
     const saveSale = async () => {
-        setSubmitted(true);
-        setConfirmDialogVisible(false);
+        try {
+            setSubmitted(true);
+            setConfirmDialogVisible(false);
 
-        // Verificar si los campos requeridos están presentes y válidos
-        const isValid =
-            sale.total &&
-            sale.methodPayment &&
-            sale.state;
+            // Verificar si los campos requeridos están presentes y válidos
+            const isValid =
+                sale.total &&
+                sale.methodPayment &&
+                sale.state;
 
-        const processedDetails = cartItems.map(detail => ({
-            idDetail: detail.id,
-            quantity: detail.quantity,
-            unitPrice: detail.product.salePrice,
-            idProduct: detail.product.idProduct
-        }));
+            const processedDetails = cartItems.map(detail => ({
+                idDetail: detail.id,
+                quantity: detail.quantity,
+                unitPrice: detail.product.salePrice,
+                idProduct: detail.product.idProduct
+            }));
 
-        let url, method, parameters;
-        parameters = {
-            details: processedDetails,
-            //payment
-            total: sale.total,
-            state: sale.state,
-            methodPayment: sale.methodPayment
-        };
-        url = URL + 'create';
-        method = 'POST';
+            let url, method, parameters;
+            parameters = {
+                details: processedDetails,
+                //payment
+                total: sale.total,
+                state: sale.state,
+                methodPayment: sale.methodPayment
+            };
+            url = URL + 'create';
+            method = 'POST';
 
-        if (isValid) {
-            await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location);
-            setSaleDialog(false);
-            setSale(emptySale);
-            onHide();
-            clearCart();
-            setSaleConfirmed(true); // Al confirmar la venta, actualiza el estado
+            if (isValid) {
+                setLoading(true); // Muestra el overlay de carga
+                setSaleDialog(false);
+                onHide();
+                await Request_Service.sendRequestSale(method, parameters, url, toast, navigate, location, setLoading);
+                setSale(emptySale);
+                clearCart();
+                setSaleConfirmed(true); // Al confirmar la venta, actualiza el estado
+            }
+        } catch (error) {
+            setLoading(false); // Muestra el overlay de carga
+            console.error('Error registrando la venta:', error)
+            alert('Un error ocurrió mientras se realizaba la venta')
         }
     }
 
     const confirmSave = () => {
         setConfirmDialogVisible(true);
-    };    
+    };
 
     const onInputNumberChange = (e, name) => {
         inputNumberChange(e, name, sale, setSale);
@@ -153,6 +162,7 @@ const CartModal = ({ visible, onHide }) => {
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Dialog header="Carrito" visible={visible} style={{ width: '50vw', borderRadius: '10px' }} onHide={onHide} className='text-center'>
                 <div className="cart-items">
                     {cartItems.length > 0 ? (

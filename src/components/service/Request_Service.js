@@ -8,7 +8,7 @@ class Request_Service {
         return localStorage.getItem('token');
     }
 
-    static async sendRequest(method, parameters, url, op, toast, nameTable, mainUrl, setData) {
+    static async sendRequest(method, parameters, url, op, toast, nameTable, mainUrl, setData, setLoading) {
         try {
             const token = this.getToken();
             await axios({
@@ -16,6 +16,9 @@ class Request_Service {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then((response) => {
+                    if(setLoading) {
+                        setLoading(false); // Termina el cargando
+                    }
                     const type = response.data['status'];
                     const msg = response.data['data'];
                     if (type === 'success') {
@@ -25,6 +28,9 @@ class Request_Service {
                     return response.data;
                 })
                 .catch((error) => {
+                    if(setLoading) {
+                        setLoading(false); // Termina el cargando
+                    }
                     if (error.response.data.data === 'Datos Desahibilitados') {
                         toast.current.show({ severity: 'error', summary: 'Datos Desahibilitados', detail: error.response.data.detail, life: 3000 });
                     }
@@ -133,7 +139,7 @@ class Request_Service {
         //setTable(emptyData);
     }
 
-    static async sendRequestSale(method, parameters, url, toast, navigate, location) {
+    static async sendRequestSale(method, parameters, url, toast, navigate, location, setLoading) {
         try {
             const token = this.getToken();
             await axios({
@@ -141,7 +147,7 @@ class Request_Service {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then((response) => {
-                    console.log(response)
+                    setLoading(false); // Termina el cargando
                     const type = response.data['status'];
                     const msg = response.data['data'];
                     if (type === 'success') {
@@ -166,6 +172,7 @@ class Request_Service {
                     return response.data;
                 })
                 .catch((error) => {
+                    setLoading(false); // Termina el cargando
                     const errorMessage = error.response.data['data'] === 'No hay suficientes productos'
                         ? 'Venta NO Creada, no hay suficiente stock'
                         : 'Venta NO Creada';
@@ -266,6 +273,26 @@ class Request_Service {
                 console.log(error);
             });
         setTable(emptyData);
+    }
+
+    static async updateProfileImage(id, parameters, toast) {
+        const changeImgUrl = this.BASE_URL + '/user/updateImageProfile/' + id;
+        const token = this.getToken();
+        await axios.put(changeImgUrl, parameters,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then((response) => {
+                let type = response.data['status'];
+                if (type === 'success') {
+                    toast.current.show({ severity: 'success', summary: 'Cambio imagen usuario', detail: 'Imagen de perfil actualizada', life: 3000 });
+                }
+                return response.data;
+            })
+            .catch((error) => {
+                toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'No se pudo actualizar la imagen de perfil', life: 3000 });
+                console.error('Error actualizando imagen de perfil:', error);
+            });
     }
 
     static async cancelReserves(url, id, setData, toast, setTable, mainUrl) {
