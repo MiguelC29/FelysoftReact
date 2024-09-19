@@ -69,6 +69,7 @@ export default function Users() {
   const [userDetailDialog, setUserDetailDialog] = useState(false);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [deleteUserDialog, setDeleteUserDialog] = useState(false);
+  const [imageError, setImageError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [emailValid, setEmailValid] = useState(true);
   const [numIdValid, setNumIdValid] = useState(true);
@@ -115,13 +116,20 @@ export default function Users() {
   const handleFileUpload = (event) => {
     const file = event.files[0];
     setFile(file);
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setSelectedImage(reader.result);
-    };
-
     if (file) {
+      // Validar el tipo de archivo
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+      if (!validImageTypes.includes(file.type)) {
+        setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
+        setSelectedImage(null); // Limpiar la vista previa
+        return;
+      }
+      setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -225,6 +233,10 @@ export default function Users() {
     };
 
     if (!validateIdentification(user.numIdentification) || !validatePhone(user.phoneNumber) || !validateEmail(user.email)) {
+      return;
+    }
+
+    if (imageError) {
       return;
     }
 
@@ -619,10 +631,13 @@ export default function Users() {
               mode="basic"
               chooseLabel="Seleccionar Imagen"
               url="https://felysoftspring-production.up.railway.app/api/user/create"
-              accept="image/*"
-              maxFileSize={2000000}
+              accept=".png,.jpg,.jpeg,.webp"
+              maxFileSize={3145728}
               onSelect={handleFileUpload}
             />
+            {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+            {imageError && <small className="p-error">{imageError}</small>}
+            {/*TODO: desplegar modal con información detallada de los productos*/}
           </div>
           <div className="field col">
             {selectedImage && (

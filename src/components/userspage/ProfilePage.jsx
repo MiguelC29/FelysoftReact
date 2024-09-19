@@ -576,8 +576,8 @@ function ProfilePage() {
                             mode="basic"
                             chooseLabel="Seleccionar Imagen"
                             url="https://felysoftspring-production.up.railway.app/api/user/updateImageProfile"
-                            accept="image/*"
-                            maxFileSize={2000000}
+                            accept=".png,.jpg,.jpeg,.webp"
+                            maxFileSize={3145728}
                             onSelect={handleFileUpload}
                         />
                         {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}

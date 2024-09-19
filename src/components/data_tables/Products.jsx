@@ -147,6 +147,7 @@ export default function Products() {
         setSelectedBrand(product.brand);
         setFile('');
         setSelectedImage('');
+        setImageError('');
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
