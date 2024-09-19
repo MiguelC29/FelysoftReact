@@ -10,7 +10,7 @@ import AtencionCliente from "./AtencionCliente";
 
 export default function LandingPage() {
   return (
-    <div>
+    <div className='landing-container'>
       <Inventario />
       <Ingresos />
       <Reservas />

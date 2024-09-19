@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import Logo from "../../img/Assets/Logo.svg";
-import { BsCart2 } from "react-icons/bs";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -45,26 +44,26 @@ const Navbar = () => {
   return (
     <nav>
       <div className="nav-logo-container" id="navbar">
-      <a  href="#"
+        <a href="#"
           onClick={(e) => {
             e.preventDefault();
             document.getElementById("navbar").scrollIntoView({ behavior: "smooth" });
           }}>
-            <img src={Logo} alt="Logo" />
+          <img src={Logo} alt="Logo" />
         </a>
       </div>
       <div className="felysoft">
-      <a  href="#"
+        <a href="#"
           onClick={(e) => {
             e.preventDefault();
             document.getElementById("navbar").scrollIntoView({ behavior: "smooth" });
           }}>
-            <h1>FELYSOFT</h1>
+          <h1>FELYSOFT</h1>
         </a>
       </div>
 
       <div className="navbar-links-container">
-      <a
+        <a
           href="#"
           onClick={(e) => {
             e.preventDefault();
@@ -83,7 +82,7 @@ const Navbar = () => {
         >
           Atención al cliente
         </a>
-        
+
         <button className="primary-button">Iniciar sesión</button>
       </div>
       <div className="navbar-menu-container">

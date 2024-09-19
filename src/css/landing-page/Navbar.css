@@ -1,3 +1,10 @@
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 90px;
+}
+
 .nav-logo-container {
     display: flex;
     align-items: center;
@@ -12,7 +19,7 @@
 
 .felysoft {
     position: absolute;
-    left: 70px;
+    left: 120px;
     font-size: 30px;
     justify-content: flex-start; /* Alinea el logo hacia la izquierda */
     color: black; /* Cambia el color del texto a negro */
@@ -34,10 +41,10 @@
     text-decoration: none;
     color: black;
     font-size: 20px;
-    font-weight: 900;
+    font-family: "Reem Kufi", sans-serif;
 }
 
-.navbar-links-container a{
+.navbar-links-container a {
     margin-right: 2rem;
     text-decoration: none; /* Elimina el subrayado */
     color: black; /* Asegura que el color sea negro */
@@ -47,7 +54,6 @@
 .navbar-menu-container {
     display: none;
 }
-
 
 .navbar-menu-container svg {
     font-size: 1.5rem;

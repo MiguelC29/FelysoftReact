@@ -1,10 +1,10 @@
 /* Importar los temas de PrimeReact */
-@import 'primereact/resources/themes/saga-blue/theme.css';
+@import "primereact/resources/themes/saga-blue/theme.css";
 /* Puedes elegir otro tema de PrimeReact */
-@import 'primereact/resources/primereact.min.css';
+@import "primereact/resources/primereact.min.css";
 
 /* Importar los íconos de PrimeIcons */
-@import 'primeicons/primeicons.css';
+@import "primeicons/primeicons.css";
 
 .home-landing {
   margin: 0;
@@ -12,33 +12,6 @@
   box-sizing: border-box;
   font-family: "Reem Kufi", sans-serif !important;
 }
-
-.secondary-button {
-  padding: 1rem 2.5rem;
-  background-color: rgb(25, 87, 168);
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  color: white;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.secondary-button svg {
-  margin-left: 0.75rem;
-  font-size: 1.5rem;
-}
-
-.secondary-button:hover {
-  color: #484848;
-  background-color: rgb(221, 221, 221);
-}
-
 
 .header-container {
   display: flex;
@@ -51,28 +24,12 @@
   position: relative;
 }
 
-.App {
-  min-height: 100vh;
-  width: 97vw;
-  max-width: 1900px;
-  margin: 0rem 1rem;
+.landing-container {
+  background-color: #f6f6f6 !important;
+  padding: 5px 40px 0;
 }
 
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
 
-body {
-  background-color: #f6f6f6 ;
-}
-
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 90px;
-}
 
 .primary-button {
   padding: 0.9rem 1.75rem;
@@ -83,7 +40,7 @@ nav {
   border-radius: 10px;
   font-size: 20px;
   cursor: pointer;
-  font-weight: 600;                      
+  font-weight: 600;
   transition: 0.2s;
 }
 
@@ -186,7 +143,6 @@ nav {
   .primary-button {
     font-size: 1rem;
   }
-
 }
 
 @media (max-width: 800px) {

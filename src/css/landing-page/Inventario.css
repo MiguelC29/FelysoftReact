@@ -16,9 +16,35 @@
     position: absolute;
     top: -330px;
     right: 100px;
-    z-index: -2;
+    z-index: -3;
     max-width: 700px;
 }
+
+.secondary-button {
+    padding: 1rem 2.5rem;
+    background-color: rgb(25, 87, 168);
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .secondary-button svg {
+    margin-left: 0.75rem;
+    font-size: 1.5rem;
+  }
+  
+  .secondary-button:hover {
+    color: #484848;
+    background-color: rgb(221, 221, 221);
+  }
 
 .home-text-section {
     max-width: 35%;
@@ -26,7 +52,6 @@
     position: absolute;
     margin-top: 20px; /* Ajusta el valor según lo necesites */
     right: 1300px;
-
 }
 
 .primary-heading-inventario {
@@ -40,14 +65,13 @@
     top: 40px;
 }
 
-.primary-text-inventario{
+.primary-text-inventario {
     position: relative;
     text-align: center; /* Centra el texto */
     width: 100%; /* Define un ancho específico */
     font-size: 26px; /* Aumenta el tamaño de la fuente */
     left: 210px;
     top: 40px;
-
 }
 
 .secondary-button-inventario {
