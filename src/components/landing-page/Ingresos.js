@@ -3,9 +3,11 @@ import AboutBackground from "../../img/Assets/Fondos/Fondo2.png";
 import AboutBackgroundImage from "../../img/Assets/Imagenes_Sistema/Ingresos_estadisticas.png";
 import "../../css/landing-page/Ingresos.css"
 import { FiArrowLeft } from "react-icons/fi";
-
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+  const navigate = useNavigate(); // Hook para redireccionar
+
   return (
     <div className="about-section-container">
       <div className="about-background-image-container">
@@ -22,7 +24,7 @@ const About = () => {
           Gestiona tus ingresos con datos financieros claros y accesibles: análisis profundos y reportes que facilitan la toma de decisiones
         </p>
         <div className="secondary-button-ingresos">
-          <button className="secondary-button-ingreso">
+          <button className="secondary-button-ingreso" onClick={() => navigate("/login")}>
           <FiArrowLeft />{" "} Empezar 
           </button>
         </div>

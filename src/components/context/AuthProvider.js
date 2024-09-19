@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         UserService.logout();
         setIsAuthenticated(false);
         setProfile(null); // Limpiar el perfil al cerrar sesión
-        navigate('/login');
+        navigate('/');
     };
 
     return (

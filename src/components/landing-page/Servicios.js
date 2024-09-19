@@ -3,10 +3,12 @@ import AboutBackground from "../../img/Assets/Fondos/Fondo4.png";
 import AboutBackground3 from "../../img/Assets/Fondos/Fondo5.png";
 import AboutBackgroundImage from "../../img/Assets/Imagenes_Sistema/Servicios.png";
 import "../../css/landing-page/Servicios.css"
-
-
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+
+  const navigate = useNavigate(); // Hook para redireccionar
+
   return (
     <div className="section-container-servicios">
       <div className="background-image-container-servicios">
@@ -29,7 +31,7 @@ const About = () => {
           Gestiona los servicios ofrecidos con eficiencia, mejorando la calidad y control de las operaciones para una experiencia excelente
         </p>
         <div className="secondary-button-servicios">
-          <button className="secondary-button-servicio">
+          <button className="secondary-button-servicio" onClick={() => navigate("/login")}>
             Empezar
           </button>
         </div>

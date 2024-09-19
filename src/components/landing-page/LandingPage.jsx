@@ -7,6 +7,7 @@ import Servicios from "./Servicios";
 import Desarrolladores from "./Desarrolladores";
 import Contacto from "./Contacto";
 import AtencionCliente from "./AtencionCliente";
+import Faqs from './Faqs';
 
 export default function LandingPage() {
   return (
@@ -17,6 +18,7 @@ export default function LandingPage() {
       <Servicios />
       <Desarrolladores />
       <Contacto />
+      <Faqs />
       <AtencionCliente />
     </div>
   )

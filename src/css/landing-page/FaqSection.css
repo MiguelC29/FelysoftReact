@@ -1,0 +1,117 @@
+.faq-section {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item {
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.faq-title {
+    font-weight: 600;
+    font-size: 1.2em;
+    color: #333;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.faq-title:hover {
+    background-color: #f1f1f1;
+}
+
+.faq-title::after {
+    content: "+";
+    font-size: 1.5em;
+    color: #555;
+    transition: transform 0.3s ease;
+}
+
+.faq-content.open .faq-title::after {
+    content: "-";
+    transform: rotate(180deg);
+}
+
+.faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+}
+
+.faq-content.open {
+    max-height: 500px;
+    /* Ajusta según el contenido */
+}
+
+.faq-content p {
+    padding: 15px;
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.faq-video {
+    padding: 0 15px 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.faq-video iframe {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.faq-tabs {
+    width: 100%;
+    max-width: 1000px;
+    margin: 50px auto;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+.tab-button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+.tab-content {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

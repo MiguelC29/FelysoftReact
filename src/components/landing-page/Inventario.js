@@ -4,8 +4,11 @@ import BannerImage from "../../img/Assets/Imagenes_Sistema/InvetarioProductos.pn
 import Navbar from "./Navbar";
 import { FiArrowRight } from "react-icons/fi";
 import "../../css/landing-page/Inventario.css"
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate(); // Hook para redireccionar
+
   return (
     <div className="home-container">
       <Navbar />
@@ -21,7 +24,7 @@ const Home = () => {
             Administra tu inventario con precisión y sin esfuerzo: controla existencias, evita faltantes y optimiza tu flujo de productos
           </p>
           <div className="secondary-button-inventario">
-            <button className="secondary-button">
+            <button className="secondary-button" onClick={() => navigate("/login")}>
               Empezar <FiArrowRight />{" "}
             </button>
           </div>

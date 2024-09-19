@@ -58,13 +58,10 @@
   margin: 0rem 1rem;
 }
 
-body {
+.map.landing-page {
   max-width: 100%;
   overflow-x: hidden;
-}
-
-body {
-  background-color: #f6f6f6 ;
+  background-color: #f6f6f6; /* Fondo solo para la landing page */
 }
 
 nav {
