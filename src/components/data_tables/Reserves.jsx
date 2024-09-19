@@ -16,6 +16,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { addDays } from 'date-fns';
 import { FloatInputNumberMoneyIcon } from '../Inputs';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 export default function Reserves() {
     let emptyReserve = {
@@ -44,6 +45,7 @@ export default function Reserves() {
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false);
     const [title, setTitle] = useState('');
+    const [loading, setLoading] = useState(false); // Estado de carga
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -226,9 +228,9 @@ export default function Reserves() {
             url = URL + 'create';
             method = 'POST';
         }
-
         if (isValid) {
-            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Reserva ', URL.concat('all'), setReserves);
+            setLoading(true);
+            await Request_Service.sendRequest(method, parameters, url, operation, toast, 'Reserva ', URL.concat('all'), setReserves, setLoading);
             setReserveDialog(false);
         }
     };
@@ -344,6 +346,7 @@ export default function Reserves() {
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <div className="card" style={{ background: '#9bc1de' }}>
                 {(isAdmin || isSalesPerson) &&
                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>

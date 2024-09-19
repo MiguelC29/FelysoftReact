@@ -14,6 +14,7 @@ import { addDays } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { Alert } from 'react-bootstrap';
 import { FloatInputNumberMoneyIcon } from '../Inputs';
+import LoadingOverlay from '../common/LoadingOverlay';
 
 export default function ReservesCus() {
     let emptyReserve = {
@@ -34,6 +35,7 @@ export default function ReservesCus() {
     const [globalFilter, setGlobalFilter] = useState('');
     const [reserveDialog, setReserveDialog] = useState(false);
     const [reserve, setReserve] = useState(emptyReserve);
+    const [loading, setLoading] = useState(false); // Estado de carga
     const toast = useRef(null);
 
     useEffect(() => {
@@ -145,7 +147,8 @@ export default function ReservesCus() {
         };
 
         if (isValid) {
-            await Request_Service.sendRequestReserve('POST', parameters, url, toast, '/inventory/invBooksNoReserved', setBooks);
+            setLoading(true);
+            await Request_Service.sendRequestReserve('POST', parameters, url, toast, '/inventory/invBooksNoReserved', setBooks, setLoading);
             setReserveDialog(false);
         }
     };
@@ -266,6 +269,7 @@ export default function ReservesCus() {
     return (
         <div className="card">
             <Toast ref={toast} position="bottom-right" />
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Alert variant="primary">
                 Solo puedes reservar un libro máximo por 3 horas.
             </Alert>

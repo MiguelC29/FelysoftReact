@@ -88,7 +88,7 @@ class Request_Service {
         }
     }
 
-    static async sendRequestReserve(method, parameters, url, toast, mainUrl, setData) {
+    static async sendRequestReserve(method, parameters, url, toast, mainUrl, setData,setLoading) {
         try {
             const token = localStorage.getItem('token');
             await axios({
@@ -96,6 +96,7 @@ class Request_Service {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then((response) => {
+                    setLoading(false);
                     const type = response.data['status'];
                     const msg = response.data['data'];
                     if (type === 'success') {
@@ -105,6 +106,7 @@ class Request_Service {
                     return response.data;
                 })
                 .catch((error) => {
+                    setLoading(false);
                     toast.current.show({ severity: 'error', summary: 'Error en la solicitud', detail: 'Reserva  NO Creada', life: 3000 });
                     console.log(error);
                 });
