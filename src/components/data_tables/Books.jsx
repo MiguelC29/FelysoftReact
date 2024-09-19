@@ -40,6 +40,7 @@ export default function Books() {
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [selectedEditorial, setSelectedEditorial] = useState(null);
     const [bookDialog, setBookDialog] = useState(false);
+    const [imageError, setImageError] = useState('');
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteBookDialog, setDeleteBookDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -53,7 +54,7 @@ export default function Books() {
     // ROLES
     const isAdmin = UserService.isAdmin();
     const isInventoryManager = UserService.isInventoryManager();
-    
+
     const fetchBooks = useCallback(async () => {
         try {
             const url = onlyDisabled ? `${URL}disabled` : `${URL}all`;
@@ -107,13 +108,20 @@ export default function Books() {
     const handleFileUpload = (event) => {
         const file = event.files[0];
         setFile(file);
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setSelectedImage(reader.result);
-        };
-
         if (file) {
+            // Validar el tipo de archivo
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
+                setSelectedImage(null); // Limpiar la vista previa
+                return;
+            }
+            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
             reader.readAsDataURL(file);
         }
     };
@@ -183,6 +191,10 @@ export default function Books() {
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        if (imageError) {
             return;
         }
 
@@ -461,13 +473,15 @@ export default function Books() {
                             name="image"
                             chooseLabel="Seleccionar Imagen"
                             url="https://felysoftspring-production.up.railway.app/api/book/create"
-                            accept="image/*"
-                            maxFileSize={2000000}
+                            accept=".png,.jpg,.jpeg,.webp"
+                            maxFileSize={3145728}
                             onSelect={handleFileUpload}
                             required
                             className={`${classNames({ 'p-invalid': submitted && !book.image && !selectedImage })}`}
                         />
                         {submitted && !book.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
+                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {imageError && <small className="p-error">{imageError}</small>}
                     </div>
                     <div className="field col">
                         {selectedImage && (
