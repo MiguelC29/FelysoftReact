@@ -343,7 +343,7 @@ function ProfilePage() {
             <div className='profile-page-container'>
                 <section className="seccion-perfil-usuario">
                     <div className="perfil-usuario-header">
-                        <div className="perfil-usuario-portada" style={{ backgroundImage: `url(${backgroundImage})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '300px' }}>
+                        <div className="perfil-usuario-portada" style={{ backgroundImage: `url(${(backgroundImage)? backgroundImage : 'https://i.postimg.cc/sXBLfRwt/Dise-o-sin-t-tulo-2-Tnm-Tl-L1rx-transformed.png'})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '300px' }}>
                             <div className="perfil-usuario-avatar">
                                 {user.image ?
                                     <img id='imagen-perfil'
