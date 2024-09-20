@@ -1,0 +1,72 @@
+.work-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    margin-top: -150px;
+}
+
+
+
+.primary-heading-desarrolladores {
+    text-align: center;
+    max-width: 700px;
+    /* Ajusta según sea necesario */
+    width: 100%;
+    font-size: 40px;
+    font-weight: bold;
+    word-spacing: 5px;
+    line-height: 1.1;
+    margin: 0 auto;
+    /* Centra el título horizontalmente */
+}
+
+.custom-carousel {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0rem;
+    /* Agrega espacio arriba del carrusel si es necesario */
+}
+
+
+.testimonial-section-bottom {
+    background-color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 750px;
+    border-radius: 2rem;
+    flex-direction: column;
+    text-align: center;
+    margin: 1rem auto;
+    /* Centra el carrusel y agrega espacio arriba y abajo */
+}
+
+.testimonial-section-bottom p {
+    font-weight: 700;
+    color: #515151;
+    max-width: 500px;
+    font-size: 1.1rem;
+    margin: 2rem 0rem;
+}
+
+.testimonial-section-bottom h2 {
+    margin-top: 1.5rem;
+}
+
+.testimonials-stars-container svg {
+    margin: 0rem 0.25rem;
+    font-size: 1.5rem;
+    color: #fe9e0d;
+}
+
+.separator-line {
+    border: none; /* Eliminar el estilo por defecto del hr */
+    border-top: 2px solid gray; /* Línea gris */
+    width: 100%; /* Ajustar el ancho al contenedor */
+    margin-top: 80px; /* Espacio superior para bajar la línea */
+}
