@@ -164,6 +164,17 @@ nav {
   font-weight: 600;
 }
 
+.navbar-links-container.active {
+  display: flex;
+  flex-direction: column; /* Alinea verticalmente los enlaces */
+  position: absolute; /* Coloca el menú sobre otros elementos */
+  background-color: white; /* Fondo para el menú */
+  top: 90px; /* Ajusta según el alto del navbar */
+  left: 0; /* Alinea a la izquierda */
+  padding: 1rem; /* Espacio interno */
+  z-index: 1000; /* Asegura que esté encima de otros elementos */
+}
+
 @media (max-width: 1200px) {
   .header-container {
     justify-content: center;
@@ -187,146 +198,44 @@ nav {
 }
 
 @media (max-width: 800px) {
+  
   .header-container {
     flex-direction: column;
-    /* Cambia a columna en pantallas más pequeñas */
     align-items: center;
-    /* Centra el contenido horizontalmente */
     text-align: center;
-    /* Centra el texto */
-  }
+}
 
-  .felysoft {
-    font-size: 30px;
-    /* Ajusta el tamaño de la fuente si es necesario */
+.felysoft {
+    position: static;
     margin-top: 1rem;
-    /* Añade espacio entre el logo y el título */
-  }
-
-  .navbar-links-container {
-    display: none;
-  }
-
-  .navbar-menu-container {
-    display: flex;
-  }
-
-  .home-bannerImage-container {
-    max-width: 450px;
-  }
-
-  .home-banner-container,
-  .about-section-container {
-    flex-direction: column-reverse;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .about-section-container {
-    flex-direction: column;
-  }
-
-  .home-image-section,
-  .about-section-image-container {
-    width: 100%;
-    max-width: 400px;
-  }
-
-  .primary-text {
     text-align: center;
-    max-width: 80%;
-  }
+}
 
-  .home-text-section,
-  .about-section-text-container {
-    justify-content: center;
-    align-items: center;
-    margin-top: 4rem;
-  }
+.navbar-links-container {
+  display: none; /* Oculta los enlaces principales */
+}
 
-  .secondary-button {
-    font-size: 1rem;
-    padding: 0.8rem 2rem;
-    cursor: pointer;
-  }
+.navbar-menu-container {
+  display: flex; /* Muestra el ícono de menú */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el ícono */
+}
 
-  .about-section-container {
-    margin-top: 5rem !important;
-  }
-
-  .about-buttons-container {
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .primary-subheading {
-    text-align: center;
-  }
-
-  .watch-video-button {
-    margin-left: 0rem !important;
-    margin-top: 1rem;
-    font-size: 1rem !important;
-  }
-
-  .watch-video-button svg {
-    margin-right: 0.5rem !important;
-  }
-
-  .about-section-image-container {
-    margin-right: 0rem !important;
-  }
-
-  .work-section-wrapper {
-    margin-top: 5rem !important;
-  }
-
-  .work-section-bottom {
-    margin-top: 1rem !important;
-  }
-
-  .contact-form-container {
-    padding: 0.5rem !important;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 1rem !important;
-  }
-
-  .contact-form-container input {
-    font-size: 1rem !important;
-    max-width: 100%;
-    padding: 0.5rem 1rem !important;
-    margin-bottom: 0.8rem !important;
-    text-align: center;
-  }
-
-  .footer-wrapper {
-    flex-direction: column;
-  }
-
-  .footer-section-two {
-    flex-direction: column;
-    margin-top: 2rem;
-  }
-
-  .footer-section-columns {
-    margin: 1rem 0rem;
-  }
-
-  .App {
-    max-width: 95vw;
-  }
+.navbar-links-container.active {
+  display: flex; /* Muestra los enlaces al activar el menú */
+}
 }
 
 @media (max-width: 600px) {
-  .felysoft {
+  .felysoft h1 {
     font-size: 30px;
-    /* Tamaño de fuente más pequeño para pantallas más pequeñas */
-  }
+    margin-top: 0.5rem;
+}
 
-  .home-bannerImage-container,
-  .about-background-image-container {
-    display: none;
-  }
+.navbar-menu-container svg {
+    font-size: 2rem; /* Aumenta el tamaño del ícono de menú */
+}
+
+.nav-logo-container img {
+    width: 40px; /* Reduce el tamaño del logo */
+}
 }

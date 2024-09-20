@@ -16,6 +16,11 @@
     transition: all 0.3s ease;
 }
 
+.text-center{
+    font-weight: bold;
+    font-size: 40px;
+}
+
 .faq-title {
     font-weight: 600;
     font-size: 1.2em;

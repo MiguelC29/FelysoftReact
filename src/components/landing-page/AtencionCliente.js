@@ -21,14 +21,14 @@ const Footer = () => {
                 <span>Lunes - Sábado</span>
               </div>
               <div className="footer-section-horario">
-                <span>8am - 5pm</span>
+                <span> / 8am - 5pm</span>
               </div>
             </div>
           </SplitterPanel>
 
           <SplitterPanel className="flex align-items-center justify-content-center">
             <div className="contacto-section">
-              <h3 className="horarios">Contacto</h3>
+              <h3 className="contactos">Contacto</h3>
               <div className="footer-section-two">
                 <div className="footer-section-labels">
                   <span>Teléfono</span>

@@ -29,42 +29,58 @@
     top: 20px;
 }
 
-.footer-section-horario-container {
+.horarios {
     position: relative;
+    left: 200px;
     display: flex;
-    font-size: 18px;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    left: 180px;
+    justify-content: space-between; /* Espacia los elementos a ambos lados */
+    font-size: 20px;
+    margin-top: -70px; /* Ajusta el margen si es necesario */
     color: #4c4c4c;
-    margin-top: 10px;
-    /* Baja los horarios ajustando este valor */
+    text-align: center;
+    width: 100%; /* Para asegurar que ocupe el ancho completo */
 }
 
-.footer-section-horario {
-    margin-left: -280px;
-    /* Reduce el espacio entre los elementos */
+.horarios-left {
+    text-align: left; /* Opcional: asegura que esté alineado a la izquierda */
+}
+
+.horarios-right {
+    text-align: right; /* Alinea el texto "de atención" a la derecha */
+}
+
+.contactos{
+    font-size: 20px;
+    /* Ajusta el tamaño de fuente según sea necesario */
+    margin-top: 30px;
+    color: #4c4c4c;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.footer-section-horario-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 18px;
+    color: #4c4c4c;
+    margin-top: 10px;
+    /* Elimina márgenes negativos */
 }
 
 .footer-section-columns-horario,
 .footer-section-horario {
-    flex: 1;
-    text-align: left;
-    /* Ajusta según el diseño */
+    right: 170px;
+    bottom: 0px; /* Ajusta este valor según necesites */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Asegura que `top` funcione correctamente */
 }
 
-.horarios {
-    font-size: 1.2rem;
-    /* Ajusta el tamaño de fuente según sea necesario */
-    margin-top: 30px;
-    /* Añade espacio arriba y abajo */
-    color: #4c4c4c;
-    /* Ajusta el color según el diseño */
-    text-align: center;
-    /* Centra el texto dentro del elemento */
-    justify-content: space-between;
-    margin-left: -20px;
+/* Opcional: añade algo de padding para separar el contenido del borde */
+.footer-section-horario-container {
+    padding: 1px 50px;
 }
 
 .footer-section-two {
@@ -77,11 +93,16 @@
     margin-left: 100px;
 }
 
+
 .footer-section-labels,
 .footer-section-values {
+    right: 20px;
+    top: -25px; /* Ajusta este valor según necesites */
     display: flex;
     flex-direction: column;
+    position: relative; /* Asegura que `top` funcione correctamente */
 }
+
 
 .footer-section-labels span,
 .footer-section-values span {
@@ -100,6 +121,7 @@
 
 /* Icons */
 .span-terms {
+    font-family: "Reem Kufi", sans-serif !important;
     line-height: 27px;
     display: flex;
     flex-direction: column;
@@ -107,7 +129,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 70px;
-    word-spacing: 5px;
+    word-spacing: 2px;
 }
 
 .span-terms span {

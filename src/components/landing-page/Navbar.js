@@ -43,6 +43,11 @@ const Navbar = () => {
       icon: <ShoppingCartRoundedIcon />,
     },
   ];
+
+  const toggleMenu = () => {
+    const linksContainer = document.querySelector('.navbar-links-container');
+    linksContainer.classList.toggle('active');
+};
   return (
     <nav>
       <div className="nav-logo-container" id="navbar">
@@ -79,7 +84,7 @@ const Navbar = () => {
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById("atencion-cliente").scrollIntoView({ behavior: "smooth" });
+            document.getElementById("faqs").scrollIntoView({ behavior: "smooth" });
           }}
         >
           Atención al cliente
@@ -90,6 +95,11 @@ const Navbar = () => {
       <div className="navbar-menu-container">
         <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
       </div>
+      <div className="navbar-menu-container" onClick={toggleMenu}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="menu-icon">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </div>
       <Drawer open={openMenu} onClose={() => setOpenMenu(false)} anchor="right">
         <Box
           sx={{ width: 250 }}
