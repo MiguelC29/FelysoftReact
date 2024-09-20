@@ -421,7 +421,7 @@ function ProfilePage() {
                                 <span className="material-symbols-outlined">password</span>
                             </span>
                             <FloatLabel>
-                                <Password id="oldPassword" name='oldPassword' value={userPassword.oldPassword} onChange={(e) => onInputChangePassword(e, 'oldPassword')} className={classNames({ 'p-invalid': submitted && !userPassword.oldPassword })} promptLabel='Ingrese la contraseña actual' weakLabel='Débil' mediumLabel='Media' strongLabel='Fuerte' autoComplete="new-password" />
+                                <Password id="oldPassword" name='oldPassword' value={userPassword.oldPassword} onChange={(e) => onInputChangePassword(e, 'oldPassword')} className={classNames({ 'p-invalid': submitted && !userPassword.oldPassword })} promptLabel='Ingrese la contraseña actual' autoComplete="new-password" feedback={false} />
                                 <label htmlFor="oldPassword" className="font-bold">Ingrese su contraseña actual</label>
                             </FloatLabel>
                         </div>

@@ -427,7 +427,7 @@ export default function Products() {
                     icon='inventory_2'
                     value={product.name}
                     onInputChange={onInputChange} field='name'
-                    maxLength={30} required autoFocus
+                    maxLength={40} required autoFocus
                     submitted={submitted}
                     label='Nombre'
                     errorMessage='Nombre es requerido.'
