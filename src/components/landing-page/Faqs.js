@@ -66,7 +66,7 @@ export default function Faqs() {
 
     return (
         <div id="faqs">
-            <h1 className='text-center'>Preguntas Frecuentes</h1>
+            <h1 className='preguntas-container'>Preguntas Frecuentes</h1>
             <div className="faq-tabs">
                 <div className="tabs">
                     {Object.keys(faqsData).map((tab) => (

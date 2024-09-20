@@ -61,7 +61,8 @@
 .map.landing-page {
   max-width: 100%;
   overflow-x: hidden;
-  background-color: #f6f6f6; /* Fondo solo para la landing page */
+  background-color: #f6f6f6;
+  /* Fondo solo para la landing page */
 }
 
 nav {
@@ -80,7 +81,7 @@ nav {
   border-radius: 10px;
   font-size: 20px;
   cursor: pointer;
-  font-weight: 600;                      
+  font-weight: 600;
   transition: 0.2s;
 }
 
@@ -166,62 +167,124 @@ nav {
 
 .navbar-links-container.active {
   display: flex;
-  flex-direction: column; /* Alinea verticalmente los enlaces */
-  position: absolute; /* Coloca el menú sobre otros elementos */
-  background-color: white; /* Fondo para el menú */
-  top: 90px; /* Ajusta según el alto del navbar */
-  left: 0; /* Alinea a la izquierda */
-  padding: 1rem; /* Espacio interno */
-  z-index: 1000; /* Asegura que esté encima de otros elementos */
+  flex-direction: column;
+  /* Alinea verticalmente los enlaces */
+  position: absolute;
+  /* Coloca el menú sobre otros elementos */
+  background-color: white;
+  /* Fondo para el menú */
+  top: 90px;
+  /* Ajusta según el alto del navbar */
+  left: 0;
+  /* Alinea a la izquierda */
+  padding: 1rem;
+  /* Espacio interno */
+  z-index: 1000;
+  /* Asegura que esté encima de otros elementos */
 }
 
 @media (max-width: 1200px) {
-  .header-container {
-    justify-content: center;
-    /* Centra el contenido en pantallas medianas */
+  .home-bannerImage-container {
+    top: -200px;
+    right: 5%;
   }
 
-  .felysoft {
-    font-size: 30px;
-    /* Ajusta el tamaño de la fuente si es necesario */
+  .home-text-section {
+    max-width: 90%;
+    right: 5%;
   }
 
-  .navbar-links-container a {
-    margin-right: 1rem;
-    font-size: 1rem;
+  .primary-heading-inventario {
+    font-size: 2.5rem; /* Reduce el tamaño de fuente */
   }
 
-  .primary-button {
-    font-size: 1rem;
+  .primary-text-inventario {
+    font-size: 1.3rem; /* Reduce el tamaño de fuente */
   }
 
 }
 
 @media (max-width: 800px) {
-  
+
   .header-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
-}
+  }
 
-.felysoft {
+  .felysoft {
     position: static;
     margin-top: 1rem;
     text-align: center;
+  }
+
+  .navbar-links-container {
+    display: none;
+    /* Oculta los enlaces principales */
+  }
+
+  .navbar-menu-container {
+    display: flex;
+    /* Muestra el ícono de menú */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el ícono */
+  }
+
+  .navbar-links-container.active {
+    display: flex;
+    /* Muestra los enlaces al activar el menú */
+  }
+
+  /* INVENTARIO */
+    .home-bannerImage-container {
+      top: -150px;
+      right: 5%;
+    }
+  
+    .home-text-section {
+      max-width: 90%;
+      right: 5%;
+    }
+  
+    .primary-heading-inventario {
+      font-size: 2rem; /* Reduce el tamaño de fuente */
+    }
+  
+    .primary-text-inventario {
+      font-size: 1.2rem; /* Reduce el tamaño de fuente */
+    }
+  
+    .secondary-button-inventario {
+      top: 30px; /* Ajusta la posición del botón */
+    }
+  
+    .home-image-section {
+      max-width: 100%;
+      left: 0;
+    
 }
 
-.navbar-links-container {
-  display: none; /* Oculta los enlaces principales */
+.home-text-section {
+    max-width: 90%; /* Aumenta el ancho máximo para pantallas pequeñas */
+    right: 5%; /* Ajusta el margen derecho */
 }
 
-.navbar-menu-container {
-  display: flex; /* Muestra el ícono de menú */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el ícono */
+.primary-heading-inventario {
+    font-size: 2rem; /* Reduce el tamaño de fuente */
 }
 
-.navbar-links-container.active {
-  display: flex; /* Muestra los enlaces al activar el menú */
+.primary-text-inventario {
+    font-size: 1.2rem; /* Reduce el tamaño de fuente */
+}
+
+.secondary-button-inventario {
+    left: 50%; /* Centra horizontalmente */
+    transform: translateX(-50%); /* Ajusta para centrar */
+}
+
+.home-image-section {
+    max-width: 100%; /* Hace que el contenedor ocupe todo el ancho */
+    left: 0; /* Asegura que esté alineado a la izquierda */
 }
 }
 
@@ -229,13 +292,32 @@ nav {
   .felysoft h1 {
     font-size: 30px;
     margin-top: 0.5rem;
-}
+  }
 
-.navbar-menu-container svg {
-    font-size: 2rem; /* Aumenta el tamaño del ícono de menú */
-}
+  .navbar-menu-container svg {
+    font-size: 2rem;
+    /* Aumenta el tamaño del ícono de menú */
+  }
 
-.nav-logo-container img {
-    width: 40px; /* Reduce el tamaño del logo */
-}
+  .nav-logo-container img {
+    width: 40px;
+    /* Reduce el tamaño del logo */
+  }
+
+  /* INVENTARIO */
+  .primary-heading-inventario {
+    font-size: 1.5rem; /* Reduce aún más el tamaño de fuente */
+  }
+
+  .primary-text-inventario {
+    font-size: 1rem; /* Reduce aún más el tamaño de fuente */
+  }
+
+  .home-bannerImage-container {
+    top: -100px; /* Ajusta la posición para pantallas muy pequeñas */
+  }
+
+  .secondary-button-inventario {
+    top: 20px; /* Ajusta la posición del botón */
+  }
 }
