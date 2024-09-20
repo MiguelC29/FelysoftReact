@@ -68,8 +68,10 @@ function ProfilePage() {
     const [confirmDialogPasswordVisible, setConfirmDialogPasswordVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [file, setFile] = useState(null);
-    const [imageError, setImageError] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
+    const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
     const toast = useRef(null);
     const { logout } = useAuth();
 
@@ -89,23 +91,36 @@ function ProfilePage() {
 
     const handleFileUpload = (event) => {
         const file = event.files[0];
-        setFile(file);
+
         if (file) {
             // Validar el tipo de archivo
             const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
             if (!validImageTypes.includes(file.type)) {
                 setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
-                setSelectedImage(null); // Limpiar la vista previa
+                setSelectedImage(null);
+                setImageSuccess(''); // Limpiar el mensaje de éxito
                 return;
             }
-            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            setImageError(''); // Limpiar el mensaje de error si la imagen es válida
+            setImageSuccess('Imagen seleccionada correctamente'); // Mostrar mensaje de éxito
 
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
+                setFile(file); // Guardar el archivo solo después de obtener la vista previa
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    // Forzar reinicio al hacer clic en "Seleccionar Imagen"
+    const resetUploadOnClick = () => {
+        setFile(null);
+        setSelectedImage(null);
+        setImageError('');
+        setImageSuccess(''); // Limpiar el mensaje de éxito al reiniciar
+        setUploadKey(prevKey => prevKey + 1); // Forzar la recreación del FileUpload
     };
 
     const handleLogout = () => {
@@ -131,6 +146,8 @@ function ProfilePage() {
     const openImage = () => {
         setFile('');
         setSelectedImage('');
+        setImageSuccess('');
+        setImageError('');
         setSubmitted(false);
         setImageDialog(true);
     }
@@ -568,23 +585,26 @@ function ProfilePage() {
                 {user.image && <img src={`data:${user.typeImg};base64,${user.image}`} alt={`Imagen usuario ${user.names}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
                 <div className="formgrid grid">
                     <div className="field col">
-                        <label htmlFor="image" className="font-bold">Foto del Usuario</label>
-                        {/* TODO: validar o permitir solo ciertos tipos de img - restringir a solo subir archivos de img */}
+                        <label htmlFor="image" className="font-bold">Imagen Usuario</label>
                         <FileUpload
-                            id='image'
-                            name="image"
+                            key={uploadKey} // Forzamos recrear el componente cuando se selecciona una nueva imagen
+                            id="image"
                             mode="basic"
-                            chooseLabel="Seleccionar Imagen"
-                            url="https://felysoftspring-production.up.railway.app/api/user/updateImageProfile"
+                            name="image"
+                            chooseLabel={(selectedImage) ? "Cambiar Imagen" : "Seleccionar Imagen"}
+                            url="https://felysoftspring-production.up.railway.app/api/book/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
                             onSelect={handleFileUpload}
+                            onBeforeSelect={resetUploadOnClick}  // Restablece el estado antes de seleccionar un nuevo archivo
+                            required
+                            className={`${classNames({ 'p-invalid': submitted && !selectedImage })}`}
                         />
-                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {submitted && user.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
                         {imageError && <small className="p-error">{imageError}</small>}
-                        {/*TODO: desplegar modal con información detallada de los productos*/}
-                        {submitted && !file && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
+                        {imageSuccess && <small className="p-success">{imageSuccess}</small>} {/* Mensaje de éxito */}
                     </div>
+
                     <div className="field col">
                         {selectedImage && (
                             <img src={selectedImage} alt="Selected" width={'100px'} height={'120px'} className='mt-4 shadow-2 border-round' />

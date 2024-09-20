@@ -1,0 +1,51 @@
+.nav-logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo-container img {
+    width: 50px;
+    height: auto; /* Mantiene la proporción del logo */
+}
+
+.felysoft {
+    position: absolute;
+    left: 70px;
+    justify-content: flex-start; /* Alinea el logo hacia la izquierda */
+    color: black;
+}
+
+.felysoft a {
+    color: black; /* Color del enlace a negro */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+}
+
+.felysoft h1 {
+    font-size: 50px !important;
+    color: black;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.navbar-links-container {
+    margin-left: 400px;
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar-links-container a {
+    margin-right: 2rem;
+    text-decoration: none;
+    color: black;
+}
+
+.navbar-menu-container {
+    display: none; /* Oculto por defecto */
+}
+
+.navbar-menu-container svg {
+    font-size: 1.5rem;
+    cursor: pointer;
+}

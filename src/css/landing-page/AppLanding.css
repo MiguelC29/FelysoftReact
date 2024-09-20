@@ -1,0 +1,323 @@
+/* Importar los temas de PrimeReact */
+@import 'primereact/resources/themes/saga-blue/theme.css';
+/* Puedes elegir otro tema de PrimeReact */
+@import 'primereact/resources/primereact.min.css';
+
+/* Importar los íconos de PrimeIcons */
+@import 'primeicons/primeicons.css';
+
+.home-landing {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Reem Kufi", sans-serif !important;
+}
+
+.secondary-button {
+  padding: 1rem 2.5rem;
+  background-color: rgb(25, 87, 168);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary-button svg {
+  margin-left: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.secondary-button:hover {
+  color: #484848;
+  background-color: rgb(221, 221, 221);
+}
+
+
+.header-container {
+  display: flex;
+  align-items: center;
+  /* Alinea verticalmente */
+  justify-content: space-between;
+  /* Espacio entre el logo y el título */
+  padding: 0 2rem;
+  /* Ajusta el relleno según sea necesario */
+  position: relative;
+}
+
+.App {
+  min-height: 100vh;
+  width: 97vw;
+  max-width: 1900px;
+  margin: 0rem 1rem;
+}
+
+.map.landing-page {
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #f6f6f6;
+  /* Fondo solo para la landing page */
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 90px;
+}
+
+.primary-button {
+  padding: 0.9rem 1.75rem;
+  background-color: rgb(25, 87, 168);
+  color: #f6f6f6;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.primary-button:hover {
+  color: #484848;
+  background-color: rgb(234, 234, 234);
+}
+
+.navbar-cart-icon {
+  font-size: 1.15rem;
+}
+
+.primary-subheading {
+  font-weight: 700;
+  color: #fe9e0d;
+  font-size: 1.15rem;
+}
+
+.watch-video-button {
+  margin-left: 2rem;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-radius: 5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #484848;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watch-video-button svg {
+  font-size: 3rem;
+  margin-right: 1rem;
+}
+
+.footer-wrapper {
+  margin: 6rem 0rem;
+  display: flex;
+  margin-top: 10rem;
+}
+
+.footer-logo-container {
+  max-width: 110px;
+}
+
+.work-section-info {
+  width: 290px;
+  min-height: 350px;
+  background-color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 1rem;
+  color: #505050;
+  margin: 1rem 2rem;
+}
+
+.work-section-info h2 {
+  margin: 1rem 0rem;
+}
+
+.work-section-bottom {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.work-section-info p {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+.navbar-links-container.active {
+  display: flex;
+  flex-direction: column;
+  /* Alinea verticalmente los enlaces */
+  position: absolute;
+  /* Coloca el menú sobre otros elementos */
+  background-color: white;
+  /* Fondo para el menú */
+  top: 90px;
+  /* Ajusta según el alto del navbar */
+  left: 0;
+  /* Alinea a la izquierda */
+  padding: 1rem;
+  /* Espacio interno */
+  z-index: 1000;
+  /* Asegura que esté encima de otros elementos */
+}
+
+@media (max-width: 1200px) {
+  .home-bannerImage-container {
+    top: -200px;
+    right: 5%;
+  }
+
+  .home-text-section {
+    max-width: 90%;
+    right: 5%;
+  }
+
+  .primary-heading-inventario {
+    font-size: 2.5rem; /* Reduce el tamaño de fuente */
+  }
+
+  .primary-text-inventario {
+    font-size: 1.3rem; /* Reduce el tamaño de fuente */
+  }
+
+}
+
+@media (max-width: 800px) {
+
+  .header-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .felysoft {
+    position: static;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .navbar-links-container {
+    display: none;
+    /* Oculta los enlaces principales */
+  }
+
+  .navbar-menu-container {
+    display: flex;
+    /* Muestra el ícono de menú */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el ícono */
+  }
+
+  .navbar-links-container.active {
+    display: flex;
+    /* Muestra los enlaces al activar el menú */
+  }
+
+  /* INVENTARIO */
+    .home-bannerImage-container {
+      top: -150px;
+      right: 5%;
+    }
+  
+    .home-text-section {
+      max-width: 90%;
+      right: 5%;
+    }
+  
+    .primary-heading-inventario {
+      font-size: 2rem; /* Reduce el tamaño de fuente */
+    }
+  
+    .primary-text-inventario {
+      font-size: 1.2rem; /* Reduce el tamaño de fuente */
+    }
+  
+    .secondary-button-inventario {
+      top: 30px; /* Ajusta la posición del botón */
+    }
+  
+    .home-image-section {
+      max-width: 100%;
+      left: 0;
+    
+}
+
+.home-text-section {
+    max-width: 90%; /* Aumenta el ancho máximo para pantallas pequeñas */
+    right: 5%; /* Ajusta el margen derecho */
+}
+
+.primary-heading-inventario {
+    font-size: 2rem; /* Reduce el tamaño de fuente */
+}
+
+.primary-text-inventario {
+    font-size: 1.2rem; /* Reduce el tamaño de fuente */
+}
+
+.secondary-button-inventario {
+    left: 50%; /* Centra horizontalmente */
+    transform: translateX(-50%); /* Ajusta para centrar */
+}
+
+.home-image-section {
+    max-width: 100%; /* Hace que el contenedor ocupe todo el ancho */
+    left: 0; /* Asegura que esté alineado a la izquierda */
+}
+}
+
+@media (max-width: 600px) {
+  .felysoft h1 {
+    font-size: 30px;
+    margin-top: 0.5rem;
+  }
+
+  .navbar-menu-container svg {
+    font-size: 2rem;
+    /* Aumenta el tamaño del ícono de menú */
+  }
+
+  .nav-logo-container img {
+    width: 40px;
+    /* Reduce el tamaño del logo */
+  }
+
+  /* INVENTARIO */
+  .primary-heading-inventario {
+    font-size: 1.5rem; /* Reduce aún más el tamaño de fuente */
+  }
+
+  .primary-text-inventario {
+    font-size: 1rem; /* Reduce aún más el tamaño de fuente */
+  }
+
+  .home-bannerImage-container {
+    top: -100px; /* Ajusta la posición para pantallas muy pequeñas */
+  }
+
+  .secondary-button-inventario {
+    top: 20px; /* Ajusta la posición del botón */
+  }
+}

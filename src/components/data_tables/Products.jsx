@@ -31,15 +31,12 @@ export default function Products() {
     const URL = '/product/';
     const [product, setProduct] = useState(emptyProduct);
     const [products, setProducts] = useState([]);
-    const [file, setFile] = useState(null);
     const [categories, setCategories] = useState([]);
     const [providers, setProviders] = useState([]);
     const [brands, setBrands] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [imageError, setImageError] = useState('');
     const [productDialog, setProductDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -49,6 +46,11 @@ export default function Products() {
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [expiryDateError, setExpiryDateError] = useState(''); // Estado para el error de la fecha
     const [title, setTitle] = useState('');
+    const [file, setFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
+    const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -101,23 +103,36 @@ export default function Products() {
 
     const handleFileUpload = (event) => {
         const file = event.files[0];
-        setFile(file);
+
         if (file) {
             // Validar el tipo de archivo
             const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
             if (!validImageTypes.includes(file.type)) {
                 setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
-                setSelectedImage(null); // Limpiar la vista previa
+                setSelectedImage(null);
+                setImageSuccess(''); // Limpiar el mensaje de éxito
                 return;
             }
-            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            setImageError(''); // Limpiar el mensaje de error si la imagen es válida
+            setImageSuccess('Imagen seleccionada correctamente'); // Mostrar mensaje de éxito
 
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
+                setFile(file); // Guardar el archivo solo después de obtener la vista previa
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    // Forzar reinicio al hacer clic en "Seleccionar Imagen"
+    const resetUploadOnClick = () => {
+        setFile(null);
+        setSelectedImage(null);
+        setImageError('');
+        setImageSuccess(''); // Limpiar el mensaje de éxito al reiniciar
+        setUploadKey(prevKey => prevKey + 1); // Forzar la recreación del FileUpload
     };
 
     const openNew = () => {
@@ -127,6 +142,8 @@ export default function Products() {
         setSelectedProvider('');
         setSelectedBrand('');
         setFile('');
+        setImageSuccess('');
+        setImageError('');
         setSelectedImage('');
         getCategories();
         getProviders();
@@ -146,6 +163,8 @@ export default function Products() {
         setSelectedProvider(product.provider);
         setSelectedBrand(product.brand);
         setFile('');
+        setImageSuccess('');
+        setImageError('');
         setSelectedImage('');
         setImageError('');
         setTitle('Editar Producto');
@@ -443,7 +462,7 @@ export default function Products() {
                     {submitted && !product.expiryDate && (
                         <small className="p-error">Fecha de vencimiento es requerida.</small>
                     )}
-                    <br/>
+                    <br />
                     {/* Mostrar mensaje de error personalizado */}
                     {expiryDateError && (
                         <small className="p-error">{expiryDateError}</small>
@@ -529,21 +548,22 @@ export default function Products() {
                     <div className="field col">
                         <label htmlFor="image" className="font-bold">Imagen Producto</label>
                         <FileUpload
+                            key={uploadKey} // Forzamos recrear el componente cuando se selecciona una nueva imagen
                             id='image'
                             mode="basic"
                             name="image"
-                            chooseLabel="Seleccionar Imagen"
+                            chooseLabel={(selectedImage) ? "Cambiar Imagen" : "Seleccionar Imagen"}
                             url="https://felysoftspring-production.up.railway.app/api/product/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
                             onSelect={handleFileUpload}
+                            onBeforeSelect={resetUploadOnClick}  // Restablece el estado antes de seleccionar un nuevo archivo
                             required
                             className={`${classNames({ 'p-invalid': submitted && !product.image && !selectedImage })}`}
                         />
-                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {submitted && product.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
                         {imageError && <small className="p-error">{imageError}</small>}
-                        {/*TODO: desplegar modal con información detallada de los productos*/}
-                        {submitted && !product.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
+                        {imageSuccess && <small className="p-success">{imageSuccess}</small>} {/* Mensaje de éxito */}
                     </div>
                     <div className="field col">
                         {selectedImage && (
