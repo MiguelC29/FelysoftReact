@@ -29,18 +29,15 @@ export default function Books() {
     };
 
     const URL = '/book/';
-    const [file, setFile] = useState(null);
     const [book, setBook] = useState(emptyBook);
     const [books, setBooks] = useState([]);
     const [genres, setGenres] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [editorials, setEditorials] = useState([]);
-    const [selectedImage, setSelectedImage] = useState(null);
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [selectedEditorial, setSelectedEditorial] = useState(null);
     const [bookDialog, setBookDialog] = useState(false);
-    const [imageError, setImageError] = useState('');
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteBookDialog, setDeleteBookDialog] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -48,6 +45,11 @@ export default function Books() {
     const [operation, setOperation] = useState();
     const [onlyDisabled, setOnlyDisabled] = useState(false); // Estado para el botón
     const [title, setTitle] = useState('');
+    const [file, setFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageError, setImageError] = useState('');
+    const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
+    const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
     const toast = useRef(null);
     const dt = useRef(null);
 
@@ -107,23 +109,36 @@ export default function Books() {
 
     const handleFileUpload = (event) => {
         const file = event.files[0];
-        setFile(file);
+
         if (file) {
             // Validar el tipo de archivo
             const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
             if (!validImageTypes.includes(file.type)) {
                 setImageError('El archivo seleccionado no es una imagen válida. Solo se permiten imágenes JPEG, JPG, PNG, WEBP.');
-                setSelectedImage(null); // Limpiar la vista previa
+                setSelectedImage(null);
+                setImageSuccess(''); // Limpiar el mensaje de éxito
                 return;
             }
-            setImageError(''); // Limpiar mensaje de error si la imagen es válida
+
+            setImageError(''); // Limpiar el mensaje de error si la imagen es válida
+            setImageSuccess('Imagen seleccionada correctamente'); // Mostrar mensaje de éxito
 
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
+                setFile(file); // Guardar el archivo solo después de obtener la vista previa
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    // Forzar reinicio al hacer clic en "Seleccionar Imagen"
+    const resetUploadOnClick = () => {
+        setFile(null);
+        setSelectedImage(null);
+        setImageError('');
+        setImageSuccess(''); // Limpiar el mensaje de éxito al reiniciar
+        setUploadKey(prevKey => prevKey + 1); // Forzar la recreación del FileUpload
     };
 
     const openNew = () => {
@@ -134,6 +149,8 @@ export default function Books() {
         setSelectedEditorial('');
         setSelectedImage('')
         setFile('');
+        setImageSuccess('');
+        setImageError('');
         getGenres();
         getAuthors();
         getEditorials();
@@ -149,6 +166,8 @@ export default function Books() {
         setSelectedEditorial(book.editorial);
         setSelectedImage('')
         setFile('');
+        setImageSuccess('');
+        setImageError('');
         getGenres();
         getAuthors();
         getEditorials();
@@ -484,20 +503,22 @@ export default function Books() {
                     <div className="field col">
                         <label htmlFor="image" className="font-bold">Imagen Libro</label>
                         <FileUpload
+                            key={uploadKey} // Forzamos recrear el componente cuando se selecciona una nueva imagen
                             id='image'
                             mode="basic"
                             name="image"
-                            chooseLabel="Seleccionar Imagen"
+                            chooseLabel={(selectedImage) ? "Cambiar Imagen" : "Seleccionar Imagen"}
                             url="https://felysoftspring-production.up.railway.app/api/book/create"
                             accept=".png,.jpg,.jpeg,.webp"
                             maxFileSize={3145728}
                             onSelect={handleFileUpload}
+                            onBeforeSelect={resetUploadOnClick}  // Restablece el estado antes de seleccionar un nuevo archivo
                             required
                             className={`${classNames({ 'p-invalid': submitted && !book.image && !selectedImage })}`}
                         />
-                        {submitted && !book.image && !selectedImage && <small className="p-error">Imagen es requerida.</small>}
-                        {(!imageError) && <small>Solo se permiten imágenes JPEG, JPG, PNG, WEBP.</small>}
+                        {submitted && book.image &&!selectedImage && <small className="p-error">Imagen es requerida.</small>}
                         {imageError && <small className="p-error">{imageError}</small>}
+                        {imageSuccess && <small className="p-success">{imageSuccess}</small>} {/* Mensaje de éxito */}
                     </div>
                     <div className="field col">
                         {selectedImage && (
