@@ -57,9 +57,11 @@ export default function Products() {
     const [imageError, setImageError] = useState('');
     const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
     const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
+    const [scanning, setScanning] = useState(false);
     const toast = useRef(null);
     const dt = useRef(null);
     const fileInputRef = useRef(null); // Referencia para el input de imagen
+    const qrReaderRef = useRef(null);
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -208,6 +210,57 @@ export default function Products() {
         return providedChecksum === calculatedChecksum;
     };
 
+    const startScanner = () => {
+        setBarcode('');
+        if (qrReaderRef.current) {
+            Quagga.init({
+                inputStream: {
+                    type: 'LiveStream',
+                    target: qrReaderRef.current, // Usa la referencia del contenedor
+                    constraints: {
+                        facingMode: 'environment', // Usa la cámara trasera
+                    },
+                    area: {
+                        top: '0%',    // Iniciar el escaneo en la parte superior
+                        right: '0%',  // Iniciar el escaneo a la derecha
+                        left: '0%',   // Iniciar el escaneo a la izquierda
+                        bottom: '0%'   // Iniciar el escaneo en la parte inferior
+                    },
+                },
+                decoder: {
+                    readers: ['ean_reader'], // Tipos de códigos de barras a decodificar // Solo lector para códigos de barras EAN-13
+                },
+            }, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                Quagga.start();
+                setScanning(true);
+            });
+
+            Quagga.onDetected((data) => {
+                setBarcode(data.codeResult.code);
+                stopScanner(); // Detiene el escáner después de una lectura exitosa
+            });
+        }
+    };
+
+    const stopScanner = () => {
+        Quagga.stop();
+        setScanning(false);
+        // Oculta el recuadro del escáner
+        qrReaderRef.current.style.display = 'none';
+    };
+
+    useEffect(() => {
+        if (scanning) {
+            return () => {
+                stopScanner(); // Detiene el escáner al desmontar el componente
+            };
+        }
+    }, [scanning]);
+
     // Forzar reinicio al hacer clic en "Seleccionar Imagen"
     const resetUploadOnClick = () => {
         setFile(null);
@@ -270,6 +323,7 @@ export default function Products() {
         setSubmitted(false);
         setProductDialog(false);
         setBarcodeDialogVisible(false);
+        stopScanner();
     };
 
     const hideConfirmProductDialog = () => {
@@ -552,9 +606,17 @@ export default function Products() {
                     valid={barcodeValid}
                     validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
                 />
+
+                {/* Botón para iniciar el escaneo */}
+                {!scanning && (
+                    <button onClick={startScanner} className="p-button p-component mt-4 me-3">
+                        Iniciar Escaneo
+                    </button>
+                )}
+
                 {/* Botón para cargar una imagen */}
-                <button onClick={() => fileInputRef.current.click()} className="p-button mt-4">
-                    {file ? "Cargando..." : "Cargar Imagen de Código de Barras"}
+                <button onClick={() => { fileInputRef.current.click(); setBarcode('')}} className="p-button mt-4">
+                    {file ? "Cargando..." : "Cargar Imagen"}
                 </button>
 
                 {/* Input para cargar la imagen (oculto) */}
@@ -565,6 +627,32 @@ export default function Products() {
                     style={{ display: 'none' }}
                     onChange={handleImageUpload}
                 />
+
+                {/* Contenedor para el escáner con un tamaño ajustado */}
+                <div ref={qrReaderRef}
+                    style={{
+                        width: '100%',
+                        display: scanning ? 'block' : 'none',
+                        position: 'relative',
+                        margin: '0 auto', // Centrar el escáner
+                        marginTop: '1rem'
+                    }}
+                >
+                    {/* Línea de referencia */}
+                    <div className="scanner-line" style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '0',
+                        right: '0',
+                        height: '2px',
+                        backgroundColor: 'red',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10,
+                        width: '100%', // Ajustar el ancho de la línea de referencia
+                        margin: '0 auto' // Centrar la línea de referencia
+                    }}></div>
+                </div>
+
                 {/* Mostrar el código de barras solo si hay un valor en barcode */}
                 {barcode && barcodeValid && (
                     <div className="mt-4">

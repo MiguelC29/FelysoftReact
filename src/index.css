@@ -94,3 +94,27 @@ body {
   background-color: #0D9276;
   color: #e2dfdf;
 }
+
+/* Ocultar el canvas que se crea automáticamente */
+canvas.drawingBuffer {
+  display: none; /* Ocultar el canvas para evitar el espacio en blanco */
+}
+
+/* Ajustar el contenedor del escáner */
+#qrReaderRef {
+  overflow: hidden; /* Evitar que se genere espacio adicional */
+}
+
+/* Mejorar el diseño general */
+.scanner-line {
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% {
+      top: 0;
+  }
+  100% {
+      top: 100%;
+  }
+}
