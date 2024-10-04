@@ -12,6 +12,7 @@ import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIco
 import Request_Service from '../service/Request_Service';
 import { Checkbox } from 'primereact/checkbox';
 import Barcode from 'react-barcode';
+import Quagga from 'quagga'; // Biblioteca para leer códigos de barras desde imágenes
 
 export default function Products() {
     const [barcode, setBarcode] = useState('');
@@ -58,6 +59,7 @@ export default function Products() {
     const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
     const toast = useRef(null);
     const dt = useRef(null);
+    const fileInputRef = useRef(null); // Referencia para el input de imagen
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -129,6 +131,39 @@ export default function Products() {
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    // Función para procesar la imagen cargada
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setFile(true);
+        const reader = new FileReader();
+        reader.onload = function () {
+            const imageData = reader.result;
+
+            // Inicializar Quagga para leer el código de barras desde la imagen
+            Quagga.decodeSingle({
+                src: imageData,
+                numOfWorkers: 0,  // Deshabilitar web workers (opcional)
+                inputStream: {
+                    size: 800,  // Escalar imagen
+                },
+                decoder: {
+                    readers: ['ean_reader'],  // Especificar el formato EAN
+                },
+            }, function (result) {
+                if (result && result.codeResult) {
+                    setBarcode(result.codeResult.code); // Asigna el valor del código de barras
+                    setBarcodeValid(validateBarcode(result.codeResult.code));
+                } else {
+                    setBarcodeValid(false);
+                }
+                setFile(false);
+            });
+        };
+        reader.readAsDataURL(file);  // Leer el archivo como base64
     };
 
     const calculateEAN13Checksum = (barcode) => {
@@ -279,7 +314,7 @@ export default function Products() {
             return;
         }
 
-        if(!validateBarcode(product.barcode.trim())) {
+        if (!validateBarcode(product.barcode.trim())) {
             return;
         }
 
@@ -516,6 +551,19 @@ export default function Products() {
                     errorMessage='Código de barras es requerido.'
                     valid={barcodeValid}
                     validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
+                />
+                {/* Botón para cargar una imagen */}
+                <button onClick={() => fileInputRef.current.click()} className="p-button mt-4">
+                    {file ? "Cargando..." : "Cargar Imagen de Código de Barras"}
+                </button>
+
+                {/* Input para cargar la imagen (oculto) */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleImageUpload}
                 />
                 {/* Mostrar el código de barras solo si hay un valor en barcode */}
                 {barcode && barcodeValid && (
