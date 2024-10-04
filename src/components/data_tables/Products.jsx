@@ -13,8 +13,11 @@ import Request_Service from '../service/Request_Service';
 import { Checkbox } from 'primereact/checkbox';
 
 export default function Products() {
+    const [barcode, setBarcode] = useState('');
+
     let emptyProduct = {
         idProduct: null,
+        barcode: barcode,
         image: '',
         typeImg: '',
         name: '',
@@ -25,7 +28,6 @@ export default function Products() {
         category: '',
         provider: '',
         isNew: true // Agregar el campo para controlar si el producto es nuevo
-
     };
 
     const URL = '/product/';
@@ -37,6 +39,7 @@ export default function Products() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
+    const [barcodeDialogVisible, setBarcodeDialogVisible] = useState(false);
     const [productDialog, setProductDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -126,6 +129,11 @@ export default function Products() {
         }
     };
 
+    const handleBarcodeChange = (e) => {
+        const newBarcode = e.target.value.replace(/[^0-9]/g, '');  // Solo permite números
+        setBarcode(newBarcode);
+    };
+
     // Forzar reinicio al hacer clic en "Seleccionar Imagen"
     const resetUploadOnClick = () => {
         setFile(null);
@@ -133,6 +141,12 @@ export default function Products() {
         setImageError('');
         setImageSuccess(''); // Limpiar el mensaje de éxito al reiniciar
         setUploadKey(prevKey => prevKey + 1); // Forzar la recreación del FileUpload
+    };
+
+    const handleAddProduct = () => {
+        setBarcodeDialogVisible(true); // Mostrar el modal para ingresar el código de barras
+        setBarcode('');
+        setSubmitted(false);
     };
 
     const openNew = () => {
@@ -180,6 +194,7 @@ export default function Products() {
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
+        setBarcodeDialogVisible(false);
     };
 
     const hideConfirmProductDialog = () => {
@@ -190,12 +205,24 @@ export default function Products() {
         setDeleteProductDialog(false);
     };
 
+    const handleBarcodeSubmit = async () => {
+        setSubmitted(true);
+        if(!barcode) {
+            return;
+        }
+        setBarcodeDialogVisible(false); // Cierra el modal de código de barras
+
+        await Request_Service.getProductByCode(barcode, toast, openNew);
+    };
+
     const saveProduct = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
         // Verificar si todos los campos requeridos están presentes
-        const isValid = product.name.trim() &&
+        const isValid =
+            product.barcode.trim() &&
+            product.name.trim() &&
             product.expiryDate &&
             product.brand &&
             product.category &&
@@ -221,6 +248,7 @@ export default function Products() {
         if (product.idProduct && operation === 2) {
             // Asegurarse de que los campos no estén vacíos al editar
             formData.append('idProduct', product.idProduct);
+            formData.append('barcode', product.barcode.trim());
             formData.append('name', product.name.trim());
             formData.append('expiryDate', product.expiryDate);
             formData.append('salePrice', product.salePrice);
@@ -235,6 +263,7 @@ export default function Products() {
         } else {
             // Verificar que el stock inicial está presente solo al crear
             if (operation === 1) {
+                formData.append('barcode', product.barcode.trim());
                 formData.append('name', product.name.trim());
                 formData.append('expiryDate', product.expiryDate);
                 formData.append('salePrice', (!product.isNew && product.salePrice) ? product.salePrice : 0);
@@ -297,6 +326,10 @@ export default function Products() {
     const actionBodyTemplateP = (rowData) => {
         return actionBodyTemplate(rowData, editProduct, confirmDeleteProduct, onlyDisabled, handleEnable);
     };
+
+    const productBarcodeDialogFooter = (
+        DialogFooter(hideDialog, handleBarcodeSubmit)
+    );
 
     const productDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
@@ -389,6 +422,7 @@ export default function Products() {
     };
 
     const columns = [
+        { field: 'barcode', header: 'Código', sortable: true, style: { minWidth: '12rem' } },
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'brand.name', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
@@ -407,7 +441,7 @@ export default function Products() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(handleAddProduct, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}
@@ -420,10 +454,41 @@ export default function Products() {
                 />
             </div>
 
-            <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                {operation === 2 && product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+            <Dialog visible={barcodeDialogVisible} footer={productBarcodeDialogFooter} onHide={hideDialog} header="Ingresar Código de Barras" modal>
                 <FloatInputTextIcon
                     className="field mt-4"
+                    icon='barcode_scanner'
+                    value={barcode}
+                    onInputChange={(e) => setBarcode(e.target.value || '')}
+                    handle={handleBarcodeChange}
+                    maxLength={13}
+                    required
+                    autoFocus
+                    submitted={submitted}
+                    label='Código de barras'
+                    errorMessage='Código de barras es requerido.'
+                />
+            </Dialog>
+
+
+            <Dialog visible={productDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                {operation === 2 && product.image && <img src={`data:${product.typeImg};base64,${product.image}`} alt={`Imagen producto ${product.name}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+
+                <FloatInputTextIcon
+                    className="field mt-4"
+                    icon='barcode_scanner'
+                    value={product.barcode}
+                    onInputChange={onInputChange} field='barcode'
+                    handle={handleBarcodeChange}
+                    maxLength={13} required autoFocus
+                    submitted={submitted}
+                    label='Código de barras'
+                    errorMessage='Código de barras es requerido.'
+                    disabled={(operation === 1) && 'disabled'}
+                />
+
+                <FloatInputTextIcon
+                    className="field mt-5"
                     icon='inventory_2'
                     value={product.name}
                     onInputChange={onInputChange} field='name'
@@ -433,40 +498,43 @@ export default function Products() {
                     errorMessage='Nombre es requerido.'
                 />
 
-                <FloatDropdownSearchIcon
-                    className="field mt-5"
-                    icon='shoppingmode' field='brand' required
-                    value={selectedBrand}
-                    onInputNumberChange={onInputNumberChange}
-                    options={brands} optionLabel="name"
-                    setSelected={setSelectedBrand}
-                    placeholder="Seleccionar marca"
-                    valueTemplate={selectedBrandTemplate}
-                    itemTemplate={brandOptionTemplate}
-                    submitted={submitted} fieldForeign={product.brand}
-                    label="Marca" errorMessage="Marca es requerida."
-                />
-
-                <div className="field mt-4">
-                    <label htmlFor="expiryDate" className="font-bold">Fecha de Vencimiento</label>
-                    <InputText
-                        id="expiryDate"
-                        value={product.expiryDate}
-                        onChange={(e) => onInputChange(e, 'expiryDate')} // Cambiar el valor sin validación inmediata
-                        onBlur={(e) => handleDateValidation(e)} // Validación cuando se pierde el foco
-                        type="date"
-                        min={getMinExpiryDate()} // Definir la fecha mínima en el calendario
-                        required
-                        className={classNames({ 'p-invalid': submitted && !product.expiryDate })}
+                <div className='formgrid grid mt-4'>
+                    <FloatDropdownSearchIcon
+                        className="field col mt-5"
+                        icon='shoppingmode' field='brand' required
+                        value={selectedBrand}
+                        onInputNumberChange={onInputNumberChange}
+                        options={brands} optionLabel="name"
+                        setSelected={setSelectedBrand}
+                        placeholder="Seleccionar marca"
+                        valueTemplate={selectedBrandTemplate}
+                        itemTemplate={brandOptionTemplate}
+                        submitted={submitted} fieldForeign={product.brand}
+                        label="Marca" errorMessage="Marca es requerida."
                     />
-                    {submitted && !product.expiryDate && (
-                        <small className="p-error">Fecha de vencimiento es requerida.</small>
-                    )}
-                    <br />
-                    {/* Mostrar mensaje de error personalizado */}
-                    {expiryDateError && (
-                        <small className="p-error">{expiryDateError}</small>
-                    )}
+
+                    <div className="field col">
+                        <label htmlFor="expiryDate" className="font-bold ms-1" style={{ fontSize: "0.84rem", color: 'rgb(75, 85, 99)' }}>Fecha de Vencimiento</label>
+                        <InputText
+                            id="expiryDate"
+                            value={product.expiryDate}
+                            onChange={(e) => onInputChange(e, 'expiryDate')} // Cambiar el valor sin validación inmediata
+                            onBlur={(e) => handleDateValidation(e)} // Validación cuando se pierde el foco
+                            type="date"
+                            min={getMinExpiryDate()} // Definir la fecha mínima en el calendario
+                            required
+                            style={{ height: '3.4rem' }}
+                            className={classNames({ 'p-invalid': submitted && !product.expiryDate })}
+                        />
+                        {submitted && !product.expiryDate && (
+                            <small className="p-error">Fecha de vencimiento es requerida.</small>
+                        )}
+                        <br />
+                        {/* Mostrar mensaje de error personalizado */}
+                        {expiryDateError && (
+                            <small className="p-error">{expiryDateError}</small>
+                        )}
+                    </div>
                 </div>
 
                 {(operation === 1) && (

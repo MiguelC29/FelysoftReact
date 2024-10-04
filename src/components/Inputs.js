@@ -18,6 +18,7 @@ const BaseFloatInputText = (props) => {
                 placeholder={props.placeholder}
                 className={classNames({ 'p-invalid': props.submitted && !props.value })}
                 maxLength={props.maxLength}
+                disabled={props.disabled}
             />
             <label htmlFor={props.field} className="font-bold">{props.label}</label>
         </FloatLabel>

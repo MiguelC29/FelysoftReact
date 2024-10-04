@@ -1,8 +1,8 @@
 import axios from "axios";
 
 class Request_Service {
-    static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
-    //static BASE_URL = "http://localhost:8086/api"
+    //static BASE_URL = "https://felysoftspring-production.up.railway.app/api"
+    static BASE_URL = "http://localhost:8086/api"
 
     static getToken() {
         return localStorage.getItem('token');
@@ -197,10 +197,33 @@ class Request_Service {
                 .then((response) => {
                     //console.log(response);
                     setData(response.data.data);
-                    return response.data;
+                    return response.data.data;
                 })
         } catch (error) {
             console.error('Error fetching data: ', error);
+            return null;
+        }
+    }
+
+    static async getProductByCode(barcode, toast, openNew) {
+        try {
+            const token = this.getToken();
+            await axios.get(this.BASE_URL + '/product/listBarcode/' + barcode,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then((response) => {
+                    //console.log(response);
+                    if (response.data.data != null) {
+                        toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'El producto ya existe.', life: 3000 });
+                    } else {
+                        openNew(); // Abre el diálogo de producto
+                    }
+                    return response.data.data;
+                })
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            return null;
         }
     }
 
