@@ -11,6 +11,7 @@ import { Image } from 'primereact/image';
 import { FloatDropdownSearchIcon, FloatInputNumberIcon, FloatInputNumberMoneyIcon, FloatInputTextIcon } from '../Inputs';
 import Request_Service from '../service/Request_Service';
 import { Checkbox } from 'primereact/checkbox';
+import Barcode from 'react-barcode';
 
 export default function Products() {
     const [barcode, setBarcode] = useState('');
@@ -40,6 +41,7 @@ export default function Products() {
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [barcodeDialogVisible, setBarcodeDialogVisible] = useState(false);
+    const [barcodeValid, setBarcodeValid] = useState(true);
     const [productDialog, setProductDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -129,9 +131,46 @@ export default function Products() {
         }
     };
 
+    const calculateEAN13Checksum = (barcode) => {
+        if (barcode.length !== 12) {
+            return null;  // Necesitamos exactamente 12 dígitos para calcular el dígito de control
+        }
+
+        const digits = barcode.split('').map(Number);
+        let sum = 0;
+
+        // Sumar los dígitos pares multiplicados por 3 y los impares normalmente
+        digits.forEach((digit, index) => {
+            sum += (index % 2 === 0) ? digit : digit * 3;
+        });
+
+        // El dígito de control es el número que hace que la suma sea un múltiplo de 10
+        const checksum = (10 - (sum % 10)) % 10;
+        return checksum;
+    };
+
+    // Maneja el cambio de valor del código de barras y realiza validaciones
     const handleBarcodeChange = (e) => {
         const newBarcode = e.target.value.replace(/[^0-9]/g, '');  // Solo permite números
+        // Verificar si la longitud es correcta (por ejemplo, 13 caracteres)
+        setBarcodeValid(validateBarcode(e.target.value)); // Valida el código de barras
         setBarcode(newBarcode);
+    };
+
+    // Función para validar el código de barras (debe tener exactamente 13 dígitos)
+    const validateBarcode = (barcode) => {
+        const barcodeStr = barcode ? barcode.toString() : '';
+
+        // Verificamos si tiene exactamente 13 dígitos
+        if (barcodeStr.length !== 13) return false;
+
+        // Obtenemos los primeros 12 dígitos y calculamos el dígito de control
+        const baseBarcode = barcodeStr.slice(0, 12);
+        const providedChecksum = parseInt(barcodeStr[12], 10);
+        const calculatedChecksum = calculateEAN13Checksum(baseBarcode);
+
+        // Comparamos el dígito de control proporcionado con el calculado
+        return providedChecksum === calculatedChecksum;
     };
 
     // Forzar reinicio al hacer clic en "Seleccionar Imagen"
@@ -181,6 +220,7 @@ export default function Products() {
         setImageError('');
         setSelectedImage('');
         setImageError('');
+        setBarcodeValid(true);
         setTitle('Editar Producto');
         setOperation(2);
         setProductDialog(true);
@@ -207,9 +247,10 @@ export default function Products() {
 
     const handleBarcodeSubmit = async () => {
         setSubmitted(true);
-        if(!barcode) {
+        if (!barcode || !validateBarcode(barcode)) {
             return;
         }
+
         setBarcodeDialogVisible(false); // Cierra el modal de código de barras
 
         await Request_Service.getProductByCode(barcode, toast, openNew);
@@ -235,6 +276,10 @@ export default function Products() {
         // Mostrar mensaje de error si algún campo requerido falta
         if (!isValid) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos requeridos', life: 3000 });
+            return;
+        }
+
+        if(!validateBarcode(product.barcode.trim())) {
             return;
         }
 
@@ -326,6 +371,10 @@ export default function Products() {
     const actionBodyTemplateP = (rowData) => {
         return actionBodyTemplate(rowData, editProduct, confirmDeleteProduct, onlyDisabled, handleEnable);
     };
+
+    const barcodeBodyTemplate = (rowData) => {
+        return <Barcode value={rowData.barcode} format='EAN13' width={1.2} height={30} />
+    }
 
     const productBarcodeDialogFooter = (
         DialogFooter(hideDialog, handleBarcodeSubmit)
@@ -422,7 +471,7 @@ export default function Products() {
     };
 
     const columns = [
-        { field: 'barcode', header: 'Código', sortable: true, style: { minWidth: '12rem' } },
+        { field: 'barcode', header: 'Código', body: barcodeBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'name', header: 'Nombre', sortable: true, style: { minWidth: '12rem' } },
         { field: 'brand.name', header: 'Marca', sortable: true, style: { minWidth: '10rem' } },
         { field: 'expiryDate', header: 'Fecha de Vencimiento', sortable: true, style: { minWidth: '8rem' } },
@@ -459,15 +508,21 @@ export default function Products() {
                     className="field mt-4"
                     icon='barcode_scanner'
                     value={barcode}
-                    onInputChange={(e) => setBarcode(e.target.value || '')}
+                    onInputChange={(e) => setBarcode(e.target.value)} field='barcode'
                     handle={handleBarcodeChange}
-                    maxLength={13}
-                    required
-                    autoFocus
+                    maxLength={13} required autoFocus
                     submitted={submitted}
                     label='Código de barras'
                     errorMessage='Código de barras es requerido.'
+                    valid={barcodeValid}
+                    validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
                 />
+                {/* Mostrar el código de barras solo si hay un valor en barcode */}
+                {barcode && barcodeValid && (
+                    <div className="mt-4">
+                        <Barcode value={barcode} format='EAN13' />
+                    </div>
+                )}
             </Dialog>
 
 
@@ -484,6 +539,8 @@ export default function Products() {
                     submitted={submitted}
                     label='Código de barras'
                     errorMessage='Código de barras es requerido.'
+                    valid={barcodeValid}
+                    validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
                     disabled={(operation === 1) && 'disabled'}
                 />
 
