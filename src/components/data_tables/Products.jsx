@@ -58,6 +58,7 @@ export default function Products() {
     const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
     const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
     const [scanning, setScanning] = useState(false);
+    const [scannerTimeout, setScannerTimeout] = useState(null); // Estado para el timeout
     const toast = useRef(null);
     const dt = useRef(null);
     const fileInputRef = useRef(null); // Referencia para el input de imagen
@@ -143,11 +144,9 @@ export default function Products() {
         setFile(true);
         const reader = new FileReader();
         reader.onload = function () {
-            const imageData = reader.result;
-
             // Inicializar Quagga para leer el código de barras desde la imagen
             Quagga.decodeSingle({
-                src: imageData,
+                src: reader.result,
                 numOfWorkers: 0,  // Deshabilitar web workers (opcional)
                 inputStream: {
                     size: 800,  // Escalar imagen
@@ -219,6 +218,8 @@ export default function Products() {
                     target: qrReaderRef.current, // Usa la referencia del contenedor
                     constraints: {
                         facingMode: 'environment', // Usa la cámara trasera
+                        width: { ideal: 400 },     // Ajusta el ancho del video
+                        height: { ideal: 200 },    // Ajusta la altura del video
                     },
                     area: {
                         top: '0%',    // Iniciar el escaneo en la parte superior
@@ -229,6 +230,7 @@ export default function Products() {
                 },
                 decoder: {
                     readers: ['ean_reader'], // Tipos de códigos de barras a decodificar // Solo lector para códigos de barras EAN-13
+                    multiple: false, // Desactiva la lectura de múltiples códigos a la vez para evitar confusiones
                 },
             }, (err) => {
                 if (err) {
@@ -237,21 +239,39 @@ export default function Products() {
                 }
                 Quagga.start();
                 setScanning(true);
+
+                // Establecer un timeout para detener el escáner después de 10 segundos
+                setScannerTimeout(setTimeout(() => {
+                    stopScanner();
+                    alert("No se detectó ningún código. El escáner se detuvo.");
+                }, 30000)); // 30000 ms = 30 segundos
             });
 
             Quagga.onDetected((data) => {
                 setBarcode(data.codeResult.code);
                 stopScanner(); // Detiene el escáner después de una lectura exitosa
+
+                // Limpiar el timeout cuando se detecte un código
+                if (scannerTimeout) {
+                    clearTimeout(scannerTimeout);
+                    setScannerTimeout(null);
+                }
             });
         }
     };
 
-    const stopScanner = () => {
+    const stopScanner = useCallback(() => {
         Quagga.stop();
         setScanning(false);
         // Oculta el recuadro del escáner
         qrReaderRef.current.style.display = 'none';
-    };
+
+        // Limpiar el timeout si se detiene el escáner manualmente
+        if (scannerTimeout) {
+            clearTimeout(scannerTimeout);
+            setScannerTimeout(null);
+        }
+    }, [scannerTimeout]);
 
     useEffect(() => {
         if (scanning) {
@@ -259,7 +279,7 @@ export default function Products() {
                 stopScanner(); // Detiene el escáner al desmontar el componente
             };
         }
-    }, [scanning]);
+    }, [scanning, stopScanner]);
 
     // Forzar reinicio al hacer clic en "Seleccionar Imagen"
     const resetUploadOnClick = () => {
@@ -323,7 +343,7 @@ export default function Products() {
         setSubmitted(false);
         setProductDialog(false);
         setBarcodeDialogVisible(false);
-        stopScanner();
+        (scanning) && stopScanner();
     };
 
     const hideConfirmProductDialog = () => {
@@ -615,7 +635,7 @@ export default function Products() {
                 )}
 
                 {/* Botón para cargar una imagen */}
-                <button onClick={() => { fileInputRef.current.click(); setBarcode('')}} className="p-button mt-4">
+                <button onClick={() => { fileInputRef.current.click(); setBarcode('') }} className="p-button mt-4">
                     {file ? "Cargando..." : "Cargar Imagen"}
                 </button>
 
@@ -639,17 +659,19 @@ export default function Products() {
                     }}
                 >
                     {/* Línea de referencia */}
-                    <div className="scanner-line" style={{
+                    <div className="scanner-line"></div>
+
+                    {/* Marco de escaneo */}
+                    <div className="scanner-frame" style={{
                         position: 'absolute',
-                        top: '50%',
-                        left: '0',
-                        right: '0',
-                        height: '2px',
-                        backgroundColor: 'red',
-                        transform: 'translateY(-50%)',
-                        zIndex: 10,
-                        width: '100%', // Ajustar el ancho de la línea de referencia
-                        margin: '0 auto' // Centrar la línea de referencia
+                        top: '15%',   // Ajusta la posición superior
+                        left: '10%',  // Ajusta la posición izquierda
+                        right: '10%', // Ajusta la posición derecha
+                        bottom: '15%',// Ajusta la posición inferior
+                        border: '2px dashed rgba(255, 0, 0, 0.8)', // Color y estilo del borde
+                        borderRadius: '8px', // Bordes redondeados
+                        pointerEvents: 'none', // Evita que este div intercepte los clics
+                        zIndex: 9
                     }}></div>
                 </div>
 
