@@ -162,13 +162,13 @@ export const LoginPage = () => {
       <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
       <Toast ref={toast} position="bottom-right" />
       <div className="page">
-        <div className="container-logo bg-white p-3" style={{ borderRadius: '60px 0 0 60px' }}>
+        <div className="container-logo bg-white p-3">
           <img className="logo" src={logo} alt="Logo" />
         </div>
-        <div className="login-card" style={{ borderRadius: '20px 80px 80px 20px' }}>
+        <div className="login-card">
           <div className="content">
             <h2>Iniciar Sesión</h2>
-            <div className="login-form" style={{ background: '#19191a' }} method='post'>
+            <div className="login-form" method='post'>
               <div className="input__wrapper">
                 <input
                   id="email"
