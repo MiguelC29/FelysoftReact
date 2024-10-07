@@ -1,0 +1,96 @@
+/* General Styles */
+.auth-container {
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    background-color: #19191a;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 1rem;
+}
+
+/* Estilo por defecto para el logo y título */
+.auth-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.auth-title {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 1.5rem;
+    color: white;
+}
+
+@media screen and (max-width: 480px) {
+    .auth-container {
+        padding: 1rem;
+    }
+    .auth-logo {
+        width: 40px;
+        top: 5px;
+        left: 5px;
+    }
+    .auth-title {
+        font-size: 1.2rem;
+        padding-top: 50px; /* Añadir más espacio para el logo */
+    }
+    .p-inputgroup-addon {
+        display: none; /* Ocultar iconos en resoluciones pequeñas si es necesario */
+    }
+    .field {
+        width: 100% !important; /* Los campos ocupan todo el ancho */
+    }
+    .btn-container {
+        margin-top: 1rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .auth-container {
+        padding: 2rem;
+    }
+    .auth-logo {
+        width: 50px;
+        top: 10px;
+        left: 10px;
+    }
+    .auth-title {
+        font-size: 1.4rem;
+        padding-top: 50px;
+    }
+    .field {
+        width: 100% !important;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .auth-container {
+        padding: 3rem;
+    }
+    .auth-logo {
+        width: 60px;
+    }
+    .auth-title {
+        font-size: 1.8rem;
+    }
+    .field {
+        width: 50% !important; /* Mitad del ancho en tabletas grandes */
+    }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1280px) {
+    .auth-container {
+        padding: 3rem 4rem;
+    }
+    .auth-logo {
+        width: 70px;
+    }
+    .auth-title {
+        font-size: 2rem;
+    }
+    .field {
+        width: 50% !important;
+    }
+}

@@ -14,6 +14,7 @@ import logo from "../../img/logo.svg";
 import LoadingOverlay from "../common/LoadingOverlay";
 import { Divider } from 'primereact/divider';
 import useEnterKey from '../../useEnterKey';
+import '../../css/register.css';
 
 function RegistrationPage() {
 
@@ -154,15 +155,19 @@ function RegistrationPage() {
     useEnterKey(handleSubmit, confirmDialogVisible); // Solo se activa cuando el diálogo está visible
 
     return (
-        <div className='container auth-container mt-3 p-4 rounded-5' style={{ backgroundColor: '#19191a' }}>
-            <div className='d-flex align-items-center'>
-                <img src={logo} className='me-3' alt="Logo" width="70px" />
-                <h2 className='text-white text-center flex-grow-1 pt-2'>Registro Clientes</h2>
+        <div className='container auth-container mt-3 p-4 rounded-5 position-relative' style={{ backgroundColor: '#19191a' }}>
+            <div className='position-absolute start-1'>
+                <img src={logo} alt="Logo" width="70px" className="auth-logo" />
             </div>
+            <div className='d-flex justify-content-center'>
+                <h2 className='text-white text-center pt-2 fs-1 auth-title'>Registro Clientes</h2>
+            </div>
+            
             <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Toast ref={toast} position="bottom-right" />
-            <div className="formgrid grid mt-5">
-                <div className="field col">
+            
+            <div className="formgrid grid mt-7 col-12">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">id_card</span>
@@ -174,7 +179,7 @@ function RegistrationPage() {
                     </div>
                     {submitted && !user.names && <small className="p-error">Nombres son requeridos.</small>}
                 </div>
-                <div className="field col">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">id_card</span>
@@ -187,8 +192,8 @@ function RegistrationPage() {
                     {submitted && !user.lastNames && <small className="p-error">Apellidos son requeridos.</small>}
                 </div>
             </div>
-            <div className="formgrid grid mt-4">
-                <div className="field col">
+            <div className="formgrid grid col-12">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">badge</span>
@@ -209,7 +214,7 @@ function RegistrationPage() {
                     </div>
                     {submitted && !user.typeDoc && !selectedTypeId && <small className="p-error">Tipo de Identificación es requerido.</small>}
                 </div>
-                <div className="field col">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">badge</span>
@@ -226,8 +231,8 @@ function RegistrationPage() {
                     {user.numIdentification && !numIdValid && <small className="p-error">El número de identificación debe tener 8 o 10 dígitos.</small>}
                 </div>
             </div>
-            <div className="formgrid grid mt-4">
-                <div className="field col">
+            <div className="formgrid grid col-12">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">call</span>
@@ -244,7 +249,7 @@ function RegistrationPage() {
                     {submitted && !user.phoneNumber && <small className="p-error">Número de celular es requerido.</small>}
                     {user.phoneNumber && !phoneValid && <small className="p-error">El número de celular debe tener 10 dígitos.</small>}
                 </div>
-                <div className="field col">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">person</span>
@@ -257,8 +262,8 @@ function RegistrationPage() {
                     {submitted && !user.user_name && <small className="p-error">Nombre de Usuario es requerida.</small>}
                 </div>
             </div>
-            <div className="formgrid grid mt-4">
-                <div className="field col">
+            <div className="formgrid grid col-12">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">mail</span>
@@ -274,7 +279,7 @@ function RegistrationPage() {
                     {submitted && !user.email && <small className="p-error">Correo Eletrónico es requerido.</small>}
                     {user.email && !emailValid && <small className="p-error">Correo Eletrónico no es válido.</small>}
                 </div>
-                <div className="field col">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">alternate_email</span>
@@ -288,8 +293,8 @@ function RegistrationPage() {
                     {user.confirmEmail && user.email !== user.confirmEmail && <small className="p-error">Los correos electrónicos no coinciden.</small>}
                 </div>
             </div>
-            <div className="formgrid grid mt-4">
-                <div className="field col">
+            <div className="formgrid grid col-12">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">lock</span>
@@ -301,7 +306,7 @@ function RegistrationPage() {
                     </div>
                     {submitted && !user.password && <small className="p-error">Contraseña es requerido.</small>}
                 </div>
-                <div className="field col">
+                <div className="field col-12 col-md-6">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <span className="material-symbols-outlined">key</span>
@@ -317,10 +322,12 @@ function RegistrationPage() {
             </div>
             {confirmDialog(confirmDialogVisible, 'Usuario', confirmUserDialogFooter, hideConfirmUserDialog, user, 1)}
 
-            <div className="text-center">
-                <Button label="Registrar" className='mb-2 me-5 rounded-3' severity="info" onClick={confirmSave} />
+            <div className="text-center btn-container">
+                <Button label="Registrar" className='mb-2 rounded-3 px-5' severity="info" onClick={confirmSave} />
                 <br />
-                <span className='text-white'>¿Ya tiene una cuenta?  </span><Link to="/login" replace>Iniciar Sesión</Link>
+                <div className='fs-6'>
+                    <span className='text-white'>¿Ya tiene una cuenta?  </span><Link to="/login" replace>Iniciar Sesión</Link>
+                </div>
             </div>
         </div>
     )
