@@ -171,29 +171,33 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 </IconButton>
                 <LogoImage src={logo} alt="Logo FELYSOFT" />
                 {!open && <Typography variant="h6" noWrap component="div">
-                    <span className='text-white text-decoration-none'>FELYSOFT</span>
+                    <span className='text-white text-decoration-none d-none d-sm-block'>FELYSOFT</span>
                 </Typography>}
-                <div className='d-flex align-items-end ms-auto'>
+                <div className='d-flex justify-content-end align-items-center ms-auto' style={{ flex: 1 }}>
                     {(isAdmin || isSalesPerson) && (
-                        <span className="material-symbols-outlined mr-4 p-overlay-badge" onClick={() => setCartVisible(true)}>
-                            <ShoppingCart fontSize='24px' />
-                            <BadgeStyled value={getCartItemCount()} id='badge-shopping-car' severity="info" />
-                        </span>
+                        <IconButton
+                            color="inherit"
+                            onClick={() => setCartVisible(true)}>
+                            <span className="d-flex mr-2 ms-auto material-symbols-outlined p-overlay-badge">
+                                <ShoppingCart fontSize='28px' />
+                                <BadgeStyled value={getCartItemCount()} id='badge-shopping-car' severity="info" />
+                            </span>
+                        </IconButton>
                     )}
-                    <div className="datetime text-white" id="datetime">
+                    <div className="datetime text-white d-none d-sm-block" id="datetime">
                         {dateTime.toLocaleString()}
                     </div>
                 </div>
                 {(isAdmin || isInventoryManager) && (
-                <IconButton
-                    color="inherit"
-                    onClick={handleNotificationClick}
-                >
-                    <span className="d-flex ms-auto material-symbols-outlined p-overlay-badge">
-                        <NotificationsRounded fontSize='28px' />
-                        <BadgeStyled value={4} severity="info" /> {/* Número de notificaciones */}
-                    </span>
-                </IconButton>
+                    <IconButton
+                        color="inherit"
+                        onClick={handleNotificationClick}
+                    >
+                        <span className="d-flex ms-auto material-symbols-outlined p-overlay-badge">
+                            <NotificationsRounded fontSize='28px' />
+                            <BadgeStyled value={4} severity="info" /> {/* Número de notificaciones */}
+                        </span>
+                    </IconButton>
                 )}
                 {isAuthenticated && profile && (
                     <>
@@ -254,41 +258,41 @@ export default function NavBar({ open, handleDrawerOpen, Icon }) {
                 <CartModal visible={cartVisible} onHide={() => setCartVisible(false)} />
                 {/* Aquí puedes agregar el menú de notificaciones si lo necesitas */}
                 {(isAdmin || isInventoryManager) && (
-                <Menu
-                    anchorEl={notificationAnchorEl}
-                    open={openNotificationMenu}
-                    onClose={handleNotificationMenuClose}
-                >
-                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
-                        <NotificationContent>
-                            <NotificationIcon className="material-symbols-outlined">
-                                trending_down
-                            </NotificationIcon>
-                            <NotificationText>Stock bajo del Producto <strong>Oreo</strong></NotificationText>
-                            <NotificationTime>3 mins</NotificationTime>
-                        </NotificationContent>
-                    </NotificationMenuItem>
-                    <Divider />
-                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
-                        <NotificationContent>
-                            <NotificationIcon className="material-symbols-outlined">
-                                event_busy
-                            </NotificationIcon>
-                            <NotificationText>El producto <strong>Oreo</strong> esta próximo a vencerse</NotificationText>
-                            <NotificationTime>12 hrs</NotificationTime>
-                        </NotificationContent>
-                    </NotificationMenuItem>
-                    <Divider />
-                    <NotificationMenuItem onClick={handleNotificationMenuClose}>
-                        <NotificationContent>
-                            <NotificationIcon className="material-symbols-outlined">
-                                trending_down
-                            </NotificationIcon>
-                            <NotificationText>Stock bajo del Producto <strong>Gansito</strong></NotificationText>
-                            <NotificationTime>2 días</NotificationTime>
-                        </NotificationContent>
-                    </NotificationMenuItem>
-                </Menu>
+                    <Menu
+                        anchorEl={notificationAnchorEl}
+                        open={openNotificationMenu}
+                        onClose={handleNotificationMenuClose}
+                    >
+                        <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                            <NotificationContent>
+                                <NotificationIcon className="material-symbols-outlined">
+                                    trending_down
+                                </NotificationIcon>
+                                <NotificationText>Stock bajo del Producto <strong>Oreo</strong></NotificationText>
+                                <NotificationTime>3 mins</NotificationTime>
+                            </NotificationContent>
+                        </NotificationMenuItem>
+                        <Divider />
+                        <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                            <NotificationContent>
+                                <NotificationIcon className="material-symbols-outlined">
+                                    event_busy
+                                </NotificationIcon>
+                                <NotificationText>El producto <strong>Oreo</strong> esta próximo a vencerse</NotificationText>
+                                <NotificationTime>12 hrs</NotificationTime>
+                            </NotificationContent>
+                        </NotificationMenuItem>
+                        <Divider />
+                        <NotificationMenuItem onClick={handleNotificationMenuClose}>
+                            <NotificationContent>
+                                <NotificationIcon className="material-symbols-outlined">
+                                    trending_down
+                                </NotificationIcon>
+                                <NotificationText>Stock bajo del Producto <strong>Gansito</strong></NotificationText>
+                                <NotificationTime>2 días</NotificationTime>
+                            </NotificationContent>
+                        </NotificationMenuItem>
+                    </Menu>
                 )}
             </Toolbar>
         </AppBar>
