@@ -9,6 +9,7 @@ import { FloatDropdownIcon } from '../Inputs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSale } from '../context/SaleContext';
 import LoadingOverlay from '../common/LoadingOverlay';
+import '../../css/carrito.css';
 
 const CartModal = ({ visible, onHide }) => {
     const { cartItems, updateCartItemQuantity, clearCart, removeFromCart } = useCart();
@@ -163,69 +164,97 @@ const CartModal = ({ visible, onHide }) => {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
-            <Dialog header="Carrito" visible={visible} style={{ width: '50vw', borderRadius: '10px' }} onHide={onHide} className='text-center'>
+            <Dialog header="Carrito" visible={visible} style={{ width: '90%', maxWidth: '600px', borderRadius: '10px' }} onHide={onHide} className='text-center' breakpoints={{ '960px': '75vw', '641px': '90vw' }}>
                 <div className="cart-items">
                     {cartItems.length > 0 ? (
-                        <table className="p-datatable p-component">
-                            <thead>
-                                <tr>
-                                    <th className="text-center">Imagen</th>
-                                    <th className="text-center">Nombre</th>
-                                    <th className="text-center">Precio</th>
-                                    <th className="text-center">Cantidad</th>
-                                    <th className="text-center">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div className="cart-list">
+                            {/* Tabla para pantallas grandes */}
+                            <div className="table-container">
+                                <table className="p-datatable p-component">
+                                    <thead>
+                                        <tr>
+                                            <th className="text-center">Imagen</th>
+                                            <th className="text-center">Nombre</th>
+                                            <th className="text-center">Precio</th>
+                                            <th className="text-center">Cantidad</th>
+                                            <th className="text-center">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {cartItems.map(item => (
+                                            <tr key={item.id}>
+                                                <td className="text-center" style={{ padding: '1rem' }}>
+                                                    <img src={`data:${item.product.typeImg};base64,${item.product.image}`} alt={item.product.name} width="60" height="60" className="cart-item-image" />
+                                                </td>
+                                                <td className="text-center" style={{ padding: '1rem' }}>
+                                                    {item.product.name}
+                                                </td>
+                                                <td className="text-center" style={{ padding: '1rem' }}>
+                                                    {formatCurrency(item.product.salePrice)}
+                                                </td>
+                                                <td className="text-center" style={{ padding: '1rem' }}>
+                                                    <div className="flex justify-content-center align-items-center gap-2">
+                                                        <Button
+                                                            icon="pi pi-minus"
+                                                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                                            className="p-button-rounded p-button-text p-button-danger"
+                                                            aria-label="Reducir"
+                                                        />
+                                                        <span className="font-bold">{item.quantity}</span>
+                                                        <Button
+                                                            icon="pi pi-plus"
+                                                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                                            className="p-button-rounded p-button-text p-button-info"
+                                                            aria-label="Incrementar"
+                                                            disabled={item.quantity >= item.stock} // Deshabilitar si se alcanza el stock
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="text-center" style={{ padding: '1rem' }}>
+                                                    {formatCurrency(item.product.salePrice * item.quantity)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style={{ fontSize: '15px' }}>
+                                            <td colSpan="4" className="text-right font-bold" style={{ padding: '1rem' }}>Total:</td>
+                                            <td className="text-center font-bold" style={{ padding: '1rem' }}>{formatCurrency(getTotal())}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            {/* Vista de lista para pantallas pequeñas */}
+                            <div className="cart-list-view">
                                 {cartItems.map(item => (
-                                    <tr key={item.id}>
-                                        <td className="text-center" style={{ padding: '1rem' }}>
-                                            <img src={`data:${item.product.typeImg};base64,${item.product.image}`} alt={item.product.name} width="60" height="60" className="cart-item-image" />
-                                        </td>
-                                        <td className="text-center" style={{ padding: '1rem' }}>
-                                            {item.product.name}
-                                        </td>
-                                        <td className="text-center" style={{ padding: '1rem' }}>
-                                            {formatCurrency(item.product.salePrice)}
-                                        </td>
-                                        <td className="text-center" style={{ padding: '1rem' }}>
-                                            <div className="flex justify-content-center align-items-center gap-2">
-                                                <Button
-                                                    icon="pi pi-minus"
-                                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                                    className="p-button-rounded p-button-text p-button-danger"
-                                                    aria-label="Reducir"
-                                                />
-                                                <span className="font-bold">{item.quantity}</span>
-                                                <Button
-                                                    icon="pi pi-plus"
-                                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                                    className="p-button-rounded p-button-text p-button-info"
-                                                    aria-label="Incrementar"
-                                                    disabled={item.quantity >= item.stock} // Deshabilitar si se alcanza el stock
-                                                />
+                                    <div key={item.id} className="cart-item">
+                                        <div className="cart-item-image">
+                                            <img src={`data:${item.product.typeImg};base64,${item.product.image}`} alt={item.product.name} className="cart-image" />
+                                        </div>
+                                        <div className="cart-item-details">
+                                            <h4>{item.product.name}</h4>
+                                            <p><strong>Precio:</strong> {formatCurrency(item.product.salePrice)}</p>
+                                            <p><strong>Cantidad:</strong> {item.quantity}</p>
+                                            <p><strong>Total:</strong> {formatCurrency(item.product.salePrice * item.quantity)}</p>
+                                            <div className="quantity-controls">
+                                                <Button icon="pi pi-minus" onClick={() => handleQuantityChange(item.id, item.quantity - 1)} className="p-button-rounded p-button-text p-button-danger" />
+                                                <Button icon="pi pi-plus" onClick={() => handleQuantityChange(item.id, item.quantity + 1)} className="p-button-rounded p-button-text p-button-info" disabled={item.quantity >= item.stock} />
                                             </div>
-                                        </td>
-                                        <td className="text-center" style={{ padding: '1rem' }}>
-                                            {formatCurrency(item.product.salePrice * item.quantity)}
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </div>
                                 ))}
-                            </tbody>
-                            <tfoot>
-                                <tr style={{ fontSize: '15px' }}>
-                                    <td colSpan="4" className="text-right font-bold" style={{ padding: '1rem' }}>Total:</td>
-                                    <td className="text-center font-bold" style={{ padding: '1rem' }}>{formatCurrency(getTotal())}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                <div className="cart-total">
+                                    <h4>Total: {formatCurrency(getTotal())}</h4>
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         <div className="flex justify-content-center align-items-center">
                             <h4>Tu carrito está vacío</h4>
                         </div>
                     )}
                     {cartItems.length > 0 && (
-                        <div className="flex justify-content-between mt-4">
+                        <div className="cart-button-container flex justify-content-between mt-4">
                             <Button
                                 label="Vaciar Carrito"
                                 icon="pi pi-trash"
@@ -245,29 +274,35 @@ const CartModal = ({ visible, onHide }) => {
 
             {/* CONFIRM SALE */}
             <Dialog visible={saleDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirmar venta" modal className="p-fluid" footer={purchaseDialogFooter} onHide={hideDialog}>
-                <FloatDropdownIcon
-                    className="field mt-5"
-                    icon='currency_exchange' field='methodPayment' required
-                    value={selectedMethodPayment}
-                    handleChange={setSelectedMethodPayment}
-                    onInputNumberChange={onInputNumberChange}
-                    options={methodPaymentOptions}
-                    placeholder="Seleccionar el método de pago"
-                    submitted={submitted} fieldForeign={sale.methodPayment}
-                    label="Método de pago" errorMessage="Método de pago es requerido."
-                />
-                <FloatDropdownIcon
-                    className="field mt-5"
-                    icon='new_releases' field='state' required
-                    value={selectedState}
-                    handleChange={setSelectedState}
-                    onInputNumberChange={onInputNumberChange}
-                    options={stateOptions}
-                    placeholder="Seleccionar el estado"
-                    submitted={submitted} fieldForeign={sale.state}
-                    label="Estado" errorMessage="Estado es requerido."
-                />
-                <p className='mt-4'>
+                <div className="row">
+                    <div className="col-lg-6 col-md-6 col-sm-12">
+                        <FloatDropdownIcon
+                            className="field mt-5"
+                            icon='currency_exchange' field='methodPayment' required
+                            value={selectedMethodPayment}
+                            handleChange={setSelectedMethodPayment}
+                            onInputNumberChange={onInputNumberChange}
+                            options={methodPaymentOptions}
+                            placeholder="Seleccionar el método de pago"
+                            submitted={submitted} fieldForeign={sale.methodPayment}
+                            label="Método de pago" errorMessage="Método de pago es requerido."
+                        />
+                    </div>
+                    <div className="col-lg-6 col-md-6 col-sm-12">
+                        <FloatDropdownIcon
+                            className="field mt-5"
+                            icon='new_releases' field='state' required
+                            value={selectedState}
+                            handleChange={setSelectedState}
+                            onInputNumberChange={onInputNumberChange}
+                            options={stateOptions}
+                            placeholder="Seleccionar el estado"
+                            submitted={submitted} fieldForeign={sale.state}
+                            label="Estado" errorMessage="Estado es requerido."
+                        />
+                    </div>
+                </div>
+                <p className='mt-4 text-right'>
                     <span className="text-right font-bold" style={{ padding: '1rem' }}>Total:</span>
                     <span className="text-center font-bold" style={{ padding: '1rem' }}>{formatCurrency(getTotal())}</span>
                 </p>

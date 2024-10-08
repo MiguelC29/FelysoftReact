@@ -1,0 +1,85 @@
+.table-container {
+    display: block;
+    /* Para pantallas grandes */
+}
+
+.cart-list-view {
+    display: none;
+    /* Para pantallas grandes */
+}
+
+.cart-button-container {
+    display: flex;
+    justify-content: space-between; /* Espaciado entre los botones */
+    flex-wrap: wrap; /* Permitir que los elementos se muevan a la siguiente línea si es necesario */
+}
+
+.cart-button-container .p-button {
+    flex: 1 1 auto; /* Hacer que los botones ocupen el espacio disponible */
+    margin: 0.5rem; /* Espacio alrededor de los botones */
+}
+
+@media (max-width: 768px) {
+    .table-container {
+        display: none;
+        /* Ocultar tabla en pantallas pequeñas */
+    }
+
+    .cart-list-view {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        /* Espaciado entre los ítems */
+        /* Mostrar lista en pantallas pequeñas */
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border-bottom: 1px solid #ccc;
+        background-color: #f9f9f9;
+        /* Fondo claro para mejorar el contraste */
+        border-radius: 8px;
+        /* Bordes redondeados */
+    }
+
+    .cart-item-image {
+        flex: 0 0 auto;
+        /* No crecer ni encogerse */
+    }
+
+    .cart-item-image img {
+        width: 80px; /* Tamaño deseado de la imagen */
+        height: 80px; /* Tamaño deseado de la imagen */
+        object-fit: cover; /* Mantiene la proporción de la imagen */
+        border-radius: 5px; /* Bordes redondeados para la imagen */
+    }
+
+    .cart-item-details {
+        flex: 1; /* Para que ocupe el espacio restante */
+        margin-left: 1rem; /* Espacio entre la imagen y los detalles */
+    }
+
+    .quantity-controls {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .cart-total {
+        text-align: right; /* Alinear total a la derecha */
+        font-weight: bold; /* Destacar el total */
+        margin-top: 1rem; /* Espacio encima del total */
+    }
+
+    .cart-button-container {
+        flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+        align-items: stretch; /* Alinear elementos para que ocupen todo el ancho */
+    }
+
+    .cart-button-container .p-button {
+        margin: 0.5rem 0; /* Espacio vertical entre los botones */
+        width: 100%; /* Hacer que los botones ocupen el ancho completo */
+    }
+}
