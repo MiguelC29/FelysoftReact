@@ -13,10 +13,16 @@ import { FloatLabel } from 'primereact/floatlabel';
 import Request_Service from '../service/Request_Service';
 import UserService from '../service/UserService';
 import { FileUpload } from 'primereact/fileupload';
+import Barcode from 'react-barcode';
+import Quagga from 'quagga';  // Biblioteca para leer códigos de barras desde imágenes
+import { FloatInputTextIcon } from '../Inputs';
 
 export default function Books() {
+    const [barcode, setBarcode] = useState('');
+
     let emptyBook = {
         idBook: null,
+        barcode: barcode,
         image: '',
         typeImg: '',
         title: '',
@@ -26,6 +32,7 @@ export default function Books() {
         genre: '',
         author: '',
         editorial: '',
+        isNew: true // Agregar el campo para controlar si el libro es nuevo
     };
 
     const URL = '/book/';
@@ -37,6 +44,8 @@ export default function Books() {
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [selectedEditorial, setSelectedEditorial] = useState(null);
+    const [barcodeDialogVisible, setBarcodeDialogVisible] = useState(false);
+    const [barcodeValid, setBarcodeValid] = useState(true);
     const [bookDialog, setBookDialog] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [deleteBookDialog, setDeleteBookDialog] = useState(false);
@@ -50,8 +59,13 @@ export default function Books() {
     const [imageError, setImageError] = useState('');
     const [imageSuccess, setImageSuccess] = useState(''); // Mensaje de éxito
     const [uploadKey, setUploadKey] = useState(0); // Para forzar el refresco del componente FileUpload
+    const [scanning, setScanning] = useState(false);
+    const [scannerTimeout, setScannerTimeout] = useState(null); // Estado para el timeout
     const toast = useRef(null);
     const dt = useRef(null);
+    const fileInputRef = useRef(null); // Referencia para el input de imagen
+    const qrReaderRef = useRef(null);
+
 
     // ROLES
     const isAdmin = UserService.isAdmin();
@@ -132,6 +146,152 @@ export default function Books() {
         }
     };
 
+        // Función para procesar la imagen cargada
+        const handleImageUpload = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+    
+            setFile(true);
+            const reader = new FileReader();
+            reader.onload = function () {
+                // Inicializar Quagga para leer el código de barras desde la imagen
+                Quagga.decodeSingle({
+                    src: reader.result,
+                    numOfWorkers: 0,  // Deshabilitar web workers (opcional)
+                    inputStream: {
+                        size: 800,  // Escalar imagen
+                    },
+                    decoder: {
+                        readers: ['ean_reader'],  // Especificar el formato EAN
+                    },
+                }, function (result) {
+                    if (result && result.codeResult) {
+                        setBarcode(result.codeResult.code); // Asigna el valor del código de barras
+                        setBarcodeValid(validateBarcode(result.codeResult.code));
+                    } else {
+                        setBarcodeValid(false);
+                    }
+                    setFile(false);
+                });
+            };
+            reader.readAsDataURL(file);  // Leer el archivo como base64
+        };
+
+        const calculateEAN13Checksum = (barcode) => {
+            if (barcode.length !== 12) {
+                return null;  // Necesitamos exactamente 12 dígitos para calcular el dígito de control
+            }
+    
+            const digits = barcode.split('').map(Number);
+            let sum = 0;
+    
+            // Sumar los dígitos pares multiplicados por 3 y los impares normalmente
+            digits.forEach((digit, index) => {
+                sum += (index % 2 === 0) ? digit : digit * 3;
+            });
+    
+            // El dígito de control es el número que hace que la suma sea un múltiplo de 10
+            const checksum = (10 - (sum % 10)) % 10;
+            return checksum;
+        };
+
+          // Maneja el cambio de valor del código de barras y realiza validaciones
+    const handleBarcodeChange = (e) => {
+        const newBarcode = e.target.value.replace(/[^0-9]/g, '');  // Solo permite números
+        // Verificar si la longitud es correcta (por ejemplo, 13 caracteres)
+        setBarcodeValid(validateBarcode(e.target.value)); // Valida el código de barras
+        setBarcode(newBarcode);
+    };
+
+    
+    // Función para validar el código de barras (debe tener exactamente 13 dígitos)
+    const validateBarcode = (barcode) => {
+        const barcodeStr = barcode ? barcode.toString() : '';
+
+        // Verificamos si tiene exactamente 13 dígitos
+        if (barcodeStr.length !== 13) return false;
+
+        // Obtenemos los primeros 12 dígitos y calculamos el dígito de control
+        const baseBarcode = barcodeStr.slice(0, 12);
+        const providedChecksum = parseInt(barcodeStr[12], 10);
+        const calculatedChecksum = calculateEAN13Checksum(baseBarcode);
+
+        // Comparamos el dígito de control proporcionado con el calculado
+        return providedChecksum === calculatedChecksum;
+    };
+
+    const startScanner = () => {
+        setBarcode('');
+        if (qrReaderRef.current) {
+            Quagga.init({
+                inputStream: {
+                    type: 'LiveStream',
+                    target: qrReaderRef.current, // Usa la referencia del contenedor
+                    constraints: {
+                        facingMode: 'environment', // Usa la cámara trasera
+                        width: { ideal: 400 },     // Ajusta el ancho del video
+                        height: { ideal: 200 },    // Ajusta la altura del video
+                    },
+                    area: {
+                        top: '0%',    // Iniciar el escaneo en la parte superior
+                        right: '0%',  // Iniciar el escaneo a la derecha
+                        left: '0%',   // Iniciar el escaneo a la izquierda
+                        bottom: '0%'   // Iniciar el escaneo en la parte inferior
+                    },
+                },
+                decoder: {
+                    readers: ['ean_reader'], // Tipos de códigos de barras a decodificar // Solo lector para códigos de barras EAN-13
+                    multiple: false, // Desactiva la lectura de múltiples códigos a la vez para evitar confusiones
+                },
+            }, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                Quagga.start();
+                setScanning(true);
+
+                // Establecer un timeout para detener el escáner después de 10 segundos
+                setScannerTimeout(setTimeout(() => {
+                    stopScanner();
+                    alert("No se detectó ningún código. El escáner se detuvo.");
+                }, 30000)); // 30000 ms = 30 segundos
+            });
+
+            Quagga.onDetected((data) => {
+                setBarcode(data.codeResult.code);
+                stopScanner(); // Detiene el escáner después de una lectura exitosa
+
+                // Limpiar el timeout cuando se detecte un código
+                if (scannerTimeout) {
+                    clearTimeout(scannerTimeout);
+                    setScannerTimeout(null);
+                }
+            });
+        }
+    };
+
+    const stopScanner = useCallback(() => {
+        Quagga.stop();
+        setScanning(false);
+        // Oculta el recuadro del escáner
+        qrReaderRef.current.style.display = 'none';
+
+        // Limpiar el timeout si se detiene el escáner manualmente
+        if (scannerTimeout) {
+            clearTimeout(scannerTimeout);
+            setScannerTimeout(null);
+        }
+    }, [scannerTimeout]);
+
+    useEffect(() => {
+        if (scanning) {
+            return () => {
+                stopScanner(); // Detiene el escáner al desmontar el componente
+            };
+        }
+    }, [scanning, stopScanner]);
+
     // Forzar reinicio al hacer clic en "Seleccionar Imagen"
     const resetUploadOnClick = () => {
         setFile(null);
@@ -139,6 +299,12 @@ export default function Books() {
         setImageError('');
         setImageSuccess(''); // Limpiar el mensaje de éxito al reiniciar
         setUploadKey(prevKey => prevKey + 1); // Forzar la recreación del FileUpload
+    };
+
+    const handleAddBook = () => {
+        setBarcodeDialogVisible(true); // Mostrar el modal para ingresar el código de barras
+        setBarcode('');
+        setSubmitted(false);
     };
 
     const openNew = () => {
@@ -171,6 +337,7 @@ export default function Books() {
         getGenres();
         getAuthors();
         getEditorials();
+        setBarcodeValid(true);
         setTitle('Editar Libro');
         setOperation(2);
         setBookDialog(true);
@@ -183,6 +350,8 @@ export default function Books() {
     const hideDialog = () => {
         setSubmitted(false);
         setBookDialog(false);
+        setBarcodeDialogVisible(false);
+        (scanning) && stopScanner();
     };
 
     const hideConfirmBookDialog = () => {
@@ -193,12 +362,25 @@ export default function Books() {
         setDeleteBookDialog(false);
     };
 
+    const handleBarcodeSubmit = async () => {
+        setSubmitted(true);
+        if (!barcode || !validateBarcode(barcode)) {
+            return;
+        }
+
+        setBarcodeDialogVisible(false); // Cierra el modal de código de barras
+
+        await Request_Service.getBookByCode(barcode, toast, openNew);
+    };
+
     const saveBook = async () => {
         setSubmitted(true);
         setConfirmDialogVisible(false);
 
         // Verificar si todos los campos requeridos están presentes
-        const isValid = book.title.trim() &&
+        const isValid =
+            book.barcode.trim() &&
+            book.title.trim() &&
             book.editorial &&
             book.description.trim() &&
             book.yearPublication &&
@@ -223,6 +405,7 @@ export default function Books() {
         if (book.idBook && operation === 2) {
             // Asegurarse de que los campos no estén vacíos al editar
             formData.append('idBook', book.idBook);
+            formData.append('barcode', book.barcode.trim());
             formData.append('title', book.title.trim());
             formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
@@ -236,6 +419,7 @@ export default function Books() {
             method = 'PUT';
         } else {
             // Verificar que los campos requeridos están presentes al crear
+            formData.append('barcode', book.barcode.trim());
             formData.append('title', book.title.trim());
             formData.append('editorial', book.editorial.idEditorial);
             formData.append('description', book.description.trim());
@@ -293,6 +477,14 @@ export default function Books() {
     const actionBodyTemplateB = (rowData) => {
         return actionBodyTemplate(rowData, editBook, confirmDeleteBook, onlyDisabled, handleEnable);
     };
+
+    const barcodeBodyTemplate = (rowData) => {
+        return <Barcode value={rowData.barcode} format='EAN13' width={1.2} height={30} />
+    }
+
+    const bookBarcodeDialogFooter = (
+        DialogFooter(hideDialog, handleBarcodeSubmit)
+    );
 
     const bookDialogFooter = (
         DialogFooter(hideDialog, confirmSave)
@@ -365,6 +557,7 @@ export default function Books() {
     };
 
     const columns = [
+        { field: 'barcode', header: 'Código', body: barcodeBodyTemplate, sortable: true, style: { minWidth: '12rem' } },
         { field: 'title', header: 'Título', sortable: true, style: { minWidth: '12rem' } },
         { field: 'editorial.name', header: 'Editorial', sortable: true, style: { minWidth: '12rem' } },
         { field: 'description', header: 'Descripción', sortable: true, style: { minWidth: '16rem' } },
@@ -389,7 +582,7 @@ export default function Books() {
                 {
                     (isAdmin || isInventoryManager) &&
                     <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }}
-                        left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled, icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                        left={leftToolbarTemplate(handleAddBook, onlyDisabled, toggleDisabled, icon)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
@@ -402,8 +595,94 @@ export default function Books() {
                 />
             </div>
 
+            <Dialog visible={barcodeDialogVisible} footer={bookBarcodeDialogFooter} onHide={hideDialog} header="Ingresar Código de Barras" modal>
+                <FloatInputTextIcon
+                    className="field mt-4"
+                    icon='barcode_scanner'
+                    value={barcode}
+                    onInputChange={(e) => setBarcode(e.target.value)} field='barcode'
+                    handle={handleBarcodeChange}
+                    maxLength={13} required autoFocus
+                    submitted={submitted}
+                    label='Código de barras'
+                    errorMessage='Código de barras es requerido.'
+                    valid={barcodeValid}
+                    validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
+                />
+
+                {/* Botón para iniciar el escaneo */}
+                {!scanning && (
+                    <button onClick={startScanner} className="p-button p-component mt-4 me-3">
+                        Iniciar Escaneo
+                    </button>
+                )}
+
+                {/* Botón para cargar una imagen */}
+                <button onClick={() => { fileInputRef.current.click(); setBarcode('') }} className="p-button mt-4">
+                    {file ? "Cargando..." : "Cargar Imagen"}
+                </button>
+
+                {/* Input para cargar la imagen (oculto) */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleImageUpload}
+                />
+
+                {/* Contenedor para el escáner con un tamaño ajustado */}
+                <div ref={qrReaderRef}
+                    style={{
+                        width: '100%',
+                        display: scanning ? 'block' : 'none',
+                        position: 'relative',
+                        margin: '0 auto', // Centrar el escáner
+                        marginTop: '1rem'
+                    }}
+                >
+                    {/* Línea de referencia */}
+                    <div className="scanner-line"></div>
+
+                    {/* Marco de escaneo */}
+                    <div className="scanner-frame" style={{
+                        position: 'absolute',
+                        top: '15%',   // Ajusta la posición superior
+                        left: '10%',  // Ajusta la posición izquierda
+                        right: '10%', // Ajusta la posición derecha
+                        bottom: '15%',// Ajusta la posición inferior
+                        border: '2px dashed rgba(255, 0, 0, 0.8)', // Color y estilo del borde
+                        borderRadius: '8px', // Bordes redondeados
+                        pointerEvents: 'none', // Evita que este div intercepte los clics
+                        zIndex: 9
+                    }}></div>
+                </div>
+
+                {/* Mostrar el código de barras solo si hay un valor en barcode */}
+                {barcode && barcodeValid && (
+                    <div className="mt-4">
+                        <Barcode value={barcode} format='EAN13' />
+                    </div>
+                )}
+            </Dialog>
+
             <Dialog visible={bookDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" footer={bookDialogFooter} onHide={hideDialog}>
-                {operation === 2 && book.image && <img src={`data:${book.typeImg};base64,${book.image}`} alt={`Imagen Libro ${book.title}`} className="shadow-2 border-round product-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+                {operation === 2 && book.image && <img src={`data:${book.typeImg};base64,${book.image}`} alt={`Imagen Libro ${book.title}`} className="shadow-2 border-round book-image block m-auto pb-3" style={{ width: '120px', height: '120px' }} />}
+                <FloatInputTextIcon
+                    className="field mt-4"
+                    icon='barcode_scanner'
+                    value={book.barcode}
+                    onInputChange={onInputChange} field='barcode'
+                    handle={handleBarcodeChange}
+                    maxLength={13} required autoFocus
+                    submitted={submitted}
+                    label='Código de barras'
+                    errorMessage='Código de barras es requerido.'
+                    valid={barcodeValid}
+                    validMessage='El código de barras no es válido. Debe tener 13 dígitos y un dígito de control correcto.'
+                    disabled={(operation === 1) && 'disabled'}
+                />
+
                 <div className="field mt-4">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">

@@ -227,6 +227,27 @@ class Request_Service {
         }
     }
 
+    static async getBookByCode(barcode, toast, openNew) {
+        try {
+            const token = this.getToken();
+            await axios.get(this.BASE_URL + '/book/listBarcode/' + barcode,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then((response) => {
+                    //console.log(response);
+                    if (response.data.data != null) {
+                        toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'El Libro ya existe.', life: 3000 });
+                    } else {
+                        openNew(); // Abre el diálogo de Libro
+                    }
+                    return response.data.data;
+                })
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            return null;
+        }
+    }
     static async deleteData(url, id, setData, toast, setDeleteDataDialog, setTable, emptyData, nameTable, mainUrl) {
         const deleteUrl = this.BASE_URL + url + 'delete/' + id;
         const token = this.getToken();
