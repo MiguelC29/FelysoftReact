@@ -407,12 +407,13 @@ function ProfilePage() {
                             </ul>
                         </div>
                     </div>
-                    <div className='m-2'>
-                        <Button label="Actualizar Perfil" icon="pi pi-user-edit" className="rounded me-2" onClick={() => editUser(user)} style={{ background: '#0D9276', border: 'none' }} />
+                    <div className='m-2 text-center profile-btn-container'>
+                        <Button label="Actualizar Perfil" icon="pi pi-user-edit" className="rounded me-3" onClick={() => editUser(user)} style={{ background: '#0D9276', border: 'none' }} />
                         <Button label="Cambiar Contraseña" icon="pi pi-lock" className="rounded" onClick={openPassword} style={{ background: '#8f8c7e', border: 'none' }} />
                     </div>
                 </section>
             </div>
+
             <Dialog visible={passwordDialog} style={{ width: '40rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={'Cambiar Contraseña'} modal className="p-fluid" footer={dialogFooterPassword} onHide={hideDialog}>
                 <div className="formgrid grid mt-5">
                     <div className="field col">
@@ -471,7 +472,7 @@ function ProfilePage() {
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">id_card</span>
+                                <span className="material-symbols-outlined me-2">id_card</span>
                                 <div>
                                     <label htmlFor="names" className="font-bold">Nombres</label>
                                     <p>{user.names}</p>
@@ -480,7 +481,7 @@ function ProfilePage() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">id_card</span>
+                                <span className="material-symbols-outlined me-2">id_card</span>
                                 <div>
                                     <label htmlFor="lastNames" className="font-bold d-block">Apellidos</label>
                                     <p>{user.lastNames}</p>
@@ -491,7 +492,7 @@ function ProfilePage() {
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">badge</span>
+                                <span className="material-symbols-outlined me-2">badge</span>
                                 <div>
                                     <label htmlFor="typeDoc" className="font-bold d-block">Tipo de Identificación</label>
                                     <p>{user.typeDoc}</p>
@@ -500,7 +501,7 @@ function ProfilePage() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">badge</span>
+                                <span className="material-symbols-outlined me-2">badge</span>
                                 <div>
                                     <label htmlFor="numIdentification" className="font-bold d-block">Número de Identificación</label>
                                     <p>{user.numIdentification}</p>
@@ -511,7 +512,7 @@ function ProfilePage() {
                     <div className="row mt-2">
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">wc</span>
+                                <span className="material-symbols-outlined me-2">wc</span>
                                 <FloatLabel>
                                     <Dropdown
                                         id="gender"
@@ -529,7 +530,7 @@ function ProfilePage() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">call</span>
+                                <span className="material-symbols-outlined me-2">call</span>
                                 <FloatLabel>
                                     <InputNumber inputId="phoneNumber" name='phoneNumber' value={user.phoneNumber} onValueChange={(e) => onInputNumberChange(e, 'phoneNumber')} useGrouping={false} required maxLength={10} className={classNames({ 'p-invalid': submitted && !user.phoneNumber })} />
                                     <label htmlFor="phoneNumber" className="font-bold block mb-2">Número de celular</label>
@@ -541,7 +542,7 @@ function ProfilePage() {
                     <div className="row mt-4">
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">home</span>
+                                <span className="material-symbols-outlined me-2">home</span>
                                 <FloatLabel>
                                     <InputText id="address" name='address' value={user.address} onChange={(e) => onInputChange(e, 'address')} maxLength={50} />
                                     <label htmlFor="address" className="font-bold">Dirección</label>
@@ -550,7 +551,7 @@ function ProfilePage() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">mail</span>
+                                <span className="material-symbols-outlined me-2">mail</span>
                                 <div>
                                     <label htmlFor="email" className="font-bold d-block">Correo Electrónico</label>
                                     <p>{user.email}</p>
@@ -561,7 +562,7 @@ function ProfilePage() {
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">person</span>
+                                <span className="material-symbols-outlined me-2">person</span>
                                 <div>
                                     <label htmlFor="user_name" className="font-bold d-block">Nombre de Usuario</label>
                                     <p>{user.user_name}</p>
@@ -570,7 +571,7 @@ function ProfilePage() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="d-flex align-items-start">
-                                <span class="material-symbols-outlined me-2">admin_panel_settings</span>
+                                <span className="material-symbols-outlined me-2">admin_panel_settings</span>
                                 <div>
                                     <label htmlFor="role" className="font-bold d-block">Rol</label>
                                     <p>{Role[user.role.name]}</p>

@@ -1,4 +1,3 @@
-.seccion-perfil-usuario .perfil-usuario-body,
 .seccion-perfil-usuario {
     display: flex;
     flex-wrap: wrap;
@@ -17,7 +16,7 @@
 .seccion-perfil-usuario .perfil-usuario-portada {
     display: block;
     position: relative;
-    width: 80%;
+    width: 100%;
     height: 17rem;
     background-image: linear-gradient(45deg, #9ab6c4,#648fa1 );
     border-radius: 0 0 20px 20px;
@@ -76,8 +75,8 @@
 }
 
 .seccion-perfil-usuario .perfil-usuario-body {
-    width: 70%;
-    position: relative;
+    width: 100%;
+    /* position: relative; */
     max-width: 750px;
 }
 
@@ -119,8 +118,10 @@
 }
 
 .seccion-perfil-usuario .lista-datos {
-    width: 50%;
+    width: 100%;
+    max-width: 350px;
     list-style: none;
+    margin: 0.5rem 0;
 }
 
 .seccion-perfil-usuario .lista-datos li {
@@ -133,42 +134,46 @@
     vertical-align: middle;
 }
 
-/* .seccion-perfil-usuario .redes-sociales {
-    position: absolute;
-    right: calc(0px - 50px - 1rem);
-    top: 0;
-    display: flex;
-    flex-direction: column;
-} 
+@media (max-width: 480px) {
+    .seccion-perfil-usuario .perfil-usuario-portada {
+        height: 150px; /* Altura aún más pequeña para dispositivos móviles */
+    }
 
-.seccion-perfil-usuario .redes-sociales .boton-redes {
-    border: 0;
-    background-color: #fff;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    color: #fff;
-    box-shadow: 0 0 12px rgba(0, 0, 0, .2);
-    font-size: 1.3rem;
+    .seccion-perfil-usuario .perfil-usuario-avatar {
+        width: 120px;
+        height: 120px;
+        bottom: -20px;
+        left: calc(50% - 60px);
+    }
+
+    .seccion-perfil-usuario .titulo {
+        font-size: 1.2em; /* Tamaño de fuente más pequeño */
+    }
+
+    .seccion-perfil-usuario .perfil-usuario-body {
+        padding: 10px; /* Menos padding */
+    }
+
+    .seccion-perfil-usuario .lista-datos {
+        width: 100%; /* Mantener el ancho completo */
+    }
+
+    .seccion-perfil-usuario .boton-portada {
+        padding: 10px 20px; /* Ajustar padding del botón */
+    }
+
+    .profile-btn-container Button {
+        margin-bottom: 1rem;
+    }
 }
 
-.seccion-perfil-usuario .redes-sociales .boton-redes+.boton-redes {
-    margin-top: .5rem;
+/* Asegurar que el diseño sea responsivo */
+@media (max-width: 768px) {
+    .seccion-perfil-usuario .perfil-usuario-footer {
+        flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+        align-items: flex-start; /* Alinear a la izquierda */
+    }
+    .seccion-perfil-usuario .lista-datos {
+        width: 100%; /* Tomar el ancho completo en pantallas pequeñas */
+    }
 }
-
-.seccion-perfil-usuario .boton-redes.facebook {
-    background-color: #5955FF;
-}
-
-.seccion-perfil-usuario .boton-redes.twitter {
-    background-color: #35E1BF;
-}
-
-.seccion-perfil-usuario .boton-redes.instagram {
-    background: linear-gradient(45deg, #FF2DFD, #40A7FF);
-}
-*/
