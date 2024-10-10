@@ -15,6 +15,7 @@ import DatePicker from 'react-datepicker';
 import { Alert } from 'react-bootstrap';
 import { FloatInputNumberMoneyIcon } from '../Inputs';
 import LoadingOverlay from '../common/LoadingOverlay';
+import { useMediaQuery } from 'react-responsive';
 
 export default function ReservesCus() {
     let emptyReserve = {
@@ -29,7 +30,9 @@ export default function ReservesCus() {
 
     const URL = '/reserve/';
     const [books, setBooks] = useState([]);
-    const [layout, setLayout] = useState('grid');
+    // const [layout, setLayout] = useState('grid');
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
+    const [layout, setLayout] = useState(isSmallScreen ? 'list' : 'grid');
     const [submitted, setSubmitted] = useState(false);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -188,7 +191,7 @@ export default function ReservesCus() {
             ...prevReserve,
             deposit
         }));
-    }, [reserve.time,reserve.book.priceTime]);
+    }, [reserve.time, reserve.book.priceTime]);
 
     useEffect(() => {
         calculateTotal();
@@ -254,21 +257,25 @@ export default function ReservesCus() {
     const filteredBooks = books.filter(book => book?.book?.title?.toLowerCase().includes(globalFilter.toLowerCase()));
 
     const header = () => (
-        <>
-            <div className="flex justify-content-start">
-                <span className="p-input-icon-left">
-                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar libro..." />
+        <div className="flex flex-column sm:flex-row justify-content-between align-items-center">
+            <div className="flex justify-content-start flex-1">
+                <span className="p-input-icon-left w-100 me-2">
+                    <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar libro..." className="w-100" />
                 </span>
             </div>
-            <div className="flex justify-content-end">
-                <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-            </div>
-        </>
+            {
+                !isSmallScreen && ( // Mostrar opción de cambio de vista solo en pantallas grandes
+                    <div className="flex justify-content-end mt-3 sm:mt-0">
+                        <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+                    </div>
+                )
+            }
+        </div >
     );
 
     return (
         <div className="card">
-         <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
+            <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
             <Toast ref={toast} position="bottom-right" />
             <Alert variant="primary">
                 Solo puedes reservar un libro máximo por 3 horas.
@@ -316,7 +323,7 @@ export default function ReservesCus() {
                                 min={1}
                                 max={3}
                                 showButtons
-                                onKeyDown={(e)=>e.preventDefault()}
+                                onKeyDown={(e) => e.preventDefault()}
                                 className={classNames({ 'p-invalid': submitted && (!reserve.time || !(reserve.time > 0 && reserve.time <= 3)) })}
                             />
                         </FloatLabel>

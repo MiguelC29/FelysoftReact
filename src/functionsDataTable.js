@@ -114,20 +114,18 @@ export const confirmDelete = (nameTable, setData, setDeleteDialog) => {
 };
 
 export const header = (nameTable, globalFilter) => (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0 text-black">Lista de {nameTable}</h4>
-        <span className="p-input-icon-left">
-            {/* <i className="pi pi-search" /> */}
+    <div className="header-container">
+        <h4 className="header-title text-black">Lista de {nameTable}</h4>
+        <span className="p-input-icon-left header-search">
             <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
         </span>
     </div>
 );
 
 export const headerInv = (nameTable, globalFilter) => (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h4 className="m-0 text-black">Inventario de {nameTable}</h4>
-        <span className="p-input-icon-left">
-            {/* <i className="pi pi-search" /> */}
+    <div className="header-container">
+        <h4 className="header-title text-black">Inventario de {nameTable}</h4>
+        <span className="p-input-icon-left header-search">
             <InputText type="search" onInput={(e) => globalFilter(e.target.value)} placeholder="Buscar..." />
         </span>
     </div>
@@ -257,12 +255,12 @@ export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled) => {
     const isAdmin = UserService.isAdmin();
     const icon = (!onlyDisabled) ? 'pi-eye-slash' : 'pi-eye';
     return (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
             {!onlyDisabled &&
-                <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+                <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
             }
             {isAdmin &&
-                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
+                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
             }
         </div>
     );
@@ -271,8 +269,8 @@ export const leftToolbarTemplate = (openNew, onlyDisabled, openDisabled) => {
 export const leftToolbarTemplatePurchase = (openNew, setIsProduct) => {
     return (
         <div className="flex flex-wrap gap-2">
-            <Button label="Productos" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(true); openNew(true);}} style={{ background: '#265073', border: 'none' }} />
-            <Button label="Libros" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(false); openNew(false);}} style={{ background: '#265073', border: 'none' }} />
+            <Button label="Productos" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(true); openNew(true);}} style={{ background: '#265073', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
+            <Button label="Libros" icon="pi pi-plus" className="rounded" onClick={() => {setIsProduct(false); openNew(false);}} style={{ background: '#265073', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
         </div>
     );
 };
@@ -284,13 +282,13 @@ export const leftToolbarTemplateAsociation = (openNew, onlyDisabled, openDisable
         <div className="flex flex-wrap gap-2">
             {!onlyDisabled &&
                 <>
-                    <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none' }} />
+                    <Button label="Nuevo" icon="pi pi-plus" className="rounded" onClick={openNew} style={{ background: '#265073', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
 
-                    <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />
+                    <Button label={'Asociar ' + nameTable} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
                 </>
             }
             {isAdmin &&
-                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none' }} />
+                <Button label={onlyDisabled ? 'Mostrar Todos' : 'Mostrar Deshabilitados'} icon={"pi " + icon} className="rounded" severity="danger" onClick={openDisabled} style={{ background: '#8a0d04', border: 'none', flex: '1 1 auto', minWidth: '120px' }} />
             }
         </div>
     );

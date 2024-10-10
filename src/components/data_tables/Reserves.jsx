@@ -347,9 +347,9 @@ export default function Reserves() {
         <div>
             <Toast ref={toast} position="bottom-right" />
             <LoadingOverlay visible={loading} /> {/* Overlay de carga */}
-            <div className="card" style={{ background: '#9bc1de' }}>
+            <div className="card" style={{ background: '#9bc1de', maxWidth: '1200px' }}>
                 {(isAdmin || isSalesPerson) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4 toolbar-datatable" left={leftToolbarTemplate(openNew, onlyDisabled, toggleDisabled)} right={rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}
@@ -364,7 +364,7 @@ export default function Reserves() {
 
             <Dialog visible={reserveDialog} style={{ width: '40rem' }} header={title} modal className="p-fluid" footer={reserveDialogFooter} onHide={hideDialog}>
                 <div className="field">
-                    <label htmlFor="dateReserve" className="font-bold">Fecha de Reserva</label>
+                    <label htmlFor="dateReserve" className="font-bold me-2">Fecha de Reserva</label>
                     <DatePicker
                         selected={selectedDate}
                         onChange={onDateChange}

@@ -4,7 +4,7 @@ import { Column } from 'primereact/column';
 
 export default function CustomDataTable({ dt, data, columns, dataKey, currentPageReportTemplate, globalFilter, header }) {
     return (
-        <div className='card'>
+        <div className='card' style={{ overflowX: 'auto' }}>
             <DataTable
                 ref={dt}
                 value={data}
@@ -18,6 +18,7 @@ export default function CustomDataTable({ dt, data, columns, dataKey, currentPag
                 globalFilter={globalFilter}
                 header={header}
                 emptyMessage="No hay datos disponibles"
+                tableStyle={{ minWidth: '60rem', maxWidth: '75rem' }}
             >
                 {columns.map((column, index) => (
                     <Column

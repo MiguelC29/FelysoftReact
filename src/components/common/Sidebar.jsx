@@ -77,6 +77,11 @@ const ContentWrapper = styled('div')(({ theme, open }) => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
     }),
+    overflow: 'hidden', // Evita que el contenido se desborde
+    maxWidth: '100%', // Asegúrate de que el ancho máximo sea 100%
+    [theme.breakpoints.down('sm')]: {
+        marginLeft: 0, // Sin margen izquierdo en pantallas pequeñas
+    },
 }));
 
 export default function MiniDrawer({ children }) {
@@ -252,7 +257,7 @@ export default function MiniDrawer({ children }) {
     });
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex'}}>
             <CssBaseline />
             <NavBar open={open} handleDrawerOpen={handleDrawerOpen} Icon={Icon} />
             <Drawer variant="permanent" open={open}>
@@ -329,7 +334,7 @@ export default function MiniDrawer({ children }) {
                 </List>
                 <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} />
             </Drawer>
-            <ContentWrapper open={open}>
+            <ContentWrapper open={open} className={`${open && "d-none d-sm-block"}`} > {/* para dispositivos pequeños se oculta el datatable */}
                 {children}
             </ContentWrapper>
         </Box>

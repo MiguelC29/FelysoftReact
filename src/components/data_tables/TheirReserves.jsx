@@ -103,7 +103,7 @@ export default function TheirReserves() {
             </Alert>
             <LoadingOverlay visible={loading} />
             <Toast ref={toast} position="bottom-right" />
-            <div className="card" style={{ background: '#9bc1de' }}>
+            <div className="card" style={{ background: '#9bc1de', maxWidth: '1200px' }}>
                 <CustomDataTable
                     dt={dt}
                     data={reserves}

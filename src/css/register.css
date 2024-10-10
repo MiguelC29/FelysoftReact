@@ -36,10 +36,10 @@
         font-size: 1.2rem;
         padding-top: 50px; /* Añadir más espacio para el logo */
     }
-    .p-inputgroup-addon {
+    .auth-container .p-inputgroup-addon {
         display: none; /* Ocultar iconos en resoluciones pequeñas si es necesario */
     }
-    .field {
+    .auth-container .field {
         width: 100% !important; /* Los campos ocupan todo el ancho */
     }
     .btn-container {
@@ -60,7 +60,7 @@
         font-size: 1.4rem;
         padding-top: 50px;
     }
-    .field {
+    .auth-container .field {
         width: 100% !important;
     }
 }
@@ -75,7 +75,7 @@
     .auth-title {
         font-size: 1.8rem;
     }
-    .field {
+    .auth-container .field {
         width: 50% !important; /* Mitad del ancho en tabletas grandes */
     }
 }
@@ -90,7 +90,7 @@
     .auth-title {
         font-size: 2rem;
     }
-    .field {
+    .auth-container .field {
         width: 50% !important;
     }
 }

@@ -173,8 +173,8 @@ export default function AssociationAuthorGenre() {
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
-            <div className="card" style={{ background: '#9bc1de' }}>
-                <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={<Button label={'Registrar Asociación'} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none' }} />} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+            <div className="card" style={{ background: '#9bc1de', maxWidth: '1200px' }}>
+                <Toolbar className="mb-4 toolbar-datatable" left={<Button label={'Registrar Asociación'} icon="pi pi-arrows-h" className="rounded" onClick={openAsociation} style={{ background: '#0D9276', border: 'none', minWidth: '120px' }} />} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
 
                 <CustomDataTable
                     dt={dt}

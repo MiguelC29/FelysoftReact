@@ -9,10 +9,13 @@ import AddToCartButton from './AddToCartButton';
 import { useSale } from '../context/SaleContext';
 import { useLocation } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
+import { useMediaQuery } from 'react-responsive';
 
 export default function Carrito() {
     const [products, setProducts] = useState([]);
-    const [layout, setLayout] = useState('grid');
+    // const [layout, setLayout] = useState('grid');
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
+    const [layout, setLayout] = useState(isSmallScreen ? 'list' : 'grid');
     const [globalFilter, setGlobalFilter] = useState('');
     const { saleConfirmed, setSaleConfirmed } = useSale();
     const location = useLocation(); // Hook para acceder al state de la navegación
@@ -146,16 +149,18 @@ export default function Carrito() {
 
     const header = () => {
         return (
-            <>
-                <div className="flex justify-content-start">
-                    <span className="p-input-icon-left">
-                        <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar por nombre..." />
+            <div className="flex flex-column sm:flex-row justify-content-between align-items-center">
+                <div className="flex justify-content-start flex-1">
+                    <span className="p-input-icon-left w-100 me-2">
+                        <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar por nombre..." className="w-100" />
                     </span>
                 </div>
-                <div className="flex justify-content-end">
-                    <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-                </div>
-            </>
+                {!isSmallScreen && ( // Mostrar opción de cambio de vista solo en pantallas grandes
+                    <div className="flex justify-content-end mt-3 sm:mt-0">
+                        <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+                    </div>
+                )}
+            </div>
         );
     };
 

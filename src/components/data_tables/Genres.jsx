@@ -259,9 +259,9 @@ export default function Genres() {
     return (
         <div>
             <Toast ref={toast} position="bottom-right" />
-            <div className="card" style={{ background: '#9bc1de' }}>
+            <div className="card" style={{ background: '#9bc1de', maxWidth: '1200px' }}>
                 {(isAdmin || isInventoryManager) &&
-                    <Toolbar className="mb-4" style={{ background: 'linear-gradient( rgba(221, 217, 217, 0.824), #f3f0f0d2)', border: 'none' }} left={leftToolbarTemplateAsociation(openNew,onlyDisabled, toggleDisabled,'Autor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
+                    <Toolbar className="mb-4 toolbar-datatable" left={leftToolbarTemplateAsociation(openNew,onlyDisabled, toggleDisabled,'Autor', openAsociation)} right={isAdmin && rightToolbarTemplateExport(handleExportCsv, handleExportExcel, handleExportPdf)}></Toolbar>
                 }
                 <CustomDataTable
                     dt={dt}

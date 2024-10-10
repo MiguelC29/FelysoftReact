@@ -35,7 +35,7 @@ export default function ExportDropdown({ exportCSV, exportExcel, exportPDF }) {
   };
 
   return (
-    <div className="flex align-items-center justify-content-end gap-2">
+    <div className="export-dropdown flex align-items-center justify-content-end gap-2" style={{ flexWrap: 'wrap' }}>
       <span><b>Exportar:</b></span>
       <Dropdown
         value={null}
@@ -44,6 +44,7 @@ export default function ExportDropdown({ exportCSV, exportExcel, exportPDF }) {
         optionLabel="label"
         placeholder="Seleccionar formato"
         itemTemplate={optionTemplate}
+        style={{ minWidth: '120px', flex: '1 1 auto' }}
       />
     </div>
   );
