@@ -70,6 +70,12 @@ body {
   width: auto; /* Deja que el dropdown se ajuste automáticamente */
 }
 
+@media (max-width: 480px) { /* Ajuste para dispositivos pequeños */
+  .export-dropdown .p-dropdown {
+    width: calc(100% - 20px); /* Deja un poco de margen */
+  }
+}
+
 @media (max-width: 768px) {
   .p-datatable .p-datatable-header {
     flex-direction: column;
@@ -207,5 +213,20 @@ canvas.drawingBuffer {
 
   100% {
     top: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-responsive {
+      margin: 0 -15px; /* Ajusta el margen para pantallas pequeñas */
+  }
+
+  .table {
+      font-size: 0.9rem; /* Reduce el tamaño de fuente para pantallas pequeñas */
+  }
+
+  .d-flex {
+      flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+      align-items: flex-start; /* Alinea elementos a la izquierda */
   }
 }

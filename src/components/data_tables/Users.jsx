@@ -778,6 +778,17 @@ export default function Users() {
               </div>
             </div>
           </div>
+          <div className="row">
+            <div className="col-12 mb-3">
+              <div className="d-flex align-items-start">
+                <span className="material-symbols-outlined me-2">calendar_add_on</span>
+                <div>
+                  <label htmlFor="enabled" className="font-bold d-block">Estado</label>
+                  <p>{user.enabled ? 'Activo' : 'Inactivo'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Dialog>
 

@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCsv, faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 export default function ExportDropdown({ exportCSV, exportExcel, exportPDF }) {
+
+  const [placeholder, setPlaceholder] = useState('');
+
+  useEffect(() => {
+      const handleResize = () => {
+          if (window.innerWidth < 768) { // Puedes ajustar este valor según tus necesidades
+              setPlaceholder('Formato'); // Placeholder corto para pantallas pequeñas
+          } else {
+              setPlaceholder('Seleccionar formato'); // Placeholder largo para pantallas grandes
+          }
+      };
+
+      handleResize(); // Llama a la función al cargar el componente
+      window.addEventListener('resize', handleResize); // Agrega el listener para el cambio de tamaño
+
+      return () => {
+          window.removeEventListener('resize', handleResize); // Limpia el listener al desmontar
+      };
+  }, []);
+
   const exportOptions = [
     { label: 'CSV', value: 'csv', icon: faFileCsv },
     { label: 'EXCEL', value: 'xls', icon: faFileExcel },
@@ -42,7 +62,7 @@ export default function ExportDropdown({ exportCSV, exportExcel, exportPDF }) {
         options={exportOptions}
         onChange={(e) => handleExport(e.value)}
         optionLabel="label"
-        placeholder="Seleccionar formato"
+        placeholder={placeholder}
         itemTemplate={optionTemplate}
         style={{ minWidth: '120px', flex: '1 1 auto' }}
       />

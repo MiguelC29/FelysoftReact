@@ -655,7 +655,7 @@ export default function Purchases() {
                 </Dialog>
 
                 {/* DIALOG DETAIL */}
-                <Dialog visible={purchaseDetailDialog} style={{ width: '65rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
+                <Dialog visible={purchaseDetailDialog} style={{ width: '65rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw', '480px': '95vw' }} header={title} modal className="p-fluid" onHide={hideDialog}>
                     <div className="container mt-4">
                         <div className="row text-center">
                             <div className="col-md-6 mb-3">
