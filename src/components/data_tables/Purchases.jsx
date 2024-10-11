@@ -116,6 +116,25 @@ export default function Purchases() {
         return Request_Service.getData('/editorial/all', setEditorials);
     }
 
+    const [placeholder, setPlaceholder] = useState('');
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) { // Puedes ajustar este valor según tus necesidades
+                setPlaceholder('Seleccionar un método'); // Placeholder corto para pantallas pequeñas
+            } else {
+                setPlaceholder('Seleccionar un método de pago'); // Placeholder largo para pantallas grandes
+            }
+        };
+
+        handleResize(); // Llama a la función al cargar el componente
+        window.addEventListener('resize', handleResize); // Agrega el listener para el cambio de tamaño
+
+        return () => {
+            window.removeEventListener('resize', handleResize); // Limpia el listener al desmontar
+        };
+    }, []);
+
     const handleProductChange = (providerId) => {
         setSelectedProvider(providerId);
         if (providerId) {
@@ -485,20 +504,20 @@ export default function Purchases() {
                     }
                     <div className="formgrid grid mt-5">
                         <FloatInputNumberMoneyIcon
-                            className="field col"
+                            className="field col-12 md:col-6 mb-5 md:mb-0 lg:mb-0"
                             value={purchase.total} field='total'
                             required
                             label='Total'
                             disabled="disabled"
                         />
                         <FloatDropdownIcon
-                            className="field col"
+                            className="field col-12 md:col-6"
                             icon='currency_exchange' field='methodPayment' required
                             value={selectedMethodPayment}
                             handleChange={setSelectedMethodPayment}
                             onInputNumberChange={onInputNumberChange}
                             options={methodPaymentOptions}
-                            placeholder="Seleccionar el método de pago"
+                            placeholder={placeholder}
                             submitted={submitted} fieldForeign={purchase.methodPayment}
                             label="Método de pago" errorMessage="Método de pago es requerido."
                         />
@@ -520,12 +539,12 @@ export default function Purchases() {
                         {details.map((detail, index) => (
                             <div key={index} className="field col-12">
                                 <div className="formgrid grid mt-3 align-items-center">
-                                    <div className="col-05">
+                                    <div className="col-05 mb-3">
                                         <strong>{index + 1}.</strong>
                                     </div>
                                     {/* Producto Dropdown */}
                                     {isProduct ? (
-                                        <div className="field col-3">
+                                        <div className="field col-12 md:col-3 lg:col-3 mb-5 md:mb-3 lg:mb-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
                                                     <span className="material-symbols-outlined">inventory_2</span>
@@ -555,7 +574,7 @@ export default function Purchases() {
                                             {errors[`product_${index}`] && <small className="p-error">{errors[`product_${index}`]}</small>}
                                         </div>
                                     ) : (
-                                        <div className="field col-3">
+                                        <div className="field col-12 md:col-3 lg:col-3 mb-5 md:mb-3 lg:mb-3">
                                             <div className="p-inputgroup flex-1">
                                                 <span className="p-inputgroup-addon">
                                                     <span className="material-symbols-outlined">book</span>
@@ -590,7 +609,7 @@ export default function Purchases() {
                                     {/* Cantidad */}
                                     {isProduct && (
                                         <FloatInputNumberIcon
-                                            className="field col-2"
+                                            className="field col-12 md:col-2 lg:col-2 mb-5 md:mb-3 lg:mb-3"
                                             icon='production_quantity_limits'
                                             value={detail.quantity}
                                             onInputNumberChange={(e) => handleDetailChange(index, 'quantity', e.value)}
@@ -604,7 +623,7 @@ export default function Purchases() {
 
                                     {/* Precio Unitario */}
                                     <FloatInputNumberMoneyIcon
-                                        className="field col-3"
+                                        className="field col-12 md:col-3 lg:col-3 mb-5 md:mb-3 lg:mb-3"
                                         value={detail.unitPrice}
                                         onInputNumberChange={(e) => handleDetailChange(index, 'unitPrice', e.value)}
                                         field='unitPrice'
@@ -616,7 +635,7 @@ export default function Purchases() {
 
                                     {/* Precio de Venta */}
                                     <FloatInputNumberMoneyIcon
-                                        className="field col-3"
+                                        className="field col-12 md:col-3 lg:col-3 md:mb-3 lg:mb-3"
                                         value={detail.salePrice}
                                         onInputNumberChange={(e) => handleDetailChange(index, 'salePrice', e.value)}
                                         field='salePrice'
@@ -626,7 +645,7 @@ export default function Purchases() {
                                         errorMessage={`Precio ${isProduct ? 'de venta' : 'por hora'} es requerido.`}
                                     />
                                     {/* Botón de eliminar */}
-                                    <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text" onClick={() => removeDetail(index)} disabled={details.length === 1} />
+                                    <Button icon="pi pi-trash" className="p-button-rounded p-button-danger p-button-text md:mb-3 lg:mb-3" onClick={() => removeDetail(index)} disabled={details.length === 1} />
                                 </div>
                             </div>
                         ))
