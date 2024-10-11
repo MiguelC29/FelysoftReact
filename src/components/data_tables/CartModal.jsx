@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { useCart } from '../context/CartContext';
 import { confirmDialog, confirmDialogFooter, DialogFooter, formatCurrency, inputNumberChange } from '../../functionsDataTable';
@@ -12,6 +12,26 @@ import LoadingOverlay from '../common/LoadingOverlay';
 import '../../css/carrito.css';
 
 const CartModal = ({ visible, onHide }) => {
+    const [placeholder, setPlaceholder] = useState('');
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) { // Puedes ajustar este valor según tus necesidades
+                setPlaceholder('Seleccionar un método'); // Placeholder corto para pantallas pequeñas
+            } else {
+                setPlaceholder('Seleccionar un método de pago'); // Placeholder largo para pantallas grandes
+            }
+        };
+
+        handleResize(); // Llama a la función al cargar el componente
+        window.addEventListener('resize', handleResize); // Agrega el listener para el cambio de tamaño
+
+        return () => {
+            window.removeEventListener('resize', handleResize); // Limpia el listener al desmontar
+        };
+    }, []);
+
+
     const { cartItems, updateCartItemQuantity, clearCart, removeFromCart } = useCart();
     const { setSaleConfirmed } = useSale();
 
@@ -283,7 +303,7 @@ const CartModal = ({ visible, onHide }) => {
                             handleChange={setSelectedMethodPayment}
                             onInputNumberChange={onInputNumberChange}
                             options={methodPaymentOptions}
-                            placeholder="Seleccionar el método de pago"
+                            placeholder={placeholder}
                             submitted={submitted} fieldForeign={sale.methodPayment}
                             label="Método de pago" errorMessage="Método de pago es requerido."
                         />
