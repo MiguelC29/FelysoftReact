@@ -1,166 +1,125 @@
 .section-container-servicios {
-    margin-top: 300px;
+    margin-top: 5vh; /* Usa unidades relativas para mejor responsividad */
     position: relative;
-    right:100px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Cambia a 'center' en pantallas pequeñas si es necesario */
     width: 100%;
-    /* Asegúrate de que el contenedor principal ocupe todo el ancho disponible */
-    height: auto;
-    /* Ajusta la altura según tus necesidades */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
 /* Fondo */
 .background-image-container-servicios {
-    position: absolute;
-    
-    top: 310px;
-    right: 35px;
-    z-index: -2;
+    position: relative; /* Cambiado a relative */
     max-width: 100%;
-    /* Reducir tamaño del contenedor */
     overflow: hidden;
-    /* Evitar que la imagen se salga de los bordes redondeados */
 }
 
 .background-image-container-servicios img {
-    width: 1000px !important;
-    /* Reducir el tamaño de la imagen */
-    height: 450px !important;
-    /* Reducir la altura de la imagen */
+    width: 100%; /* Ajusta el tamaño al contenedor */
+    height: auto; /* Mantiene la relación de aspecto */
     transform: rotate(180deg);
-    /* Ajustar la rotación */
     margin: 0;
     border-radius: 50px;
-    /* Eliminar márgenes */
 }
 
-
 .background-image-container-servicios3 {
-    position: absolute;
-    top: 160px;
-    left: 400px;
-    z-index: -2;
+    position: relative; /* Cambiado a relative */
     max-width: 100%;
-    max-height: 100%;
     overflow: hidden;
 }
 
 .background-image-container-servicios3 img {
-    width: 500px !important;
-    height: 600px !important;
+    width: 100%; /* Ajusta el tamaño al contenedor */
+    height: auto; /* Mantiene la relación de aspecto */
     transform: rotate(180deg);
     margin: 0;
-    /* Solo redondear las esquinas izquierdas */
     border-radius: 50px 0 0 50px;
 }
 
-
 /* Imagen */
 .section-image-container-servicios {
-    top: 110px;
-    position: relative;
-    max-width: 50%;
-    width: 1200px;
-    height: 1000px;
+    position: relative; /* Mantén como relative */
+    max-width: 100%; /* Cambiado a 100% para ocupar todo el ancho */
+    height: auto; /* Ajusta la altura automáticamente */
     overflow: hidden;
     flex: 1;
+    margin: 0 auto; /* Centra el contenedor en la página */
 }
 
 .section-image-container-servicios img {
     position: relative;
-    left:220px;
-    width: 900px;
-    height: 700px;
-    object-fit: contain;
+    width: 100%; /* Ajusta el tamaño al contenedor */
+    height: auto; /* Mantiene la relación de aspecto */
+    object-fit: cover; /* Cambiado a cover para llenar el contenedor */
+    max-height: 600px; /* Ajusta según sea necesario para controlar la altura máxima */
 }
 
 /* Textos */
 .section-text-container-servicios {
     max-width: 35%;
     width: 70%;
-    position: absolute;
-    margin-top: -100px;
-    right: 480px;
+    position: relative; /* Cambiado a relative */
+    margin-top: -100px; /* Ajusta este margen según sea necesario */
 }
 
 .primary-heading-servicios {
-    position: relative;
     text-align: center;
-    /* Centra el texto */
-    width: 800px;
-    /* Define un ancho específico */
     font-size: 50px;
-    /* Aumenta el tamaño de la fuente */
     font-weight: bold;
-    /* Asegura que el texto sea más grueso */
-    left: 200px;
-    top: 40px;
-    word-spacing: 5px;
-    /* Aumenta el espacio entre palabras */
     line-height: 1.2;
 }
 
 .primary-text-servicios {
-    position: relative;
     text-align: center;
-    /* Centra el texto */
-    width: 600px;
-    /* Define un ancho específico */
     font-size: 26px;
-    /* Aumenta el tamaño de la fuente */
-    left: 300px;
-    top: 40px;
 }
 
+/* Botón */
 .secondary-button-servicios {
-    position: relative;
-    margin-bottom: -100px;
-    /* Espacio debajo del botón para separar del título */
-    left: 520px;
-    top: 50px;
+    text-align: center; /* Centra el botón */
+    margin-top: 20px; /* Espacio encima del botón */
 }
 
 .secondary-button-servicio {
     padding: 1rem 2.5rem;
-    /* Ajusta el tamaño del botón */
     background-color: rgb(52, 117, 202);
-    /* Color de fondo */
-    outline: none;
-    /* Sin contorno */
     border: none;
-    /* Sin borde */
     border-radius: 10px;
-    /* Bordes redondeados */
     font-size: 20px;
-    /* Tamaño de la fuente del texto */
-    cursor: pointer;
-    /* Cambia el cursor al pasar sobre el botón */
-    font-weight: 600;
-    /* Grosor de la fuente */
     color: white;
-    /* Color del texto */
+    cursor: pointer;
     transition: 0.2s;
-    /* Transición para el efecto hover */
-    display: flex;
-    /* Flexbox para alinear ícono y texto */
-    align-items: center;
-    /* Alinea verticalmente el ícono y el texto */
-    justify-content: center;
-    /* Centra el contenido horizontalmente */
 }
 
-.secondary-button-servicio svg {
-    margin-right: 0.75rem;
-    /* Espacio entre el ícono y el texto */
-    font-size: 1.5rem;
-    /* Tamaño del ícono */
-}
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .section-container-servicios {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: center; /* Centra los elementos */
+        margin-top: 100px; /* Reduce el margen superior */
+    }
 
-.secondary-button-servicio:hover {
-    color: #484848;
-    /* Color del texto al pasar sobre el botón */
-    background-color: rgb(221, 221, 221);
-    /* Color de fondo al pasar sobre el botón */
+    .background-image-container-servicios,
+    .background-image-container-servicios3 {
+        max-width: 90%; /* Aumenta el ancho máximo en pantallas pequeñas */
+    }
+
+    .section-image-container-servicios {
+        max-width: 90%; /* Aumenta el ancho máximo en pantallas pequeñas */
+        height: auto; /* Permite que la altura se ajuste */
+    }
+
+    .section-text-container-servicios {
+        max-width: 90%; /* Aumenta el ancho máximo del texto */
+        margin-top: 20px; /* Añade espacio arriba */
+    }
+
+    .primary-heading-servicios {
+        font-size: 32px; /* Ajusta tamaño de fuente */
+    }
+
+    .primary-text-servicios {
+        font-size: 20px; /* Ajusta tamaño de fuente */
+    }
 }

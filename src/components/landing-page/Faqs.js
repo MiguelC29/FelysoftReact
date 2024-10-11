@@ -85,7 +85,7 @@ export default function Faqs() {
     };
 
     return (
-        <div id="faqs">
+        <div id="faqs-section">
             <h1 className='preguntas-container'>Preguntas Frecuentes</h1>
             <div className="faq-tabs">
                 <div className="tabs">

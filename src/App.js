@@ -90,7 +90,7 @@ export default function App() {
             <Route path='/compras' element={<RoleProtectedRoute element={<ViewPurchases />} roles={['ADMINISTRATOR','INVENTORY_MANAGER', 'FINANCIAL_MANAGER']} />} />
 
             <Route path='/reservar' element={<RoleProtectedRoute element={<ViewReservesCus />} roles={['CUSTOMER']} />} />
-            <Route path='/sus_reservas' element={<RoleProtectedRoute element={<ViewTheirReserves />} roles={['CUSTOMER']} />} />
+            <Route path='/mis_reservas' element={<RoleProtectedRoute element={<ViewTheirReserves />} roles={['CUSTOMER']} />} />
 
 
           <Route path='/update-user/:userId' element={<RoleProtectedRoute element={<UpdateUser />} roles={['ADMINISTRATOR']} />} />

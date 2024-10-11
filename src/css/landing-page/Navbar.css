@@ -1,44 +1,51 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .nav-logo-container {
     display: flex;
     align-items: center;
 }
 
-.nav-logo-container img {
-    width: 50px;
+.navbar-logo-image {
+    width: 80px;
     height: auto; /* Mantiene la proporción del logo */
 }
 
-.felysoft {
-    position: absolute;
-    left: 70px;
-    justify-content: flex-start; /* Alinea el logo hacia la izquierda */
+.navbar-title {
     color: black;
-}
-
-.felysoft a {
-    color: black; /* Color del enlace a negro */
-    text-decoration: none; /* Elimina el subrayado del enlace */
-}
-
-.felysoft h1 {
-    font-size: 50px !important;
-    color: black;
-    margin: 0;
-    padding: 0;
     font-weight: bold;
+    font-size: 5rem; /* Tamaño de fuente para pantallas grandes */
+    margin-left: 10px; /* Espaciado entre logo y texto */
 }
 
 .navbar-links-container {
-    margin-left: 400px;
     color: black;
-    font-size: 20px;
+    font-size: 2rem;
     font-weight: bold;
+    display: flex;
+    flex-wrap: wrap; /* Permite que los enlaces se envuelvan */
+    margin-left: 5rem;
 }
 
 .navbar-links-container a {
-    margin-right: 2rem;
+    margin: 0 1rem; /* Espaciado entre enlaces */
     text-decoration: none;
     color: black;
+}
+
+.navbar-login-button {
+    font-size: 2rem; /* Tamaño de fuente más pequeño */
 }
 
 .navbar-menu-container {
@@ -48,4 +55,57 @@
 .navbar-menu-container svg {
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+/* Ajustes para pantallas medianas (tablet) */
+@media (max-width: 1024px) {
+    .navbar-title {
+        font-size: 3rem; /* Tamaño de fuente reducido para tabletas */
+    }
+
+    .navbar-links-container {
+        margin-left: 2rem; /* Espacio reducido entre el contenedor y los enlaces */
+        font-size: 1.5rem; /* Tamaño de fuente reducido */
+    }
+
+    .nav-logo-container .navbar-logo-image {
+        width: 60px; /* Ajusta el tamaño del logo para tabletas */
+    }
+
+    .navbar-login-button {
+        font-size: 1.5rem; /* Tamaño de fuente reducido para el botón de login */
+    }
+}
+
+/* Oculta los enlaces en pantallas pequeñas */
+@media (max-width: 768px) { /* Cambia el valor según tu diseño */
+    .navbar-links-container {
+        display: none; /* Oculta los enlaces */
+    }
+
+    .navbar-menu-container {
+        display: flex;
+        align-items: center; /* Alinea verticalmente */
+        justify-content: flex-end; /* Alinea a la derecha */
+        padding: 1rem; /* Espacio alrededor del icono */
+    }
+
+    .navbar-title {
+        font-size: 1.5rem; /* Reduce el tamaño de fuente */
+    }
+
+    .nav-logo-container .navbar-logo-image {
+        width: 50px; /* Ajusta el tamaño del logo */
+    }
+
+    .navbar-login-button {
+        font-size: 0.8rem; /* Tamaño de fuente más pequeño */
+    }
+}
+
+/* Muestra los enlaces en pantallas grandes */
+@media (min-width: 769px) {
+    .navbar-menu-container {
+        display: none; /* Oculta el icono de menú en pantallas grandes */
+    }
 }

@@ -13,9 +13,6 @@ const Home = () => {
     <div className="home-container">
       <Navbar />
       <div className="home-banner-container">
-        <div className="home-bannerImage-container">
-          <img src={BannerBackground} alt="" />
-        </div>
         <div className="home-text-section">
           <h1 className="primary-heading-inventario">
             Digitaliza y optimiza la gestión de tu inventario sin complicaciones
@@ -32,6 +29,9 @@ const Home = () => {
         <div className="home-image-section">
           <img src={BannerImage} alt="" />
         </div>
+      </div>
+      <div className="home-background-container">
+        <img src={BannerBackground} alt="Fondo" className="background-image"  />
       </div>
     </div>
   );

@@ -106,25 +106,27 @@ export default function Carrito() {
 
     const gridItem = (product) => {
         return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product.product.idProduct}>
-                <div className="p-4 border-1 surface-border border-round">
-                    <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <div className="flex align-items-center gap-2">
-                            <i className="pi pi-tag"></i>
-                            <span className="font-semibold">{product.product.category.name}</span>
+            <div className="col-12 sm:col-6 lg:col-4 p-2" key={product.product.idProduct}>
+                <div className="p-4 border-1 surface-border border-round shadow-1" style={{ height: '100%' }}>
+                    <div className="flex flex-column h-full">
+                        <img
+                            className="w-full h-40 object-cover mb-3"
+                            src={`data:${product.product.typeImg};base64,${product.product.image}`}
+                            alt={`Imagen producto ${product.product.name}`}
+                        />
+                        <div className="flex flex-column flex-1">
+                            <h3 className="text-xl font-bold text-center">{product.product.name}</h3>
+                            <div className="flex justify-content-between mt-auto">
+                                <div className="flex align-items-center gap-1">
+                                    <Tag value={product.stock} style={{ background: getSeverityStock(product) }} />
+                                    <Tag value={product.state} style={{ background: getSeverity(product) }} />
+                                </div>
+                                <span className="text-lg font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
+                            </div>
                         </div>
-                        <div className="flex align-items-center gap-2">
-                            <Tag value={product.stock} style={{ background: getSeverityStock(product) }}></Tag>
-                            <Tag value={product.state} style={{ background: getSeverity(product) }}></Tag>
+                        <div className="flex justify-content-center mt-2">
+                            <AddToCartButton product={product} />
                         </div>
-                    </div>
-                    <div className="flex flex-column align-items-center gap-3 py-5">
-                        <img className="w-5 sm:w-16rem lg:10rem xl:w-10rem block xl:block mx-auto" src={`data:${product.product.typeImg};base64,${product.product.image}`} alt={`Imagen producto ${product.product.name}`} height={120} />
-                        <div className="text-2xl font-bold">{product.product.name}</div>
-                    </div>
-                    <div className="flex align-items-center justify-content-between">
-                        <span className="text-2xl font-semibold">{priceBodyTemplate(product.product.salePrice)}</span>
-                        <AddToCartButton product={product} />
                     </div>
                 </div>
             </div>

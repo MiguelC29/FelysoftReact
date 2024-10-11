@@ -14,7 +14,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import "../../css/landing-page/Navbar.css"
 import { useNavigate } from "react-router-dom";
 
@@ -23,83 +22,75 @@ const Navbar = () => {
   const navigate = useNavigate(); // Hook para redireccionar
   const menuOptions = [
     {
-      text: "AtencionCliente",
+      text: "¿Quiénes somos?",
       icon: <HomeIcon />,
+      onclick: (e) => {
+        e.preventDefault();
+        document.getElementById("desarrolladores").scrollIntoView({ behavior: "smooth" });
+      }
     },
     {
-      text: "Ayuda",
+      text: "Preguntas Frecuentes",
       icon: <InfoIcon />,
+      onclick: (e) => {
+        e.preventDefault();
+        document.getElementById("faqs-section").scrollIntoView({ behavior: "smooth" });
+      }
     },
     {
-      text: "Testimonials",
+      text: "Atención al cliente",
       icon: <CommentRoundedIcon />,
+      onclick: (e) => {
+        e.preventDefault();
+        document.getElementById("atencion-cliente").scrollIntoView({ behavior: "smooth" });
+      }
     },
     {
-      text: "Contact",
+      text: "Contacto",
       icon: <PhoneRoundedIcon />,
-    },
-    {
-      text: "Cart",
-      icon: <ShoppingCartRoundedIcon />,
-    },
+      onclick: (e) => {
+        e.preventDefault();
+        document.getElementById("contacto").scrollIntoView({ behavior: "smooth" });
+      }
+    }
   ];
 
-  const toggleMenu = () => {
-    const linksContainer = document.querySelector('.navbar-links-container');
-    linksContainer.classList.toggle('active');
-};
   return (
-    <nav>
-      <div className="nav-logo-container" id="navbar">
-      <a  href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("navbar").scrollIntoView({ behavior: "smooth" });
-          }}>
-            <img src={Logo} alt="Logo" />
-        </a>
-      </div>
-      <div className="felysoft">
-      <a  href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("navbar").scrollIntoView({ behavior: "smooth" });
-          }}>
-            <h1>FELYSOFT</h1>
-        </a>
-      </div>
+    <nav className="navbar">
+      <div className="navbar-container" id="navbar">
+        <div className="nav-logo-container">
+          <img src={Logo} alt="Logo" className="navbar-logo-image" />
+          <h1 className="navbar-title">FELYSOFT</h1>
+        </div>
 
-      <div className="navbar-links-container">
-      <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("desarrolladores").scrollIntoView({ behavior: "smooth" });
-          }}
-        >
-          ¿Quiénes somos?
-        </a>
+        <div className="navbar-links-container">
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("desarrolladores").scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            ¿Quiénes somos?
+          </a>
 
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("faqs").scrollIntoView({ behavior: "smooth" });
-          }}
-        >
-          Atención al cliente
-        </a>
-        
-        <button className="primary-button" onClick={() => navigate("/login")}>Iniciar sesión</button>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("faqs-section").scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            Atención al cliente
+          </a>
+        </div>
+
+        <button className="primary-button navbar-login-button" onClick={() => navigate("/login")}>Iniciar sesión</button>
+
+        <div className="navbar-menu-container">
+          <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
+        </div>
       </div>
-      <div className="navbar-menu-container">
-        <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
-      </div>
-      <div className="navbar-menu-container" onClick={toggleMenu}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="menu-icon">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-        </svg>
-    </div>
       <Drawer open={openMenu} onClose={() => setOpenMenu(false)} anchor="right">
         <Box
           sx={{ width: 250 }}
@@ -109,7 +100,7 @@ const Navbar = () => {
         >
           <List>
             {menuOptions.map((item) => (
-              <ListItem key={item.text} disablePadding>
+              <ListItem key={item.text} disablePadding onClick={item.onclick}>
                 <ListItemButton>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />

@@ -1,81 +1,134 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 100vh; /* Asegura que el contenedor tenga una altura mínima de pantalla completa */
+}
+
 .home-banner-container {
-    display: flex; /* Usar flexbox para distribuir el espacio */
-    padding-top: 1rem;
-    position: relative;
-    width: 100%; /* Asegúrate de que el contenedor principal ocupe todo el ancho disponible */
-    height: 500px; /* Ajusta la altura según tus necesidades */
-}
-
-.home-bannerImage-container img {
-    width: 1000px !important;
-    height: 1000px !important;
-    transform: rotate(-1deg); /* Rotar la imagen en 10 grados */
-}
-
-.home-bannerImage-container {
-    position: absolute;
-    top: -330px;
-    right: 100px;
-    z-index: -2;
-    max-width: 700px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem; /* Espaciado alrededor */
+    width: 100%; /* Ancho completo */
+    height: auto; /* Altura fija */
+    position: relative; /* Para el fondo */
 }
 
 .home-text-section {
     max-width: 35%;
-    width: 35%;
-    position: absolute;
-    margin-top: 20px; /* Ajusta el valor según lo necesites */
-    right: 1300px;
-
+    text-align: center;
+    padding: 20px;
 }
 
 .primary-heading-inventario {
-    line-height: 1.2;
-    position: relative;
-    text-align: center; /* Centra el texto */
-    width: 100%; /* Define un ancho específico */
-    font-size: 50px; /* Aumenta el tamaño de la fuente */
-    font-weight: bold; /* Asegura que el texto sea más grueso */
-    left: 200px;
-    top: 40px;
+    font-size: 50px;
+    font-weight: bold;
+    margin: 1rem 0; /* Espaciado vertical */
 }
 
-.primary-text-inventario{
-    position: relative;
-    text-align: center; /* Centra el texto */
-    width: 100%; /* Define un ancho específico */
-    font-size: 26px; /* Aumenta el tamaño de la fuente */
-    left: 210px;
-    top: 40px;
-
+.primary-text-inventario {
+    font-size: 26px;
 }
 
 .secondary-button-inventario {
-    position: relative;
-    margin-bottom: -100px; /* Espacio debajo del botón para separar del título */
-    left: 420px;
-    top: 50px;
+    display: flex;
+    justify-content: center;
 }
 
 .home-image-section {
-    top: 30px;
-    position: absolute;
-    max-width: 55%;
-    width: 100%; /* Ancho específico */
-    height: 100%; /* Altura específica */
-    overflow: hidden;
-    flex: 1;
-    margin-left: 830px; /* Ajusta el margen para mover el contenedor a la derecha */
-    /* O usa transform para un movimiento más preciso */
-    /* transform: translateX(50px); */
+    max-width: 60%; /* Ancho del contenedor de la imagen */
+    height: auto;
+    display: flex; /* Flexbox para la imagen */
+    justify-content: center; /* Centra la imagen */
 }
 
 .home-image-section img {
-    position: absolute;
-    top: 0;
-    left: -20px;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    /* Ajusta la imagen para cubrir el contenedor sin recortar de manera desigual */
+    width: 100%; /* La imagen ocupa el 100% del contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+    object-fit: contain; /* Asegura que la imagen se ajuste sin recortes */
+}
+
+.home-background-container {
+    position: absolute; /* Para colocar el fondo */
+    top: 0; /* Coloca el fondo en la parte superior */
+    right: 0; /* Coloca el fondo a la izquierda */
+    width: 55vw; /* Ancho completo */
+    z-index: -1; /* Envía el fondo detrás del contenido */
+}
+
+.background-image {
+    width: 120%; /* Ancho completo del fondo */
+    object-fit: cover; /* Cubre todo el contenedor sin deformar */
+}
+
+
+/* Ajustes para pantallas medianas y pequeñas */
+@media (max-width: 1024px) {
+    .home-banner-container {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: center; /* Centra horizontalmente */
+        justify-content: center; /* Centra verticalmente */
+    }
+
+    .home-text-section {
+        max-width: 70%; /* Aumenta el ancho máximo para tabletas */
+        margin: 0 auto; /* Asegura que se centre el contenedor */
+        text-align: center; /* Centra el texto */
+    }
+
+    .primary-heading-inventario {
+        font-size: 40px; /* Ajusta el tamaño del texto */
+    }
+
+    .primary-text-inventario {
+        font-size: 22px; /* Ajusta el tamaño del texto */
+    }
+
+    .home-image-section {
+        max-width: 80%; /* Reduce el tamaño de la imagen */
+        margin: 20px auto; /* Añade margen para separar de otros elementos */
+    }
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .home-banner-container {
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: center; /* Centra horizontalmente */
+        justify-content: center; /* Centra verticalmente */
+    }
+
+    .home-text-section {
+        max-width: 100%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .primary-heading-inventario {
+        font-size: 32px;
+    }
+
+    .primary-text-inventario {
+        font-size: 18px;
+    }
+
+    .secondary-button-inventario {
+        display: flex;
+        justify-content: center; /* Centra el botón */
+        width: 100%; /* Asegura que el botón ocupe el ancho completo */
+        margin-top: 20px; /* Añade margen arriba para separación */
+        margin-left: 10rem;
+    }
+
+    .home-image-section {
+        max-width: 100%; /* Reduce el tamaño de la imagen */
+        margin: 20px auto; /* Añade margen para separar de otros elementos */
+    }
+
+    .home-background-container {
+        width: 100%; /* Fondo ocupa el 100% en pantallas pequeñas */
+        height: 50%; /* Ajusta la altura para evitar que tape el contenido */
+    }
 }

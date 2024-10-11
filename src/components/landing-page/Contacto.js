@@ -4,7 +4,7 @@ import "../../css/landing-page/Contacto.css"
 
 const Contact = () => {
   return (
-    <div className="contact-page-wrapper">
+    <div className="contact-page-wrapper" id="contacto">
       <h1 className="primary-heading-contacto">¿Tienes preguntas?</h1>
       <p className="primary-text-contacto">
         Deja tus datos y nos pondremos en contacto contigo, buen día.
