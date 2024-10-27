@@ -12,7 +12,7 @@
 
 .reserva-text-section {
     width: 70%;
-    position: absolute;
+    position: relative;
     margin-top: -50px;
     /* Ajusta el valor según lo necesites */
     right: 520px;
@@ -28,36 +28,30 @@
     /* Aumenta el tamaño de la fuente */
     font-weight: bold;
     /* Asegura que el texto sea más grueso */
-    left: 440px;
-    top: -90px;
+    left: 1000px;
+    bottom: 150px;
     word-spacing: 5px;
     /* Aumenta el espacio entre palabras */
     line-height: 1.1;
 }
 
 .reserva-image-section {
-    display: flex;
-    justify-content: center;
-    /* Centra horizontalmente */
-    align-items: center;
-    /* Centra verticalmente */
     position: relative;
-    width: 120%;
+    width: 100%;
     height: auto;
-    overflow: hidden;
-    top: 330px;
-    left: 40px;
+    top: 250px;
+    right: 700px;
 }
 
 .reserva-image-section img {
-    max-width: 92%;
-    /* Ajusta la imagen al 120% del tamaño del contenedor */
-    height: auto;
+    width: 1500px;
+    height: auto; /* Mantiene la proporción de la imagen */
+    object-fit: cover;
     /* Mantiene la relación de aspecto de la imagen */
 }
 
 .reserva-bannerImage-container {
-    position: absolute;
+    position: relative;
     top: -100px;
     right: -170px;
     z-index: -2;
@@ -69,4 +63,40 @@
     /* Ajusta el ancho específico a 1000px */
     height: 500px !important;
     /* Ajusta la altura específica a 750px */
+}
+
+@media (max-width: 768px) {
+    .reserva-banner-container{
+        position: relative;
+        bottom: 200px;
+        left: 350px;
+    }
+    .primary-heading-reservas{
+        position: relative;
+        text-align: center;
+        font-size: 32px;
+        padding: 250px;
+        /* Aumenta el tamaño de la fuente */
+        font-weight: bold;
+        /* Asegura que el texto sea más grueso */
+        left: -85px;
+        bottom: 70px;
+
+
+    }
+    .reserva-image-section {
+        position: relative;
+        width: 100%;
+        height: auto;
+        top: 50px;
+        right: 615px;
+    }
+    
+    .reserva-image-section img {
+        width: 380px;
+        height: auto; /* Mantiene la proporción de la imagen */
+        object-fit: cover;
+        /* Mantiene la relación de aspecto de la imagen */
+    }
+    
 }

@@ -5,10 +5,8 @@
     justify-content: center;
     width: 100%;
     height: auto;
-    margin-top: -150px;
+    bottom: 900px;
 }
-
-
 
 .primary-heading-desarrolladores {
     text-align: center;
@@ -65,8 +63,12 @@
 }
 
 .separator-line {
-    border: none; /* Eliminar el estilo por defecto del hr */
-    border-top: 2px solid gray; /* Línea gris */
-    width: 100%; /* Ajustar el ancho al contenedor */
-    margin-top: 80px; /* Espacio superior para bajar la línea */
+    border: none;
+    /* Eliminar el estilo por defecto del hr */
+    border-top: 2px solid gray;
+    /* Línea gris */
+    width: 100%;
+    /* Ajustar el ancho al contenedor */
+    margin-top: 80px;
+    /* Espacio superior para bajar la línea */
 }

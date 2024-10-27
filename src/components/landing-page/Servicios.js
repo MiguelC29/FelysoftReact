@@ -11,15 +11,13 @@ const About = () => {
 
   return (
     <div className="section-container-servicios">
-      <div className="background-image-container-servicios">
-        <img src={AboutBackground} alt="" />
-      </div>
       <div className="section-image-container-servicios">
         <img src={AboutBackgroundImage} alt="" />
       </div>
-      {/* <div className="background-image-container-servicios2">
+      <div className="background-image-container-servicios">
         <img src={AboutBackground} alt="" />
-      </div> */}
+      </div>
+    
       <div className="background-image-container-servicios3">
         <img src={AboutBackground3} alt="" />
       </div>

@@ -1,10 +1,9 @@
 .section-container-servicios {
-    margin-top: 5vh; /* Usa unidades relativas para mejor responsividad */
+    top: 380px; /* Usa unidades relativas para mejor responsividad */
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between; /* Cambia a 'center' en pantallas pequeñas si es necesario */
-    width: 100%;
     flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
 }
 
@@ -12,12 +11,14 @@
 .background-image-container-servicios {
     position: relative; /* Cambiado a relative */
     max-width: 100%;
-    overflow: hidden;
+    left: 500px;
+    top: -550px;
+    z-index: -2;
 }
 
 .background-image-container-servicios img {
-    width: 100%; /* Ajusta el tamaño al contenedor */
-    height: auto; /* Mantiene la relación de aspecto */
+    width: 1200px; /* Ajusta el tamaño al contenedor */
+    height: 500px; /* Mantiene la relación de aspecto */
     transform: rotate(180deg);
     margin: 0;
     border-radius: 50px;
@@ -26,12 +27,15 @@
 .background-image-container-servicios3 {
     position: relative; /* Cambiado a relative */
     max-width: 100%;
-    overflow: hidden;
+    right: 1100px;
+    bottom: 600px;
+    z-index: -1;
 }
 
 .background-image-container-servicios3 img {
-    width: 100%; /* Ajusta el tamaño al contenedor */
-    height: auto; /* Mantiene la relación de aspecto */
+    position: relative;
+    width: 500px; /* Ajusta el tamaño al contenedor */
+    height: 600px; /* Mantiene la relación de aspecto */
     transform: rotate(180deg);
     margin: 0;
     border-radius: 50px 0 0 50px;
@@ -41,15 +45,11 @@
 .section-image-container-servicios {
     position: relative; /* Mantén como relative */
     max-width: 100%; /* Cambiado a 100% para ocupar todo el ancho */
-    height: auto; /* Ajusta la altura automáticamente */
-    overflow: hidden;
-    flex: 1;
-    margin: 0 auto; /* Centra el contenedor en la página */
 }
 
 .section-image-container-servicios img {
     position: relative;
-    width: 100%; /* Ajusta el tamaño al contenedor */
+    width: 1000px; /* Ajusta el tamaño al contenedor */
     height: auto; /* Mantiene la relación de aspecto */
     object-fit: cover; /* Cambiado a cover para llenar el contenedor */
     max-height: 600px; /* Ajusta según sea necesario para controlar la altura máxima */
@@ -57,10 +57,11 @@
 
 /* Textos */
 .section-text-container-servicios {
+    position: relative; /* Cambiado a relative */
     max-width: 35%;
     width: 70%;
-    position: relative; /* Cambiado a relative */
-    margin-top: -100px; /* Ajusta este margen según sea necesario */
+    bottom: 1050px; /* Ajusta este margen según sea necesario */
+    left: 900px;
 }
 
 .primary-heading-servicios {
@@ -97,17 +98,28 @@
     .section-container-servicios {
         flex-direction: column; /* Cambia a columna en pantallas pequeñas */
         align-items: center; /* Centra los elementos */
-        margin-top: 100px; /* Reduce el margen superior */
     }
 
     .background-image-container-servicios,
     .background-image-container-servicios3 {
         max-width: 90%; /* Aumenta el ancho máximo en pantallas pequeñas */
+
+    }
+
+    .background-image-container-servicios img{
+        width: 200px;
+        bottom: 200px;
+        left: 100px;
     }
 
     .section-image-container-servicios {
-        max-width: 90%; /* Aumenta el ancho máximo en pantallas pequeñas */
+        max-width: 100%; /* Aumenta el ancho máximo en pantallas pequeñas */
         height: auto; /* Permite que la altura se ajuste */
+    }
+
+    .section-image-container-servicios img{
+        width: 300px;
+        bottom: 750px;
     }
 
     .section-text-container-servicios {

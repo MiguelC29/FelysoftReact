@@ -123,7 +123,6 @@
         justify-content: center; /* Centra el botón */
         width: 100%; /* Asegura que el botón ocupe el ancho completo */
         margin-top: 20px; /* Añade margen arriba para separación */
-        margin-left: 10rem;
     }
 
     .home-image-section {

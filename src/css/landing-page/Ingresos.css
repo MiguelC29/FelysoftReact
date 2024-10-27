@@ -1,108 +1,269 @@
 .about-section-container {
-  margin-top: 10rem;
+  top: 200px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%; /* Asegúrate de que el contenedor principal ocupe todo el ancho disponible */
-  height: 380px; /* Ajusta la altura según tus necesidades */
+  width: 100%;
+  /* Asegúrate de que el contenedor principal ocupe todo el ancho disponible */
+  height: 380px;
+  /* Ajusta la altura según tus necesidades */
 }
 
 /* Fondo */
 .about-background-image-container {
-  position: absolute;
-  left: -80px; /* Ajusta según el espacio que necesitas */
-  z-index: -2;
-  height: 750px; /* Aumenta la altura del contenedor */
-  
+  position: relative;
+  left: -80px;
+  /* Ajusta según el espacio que necesitas */
+  z-index: -1;
+  width: 500px;
+  top: -300px;
+  /* Ancho completo */
 }
 
 .about-background-image-container img {
-  width: 280px !important;
-  height: 900px !important;
-  transform: rotate(-7deg); /* Rotar la imagen en 10 grados */
+  width: 400px;
+  object-fit: cover;
+  transform: rotate(-6deg);
+
 }
 
 /* Imagen */
 .about-section-image-container {
-  top: -80px;
-  position: absolute;
-  max-width: 40%;
-  width: 800px; /* Ancho específico */
-  height: 800px; /* Altura específica */
+  bottom: 250px;
+  right: 500px;
+  position: relative;
+  max-width: 100%;
   overflow: hidden;
   flex: 1;
 }
 
 .about-section-image-container img {
-  position: absolute;
+  position: relative;
   right: auto;
-  width: 800px; /* Ancho específico */
-  height: 700px; /* Altura específica */
+  width: 800px;
+  /* Ancho específico */
+  height: 700px;
+  /* Altura específica */
   object-fit: contain;
   /* Ajusta la imagen para cubrir el contenedor sin recortar de manera desigual */
 }
 
 /* Textos */
 .about-section-text-container {
+  position: relative;
   max-width: 35%;
   width: 70%;
-  position: absolute;
-  margin-top: -80px; /* Ajusta el valor según lo necesites */
-  right: 520px;
+  position: relative;
+  bottom: 700px;
+  /* Ajusta el valor según lo necesites */
+  right: 500px;
+  bottom: 380px;
 }
 
-.primary-heading-ingresos{
+.primary-heading-ingresos {
   position: relative;
-  text-align: center; /* Centra el texto */
-  width: 800px; /* Define un ancho específico */
-  font-size: 50px; /* Aumenta el tamaño de la fuente */
-  font-weight: bold; /* Asegura que el texto sea más grueso */
+  text-align: center;
+  /* Centra el texto */
+  width: 800px;
+  /* Define un ancho específico */
+  font-size: 50px;
+  /* Aumenta el tamaño de la fuente */
+  font-weight: bold;
+  /* Asegura que el texto sea más grueso */
   left: 200px;
   top: 40px;
-  word-spacing: 5px; /* Aumenta el espacio entre palabras */
+  word-spacing: 5px;
+  /* Aumenta el espacio entre palabras */
   line-height: 1.2;
 }
 
 .primary-text-ingresos {
   position: relative;
-  text-align: center; /* Centra el texto */
-  width: 600px; /* Define un ancho específico */
-  font-size: 26px; /* Aumenta el tamaño de la fuente */
+  text-align: center;
+  /* Centra el texto */
+  width: 600px;
+  /* Define un ancho específico */
+  font-size: 26px;
+  /* Aumenta el tamaño de la fuente */
   left: 300px;
   top: 40px;
 }
 
 .secondary-button-ingresos {
   position: relative;
-  margin-bottom: -100px; /* Espacio debajo del botón para separar del título */
+  margin-bottom: -100px;
+  /* Espacio debajo del botón para separar del título */
   left: 520px;
   top: 50px;
 }
 
 .secondary-button-ingreso {
-  padding: 1rem 2.5rem; /* Ajusta el tamaño del botón */
+  padding: 1rem 2.5rem;
+  /* Ajusta el tamaño del botón */
   background-color: rgb(25, 87, 168);
-  outline: none; /* Sin contorno */
-  border: none; /* Sin borde */
+  outline: none;
+  /* Sin contorno */
+  border: none;
+  /* Sin borde */
   border-radius: 10px;
-  font-size: 20px; /* Tamaño de la fuente del texto */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  font-weight: 600; /* Grosor de la fuente */
-  color: white; /* Color del texto */
-  transition: 0.2s; /* Transición para el efecto hover */
-  display: flex; /* Flexbox para alinear ícono y texto */
-  align-items: center; /* Alinea verticalmente el ícono y el texto */
-  justify-content: center; /* Centra el contenido horizontalmente */
+  font-size: 20px;
+  /* Tamaño de la fuente del texto */
+  cursor: pointer;
+  /* Cambia el cursor al pasar sobre el botón */
+  font-weight: 600;
+  /* Grosor de la fuente */
+  color: white;
+  /* Color del texto */
+  transition: 0.2s;
+  /* Transición para el efecto hover */
+  display: flex;
+  /* Flexbox para alinear ícono y texto */
+  align-items: center;
+  /* Alinea verticalmente el ícono y el texto */
+  justify-content: center;
+  /* Centra el contenido horizontalmente */
 }
 
 .secondary-button-ingreso svg {
-  margin-right: 0.75rem; /* Espacio entre el ícono y el texto */
-  font-size: 1.5rem; /* Tamaño del ícono */
+  margin-right: 0.75rem;
+  /* Espacio entre el ícono y el texto */
+  font-size: 1.5rem;
+  /* Tamaño del ícono */
 }
 
 .secondary-button-ingreso:hover {
-  color: #484848; /* Color del texto al pasar sobre el botón */
-  background-color: rgb(221, 221, 221); /* Color de fondo al pasar sobre el botón */
+  color: #484848;
+  /* Color del texto al pasar sobre el botón */
+  background-color: rgb(221, 221, 221);
+  /* Color de fondo al pasar sobre el botón */
 }
 
+
+
+@media (max-width: 768px) {
+  .about-section-container {
+    width: 20px;
+    bottom: 2000px;
+    left: auto;
+  }
+
+  .about-section-text-container {
+    max-width: 100%;
+    text-align: center;
+    /* Mantiene el texto centrado */
+    position: relative;
+    /* Asegúrate de que el contenedor tenga una posición relativa */
+    left: -420px;
+    /* Ajusta este valor para mover hacia la izquierda */
+    z-index: 1;
+    margin: 14px auto;
+    /* Centra el contenedor horizontalmente */
+    bottom: 300px;
+    /* Ajusta este valor según sea necesario */
+  }
+
+  .primary-heading-ingresos {
+    font-size: 32px;
+    padding: 0 250px;
+    /* Reduce el padding lateral para evitar demasiado espacio */
+    margin-bottom: 10px;
+    /* Añade margen inferior para separar del texto */
+  }
+
+  .primary-text-ingresos {
+    font-size: 18px;
+    padding: 0 150px;
+    /* Reduce el padding lateral para evitar demasiado espacio */
+  }
+
+  .secondary-button-ingresos {
+    position: relative;
+    margin-bottom: -100px;
+    /* Espacio debajo del botón para separar del título */
+    left: 520px;
+    top: 50px;
+  }
+
+  .secondary-button-ingreso {
+    padding: 1rem 2.5rem;
+    /* Ajusta el tamaño del botón */
+    background-color: rgb(25, 87, 168);
+    outline: none;
+    /* Sin contorno */
+    border: none;
+    /* Sin borde */
+    border-radius: 10px;
+    font-size: 20px;
+    /* Tamaño de la fuente del texto */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el botón */
+    font-weight: 600;
+    /* Grosor de la fuente */
+    color: white;
+    /* Color del texto */
+    transition: 0.2s;
+    /* Transición para el efecto hover */
+    display: flex;
+    /* Flexbox para alinear ícono y texto */
+    align-items: center;
+    /* Alinea verticalmente el ícono y el texto */
+    justify-content: center;
+    /* Centra el contenido horizontalmente */
+  }
+
+  .secondary-button-ingreso svg {
+    margin-right: 0.75rem;
+    /* Espacio entre el ícono y el texto */
+    font-size: 1.5rem;
+    /* Tamaño del ícono */
+  }
+
+  .secondary-button-ingreso:hover {
+    color: #484848;
+    /* Color del texto al pasar sobre el botón */
+    background-color: rgb(221, 221, 221);
+    /* Color de fondo al pasar sobre el botón */
+  }
+
+  .about-background-image-container {
+    position: relative;
+    width: 100%;
+    /* Ajusta según el tamaño deseado */
+    left: -40px;
+    top: -200px;
+    /* Ajusta la posición para pantallas pequeñas */
+  }
+
+  .about-background-image-container img {
+    width: 200px;
+    height: 600px;
+    transform: rotate(-3deg);
+    /* Ajusta la rotación para un mejor encaje */
+  }
+
+  .about-section-image-container {
+    position: relative;
+    max-width: 90%;
+    /* Permite un poco más de espacio para el contenedor */
+    width: 100%;
+    /* Asegúrate de que ocupe todo el ancho disponible */
+    height: auto;
+    /* Permite que la altura se ajuste automáticamente */
+    display: flex;
+    /* Usar flexbox para centrar la imagen */
+    justify-content: center;
+    /* Centra horizontalmente */
+    margin: 20px auto;
+    /* Añade margen para separación */
+  }
+
+  .about-section-image-container img {
+    width: 100%;
+    /* Asegúrate de que la imagen ocupe todo el ancho del contenedor */
+    height: auto;
+    /* Mantiene la proporción de la imagen */
+    object-fit: contain;
+    /* Mantiene la imagen dentro del contenedor sin recortarse */
+  }
+}
