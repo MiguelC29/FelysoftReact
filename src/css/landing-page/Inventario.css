@@ -34,7 +34,11 @@
 
 .secondary-button-inventario {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Centra el contenido dentro del botón */
+    width: 100%; /* Ancho completo */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    margin-top: 20px; /* Añade margen arriba para separación */
+    text-align: center; /* Centra el texto dentro del botón */
 }
 
 .home-image-section {
